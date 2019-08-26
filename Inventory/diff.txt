@@ -1,0 +1,146 @@
+129d128
+< 	        //$_SESSION['InventoryItems'] = new items_cart(ST_LOCTRANSFER);
+210a210,212
+> 	function write()
+> 	{
+> 	}
+218c220
+< 		$ret = $_SESSION['InventoryItems']->write(1);
+---
+> 		$ret = $this->write(1);
+222,223c224,225
+< 		        $ref = get_next_reference($_SESSION['InventoryItems']->trans_type);
+< 		        if ($ref != $_SESSION['InventoryItems']->reference)
+---
+> 		        $ref = get_next_reference($this->trans_type);
+> 		        if ($ref != $this->reference)
+226c228
+< 		                $_POST['ref'] = $_SESSION['InventoryItems']->reference = $ref;
+---
+> 		                $_POST['ref'] = $this->reference = $ref;
+378a381
+> 
+385a389
+> 
+391,392d394
+< 	        //$this->copy_to_cart();
+< 	
+403d404
+< 	        //if (count($_SESSION['InventoryItems']->line_items) == 0) {
+408a410
+> /*
+414,419d415
+< /*
+< 		if (!$SysPrefs->allow_negative_stock() && ($low_stock = $_SESSION['InventoryItems']->check_qoh()))
+< 		{
+< 			display_error(_("This document cannot be processed because there is insufficient quantity for items marked."));
+< 			return false;
+< 		}
+422a419
+> 
+442a440,447
+> /*
+> 	        if ($_POST['UpdateItem'] != '' && $this->check_item_data()) {
+> 
+>                 	$id = $_POST['LineNo'];
+>         		if (!isset($_POST['std_cost']))
+>         		        $_POST['std_cost'] = $_SESSION['InventoryItems']->line_items[$id]->standard_cost;
+>     		}
+> */
+449c454
+< 	  	line_start_focus();
+---
+> 	  	$this->line_start_focus();
+459c464
+< 	  	line_start_focus();
+---
+> 	  	$this->line_start_focus();
+531d535
+< 	
+1136,1221d1139
+< /*
+< 	
+< 	function line_start_focus() {
+< 	  global        $Ajax;
+< 	
+< 	  $Ajax->activate('items_table');
+< 	  set_focus('_stock_id_edit');
+< 	}
+< 	
+< 	function handle_update_item()
+< 	{
+< 	        if ($_POST['UpdateItem'] != '' && $this->check_item_data()) {
+< 	                $_SESSION['InventoryItems']->update_cart_item($_POST['LineNo'],
+< 	                 input_num('qty'), input_num('price'),
+< 	                 input_num('Disc') / 100, $_POST['item_description'] );
+< 
+<                 	$id = $_POST['LineNo'];
+<         		if (!isset($_POST['std_cost']))
+<         		        $_POST['std_cost'] = $_SESSION['InventoryItems']->line_items[$id]->standard_cost;
+<         		$_SESSION['InventoryItems']->update_cart_item($id, input_num('qty'), $_POST['std_cost']);
+<     		}
+< 	        $this->page_modified();
+<         	$this->line_start_focus();
+< 
+< 	}
+< 	
+< 	//--------------------------------------------------------------------------------
+< 	
+< 	function handle_delete_item($line_no)
+< 	{
+< 		$_SESSION['InventoryItems']->remove_from_cart($id);
+< 	    	$this->line_start_focus();
+< 	}
+< 	
+< 	//--------------------------------------------------------------------------------
+< 	
+< 	
+< 	function  handle_cancel_inventory()
+< 	{
+< 	        global $path_to_root, $Ajax;
+< 	
+< 	
+< 	        if ($_SESSION['InventoryItems']->trans_type == ST_CUSTDELIVERY) {
+< 	                display_notification(_("Direct delivery entry has been cancelled as requested."), 1);
+< 	                submenu_option(_("Enter a New Sales Delivery"), "/sales/sales_inventory_entry.php?NewDelivery=1");
+< 	        } elseif ($_SESSION['InventoryItems']->trans_type == ST_SALESINVOICE) {
+< 	                display_notification(_("Direct invoice entry has been cancelled as requested."), 1);
+< 	                submenu_option(_("Enter a New Sales Invoice"),  "/sales/sales_inventory_entry.php?NewInvoice=1");
+< 	        } elseif ($_SESSION['InventoryItems']->trans_type == ST_SALESQUOTE)
+< 	        {
+< 	                if ($_SESSION['InventoryItems']->trans_no != 0)
+< 	                        delete_sales_inventory(key($_SESSION['InventoryItems']->trans_no), $_SESSION['InventoryItems']->trans_type);
+< 	                display_notification(_("This sales quotation has been cancelled as requested."), 1);
+< 	                submenu_option(_("Enter a New Sales Quotation"), "/sales/sales_inventory_entry.php?NewQuotation=Yes");
+< 	        } else { // sales inventory
+< 	                if ($_SESSION['InventoryItems']->trans_no != 0) {
+< 	                        $inventory_no = key($_SESSION['InventoryItems']->trans_no);
+< 	                        if (sales_inventory_has_deliveries($inventory_no))
+< 	                        {
+< 	                                close_sales_inventory($inventory_no);
+< 	                                display_notification(_("Undelivered part of inventory has been cancelled as requested."), 1);
+< 	                                submenu_option(_("Select Another Sales Order for Edition"), "/sales/inquiry/sales_inventorys_view.php?type=".ST_SALESORDER);
+< 	                        } else {
+< 	                                delete_sales_inventory(key($_SESSION['InventoryItems']->trans_no), $_SESSION['InventoryItems']->trans_type);
+< 	
+< 	                                display_notification(_("This sales inventory has been cancelled as requested."), 1);
+< 	                                submenu_option(_("Enter a New Sales Order"), "/sales/sales_inventory_entry.php?NewOrder=Yes");
+< 	                        }
+< 	                } else {
+< 	                        processing_end();
+< 	                        meta_forward($path_to_root.'/index.php','application=inventorys');
+< 	                }
+< 	        }
+< 	        $Ajax->activate('_page_body');
+< 	        processing_end();
+< 	        display_footer_exit();
+< 	}
+< 	
+< 	
+< */
+< /*
+< 	function run()
+< 	{
+< 		$this->Inventory_form();
+< 	}
+< */

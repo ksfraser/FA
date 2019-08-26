@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML><HEAD></HEAD><BODY>
+<OBJECT type="text/site properties">
+<param name="FrameName" value="right">
+</OBJECT>
+<UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="df/df9/classksf__payment__destinations__model.html#ade020a8ffe44944d26991547fc546d2a"><param name="Name" value="$bank_account"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="df/df9/classksf__payment__destinations__model.html#a43c542537d304e0ae3d37b11102b333d"><param name="Name" value="$bank_account_name"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/dc2/classksf__payment__destinations.html#a8959722e1f074ff2adf1084521a0e6af"><param name="Name" value="$id_ksf_payment_destinations"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/dc2/classksf__payment__destinations.html#a8959722e1f074ff2adf1084521a0e6af"><param name="Name" value="ksf_payment_destinations"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="df/df9/classksf__payment__destinations__model.html#a1d84e5bee08d75539901b64c2a91ef33"><param name="Name" value="ksf_payment_destinations_model"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d2/d0a/classksf__payment__destinations__view.html#a94f35a0a472729499647d7860c9d9798"><param name="Name" value="ksf_payment_destinations_view"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="dc/db8/classhooks__ksf__payment__destinations.html#a41d2b1da19c968a3fa217d08466e8e57"><param name="Name" value="$module_name"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="df/df9/classksf__payment__destinations__model.html#ae9dd219bca42c65addf8f9eccf7269c1"><param name="Name" value="$payment_term"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="df/df9/classksf__payment__destinations__model.html#ac310931c57a514ef142670c439e1bda3"><param name="Name" value="$payment_term_name"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/dc2/classksf__payment__destinations.html#ac8b962067dab478764075d7159f38e2d"><param name="Name" value="$table_interface"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/dc2/classksf__payment__destinations.html#a3bce51ae77abebb9531554d5d6271de0"><param name="Name" value="__construct"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/dc2/classksf__payment__destinations.html#a3bce51ae77abebb9531554d5d6271de0"><param name="Name" value="ksf_payment_destinations"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="df/df9/classksf__payment__destinations__model.html#a7d2b7eaf468a2056429c887cc1c1af2c"><param name="Name" value="ksf_payment_destinations_model"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d2/d0a/classksf__payment__destinations__view.html#aede5c60959361e7283ecd91a2da3aa34"><param name="Name" value="ksf_payment_destinations_view"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/dc2/classksf__payment__destinations.html#a1e8e91ebcf8beeb203bcaf284022a586"><param name="Name" value="action_show_form"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="d2/d0a/classksf__payment__destinations__view.html#a9e5a6ab82c58d8f3943888a4755d6ac9"><param name="Name" value="comboBankAccountList"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="d2/d0a/classksf__payment__destinations__view.html#a5b2f374c808923fd74fd12f84f387664"><param name="Name" value="comboPaymentList"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="dc/db8/classhooks__ksf__payment__destinations.html#ae23102a8b3dfe29e9c8c756b9cb6bed5"><param name="Name" value="db_prewrite"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="df/df9/classksf__payment__destinations__model.html#a46e00553b2989537613cc99d3c9913d5"><param name="Name" value="define_table"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="d2/d0a/classksf__payment__destinations__view.html#a22bdc4f15029d30d8f04c304fc82d549"><param name="Name" value="edit_item_form"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="d2/d0a/classksf__payment__destinations__view.html#aa5109fc69be72be0b97de639496024e9"><param name="Name" value="form_add"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="d2/d0a/classksf__payment__destinations__view.html#a78ebed79bd1632f1cac1aa90b75bef70"><param name="Name" value="form_header"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="d2/d0a/classksf__payment__destinations__view.html#ac6c5ef63c799f803fe0449136fa38b9a"><param name="Name" value="form_item_rows"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="d2/d0a/classksf__payment__destinations__view.html#ac6b800228e1d26f56009b98fe0e1fc73"><param name="Name" value="form_ksf_payment_destinations_completed"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="df/df9/classksf__payment__destinations__model.html#ada952f529b48c0e4060073be420098de"><param name="Name" value="getBankAccountFromTerm"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="df/df9/classksf__payment__destinations__model.html#a211128ded82e9e457860a1c025e0efa0"><param name="Name" value="getPaymentTerms"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/dc2/classksf__payment__destinations.html#a617a0cadddf6ade17f478e8476449871"><param name="Name" value="handle_delete"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/dc2/classksf__payment__destinations.html#a7078c43829c1b6a6222e2930d99d0608"><param name="Name" value="handle_edit"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="dc/db8/classhooks__ksf__payment__destinations.html"><param name="Name" value="hooks_ksf_payment_destinations"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="dc/db8/classhooks__ksf__payment__destinations.html#a41d2b1da19c968a3fa217d08466e8e57"><param name="Name" value="$module_name"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="dc/db8/classhooks__ksf__payment__destinations.html#ae23102a8b3dfe29e9c8c756b9cb6bed5"><param name="Name" value="db_prewrite"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="dc/db8/classhooks__ksf__payment__destinations.html#a68fb815cf25f7c3ea22cef7e04ff3e97"><param name="Name" value="install_access"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="dc/db8/classhooks__ksf__payment__destinations.html#a6a07b236de0c9dc8ed26c89fa490fb22"><param name="Name" value="install_options"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="df/df9/classksf__payment__destinations__model.html#a6de8af4e189cb93307bce8d6955a8b4d"><param name="Name" value="insert_data"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/dc2/classksf__payment__destinations.html#aa5c9b70c9fc3a4fa2909ad199303c353"><param name="Name" value="install"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="dc/db8/classhooks__ksf__payment__destinations.html#a68fb815cf25f7c3ea22cef7e04ff3e97"><param name="Name" value="install_access"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="dc/db8/classhooks__ksf__payment__destinations.html#a6a07b236de0c9dc8ed26c89fa490fb22"><param name="Name" value="install_options"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="d2/d0a/classksf__payment__destinations__view.html#a2eb480d413a1fc6b8d696b9d85173813"><param name="Name" value="item_form"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/dc2/classksf__payment__destinations.html"><param name="Name" value="ksf_payment_destinations"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/dc2/classksf__payment__destinations.html#a8959722e1f074ff2adf1084521a0e6af"><param name="Name" value="$id_ksf_payment_destinations"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/dc2/classksf__payment__destinations.html#ac8b962067dab478764075d7159f38e2d"><param name="Name" value="$table_interface"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/dc2/classksf__payment__destinations.html#a3bce51ae77abebb9531554d5d6271de0"><param name="Name" value="__construct"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/dc2/classksf__payment__destinations.html#a1e8e91ebcf8beeb203bcaf284022a586"><param name="Name" value="action_show_form"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/dc2/classksf__payment__destinations.html#a617a0cadddf6ade17f478e8476449871"><param name="Name" value="handle_delete"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/dc2/classksf__payment__destinations.html#a7078c43829c1b6a6222e2930d99d0608"><param name="Name" value="handle_edit"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/dc2/classksf__payment__destinations.html#aa5c9b70c9fc3a4fa2909ad199303c353"><param name="Name" value="install"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/dc2/classksf__payment__destinations.html#af957fcc97c11896268883359ff45ddd4"><param name="Name" value="master_form"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/dc2/classksf__payment__destinations.html#a8e3f5cc97e550f8fe1b02da3fdbf9294"><param name="Name" value="run"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="df/df9/classksf__payment__destinations__model.html"><param name="Name" value="ksf_payment_destinations_model"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="df/df9/classksf__payment__destinations__model.html#ade020a8ffe44944d26991547fc546d2a"><param name="Name" value="$bank_account"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="df/df9/classksf__payment__destinations__model.html#a43c542537d304e0ae3d37b11102b333d"><param name="Name" value="$bank_account_name"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="df/df9/classksf__payment__destinations__model.html#a1d84e5bee08d75539901b64c2a91ef33"><param name="Name" value="$id_ksf_payment_destinations"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="df/df9/classksf__payment__destinations__model.html#ae9dd219bca42c65addf8f9eccf7269c1"><param name="Name" value="$payment_term"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="df/df9/classksf__payment__destinations__model.html#ac310931c57a514ef142670c439e1bda3"><param name="Name" value="$payment_term_name"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="df/df9/classksf__payment__destinations__model.html#a7d2b7eaf468a2056429c887cc1c1af2c"><param name="Name" value="__construct"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="df/df9/classksf__payment__destinations__model.html#a46e00553b2989537613cc99d3c9913d5"><param name="Name" value="define_table"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="df/df9/classksf__payment__destinations__model.html#ada952f529b48c0e4060073be420098de"><param name="Name" value="getBankAccountFromTerm"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="df/df9/classksf__payment__destinations__model.html#a211128ded82e9e457860a1c025e0efa0"><param name="Name" value="getPaymentTerms"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="df/df9/classksf__payment__destinations__model.html#a6de8af4e189cb93307bce8d6955a8b4d"><param name="Name" value="insert_data"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="d2/d0a/classksf__payment__destinations__view.html"><param name="Name" value="ksf_payment_destinations_view"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d2/d0a/classksf__payment__destinations__view.html#a94f35a0a472729499647d7860c9d9798"><param name="Name" value="$id_ksf_payment_destinations"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d2/d0a/classksf__payment__destinations__view.html#aede5c60959361e7283ecd91a2da3aa34"><param name="Name" value="__construct"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d2/d0a/classksf__payment__destinations__view.html#a9e5a6ab82c58d8f3943888a4755d6ac9"><param name="Name" value="comboBankAccountList"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d2/d0a/classksf__payment__destinations__view.html#a5b2f374c808923fd74fd12f84f387664"><param name="Name" value="comboPaymentList"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d2/d0a/classksf__payment__destinations__view.html#a22bdc4f15029d30d8f04c304fc82d549"><param name="Name" value="edit_item_form"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d2/d0a/classksf__payment__destinations__view.html#aa5109fc69be72be0b97de639496024e9"><param name="Name" value="form_add"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d2/d0a/classksf__payment__destinations__view.html#a78ebed79bd1632f1cac1aa90b75bef70"><param name="Name" value="form_header"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d2/d0a/classksf__payment__destinations__view.html#ac6c5ef63c799f803fe0449136fa38b9a"><param name="Name" value="form_item_rows"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d2/d0a/classksf__payment__destinations__view.html#ac6b800228e1d26f56009b98fe0e1fc73"><param name="Name" value="form_ksf_payment_destinations_completed"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d2/d0a/classksf__payment__destinations__view.html#a2eb480d413a1fc6b8d696b9d85173813"><param name="Name" value="item_form"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d2/d0a/classksf__payment__destinations__view.html#a5b78ad01dfa787f4445ec711ce929982"><param name="Name" value="line_start_focus"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d2/d0a/classksf__payment__destinations__view.html#a803d4b744228624d16222728b9062f74"><param name="Name" value="master_form"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d2/d0a/classksf__payment__destinations__view.html#a2128245ae36ec5b8c8ebd5650d69c24d"><param name="Name" value="usage_form"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="d2/d0a/classksf__payment__destinations__view.html#a5b78ad01dfa787f4445ec711ce929982"><param name="Name" value="line_start_focus"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/dc2/classksf__payment__destinations.html#af957fcc97c11896268883359ff45ddd4"><param name="Name" value="master_form"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/dc2/classksf__payment__destinations.html#af957fcc97c11896268883359ff45ddd4"><param name="Name" value="ksf_payment_destinations"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="d2/d0a/classksf__payment__destinations__view.html#a803d4b744228624d16222728b9062f74"><param name="Name" value="ksf_payment_destinations_view"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="d8/dc2/classksf__payment__destinations.html#a8e3f5cc97e550f8fe1b02da3fdbf9294"><param name="Name" value="run"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="d2/d0a/classksf__payment__destinations__view.html#a2128245ae36ec5b8c8ebd5650d69c24d"><param name="Name" value="usage_form"></OBJECT>
+</UL>
+</BODY>
+</HTML>

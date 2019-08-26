@@ -1,0 +1,211 @@
+<?php
+
+//require_once( 'db_base.php' );
+
+//class generic_orders extends db_base
+class generic_orders
+{
+	var $oid;
+        var $db_Host;
+    	var $db_User;
+    	var $db_Password;
+    	var $db_Name;
+    	var $last_oid;
+    	var $last_oid;
+	var $vendor;
+	/*********************************************************************
+	 *
+	 *	This function must be overridden to work correctly
+	 *	The inheriting class MUST set customer_index_name,
+	 *	customer_table_name and vendor
+	 *
+	 *********************************************************************/
+	function __construct( $host, $user, $pass, $database, $pref_tablename )
+	{
+		//parent::__construct( $host, $user, $pass, $database, $pref_tablename );
+/*
+		$this->vendor = "VTIGER";
+*/
+	}
+}
+
+
+/*
+	function install( $redirect_to)
+	{
+		$this->create_prefs_tablename();
+        	$this->loadprefs();
+        	$this->checkprefs();
+		if( isset( $redirect_to ) )
+		{
+        		header("Location: " . $redirect_to );
+		}
+	}
+	function get_id_range()
+	{
+       		$sql = "SELECT MIN(`order_no`) as min FROM `" . TB_PREF . "_purch_orders`";
+    		$result = db_query($sql, "Couldn't get PO ID range" );
+ 		$this->oid = max((int)$result['min'], $this->last_oid+1);
+
+    		return mysql_fetch_assoc($result);
+	}
+*/
+	/*********************************************************************
+	 *
+	 *	This function must be overridden to work correctly
+	 *	The inheriting class MUST set its SQL statement, as well as the
+	 *	datasource specific processing into facust.
+	 *
+	 *********************************************************************/
+/*
+	function export_orders()
+	{
+	//	if( !isset( $this->db_connection ) )
+	//		$this->connect_db();	//connect to DB setting db_connection used below.
+	}
+	function loadprefs()
+	{
+		$this->loaddbprefs();
+
+    		// Get last oID exported
+    		$this->last_oid = $this->get_pref('lastoid');
+	}
+	function loaddbprefs()
+	{
+    		// Get Host Name
+        	 $this->db_Host = $this->get_pref('myhost');
+    		// Get User Name
+    		$this->db_User = $this->get_pref('myuser');
+    		// Get Password
+    		$this->db_Password = $this->get_pref('mypassword');
+    		// Get DB Name
+    		$this->db_Name = $this->get_pref('myname');
+	}
+	function checkprefs()
+	{
+		$this->checkdbprefs();
+	}
+	function checkdbprefs()
+	{
+		if (isset($_POST['dbHost'])) $dbHost = $_POST['dbHost'];
+		if (isset($_POST['dbUser'])) $dbUser = $_POST['dbUser'];
+		if (isset($_POST['dbPassword'])) $dbPassword = $_POST['dbPassword'];
+		if (isset($_POST['dbName'])) $dbName = $_POST['dbName'];
+
+		if ($dbHost != $this->db_Host) // If it changed
+			$this->set_pref('myhost', $dbHost);
+		if ($dbUser != $this->db_User) // If it changed
+			$this->set_pref('myuser', $dbUser);
+		if ($dbPassword != $this->db_Password) // If it changed
+			$this->set_pref('mypassword', $dbPassword);
+		if ($dbName != $this->db_Name) // If it changed
+			$this->set_pref('myname', $dbName);
+	}
+	function action_show_form( $found )
+	{
+		//$this->action_show_db_form( $found );
+		end_page();
+	}
+	function action_show_db_form( $found )
+	{
+		start_form(true);
+	 	start_table(TABLESTYLE2, "width=40%");
+
+		$th = array("Function", "Description");
+		table_header($th);
+
+		$k = 0;
+
+		alt_table_row_color($k);
+
+		label_cell("Table Status");
+		if ($found) $table_st = "Found";
+		else $table_st = "<font color=red>Not Found</font>";
+		label_cell($table_st);
+		end_row();
+
+		text_row("Mysql Host", 'dbHost', $this->db_Host, 20, 40);
+		text_row("User", 'dbUser', $this->db_User, 20, 40);
+		text_row("Password", 'dbPassword', $this->db_Password, 20, 40);
+		text_row("DB Name", 'dbName', $this->db_Name, 20, 40);
+
+		end_table(1);
+
+
+		if (!$found) {
+		    hidden('action', 'create');
+		    submit_center('create', 'Create Table');
+		} else {
+		    hidden('action', 'update');
+		    submit_center('update', 'Update Mysql');
+		}
+
+		end_form();
+	}
+	function action_cexport_form()
+	{
+		 start_form(true);
+
+		 start_table(TABLESTYLE2, "width=40%");
+
+		 table_section_title("Export Purchase Order");
+
+		 $company_record = get_company_prefs();
+
+		 text_row("Export " . $this->vendor . " Purchase Order ID:", 'oid', $this->oid, 10, 10);
+
+		 end_table(1);
+
+		 hidden('action', 'c_export');
+		 submit_center('cexport', "Export  " . $this->vendor . " Purchase Orders");
+
+		 end_form();
+		end_page();
+	}
+*/
+/*
+	function related_tabs( $tabs, $action )
+	{
+		foreach( $tabs as $tab )
+		{
+			if( $action == $tab['action'] )
+			{
+				echo $tab['title'];
+			}
+			else
+			{
+//				hyperlink_params($_SERVER['PHP_SELF'], _("& $tab['title'] "), "action=" . $tab['action'], false);
+			}
+		}
+		echo '&nbsp;|&nbsp;';
+	}
+*/
+/*
+	function base_page( $action )
+	{
+		page(_($help_context = "Coast Music Interface"));
+		//echo __FILE__ . ":" . __LINE__ . "<br />";
+		$tabs[1]['title'] = 'Configuration';
+		$tabs[1]['action'] = 'show';
+		$tabs[2]['title'] = 'Purchase Order Export';
+		$tabs[2]['action'] = 'cexport';
+		$this->related_tabs( $tabs, $action );
+*/
+/*
+		if ($action == 'show')
+		{
+		        echo 'Configuration';
+		}
+		else hyperlink_params($_SERVER['PHP_SELF'], _("Configuration"), "action=show", false);
+		echo '&nbsp;|&nbsp;';
+
+		if ($action == 'cexport'){
+		        echo 'Purchase Order Export';
+		}
+		else hyperlink_params($_SERVER['PHP_SELF'], _("&Purchase Order Export"), "action=cexport", false);
+		echo '&nbsp;|&nbsp;';
+	}
+}
+*/
+
+?>

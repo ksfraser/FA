@@ -1,0 +1,46 @@
+[OPTIONS]
+Compatibility=1.1
+Full-text search=Yes
+Contents file=index.hhc
+Default Window=main
+Default topic=index.html
+Index file=index.hhk
+Language=0x409 English (United States)
+Title=
+
+[WINDOWS]
+main="","index.hhc","index.hhk","index.html","index.html",,,,,0x23520,,0x10387e,,,,,,,,0
+
+[FILES]
+dc/db8/classhooks__ksf__payment__destinations.html
+d9/d6c/classhooks__ksf__payment__destinations-members.html
+d8/dc2/classksf__payment__destinations.html
+df/d19/classksf__payment__destinations-members.html
+df/df9/classksf__payment__destinations__model.html
+d1/df1/classksf__payment__destinations__model-members.html
+d2/d0a/classksf__payment__destinations__view.html
+d7/d89/classksf__payment__destinations__view-members.html
+index.html
+annotated.html
+classes.html
+hierarchy.html
+functions.html
+functions_func.html
+functions_vars.html
+tab_a.png
+tab_b.png
+tab_h.png
+tab_s.png
+nav_h.png
+nav_f.png
+bc_s.png
+doxygen.png
+closed.png
+open.png
+bdwn.png
+sync_on.png
+sync_off.png
+dc/db8/classhooks__ksf__payment__destinations.png
+d8/dc2/classksf__payment__destinations.png
+df/df9/classksf__payment__destinations__model.png
+d2/d0a/classksf__payment__destinations__view.png
