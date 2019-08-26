@@ -1,0 +1,527 @@
+head	1.8;
+access;
+symbols;
+locks
+	root:1.8; strict;
+comment	@# @;
+
+
+1.8
+date	2016.01.04.06.18.33;	author root;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2016.01.04.06.11.35;	author root;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2015.11.23.04.34.34;	author root;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2015.11.03.06.24.16;	author root;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2015.10.19.02.52.08;	author root;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2015.10.18.01.46.39;	author root;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2015.10.18.01.34.48;	author root;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2015.10.11.21.49.20;	author root;	state Exp;
+branches;
+next	;
+
+
+desc
+@added path_to_common as we are moving shared files
+@
+
+
+1.8
+log
+@added THIS into places where we call VIEW class
+to match the change in those functions
+@
+text
+@<?php
+
+/**************************************************************************
+*
+*	CONTROLLER
+*
+**************************************************************************/
+global $path_to_common;
+require_once( $path_to_common . '/db_base.php' );
+require_once( $path_to_common . '/class.VIEW.php' );
+
+class controller extends db_base
+{
+	var $mode;
+	var $action;
+	var $selected_id;
+	var $mode_callbacks = array();
+	var $view;
+	var $model;
+	function __construct( $host, $user, $pass, $database, $prefs_tablename )
+	{
+		parent::__construct( $host, $user, $pass, $database, $prefs_tablename );
+
+		if( isset( $_POST['Mode'] ) )
+			$this->set_var( "mode", $_POST['Mode'] );
+		else
+			$this->set_var( "mode", "unknown" );
+		if( isset( $_POST['action'] ) )
+			$this->set_var( "action", $_POST['action'] );
+		else
+		if( isset( $_GET['action'] ) )
+			$this->set_var( "action", $_GET['action'] );
+
+		if( isset( $_POST['selected_id'] ) )
+			$this->set_var( "selected_id", $_POST['selected_id'] );
+		$this->view = new VIEW();
+		$this->model = NULL;
+		/*********************************
+		*	Need to set mode_callbacks
+		*	in inheriting classes
+		*********************************/
+		$this->mode_callbacks["unknown"] = "config_form";
+           
+		$this->config_values[] = array( 'pref_name' => 'mode', 'label' => 'Mode' );
+
+                //The forms/actions for this module
+                //Hidden tabs are just action handlers, without accompying GUI elements.
+                //$this->tabs[] = array( 'title' => '', 'action' => '', 'form' => '', 'hidden' => FALSE );
+                $this->tabs[] = array( 'title' => 'Configuration', 'action' => 'config', 'form' => 'config_form', 'hidden' => FALSE );
+       
+	}
+        function loadprefs()
+        {
+                // Get last oID exported
+                foreach( $this->config_values as $row )
+                {
+                        $this->set_var( $row['pref_name'], $this->get_pref( $row['pref_name'] ) );
+                }
+        }
+        function updateprefs()
+        {
+                foreach( $this->config_values as $row )
+                {
+                        if( isset( $_POST[$row['pref_name']] ) )
+                        {
+                                $this->set_var( $row['pref_name'], $_POST[ $row['pref_name'] ] );
+                                $this->set_pref( $row['pref_name'], $_POST[ $row['pref_name'] ] );
+                        }
+                }
+        }
+        function checkprefs()
+        {
+                $this->updateprefs();
+        }
+        function install()
+        {
+                $this->create_prefs_tablename();
+                $this->loadprefs();
+                $this->updateprefs();
+                if( isset( $this->redirect_to ) )
+                {
+                        header("Location: " . $this->redirect_to );
+                }
+        }
+        function config_form()
+        {
+                start_form(true);
+                start_table(TABLESTYLE2, "width=40%");
+                $th = array("Config Variable", "Value");
+                table_header($th);
+                $k = 0;
+                alt_table_row_color($k);
+                        /* To show a labeled cell...*/
+                        //label_cell("Table Status");
+                        //if ($this->found) $table_st = "Found";
+                        //else $table_st = "<font color=red>Not Found</font>";
+                        //label_cell($table_st);
+                        //end_row();
+/*
+                echo combo_input("order_no2", $this->order_no, $sql, 'supp_name', 'order_no',
+                        array(
+                                //'format' => '_format_add_curr',
+                                'order' => array('order_no'),
+                                //'search_box' => $mode!=0,
+                                'type' => 1,
+                                //'search' => array("order_no","supp_name"),
+                                //'spec_option' => $spec_option === true ? _("All Suppliers") : $spec_option,
+                                'spec_id' => $all_items,
+                                'select_submit'=> $submit_on_change,
+                                'async' => false,
+                                //'sel_hint' => $mode ? _('Press Space tab to filter by name fragment') :
+                                //_('Select supplier'),
+                                //'show_inactive'=>$all
+                        )
+                );
+*/
+                //This currently only puts text boxes on the config screen!
+                foreach( $this->config_values as $row )
+                {
+                                text_row($row['label'], $row['pref_name'], $this->$row['pref_name'], 20, 40);
+                }
+                end_table(1);
+                if (!$this->found) {
+                    hidden('action', 'create');
+                    submit_center('create', 'Create Table');
+                } else {
+                    hidden('action', 'update');
+                    submit_center('update', 'Update Configuration');
+                }
+                end_form();
+        }
+
+        function related_tabs()
+        {
+                $action = $this->action;
+                foreach( $this->tabs as $tab )
+                {
+                        if( $action == $tab['action'] )
+                        {
+                                echo $tab['title'];
+                                echo '&nbsp;|&nbsp;';
+                        }
+                        else
+                        {
+                                if( $tab['hidden'] == FALSE )
+                                {
+                                        hyperlink_params($_SERVER['PHP_SELF'],
+                                                _("&" .  $tab['title']),
+                                                "action=" . $tab['action'],
+                                                false);
+                                        echo '&nbsp;|&nbsp;';
+                                }
+                        }
+                }
+        }
+        function show_form()
+        {
+                $action = $this->action;
+                foreach( $this->tabs as $tab )
+                {
+                        if( $action == $tab['action'] )
+                        {
+                                //Call appropriate form
+                                $form = $tab['form'];
+                                $this->$form();
+                        }
+                }
+        }
+	function add_addons()
+	{
+                $addondir = "./addons/";
+                foreach (glob("{$addondir}/config.*.php") as $filename)
+                {
+                        //echo "opening module config file " . $filename . "<br />\n";
+                        include_once( $filename );
+                }
+
+                /*
+                 * Loop through the $configArray to set loading modules in right order
+                 */
+                foreach( $configArray as $carray )
+                {
+                        $modarray[$carray['loadpriority']][] = $carray;
+                }
+	        /*
+                 * locate Module class files to open
+                 */
+                foreach( $modarray as $priarray )
+                {
+                        foreach( $priarray as $marray )
+                        {
+
+                                $res = include_once( $addondir . "/" . $marray['loadFile'] );
+                                if( TRUE == $res )
+                                {
+                                        $marray['objectName'] = new $marray['className'];
+                                        if( isset( $marray['objectName']->observers ) )
+                                        {
+                                                foreach( $marray['objectName']->observers as $obs )
+                                                {
+                                                        $this->observers[] = $obs;
+                                                }
+                                        }
+                                }
+                                else
+                                {
+                                        echo "Attempt to open " . $addondir . "/" . $marray['loadFile'] . " FAILED!<br />";
+                                }
+                        }
+                }
+	}
+	function valuesarray2table( $array )
+	{
+		foreach( $array as $row )
+		{
+			if( isset( $row['type'] ) )
+			{
+				switch( $row['type'] ) {
+	
+					case "bool":
+							$this->view->bool( $row, $this );
+							break;
+					case "flag":
+							break;
+					case "addr":
+					case "city":
+					case "prov":
+					case "country":
+							$this->view->textrow( $row, $this );
+							break;
+					case "postal":
+							break;
+					case "date":
+							$this->view->date( $row, $this );
+							break;
+					case "text":
+					case "currency":
+							break;
+					case "int":
+							$this->view->number( $row, $this );
+							break;
+					default:
+							$this->view->textrow( $row, $this );
+							break;
+				}
+			}
+			else
+			{
+				$this->view->textrow( $row, $this );
+			}
+		}
+		$this->view->end_table();
+	}
+	function run()
+	{
+                if ($this->found) {
+                        $this->loadprefs();
+                }
+                else
+                {
+                        $this->install();
+                        $this->set_var( 'action', "show" );
+                }
+
+		$result = $this->model->get_all_rows();
+
+		$this->view->new_table();
+		//These should come from the data dictionary having:
+		//	Readable name, database column name, data type
+		$this->view->header_row = $this->model->header_row;
+		$this->view->col_type = $this->model->col_type;
+		$this->view->db_column_name = $this->model->db_column_name;
+		$this->view->db_result = $result;
+		$this->view->db_result2rows();
+		$this->view->end_table();
+
+		if( isset($this->mode) )
+		{
+			if( is_callable( $this->mode_callbacks[$this->mode], $this ) )
+			{
+				//echo "CALLABLE::" . $this->mode . "::" . $this->mode_callbacks[$this->mode] . "<br />";
+				$fcn = $this->mode_callbacks[$this->mode];
+				$this->$fcn();
+			}
+			else
+			{
+				$this->view->display_notification( "error in action definition" );
+			}
+		}
+		else
+		{
+			$this->view->display_notification( "mode not set!" );
+		}
+                $this->related_tabs();
+                $this->show_form();
+		$this->view->end_page();
+	}
+	function screen_mode_unknown()
+	{
+		if( isset( $this->model->db_pager_sql ) )
+		{
+			$this->view->db_pager( $this->model );
+		}
+		echo "screen_unknown";
+		$this->config_form();
+	}
+	function go_install()
+	{
+/*
+*/
+	}
+}
+?>
+@
+
+
+1.7
+log
+@altered logic in RUN to give better error messages.
+added INSTALL, LOADPREFS, UPDATEPREFS.
+@
+text
+@d221 1
+a221 1
+							$this->view->bool( $row );
+d229 1
+a229 1
+							$this->view->textrow( $row );
+d234 1
+a234 1
+							$this->view->date( $row );
+d240 1
+a240 1
+							$this->view->number( $row );
+d243 1
+a243 1
+							$this->view->textrow( $row );
+d249 1
+a249 1
+				$this->view->textrow( $row );
+@
+
+
+1.6
+log
+@checkin to catch up changes
+@
+text
+@d52 33
+d277 1
+a277 1
+		if( is_callable( $this->mode_callbacks[$this->mode], $this ) )
+d279 10
+a288 3
+			//echo "CALLABLE::" . $this->mode . "::" . $this->mode_callbacks[$this->mode] . "<br />";
+			$fcn = $this->mode_callbacks[$this->mode];
+			$this->$fcn();
+d292 1
+a292 1
+			$this->view->display_notification( "error in action definition" );
+@
+
+
+1.5
+log
+@Added some table input handlers
+@
+text
+@d15 1
+d23 1
+d28 6
+d223 9
+a251 1
+			//echo "ERROR";
+a253 1
+                //page(_($this->help_context));
+a255 2
+/*
+*/
+a256 19
+/*
+                if ($this->found) {
+                        $this->loadprefs();
+                }
+                else
+                {
+                        $this->install();
+                        $this->set_var( 'action', "show" );
+                }
+
+                if (isset($_POST['action']))
+                {
+                        $this->set_var( 'action', $_POST['action'] );
+                }
+                if (isset($_GET['action']) && $this->found)
+                {
+                        $this->set_var( 'action', $_GET['action'] );
+                }
+*/
+d267 5
+@
+
+
+1.4
+log
+@fix up config screen.
+@
+text
+@d171 42
+@
+
+
+1.3
+log
+@update actions around unknown mode.
+@
+text
+@d34 1
+a34 2
+		//$this->set_var( "mode_callbacks", NULL );
+		$this->mode_callbacks["unknown"] = "screen_mode_unknown";
+d36 1
+a36 1
+		$this->config_values[] = array( 'pref_name' => 'mailto', 'label' => 'Mail to email address' );
+d41 1
+a41 1
+                $this->tabs[] = array( 'title' => 'Configuration', 'action' => 'config', 'form' => 'action_config_form', 'hidden' => FALSE );
+d44 127
+d187 3
+a189 1
+			$this->mode_callbacks[$this->mode];
+d193 1
+d196 5
+a200 1
+		$this->screen_unknown();
+d202 19
+d229 1
+@
+
+
+1.2
+log
+@fixed compile error.
+@
+text
+@d35 9
+a43 1
+		$this->mode_callbacks["unknown"] = "screen_unknown";
+d70 1
+a70 1
+	function screen_unknown()
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d8 2
+a9 2
+global $path_to_common
+require_once( $path_to_common . 'db_base.php' );
+d64 1
+a64 1
+		if( isset( $this->model->db_pager_sql )
+@

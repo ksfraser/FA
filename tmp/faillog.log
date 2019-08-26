@@ -1,0 +1,6 @@
+[21-Feb-2018 13:29:52 America/Los_Angeles] 0:admin:session.inc:401: include_once(../tmp/faillog.php): failed to open stream: No such file or directory
+[21-Feb-2018 13:29:52 America/Los_Angeles] 0:admin:session.inc:401: include_once(): Failed opening '../tmp/faillog.php' for inclusion (include_path='.;C:/Bitnami/redmine-3.0.3-0/php/PEAR')
+[21-Feb-2018 13:29:52 America/Los_Angeles] 4 Domain file "../lang/C/LC_MESSAGES/C.po" not found.
+[21-Feb-2018 13:30:17 America/Los_Angeles] 0:admin:session.inc:401: include_once(../tmp/faillog.php): failed to open stream: No such file or directory
+[21-Feb-2018 13:30:17 America/Los_Angeles] 0:admin:session.inc:401: include_once(): Failed opening '../tmp/faillog.php' for inclusion (include_path='.;C:/Bitnami/redmine-3.0.3-0/php/PEAR')
+[21-Feb-2018 13:30:17 America/Los_Angeles] 4 Domain file "../lang/C/LC_MESSAGES/C.po" not found.

@@ -1,0 +1,191 @@
+<?php
+
+/* List of installed additional extensions. If extensions are added to the list manually
+	make sure they have unique and so far never used extension_ids as a keys,
+	and $next_extension_id is also updated. More about format of this file yo will find in 
+	FA extension system documentation.
+*/
+
+$next_extension_id = 19; // unique id for next installed extension
+
+$installed_extensions = array (
+  0 => 
+  array (
+    'name' => 'English Canadian COA - General',
+    'package' => 'chart_en_CA-general',
+    'version' => '2.3.0-5',
+    'type' => 'chart',
+    'active' => false,
+    'path' => 'sql',
+    'sql' => 'en_CA-general.sql',
+  ),
+  1 => 
+  array (
+    'name' => '8 digit GAAP compatible American chart of accounts',
+    'package' => 'chart_en_US-GAAP',
+    'version' => '2.3.0-3',
+    'type' => 'chart',
+    'active' => false,
+    'path' => 'sql',
+    'sql' => 'en_US-GAAP.sql',
+  ),
+  2 => 
+  array (
+    'name' => 'Asset register',
+    'package' => 'asset_register',
+    'version' => '2.3.3-10',
+    'type' => 'extension',
+    'active' => false,
+    'path' => 'modules/asset_register',
+  ),
+  3 => 
+  array (
+    'package' => 'bank_import-master',
+    'name' => 'bank_import-master',
+    'version' => '-',
+    'available' => '',
+    'type' => 'extension',
+    'path' => 'modules/bank_import-master',
+    'active' => false,
+  ),
+  4 => 
+  array (
+    'name' => 'Company Dashboard',
+    'package' => 'dashboard',
+    'version' => '2.3.15-5',
+    'type' => 'extension',
+    'active' => true,
+    'path' => 'modules/dashboard',
+  ),
+  5 => 
+  array (
+    'name' => 'Export Woo',
+    'package' => 'EXPORT_WOO',
+    'version' => '1.0',
+    'type' => 'extension',
+    'active' => true,
+    'path' => 'modules/EXPORT_WOO',
+  ),
+  6 => 
+  array (
+    'name' => 'Inventory Items CSV Import',
+    'package' => 'import_items',
+    'version' => '2.3.0-1',
+    'type' => 'extension',
+    'active' => true,
+    'path' => 'modules/import_items',
+  ),
+  7 => 
+  array (
+    'name' => 'Import Multiple Journal Entries',
+    'package' => 'import_multijournalentries',
+    'version' => '2.3.0-7',
+    'type' => 'extension',
+    'active' => false,
+    'path' => 'modules/import_multijournalentries',
+  ),
+  8 => 
+  array (
+    'name' => 'Import Paypal transactions',
+    'package' => 'import_paypal',
+    'version' => '2.3.10-3',
+    'type' => 'extension',
+    'active' => false,
+    'path' => 'modules/import_paypal',
+  ),
+  9 => 
+  array (
+    'name' => 'Import Transactions',
+    'package' => 'import_transactions',
+    'version' => '2.3.22-5',
+    'type' => 'extension',
+    'active' => false,
+    'path' => 'modules/import_transactions',
+  ),
+  10 => 
+  array (
+    'package' => 'import_transactions-master',
+    'name' => 'import_transactions-master',
+    'version' => '-',
+    'available' => '',
+    'type' => 'extension',
+    'path' => 'modules/import_transactions-master',
+    'active' => false,
+  ),
+  11 => 
+  array (
+    'name' => 'Inventory Taking',
+    'package' => 'Inventory',
+    'version' => '1.0',
+    'type' => 'extension',
+    'active' => true,
+    'path' => 'modules/Inventory',
+  ),
+
+  12 => 
+  array (
+    'name' => 'Sales Summary Report',
+    'package' => 'rep_sales_summary',
+    'version' => '2.3.3-3',
+    'type' => 'extension',
+    'active' => true,
+    'path' => 'modules/rep_sales_summary',
+  ),
+  13 => 
+  array (
+    'name' => 'Inventory History',
+    'package' => 'rep_inventory_history',
+    'version' => '2.3.2-1',
+    'type' => 'extension',
+    'active' => true,
+    'path' => 'modules/rep_inventory_history',
+  ),
+  14 => 
+  array (
+    'name' => 'Data Dictionary',
+    'package' => 'ksf_data_dictionary',
+    'version' => '1.0',
+    'type' => 'extension',
+    'active' => true,
+    'path' => 'modules/ksf_data_dictionary',
+  ),
+  15 => 
+  array (
+    'name' => 'Quantity On Hand',
+    'package' => 'ksf_qoh',
+    'version' => '1.0',
+    'type' => 'extension',
+    'active' => true,
+    'path' => 'modules/ksf_qoh',
+  ),
+  16 => 
+  array (
+    'name' => 'Pricebook and Labels generator',
+    'package' => 'ksf_generate_catalogue',
+    'version' => '1.0',
+    'type' => 'extension',
+    'active' => true,
+    'path' => 'modules/ksf_generate_catalogue',
+  ),
+  17 => 
+  array (
+    'name' => 'Textcart',
+    'package' => 'textcart',
+    'version' => '1.0',
+    'type' => 'extension',
+    'active' => true,
+    'path' => 'modules/textcart',
+  ),
+  18 => 
+  array (
+    'name' => 'KSF Missing Images',
+    'package' => 'ksf_missing_images',
+    'version' => '1.0',
+    'type' => 'extension',
+    'active' => true,
+    'path' => 'modules/ksf_missing_images',
+  ),
+  
+
+);
+?>

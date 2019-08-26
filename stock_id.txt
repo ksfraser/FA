@@ -1,0 +1,311 @@
+LEFT JOIN(SELECT stk.stock_id, SUM(IFNULL(stk.qty,0)) jml FROM ".TB_PREF."stock_moves AS stk WHERE stk.tran_date < '$from'";
+$sql .= " GROUP BY stk.stock_id ORDER BY stk.stock_id) AS stokbrg ON stokbrg.stock_id=".TB_PREF."stock_master.stock_id
+LEFT JOIN(SELECT peny.stock_id, SUM(IFNULL(peny.qty,0)) jml FROM ".TB_PREF."stock_moves AS peny WHERE peny.type='17'
+$sql .= " GROUP BY peny.stock_id ORDER BY peny.stock_id) AS penyesuaian ON penyesuaian.stock_id=".TB_PREF."stock_master.stock_id
+LEFT JOIN(SELECT pro.stock_id, SUM(IFNULL(pro.qty,0)) jml FROM ".TB_PREF."stock_moves AS pro WHERE pro.type='26'
+$sql .= " GROUP BY pro.stock_id ORDER BY pro.stock_id) AS produksi ON produksi.stock_id=".TB_PREF."stock_master.stock_id
+LEFT JOIN(SELECT beli.stock_id, SUM(IFNULL(beli.qty,0)) jml FROM ".TB_PREF."stock_moves AS beli WHERE beli.type='25'
+$sql .= " GROUP BY beli.stock_id ORDER BY beli.stock_id) AS pembelian ON pembelian.stock_id=".TB_PREF."stock_master.stock_id
+LEFT JOIN(SELECT rtrspl.stock_id, SUM(IFNULL(-rtrspl.qty,0)) jml FROM ".TB_PREF."stock_moves AS rtrspl WHERE rtrspl.type='21'
+$sql .= " GROUP BY rtrspl.stock_id ORDER BY rtrspl.stock_id) AS returnspl ON returnspl.stock_id=".TB_PREF."stock_master.stock_id
+LEFT JOIN(SELECT mutasi.stock_id, SUM(IFNULL(mutasi.qty,0)) jml FROM ".TB_PREF."stock_moves AS mutasi WHERE mutasi.type='16'
+$sql .= " GROUP BY mutasi.stock_id ORDER BY mutasi.stock_id) AS transfer ON transfer.stock_id=".TB_PREF."stock_master.stock_id
+LEFT JOIN(SELECT jual.stock_id, SUM(IFNULL(-jual.qty,0)) jml FROM ".TB_PREF."stock_moves AS jual WHERE jual.type='13'
+$sql .= " GROUP BY jual.stock_id ORDER BY jual.stock_id) AS jualan ON jualan.stock_id=".TB_PREF."stock_master.stock_id
+LEFT JOIN(SELECT retur.stock_id, SUM(IFNULL(retur.qty,0)) jml FROM ".TB_PREF."stock_moves AS retur WHERE retur.type='11'
+$sql .= " GROUP BY retur.stock_id ORDER BY retur.stock_id) AS kembali ON kembali.stock_id=".TB_PREF."stock_master.stock_id
+WHERE ".TB_PREF."stock_master.stock_id=".TB_PREF."stock_moves.stock_id
+				$inv->add_grn_to_trans($line->grn_item_id, $line->po_detail_rec, $line->stock_id,
+				grn.purch_order_no WHERE grn.id = ".$myrow['trans_no']." AND pod.item_code = '$stock_id'";
+
+      $sql .= " AND ".TB_PREF."stock_master.stock_id RLIKE ".db_escape($regexp);
+      $sql .= " AND ".TB_PREF."stock_master.stock_id LIKE ".db_escape($item_like);
+        ORDER BY ".TB_PREF."stock_master.stock_id, ".TB_PREF."grn_batch.delivery_date"; 	
+		WHERE line.stock_id = item.stock_id
+
+
+			item.stock_id,
+					$src_line['stock_id'] = $src_line['stk_code']; // SO details has another field name 
+			item.stock_id=comp.item_code
+			kit.stock_id=comp.item_code
+				&& check_item_in_kit($old_id, $item_code, $myrow['stock_id'], true))
+
+function item_img_name($stock_id)
+	$stock_id = strtr($stock_id, "><\\/:|*?", '________');
+	return clean_file_name($stock_id);
+		AND ".TB_PREF."loc_stock.stock_id = '" . $line->stock_id . "'
+		$qoh = get_qoh_on_date($line->stock_id, $location);
+		$qoh -= get_demand_qty($line->stock_id, $location);
+		$qoh -= get_demand_asm_qty($line->stock_id, $location);
+			$st_ids[] = $line->stock_id;
+			if (in_array($stock_item->stock_id, $low_stock))
+			view_stock_status_cell($stock_item->stock_id);
+    		qty_cell($stock_item->quantity, false, get_qty_dec($stock_item->stock_id));
+		$_POST['stock_id'] = $order->line_items[$id]->stock_id;
+			$order->line_items[$id]->stock_id, $dec);
+		hidden('stock_id', $_POST['stock_id']);
+		label_cell($_POST['stock_id']);
+    	stock_costable_items_list_cells(null, 'stock_id', null, false, true);
+		if (list_updated('stock_id')) {
+    	$item_info = get_item_edit_info($_POST['stock_id']);
+			if (in_array($stock_item->stock_id, $low_stock))
+			view_stock_status_cell($stock_item->stock_id);
+    		qty_cell($stock_item->quantity, false, get_qty_dec($stock_item->stock_id));
+		$_POST['stock_id'] = $order->line_items[$id]->stock_id;
+		$_POST['qty'] = qty_format($order->line_items[$id]->quantity, $order->line_items[$id]->stock_id, $dec);
+		hidden('stock_id', $_POST['stock_id']);
+		label_cell($_POST['stock_id']);
+    	stock_costable_items_list_cells(null, 'stock_id', null, false, true);
+		if (list_updated('stock_id')) {
+    	$item_info = get_item_edit_info($_POST['stock_id']);
+function add_material_cost($stock_id, $qty, $date_, $advanced=false)
+    $result = get_bom($stock_id);
+	$sql = "SELECT material_cost, labour_cost, overhead_cost FROM ".TB_PREF."stock_master WHERE stock_id = "
+		.db_escape($stock_id);
+	$qoh = get_qoh_on_date($stock_id);
+		adjust_deliveries($stock_id, $bom_cost, $date_);	
+		    WHERE stock_id=".db_escape($stock_id);
+function add_overhead_cost($stock_id, $qty, $date_, $costs, $adj_only=false)
+	$sql = "SELECT overhead_cost FROM ".TB_PREF."stock_master WHERE stock_id = "
+		.db_escape($stock_id);
+	$qoh = get_qoh_on_date($stock_id);
+			$stock_gl_code = get_stock_gl_code($stock_id);
+			$memo = "WO Overhead cost settlement JV for zero/negative respository of ".$stock_id;
+		WHERE stock_id=".db_escape($stock_id);
+function add_labour_cost($stock_id, $qty, $date_, $costs, $adj_only=false)
+	$sql = "SELECT labour_cost FROM ".TB_PREF."stock_master WHERE stock_id = "
+		.db_escape($stock_id);
+	$qoh = get_qoh_on_date($stock_id);
+			$stock_gl_code = get_stock_gl_code($stock_id);
+			$memo = "WO labour cost settlement JV for zero/negative respository of ".$stock_id;
+		WHERE stock_id=".db_escape($stock_id);
+function add_issue_cost($stock_id, $qty, $date_, $costs, $adj_only=false)
+	$sql = "SELECT material_cost FROM ".TB_PREF."stock_master WHERE stock_id = "
+		.db_escape($stock_id);
+	$qoh = get_qoh_on_date($stock_id);
+			$stock_gl_code = get_stock_gl_code($stock_id);
+			$memo = "WO Issue settlement JV for zero/negative respository of ".$stock_id;
+		." WHERE stock_id=".db_escape($stock_id);
+function add_work_order($wo_ref, $loc_code, $units_reqd, $stock_id,
+		return add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type, $date_, $memo_, $costs, $cr_acc, $labour, $cr_lab_acc);
+	$args = (object)array_combine(array('wo_ref', 'loc_code', 'units_reqd', 'stock_id',
+	$sql = "INSERT INTO ".TB_PREF."workorders (wo_ref, loc_code, units_reqd, stock_id,
+    	.db_escape($units_reqd).", ".db_escape($stock_id).",
+function update_work_order($woid, $loc_code, $units_reqd, $stock_id,
+	$args = (object)array_combine(array('woid', 'loc_code', 'units_reqd', 'stock_id',
+		units_reqd=".db_escape($units_reqd).", stock_id=".db_escape($stock_id).",
+		WHERE st.stock_id=wo.stock_id
+	$stock_id = $myrow["stock_id"];
+	create_wo_requirements($woid, $stock_id);
+			add_labour_cost($work_order['stock_id'], 1, $date, -$cost, true);
+			add_overhead_cost($work_order['stock_id'], 1, $date, -$cost, true);
+		workorder.stock_id,
+		WHERE workorder.stock_id=item.stock_id 
+		$sql .= " AND workorder.stock_id=".db_escape($_POST['SelectedStockItem']);
+			WHERE bom.parent = parent.stock_id 
+				AND bom.component=".db_escape($_POST['stock_id']);
+function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type, 
+	$args = (object)array_combine(array('wo_ref', 'loc_code', 'units_reqd', 'stock_id',
+	add_material_cost($stock_id, $units_reqd, $date_);
+	add_overhead_cost($stock_id, $units_reqd, $date_, $costs);
+	add_labour_cost($stock_id, $units_reqd, $date_, $labour);
+	$sql = "INSERT INTO ".TB_PREF."workorders (wo_ref, loc_code, units_reqd, units_issued, stock_id,
+    	.", ".db_escape($units_reqd).", ".db_escape($stock_id).",
+	$result = get_bom($stock_id);
+		$sql = "INSERT INTO ".TB_PREF."wo_requirements (workorder_id, stock_id, workcentre, units_req, units_issued, loc_code)
+	$qoh = get_qoh_on_date($stock_id);
+		adjust_deliveries($stock_id, get_standard_cost($stock_id), $date_);
+	add_stock_move(ST_WORKORDER, $stock_id, $woid,	$loc_code, $date_,
+	work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, 0, $costs, $cr_acc, $labour, $cr_lab_acc);
+function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced=0, $costs=0, $cr_acc="", $labour=0, $cr_lab_acc="")
+	$result = get_bom($stock_id);
+		add_material_cost($stock_id, $units_reqd, $date_, true);	
+			$standard_cost = get_standard_cost($item['stock_id']);
+			$issue = get_stock_gl_code($item['stock_id']);
+            $stockitem = get_item($item['stock_id']);
+			add_issue_cost($stock_id, $units_reqd, $date_, $issue_total);
+		add_labour_cost($stock_id, $units_reqd, $date_, $lcost * $units_reqd / $wo['units_reqd']);
+		add_overhead_cost($stock_id, $units_reqd, $date_, $ocost * $units_reqd / $wo['units_reqd']); */
+	$item_accounts = get_stock_gl_code($stock_id);
+ 	$stockitem = get_item($stock_id);
+	update_stock_move(ST_WORKORDER, $woid, $stock_id, $UnitWOCost);		
+		$standard_cost = get_standard_cost($item->stock_id);
+		add_stock_move(ST_MANUISSUE, $item->stock_id, $number,
+		$sql = "INSERT INTO ".TB_PREF."wo_issue_items (issue_id, stock_id, qty_issued)
+			VALUES (".db_escape($number).", ".db_escape($item->stock_id).", "
+		$standard_cost = get_standard_cost($item->stock_id);
+		$issue = get_stock_gl_code($item->stock_id);
+        $stockitem = get_item($item->stock_id);
+		add_issue_cost($details['stock_id'], $details['units_reqd'], $date_, $issue_total, true);
+	$issue = get_stock_gl_code($details['stock_id']);
+    $stockitem = get_item($details['stock_id']);
+	$sql = "SELECT DISTINCT ".TB_PREF."wo_issues.*, ".TB_PREF."workorders.stock_id,
+		AND ".TB_PREF."stock_master.stock_id = ".TB_PREF."workorders.stock_id";
+		AND ".TB_PREF."stock_master.stock_id=".TB_PREF."wo_issue_items.stock_id
+	$manf_stock_id = $issue["stock_id"];
+		$issue = get_stock_gl_code($myrow["stock_id"]);
+        $stockitem = get_item($myrow["stock_id"]);
+		add_issue_cost($manf_stock_id, 0, $date_, $issue_total, true);
+	$issue = get_stock_gl_code($manf_stock_id);
+    $stockitem = get_item($manf_stock_id);
+	work_order_quick_costs($woid, $details["stock_id"], $quantity, $date_, $id);
+    $result = get_bom($details["stock_id"]);
+	add_stock_move(ST_MANURECEIVE, $details["stock_id"], $id,
+	$sql = "SELECT ".TB_PREF."wo_manufacture.*,".TB_PREF."workorders.stock_id, "
+		AND ".TB_PREF."stock_master.stock_id=".TB_PREF."workorders.stock_id
+	//work_order_quick_costs($row['workorder_id'], $row['stock_id'], -$row['quantity'], sql2date($row['date_']), $type_no);
+		$issue = get_stock_gl_code($myrow["stock_id"]);
+        $stockitem = get_item($myrow["stock_id"]);
+		".TB_PREF."wo_requirements.stock_id = ".TB_PREF."stock_master.stock_id 
+function create_wo_requirements($woid, $stock_id)
+	$result = get_bom($stock_id);	
+		$sql = "INSERT INTO ".TB_PREF."wo_requirements (workorder_id, stock_id, workcentre, units_req, loc_code)
+function update_wo_requirement_issued($woid, $stock_id, $quantity)
+		WHERE workorder_id = ".db_escape($woid)." AND stock_id = ".db_escape($stock_id);
+				$qoh = get_qoh_on_date($myrow["stock_id"], $myrow["loc_code"], $date);
+        		label_cell($myrow["stock_id"]. " - " . $myrow["description"]);
+			$dec = get_qty_dec($myrow["stock_id"]);
+	view_stock_status_cell($myrow["stock_id"], $myrow["StockItemName"]);
+	$dec = get_qty_dec($myrow["stock_id"]);
+	view_stock_status_cell($myrow["stock_id"], $myrow["StockItemName"]);
+	qty_cell($myrow["units_issued"], false, get_qty_dec($myrow["stock_id"]));
+			if (in_array($stock_item->stock_id, $low_stock))
+			view_stock_status_cell($stock_item->stock_id);
+    		qty_cell($stock_item->quantity, false, get_qty_dec($stock_item->stock_id));
+		$_POST['stock_id'] = $order->line_items[$id]->stock_id;
+			$order->line_items[$id]->stock_id, $dec);
+		hidden('stock_id', $_POST['stock_id']);
+		label_cell($_POST['stock_id']);
+  		stock_component_items_list_cells(null, 'stock_id', 
+			$wo_details["stock_id"], null, false, true);
+		if (list_updated('stock_id')) {
+    	$item_info = get_item_edit_info($_POST['stock_id']);
+      $dec = get_unit_dec($item->stock_id);
+      return sprintf("$item->stock_id\t+ %.${dec}f\t\$ %0.${user_price_dec}f\t%0.1f %%%s\r\n"
+      if ($line->stock_id == $stock_code 
+  function demand($stock_id) {
+		  $result[] = sprintf("%d, %d, %d", $location,  get_qoh_on_date($stock_id, $location, $this->cart->$due_date),
+			  -get_demand_qty($stock_id, $location), get_on_porder_qty($stock_item, $location));
+      $dec = get_unit_dec($item->stock_id);
+      $demand = join(", ",$this->demand($item->stock_id));
+      return sprintf("$item->stock_id\t+ %.${dec}f\t\$ %0.${user_price_dec}f\t%0.1f %%%s -- %s\r\n"
+      $dec = get_unit_dec($item->stock_id);
+      return sprintf("$item->stock_id\t+ %.${dec}f\t\$ %0.${user_price_dec}f\t^ %s%s\r\n"
+    $sql = "SELECT mv.stock_id , SUM(qty) AS quantity, description, avg(material_cost) AS cost FROM ".TB_PREF."stock_moves mv
+      JOIN ".TB_PREF."stock_master USING(stock_id)
+     GROUP BY mv.stock_id
+      $dec = get_unit_dec($row['stock_id']);
+      return sprintf("${row['stock_id']}\t+ %.${unit_dec}f%s\r\n"
+      return sprintf("${row['stock_id']}\t+ %.${unit_dec}f\t$ %f\r\n"
+      $dec = get_unit_dec($item->stock_id);
+      return sprintf("$item->stock_id\t+ %.${dec}f\t%s\r\n"
+      $dec = get_unit_dec($item->stock_id);
+      return sprintf("$item->stock_id\t+ %.${dec}f\t%s\r\n"
+function check_stock_id($stock_id) {
+    $sql = "SELECT * FROM ".TB_PREF."stock_master WHERE stock_id = " . db_escape($stock_id);
+    $result = db_query($sql, "Can not look up stock_id");
+function check_stock_id($stock_id) {
+    $sql = "SELECT * FROM ".TB_PREF."stock_master WHERE stock_id = " . db_escape($stock_id);
+    $result = db_query($sql, "Can not look up stock_id");
+function update_average_material_cost($supplier, $stock_id, $price, $qty, $date, $adj_only=false)
+		$price = get_tax_free_price_for_item($stock_id, $price, $supp['tax_group_id'],
+    if (is_inventory_item($stock_id) && !$adj_only) 
+        handle_negative_inventory($stock_id, $qty, $price_in_home_currency, $date);
+	$sql = "SELECT mb_flag, material_cost, labour_cost, overhead_cost FROM ".TB_PREF."stock_master WHERE stock_id=".db_escape($stock_id);
+		$standard_cost = get_standard_cost($stock_id);
+	$qoh = get_qoh_on_date($stock_id);
+		adjust_deliveries($stock_id, $price_in_home_currency_, $date);
+		WHERE stock_id=".db_escape($stock_id);
+			$stock_gl_code = get_stock_gl_code($order_line->stock_id);
+			if (is_inventory_item($order_line->stock_id))
+						$order_line->receive_qty * $order_line->taxfree_charge_price($po), $po->supplier_id, '', 0, $order_line->stock_id);
+				update_average_material_cost($po->supplier_id, $order_line->stock_id, $order_line->price,
+			   	$order_line->standard_cost = get_standard_cost($order_line->stock_id);
+			add_or_update_purchase_data($po->supplier_id, $order_line->stock_id, $order_line->price, 
+				$order_line->stock_id, $order_line->item_description,
+			add_stock_move(ST_SUPPRECEIVE, $order_line->stock_id, $grn, $po->Location, $date_, "",
+	$sql .= " AND ".TB_PREF."stock_master.stock_id=".TB_PREF."grn_items.item_code ";
+ 			AND ".TB_PREF."stock_master.stock_id=".TB_PREF."grn_items.item_code
+						$stock_id = $entered_grn->item_code;
+						$stock_gl_code = get_stock_gl_code($stock_id);
+						$memo = _("Supplier invoice adjustment for zero inventory of ").$stock_id." "._("Invoice")." ".$supp_trans->reference;
+             		$supp_trans->add_grn_to_trans($details_row["grn_item_id"], $details_row["po_detail_item_id"], $details_row["stock_id"],
+function get_matching_invoice_item($stock_id, $po_item_id)
+		WHERE supp_trans_type = ".ST_SUPPINVOICE." AND stock_id = "
+		.db_escape($stock_id)." AND po_detail_item_id = ".db_escape($po_item_id)."
+					$match = get_matching_invoice_item($details_row["stock_id"], $details_row["po_detail_item_id"]);
+						$mat_cost = update_average_material_cost($grn["supplier_id"], $details_row["stock_id"],  
+						$mat_cost = update_average_material_cost($grn["supplier_id"], $details_row["stock_id"],  
+					$mat_cost = update_average_material_cost(null, $details_row["stock_id"],
+					$qoh = get_qoh_on_date($details_row["stock_id"]);
+						$stock_id = $details_row["stock_id"];
+						$stock_gl_code = get_stock_gl_code($stock_id);
+						$memo = "Reversing Supplier invoice adjustment for zero inventory of ".$stock_id." Invoice: ".$trans['reference'];
+				/*$deliveries = get_deliveries_between($details_row["stock_id"], $old_date, $date_);
+					update_stock_move_pid(ST_CUSTDELIVERY, $details_row["stock_id"], $old_date, $date_, 0, $mat_cost);
+				update_stock_move_pid(ST_SUPPRECEIVE, $details_row["stock_id"], $old_date, $old_date, $grn['supplier_id'], $mat_cost);
+function add_supp_invoice_item($supp_trans_type, $supp_trans_no, $stock_id, $description,
+	$sql = "INSERT INTO ".TB_PREF."supp_invoice_items (supp_trans_type, supp_trans_no, stock_id, description, gl_code, unit_price, unit_tax, quantity,
+		.db_escape($stock_id).
+		$sql .= $po_obj->order_no . ", " . db_escape($po_line->stock_id). "," .
+			.db_escape($po_line->stock_id). ","
+		ON ".TB_PREF."purch_order_details.item_code=".TB_PREF."stock_master.stock_id
+function get_short_info($stock_id)
+		FROM ".TB_PREF."stock_master WHERE stock_id = ".db_escape($stock_id);
+	return db_query($sql,"The stock details for " . $stock_id . " could not be retrieved");
+	function add_to_order($line_no, $stock_id, $qty, $item_descr, $price, $uom, $req_del_date, $qty_inv, $qty_recd)
+			$this->line_items[$line_no] = new po_line_details($line_no, $stock_id, $item_descr, $qty, $price, $uom, 
+			$items[] = $ln_itm->stock_id;
+			$items[] = $ln_itm->stock_id;
+	var $stock_id;
+		$this->stock_id = $stock_item;
+		return get_tax_free_price_for_item($this->stock_id, $this->price, 
+function get_purchase_price($supplier_id, $stock_id)
+		AND stock_id = ".db_escape($stock_id);
+	$result = db_query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");    
+function get_purchase_conversion_factor($supplier_id, $stock_id)
+		AND stock_id = ".db_escape($stock_id);
+	$result = db_query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");    
+function get_purchase_data($supplier_id, $stock_id)
+		AND stock_id = ".db_escape($stock_id);
+	$result = db_query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");    
+function add_or_update_purchase_data($supplier_id, $stock_id, $price, $description="", $uom="")
+	$data = get_purchase_data($supplier_id, $stock_id);
+		$sql = "INSERT INTO ".TB_PREF."purch_data (supplier_id, stock_id, price, suppliers_uom,
+			.", ".db_escape($stock_id).", ".db_escape($price).", "
+	$sql .= " WHERE stock_id=".db_escape($stock_id)." AND supplier_id=".db_escape($supplier_id);
+			$line->price =  get_purchase_price ($order->supplier_id, $line->stock_id);
+				$line->quantity/get_purchase_conversion_factor ($old_supp, $line->stock_id)
+					*get_purchase_conversion_factor ($order->supplier_id, $line->stock_id);
+        	label_cell($po_line->stock_id);
+            qty_cell($po_line->quantity, false, get_qty_dec($po_line->stock_id));
+            qty_cell($po_line->qty_received, false, get_qty_dec($po_line->stock_id));
+		$_POST['stock_id'] = $order->line_items[$id]->stock_id;
+		$dec = get_qty_dec($_POST['stock_id']);
+		$_POST['qty'] = qty_format($order->line_items[$id]->quantity, $_POST['stock_id'], $dec);
+		hidden('stock_id', $_POST['stock_id']);
+		label_cell($_POST['stock_id']);
+		stock_items_list_cells(null, 'stock_id', null, false, true, false, true);
+		//stock_purchasable_items_list_cells(null, 'stock_id', null, false, true, true);
+		if (list_updated('stock_id')) {
+    	$item_info = get_item_edit_info($_POST['stock_id']);
+   		$_POST['qty'] =	number_format2(get_purchase_conversion_factor ($order->supplier_id, $_POST['stock_id']), $dec);
+		//$_POST['price'] = price_format(get_purchase_price ($order->supplier_id, $_POST['stock_id']));
+		$_POST['price'] = price_decimal_format(get_purchase_price ($order->supplier_id, $_POST['stock_id']), $dec2);
+						FROM ".TB_PREF."stock_master, ".TB_PREF."workorders WHERE ".TB_PREF."stock_master.stock_id=".TB_PREF."workorders.stock_id ORDER BY ".TB_PREF."workorders.id DESC";
+		Optional sorting items by stock_id.
+		return strcmp($a->stock_id, $b->stock_id);
+			$this->line_items[$lineno]->stock_id = @html_entity_decode($line->stock_id, ENT_QUOTES);
+	function add_to_cart($line_no, $stock_id, $qty, $price, $disc, $qty_done=0, $standard_cost=0, $description=null, $id=0, $src_no=0,
+		$line = new line_details($stock_id, $qty, $price, $disc,
+			$items[] = $ln_itm->stock_id;
+		Returns array of stock_ids which stock quantities would go negative on some day.
+		// collect quantities by stock_id
+					$qtys[$line_item->stock_id]['qty'] = $line_item->quantity + @$qtys[$line_item->stock_id]['qty'];
+					$qtys[$line_item->stock_id]['qty'] = ($line_item->qty_dispatched-$line_item->quantity) + @$qtys[$line_item->stock_id]['qty'];
+				$qtys[$line_item->stock_id]['line'] = $line_no;
+		foreach($qtys as $stock_id => $sum)
+			if (check_negative_stock($stock_id, -$sum['qty'], $location ? $location : $this->Location, $date ? $date : $this->document_date))
+				$low_stock[] = $stock_id;
+	var $stock_id;
+	function line_details ($stock_id, $qty, $prc, $disc_percent,
