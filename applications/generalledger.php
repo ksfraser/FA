@@ -11,7 +11,7 @@
 ***********************************************************************/
 class general_ledger_app extends application
 {
-	function general_ledger_app()
+	function __construct()
 	{
 		$this->application("GL", _($this->help_context = "&Banking and General Ledger"));
 

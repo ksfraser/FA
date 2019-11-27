@@ -55,6 +55,7 @@ $db_connections = array (
     'dbpassword' => 'fhs',
     'dbname' => 'fhs_frontaccounting',
     'tbpref' => '1_',
+  ),
   4 => 
   array (
     'name' => 'FHS Mickey v2',
@@ -63,6 +64,7 @@ $db_connections = array (
     'dbpassword' => 'fhs',
     'dbname' => 'fhs_frontaccounting_v2',
     'tbpref' => '1_',
+  ),
   5 => 
   array (
     'name' => 'FHS Mickey v3',

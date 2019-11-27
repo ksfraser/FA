@@ -11,7 +11,7 @@
 ***********************************************************************/
 class setup_app extends application
 {
-	function setup_app()
+	function __construct()
 	{
 		$this->application("system", _($this->help_context = "S&etup"));
 

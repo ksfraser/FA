@@ -11,7 +11,7 @@
 ***********************************************************************/
 class suppliers_app extends application 
 {
-	function suppliers_app() 
+	function __construct() 
 	{
 		$this->application("AP", _($this->help_context = "&Purchases"));
 
