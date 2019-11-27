@@ -1,0 +1,14 @@
+We want to extract out a generic EXPORT to other system so we can use interfaces and drop in libraries.
+
+General steps would be
+
+1 - Determine what record should be sent (i.e. customer or product or ...)
+2 - Build a query of the remote system to see if that record exists (we could have a foreign record ID)
+2a - query if that record ID still exists and roughly matches (updated description type of thing)
+3 - If record exists and matches, determine if we should be sending an update (Are we the system of record?) or update ourself
+3.1 -- system of record responsiblity could be split.  We might hold description but not price or vice versus...
+3.1a - update our end as appropriate
+3a - update other end
+3b - record not found - insert at other end
+3b.1 - update our records of foreign record ID
+4 - Next record - go back to 1

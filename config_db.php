@@ -32,7 +32,7 @@ $db_connections = array (
   1 => 
   array (
     'name' => 'FHS laptop',
-    'host' => 'localhost',
+    'host' => 'fhs-laptop1.ksfraser.com',
     'dbuser' => 'fhs',
     'dbpassword' => 'fhs',
     'dbname' => 'fhs',
@@ -45,6 +45,31 @@ $db_connections = array (
     'dbuser' => 'fhs',
     'dbpassword' => 'fhs',
     'dbname' => 'fhs',
+    'tbpref' => '1_',
+  ),
+  3 => 
+  array (
+    'name' => 'FHS Mickey',
+    'host' => 'mickey.ksfraser.com',
+    'dbuser' => 'fhs',
+    'dbpassword' => 'fhs',
+    'dbname' => 'fhs_frontaccounting',
+    'tbpref' => '1_',
+  4 => 
+  array (
+    'name' => 'FHS Mickey v2',
+    'host' => 'mickey.ksfraser.com',
+    'dbuser' => 'fhs',
+    'dbpassword' => 'fhs',
+    'dbname' => 'fhs_frontaccounting_v2',
+    'tbpref' => '1_',
+  5 => 
+  array (
+    'name' => 'FHS Mickey v3',
+    'host' => 'mickey.ksfraser.com',
+    'dbuser' => 'fhs',
+    'dbpassword' => 'fhs',
+    'dbname' => 'fhs_frontaccounting_v3',
     'tbpref' => '1_',
   ),
 );
