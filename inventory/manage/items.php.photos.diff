@@ -1,0 +1,8 @@
+460a473
+> 		'photos' => array(_('Ph&otos'), $stock_id),
+501a515,519
+> 		case 'photos':
+> 			$_GET['stock_id'] = $stock_id;
+> 			$_GET['popup'] = 1;
+> 			include_once($path_to_root."/inventory/manage/stock_photos.php");
+> 			break;

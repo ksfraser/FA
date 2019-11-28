@@ -1,0 +1,75 @@
+Choose an item at random for sale from a category specified in config.
+i.e. Monday Piping
+Tues Drumming
+Wed Dance
+Thurs costume/dress
+Fri at random
+
+Config variable that allow/disallow random to choose repeat
+Config variable to set how many days in advance to create
+Config to decide whether to create FA coupons and push  WOO also has sale pricing on items;
+Config variable as to how much of a sale ($ off or %).  have the ability to choose by category + default
+
+1_meta_category
+id, description
+
+List of sellable, active categories
+ select category_id, description, dflt_dim1, dflt_dim2 from 1_stock_category where inactive=0 and dflt_no_sale=0 limit 10;
+
+ select category_id, description, dflt_dim1, dflt_dim2 from 1_stock_category where inactive=0 and dflt_no_sale=0 and dflt_dim1 in (select 0,id from 1_dimensions where name like '%rum%') limit 10;
+
+Dimensions (active)
+select id,name,type_ from 1_dimensions where closed=0;
+
+ select stock_id, category_id, description, actual_cost, last_cost, material_cost 
+ from 1_stock_master 
+ where inactive=0 
+   and no_sale=0 
+   and category_id in (select sc_id from 1_meta_category_x_stock_category where meta_id=1) 
+   and stock_id not in (select stock_id from 1_day_sale_listed)
+ order by rand();
+
+
+---DRUMMING
+select stock_id, category_id, description, actual_cost, last_cost, material_cost   from 1_stock_master   where inactive=0     and no_sale=0     and category_id in ('6', '38','39','40','57') and material_cost > 0  order by rand();
+---DANCE
+ select stock_id, category_id, description, actual_cost, last_cost, material_cost 
+ from 1_stock_master 
+ where inactive=0 
+   and no_sale=0 
+   and category_id in ('16','34','35','37')  and material_cost > 0  order by rand();
+---PIPING
+select stock_id, category_id, description, actual_cost, last_cost, material_cost   from 1_stock_master   where inactive=0     and no_sale=0     and category_id in ( '5', '10', '9', '11', '36', '43', '53', '36', '58', '59')  and material_cost > 0  order by rand();
+
+
+
+
+
+ select category_id, description, dflt_dim1, dflt_dim2 from 1_stock_category where inactive=0 and dflt_no_sale=0 and dflt_dim1 in (select id from 1_dimensions where name like '%rum%')
+select category_id, description, dflt_dim1, dflt_dim2 from 1_stock_category where inactive=0 and dflt_no_sale=0 and dflt_dim1 in ('0', '8')
+select category_id, description, dflt_dim1, dflt_dim2 from 1_stock_category where inactive=0 and dflt_no_sale=0 and description like '%rum%';
+
+1_meta_category_x_stock_category
+id, meta_id, meta_description, sc_id, sc_description
+     Allow a sc_category to be in multiple meta
+ select category_id, description from 1_stock_category where inactive=0;
+
+1_day_sale_listed
+id, stock_id, date
+
+Get order of items to 1 day sale
+ select stock_id, category_id, description, actual_cost, last_cost, material_cost 
+ from 1_stock_master 
+ where inactive=0 
+   and no_sale=0 
+   and category_id in (select sc_id from 1_meta_category_x_stock_category where meta_id=1) 
+   and stock_id not in (select stock_id from 1_day_sale_listed)
+ order by rand();
+
+Create WP Post announcing sale
+Create Woo sale data push
+insert stock_id into 1-day_sale_listed
+Create Twitter post
+Create FB post
+Create Instagram post
+

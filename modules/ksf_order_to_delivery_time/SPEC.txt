@@ -1,0 +1,6 @@
+Is there a way to track when an item was ordered to how long until it arrived?
+
+Use for predictive ordering.
+
+select d.item_code, s.supp_name, abs(datediff(d.delivery_date, o.ord_date) ) from 1_purch_order_details d, 1_purch_orders o, 1_suppliers s  where o.order_no=d.order_no   and o.supplier_id=s.supplier_id  order by d.item_code, s.supp_name;
+

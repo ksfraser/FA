@@ -1,0 +1,144 @@
+\hypertarget{classitem}{}\section{item Class Reference}
+\label{classitem}\index{item@{item}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classitem_a6034ca2afb124263ba90707959afaf41}{\+\_\+\+\_\+construct} ( \$stock\+\_\+id, \$location=-\/1)
+\item 
+\hypertarget{classitem_ac76cffc0c8c70c5e5aaeda74e35a55f8}{}\label{classitem_ac76cffc0c8c70c5e5aaeda74e35a55f8} 
+{\bfseries update\+\_\+counted} ( \$count)
+\item 
+\hypertarget{classitem_aa3b7b9f2808a49c87af5043f38dd59d3}{}\label{classitem_aa3b7b9f2808a49c87af5043f38dd59d3} 
+{\bfseries increase\+\_\+count} ( \$count)
+\item 
+\hypertarget{classitem_a210605b6202b2951189d6848fcd54b6e}{}\label{classitem_a210605b6202b2951189d6848fcd54b6e} 
+{\bfseries is\+\_\+me} ( \$stock\+\_\+id)
+\item 
+\hypertarget{classitem_ac8ddae8b84bb5d8c044b0779e1843542}{}\label{classitem_ac8ddae8b84bb5d8c044b0779e1843542} 
+{\bfseries get\+\_\+stock\+\_\+id} ( \$item\+\_\+code)
+\item 
+\hyperlink{classitem_a17a922f5ec3b2241675aea5ef0fdc8d5}{is\+Stockid} ( \$stock\+\_\+id)
+\item 
+\hyperlink{classitem_a9d1f895627df632f2134f0161d5da726}{is\+Item\+Code} ( \$item\+\_\+code)
+\item 
+\hyperlink{classitem_ac1e7020aea1578a37ba70dd37ba5ca13}{get\+\_\+item\+\_\+description} ()
+\item 
+\hyperlink{classitem_aa76507a7473d77d4f2472616abcb664f}{get\+\_\+item\+\_\+qoh\+\_\+location} ( \$stock\+\_\+id)
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classitem_a960d2ea48d7f3b60b7fe360e10b331f7}{}\label{classitem_a960d2ea48d7f3b60b7fe360e10b331f7} 
+\hyperlink{classitem_a960d2ea48d7f3b60b7fe360e10b331f7}{\$location}
+\begin{DoxyCompactList}\small\item\em \hyperlink{class_inventory}{Inventory} location. \end{DoxyCompactList}\item 
+\hypertarget{classitem_a1d115888a094a2d8b1af138cb872dadd}{}\label{classitem_a1d115888a094a2d8b1af138cb872dadd} 
+{\bfseries \$barcode}
+\item 
+\hypertarget{classitem_a06cded759cb0ed22235de6288a6d56be}{}\label{classitem_a06cded759cb0ed22235de6288a6d56be} 
+{\bfseries \$title}
+\item 
+\hypertarget{classitem_a3bd53b1d94f98aaea6065fd652d21962}{}\label{classitem_a3bd53b1d94f98aaea6065fd652d21962} 
+{\bfseries \$stock\+\_\+id}
+\item 
+\hypertarget{classitem_a3a05562f1a44a3afbde5af0382503e8e}{}\label{classitem_a3a05562f1a44a3afbde5af0382503e8e} 
+{\bfseries \$description}
+\item 
+\hypertarget{classitem_aa8fccc6e8adc31bc3f93609244f8b6a8}{}\label{classitem_aa8fccc6e8adc31bc3f93609244f8b6a8} 
+{\bfseries \$debug}
+\item 
+\hypertarget{classitem_a4bc44758eac5607db2febc8fb03a47aa}{}\label{classitem_a4bc44758eac5607db2febc8fb03a47aa} 
+\hyperlink{classitem_a4bc44758eac5607db2febc8fb03a47aa}{\$qoh}
+\begin{DoxyCompactList}\small\item\em How many FA thinks we have at this location. \end{DoxyCompactList}\item 
+\hypertarget{classitem_aab048fbbe2ff803cf2367fa465be0f3a}{}\label{classitem_aab048fbbe2ff803cf2367fa465be0f3a} 
+\hyperlink{classitem_aab048fbbe2ff803cf2367fa465be0f3a}{\$counted}
+\begin{DoxyCompactList}\small\item\em How many we have counted at this location. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Class \hyperlink{class_inventory}{Inventory} is the routines for doing a stock taking.
+
+Class \hyperlink{class_inventory}{Inventory} is the routines for doing a stock taking. It also allows you to do inventory transfers of A\+LL inventory without having to count those items at both locations. A\+S\+S\+U\+M\+P\+T\+I\+ON is that you will do an appropriate inventory count later. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classitem_a6034ca2afb124263ba90707959afaf41}{}\label{classitem_a6034ca2afb124263ba90707959afaf41} 
+\index{item@{item}!\+\_\+\+\_\+construct@{\+\_\+\+\_\+construct}}
+\index{\+\_\+\+\_\+construct@{\+\_\+\+\_\+construct}!item@{item}}
+\subsubsection{\texorpdfstring{\+\_\+\+\_\+construct()}{\_\_construct()}}
+{\footnotesize\ttfamily item\+::\+\_\+\+\_\+construct (\begin{DoxyParamCaption}\item[{}]{\$stock\+\_\+id,  }\item[{}]{\$location = {\ttfamily -\/1} }\end{DoxyParamCaption})}
+
+Constructor
+
+
+\begin{DoxyParams}{Parameters}
+{\em string} & stock\+\_\+id \\
+\hline
+{\em string} & location identifier \\
+\hline
+{\em string} & date \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+null 
+\end{DoxyReturn}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classitem_ac1e7020aea1578a37ba70dd37ba5ca13}{}\label{classitem_ac1e7020aea1578a37ba70dd37ba5ca13} 
+\index{item@{item}!get\+\_\+item\+\_\+description@{get\+\_\+item\+\_\+description}}
+\index{get\+\_\+item\+\_\+description@{get\+\_\+item\+\_\+description}!item@{item}}
+\subsubsection{\texorpdfstring{get\+\_\+item\+\_\+description()}{get\_item\_description()}}
+{\footnotesize\ttfamily item\+::get\+\_\+item\+\_\+description (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+retrieve item\textquotesingle{}s description. Depends on stock\+\_\+id being set
+
+\begin{DoxyReturn}{Returns}
+bool whether we retrieved or not. 
+\end{DoxyReturn}
+\hypertarget{classitem_aa76507a7473d77d4f2472616abcb664f}{}\label{classitem_aa76507a7473d77d4f2472616abcb664f} 
+\index{item@{item}!get\+\_\+item\+\_\+qoh\+\_\+location@{get\+\_\+item\+\_\+qoh\+\_\+location}}
+\index{get\+\_\+item\+\_\+qoh\+\_\+location@{get\+\_\+item\+\_\+qoh\+\_\+location}!item@{item}}
+\subsubsection{\texorpdfstring{get\+\_\+item\+\_\+qoh\+\_\+location()}{get\_item\_qoh\_location()}}
+{\footnotesize\ttfamily item\+::get\+\_\+item\+\_\+qoh\+\_\+location (\begin{DoxyParamCaption}\item[{}]{\$stock\+\_\+id }\end{DoxyParamCaption})}
+
+retrieve item\textquotesingle{}s Q\+OH on a date. Depends on stock\+\_\+id, location, document\+\_\+date being set
+
+\begin{DoxyReturn}{Returns}
+bool whether we retrieved or not. 
+\end{DoxyReturn}
+\hypertarget{classitem_a9d1f895627df632f2134f0161d5da726}{}\label{classitem_a9d1f895627df632f2134f0161d5da726} 
+\index{item@{item}!is\+Item\+Code@{is\+Item\+Code}}
+\index{is\+Item\+Code@{is\+Item\+Code}!item@{item}}
+\subsubsection{\texorpdfstring{is\+Item\+Code()}{isItemCode()}}
+{\footnotesize\ttfamily item\+::is\+Item\+Code (\begin{DoxyParamCaption}\item[{}]{\$item\+\_\+code }\end{DoxyParamCaption})}
+
+check for a foreign/part code. Sets stock\+\_\+id if found.
+
+
+\begin{DoxyParams}{Parameters}
+{\em string} & stock\+\_\+id/item\+\_\+code \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+bool whether item is in item\+\_\+codes A\+ND stock\+\_\+id$<$$>$item\+\_\+code 
+\end{DoxyReturn}
+\hypertarget{classitem_a17a922f5ec3b2241675aea5ef0fdc8d5}{}\label{classitem_a17a922f5ec3b2241675aea5ef0fdc8d5} 
+\index{item@{item}!is\+Stockid@{is\+Stockid}}
+\index{is\+Stockid@{is\+Stockid}!item@{item}}
+\subsubsection{\texorpdfstring{is\+Stockid()}{isStockid()}}
+{\footnotesize\ttfamily item\+::is\+Stockid (\begin{DoxyParamCaption}\item[{}]{\$stock\+\_\+id }\end{DoxyParamCaption})}
+
+Is the item in the ?stock\+\_\+master? databas
+
+
+\begin{DoxyParams}{Parameters}
+{\em string} & the stock\+\_\+id to check \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+bool Is the item in the ?stock\+\_\+master? database 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+class.\+item.\+php\end{DoxyCompactItemize}

@@ -1,0 +1,53 @@
+[OPTIONS]
+Compatibility=1.1
+Full-text search=Yes
+Contents file=index.hhc
+Default Window=main
+Default topic=index.html
+Index file=index.hhk
+Language=0x409 English (United States)
+Title=Frontaccounting Inventory Counting Module
+
+[WINDOWS]
+main="Frontaccounting Inventory Counting Module","index.hhc","index.hhk","index.html","index.html",,,,,0x23520,,0x10387e,,,,,,,,0
+
+[FILES]
+dc/d4e/classgeneric__interface.html
+d5/d9b/classgeneric__interface-members.html
+d3/d2b/classgeneric__orders.html
+db/d7e/classgeneric__orders-members.html
+dd/d41/classhooks___inventory.html
+db/d74/classhooks___inventory-members.html
+da/d71/class_inventory.html
+d4/dc9/class_inventory-members.html
+da/d94/classinventory__cart.html
+dd/db0/classinventory__cart-members.html
+da/d83/class_inventory__ui.html
+d4/df0/class_inventory__ui-members.html
+d0/ddc/classitem.html
+de/d85/classitem-members.html
+index.html
+annotated.html
+classes.html
+hierarchy.html
+functions.html
+functions_func.html
+functions_vars.html
+tab_a.png
+tab_b.png
+tab_h.png
+tab_s.png
+nav_h.png
+nav_f.png
+bc_s.png
+doxygen.png
+closed.png
+open.png
+bdwn.png
+sync_on.png
+sync_off.png
+dc/d4e/classgeneric__interface.png
+d3/d2b/classgeneric__orders.png
+dd/d41/classhooks___inventory.png
+da/d71/class_inventory.png
+da/d83/class_inventory__ui.png

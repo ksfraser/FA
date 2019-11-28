@@ -1,0 +1,56 @@
+<?php
+//ROOT_DIR is ksf_import_ofx/ofxparser-master/ofxparser-master
+require_once( 'OfxParser/Ofx.php' );
+require_once( 'OfxParser/Parser.php' );
+require_once( 'OfxParser/Entities/AbstractEntity.php' );
+require_once( 'OfxParser/Entities/AccountInfo.php' );
+require_once( 'OfxParser/Entities/BankAccount.php' );
+require_once( 'OfxParser/Entities/Institute.php' );
+require_once( 'OfxParser/Entities/SignOn.php' );
+require_once( 'OfxParser/Entities/Statement.php' );
+require_once( 'OfxParser/Entities/Status.php' );
+require_once( 'OfxParser/Entities/Transaction.php' );
+
+$ofxParser = new \OfxParser\Parser();
+$ofx = $ofxParser->loadFromFile('test.qfx');
+
+$institute = $ofx->signOn->institute;	//ID, Name
+$bankAccounts = reset($ofx->bankAccounts);
+
+$bankAccount = reset($ofx->bankAccount);	//Account 0
+	// Get the statement start and end dates
+	$startDate = $bankAccount->statement->startDate;
+	$endDate = $bankAccount->statement->endDate;
+	// Get the statement transactions for the account
+	$accountNumber = $bankAccount->accountNumber;
+	$accountType = $bankAccount->accountType;
+	$balance = $bankAccount->balance;
+	$balanceDate = $bankAccount->balanceDate->date;
+	$transactions = $bankAccount->statement->transactions;
+		$transaction->type;			//DEBIT (purchase) or CREDIT (payment on credit card)
+		$transaction->date;			//posted date
+		$transaction->amount;
+		$transaction->uniqueId;
+		$transaction->name;
+		$transaction->memo;
+		$transaction->sic;			//Store identifier
+		$transaction->checkNumber;
+		$transaction->userInitiatedDate;	//trans date
+
+		
+
+var_dump( $ofx );
+
+//var_dump( $bankAccounts );
+//var_dump( $transactions );
+
+//**************************************************WANTS
+//	Match SIC against an expense type (dest GL)
+//	Match accountNumber against a Bank Account (GL)
+//	Recognize duplicated entries (date, amount, desc?)
+//	Record imported entries
+//	Generate both sides of a transaction (Expense, CC/bank account) for non dupe entries (use quick entries...)
+//	For dupe entries mark for review
+//	Recognize where a common entry is a split transaction? (quick entry?)
+
+?>

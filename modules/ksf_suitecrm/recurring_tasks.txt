@@ -1,0 +1,8 @@
+I currently do this via workflow by adding a dropdown menu called "frequency" that has the choices of : daily, weekly, 14 days, monthly, quarterly, bi-annually and annually.
+
+I then set the workflow to something like "if the recurrence field equals this, then create new task (or modify task depending on if you need to keep a history of completed tasks) with the date completed + 1 day"
+"if the Blank is closed/skipped (I added skipped to my status dropdown) and recurrence field equals this, then create new task (or modify task depending on if you need to keep a history of completed tasks) with the date completed/closed + 7 days" Etc.
+
+This way, it only shows up in my task list IF I have already completed/closed/skipped one occurrence (I really do not need to see it populate tasks for perpetuity, just a reminder the next time it needs to be done). But keeps the record of what ones have been completed and which have been skipped for my records.
+
+So far, it seems to be working but I have only two tasks that need to recur at the moment. 

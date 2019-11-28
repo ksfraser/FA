@@ -1,0 +1,129 @@
+head	1.4;
+access;
+symbols;
+locks
+	root:1.4; strict;
+comment	@# @;
+
+
+1.4
+date	2016.04.16.03.54.23;	author root;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2015.11.20.05.20.45;	author root;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2015.11.07.00.20.12;	author root;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2015.06.03.00.15.11;	author root;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.4
+log
+@Modify for use on new module CALC_PRICING
+@
+text
+@<?php
+define ('SS_CALC_PRICING', 111<<8);
+
+class hooks_CALC_PRICING extends hooks {
+	var $module_name = 'CALC_PRICING'; 
+
+	/*
+		Install additonal menu options provided by module
+	*/
+	function install_options($app) {
+		global $path_to_root;
+
+		switch($app->id) {
+			case 'stock':
+				$app->add_rapp_function(2, _('CALC_PRICING'), 
+					$path_to_root.'/modules/CALC_PRICING/CALC_PRICING.php', 'SA_CALC_PRICING');
+		}
+	}
+
+	function install_access()
+	{
+		$security_sections[SS_CALC_PRICING] = _("CALC_PRICING");
+
+		$security_areas['SA_CALC_PRICING'] = array(SS_CALC_PRICING|101, _("CALC_PRICING"));
+
+		return array($security_areas, $security_sections);
+	}
+}
+?>
+@
+
+
+1.3
+log
+@checking in to ensure VC.
+@
+text
+@d2 1
+a2 1
+define ('SS_EXPORTWOO', 111<<8);
+d4 2
+a5 2
+class hooks_EXPORT_WOO extends hooks {
+	var $module_name = 'Export WOO'; 
+d15 2
+a16 2
+				$app->add_rapp_function(2, _('Export WOO'), 
+					$path_to_root.'/modules/EXPORT_WOO/EXPORT_WOO.php', 'SA_EXPORTWOO');
+d22 1
+a22 1
+		$security_sections[SS_EXPORTWOO] = _("Export WOO");
+d24 1
+a24 1
+		$security_areas['SA_EXPORTWOO'] = array(SS_EXPORTWOO|101, _("Export WOO"));
+@
+
+
+1.2
+log
+@Adjust for WOO EXPORT.
+@
+text
+@d14 1
+a14 1
+			case 'AP':
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d2 1
+a2 1
+define ('SS_COASTORDERS', 101<<8);
+d4 2
+a5 2
+class hooks_coast_export extends hooks {
+	var $module_name = 'Export COAST'; 
+d15 2
+a16 2
+				$app->add_rapp_function(2, _('Export COAST'), 
+					$path_to_root.'/modules/coast_export/coast_export.php', 'SA_COASTEXPORT');
+d22 1
+a22 1
+		$security_sections[SS_COASTORDERS] = _("Export COAST");
+d24 1
+a24 1
+		$security_areas['SA_COASTEXPORT'] = array(SS_COASTORDERS|101, _("Export COAST"));
+@

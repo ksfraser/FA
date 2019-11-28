@@ -1,0 +1,5 @@
+Need screens to handle Customer Avatar data
+
+Need a way to best-fit match a client to avatar(s).
+
+Need to be able to tag customers and avatars, so that when we search keywords (i.e. piper or dancer or kilt) we can find the appropriate targets.

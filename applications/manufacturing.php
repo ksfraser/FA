@@ -11,7 +11,7 @@
 ***********************************************************************/
 class manufacturing_app extends application
 {
-	function __construct()
+	function manufacturing_app()
 	{
 		$this->application("manuf", _($this->help_context = "&Manufacturing"));
 

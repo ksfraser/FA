@@ -1,0 +1,21 @@
+This module is to handle Canadian Partnership tax info.   
+
+T5013 Financial Statement Check List
+T5013 Income Statement Info
+T5013 Balance Sheet
+Form 100 General Index of Financial Info
+Sch 125 Income Statement Info
+Sch 101 Opening Balance Sheet
+Sch 100 Balance Sheet Info
+
+
+Need to submit a T2125 Statement of Business Activities
+Need to submit a GST return
+
+Can claim 50% of meals and entertainment for conventions, conference or similar.  See T4002
+
+Partnership must also file a T5013 Statement of partnership Income if abs(revenue) + abs(expense) > 2M or assets > 5M.
+
+Need to select on account_code2 out of 0_chart_master to get the code 1 account codes that have appropriate entries
+for each of the GIFI account codes.
+

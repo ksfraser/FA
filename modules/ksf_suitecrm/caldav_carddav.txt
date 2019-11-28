@@ -1,0 +1,19 @@
+While I was using SugarCRM I used a module written by Opacus for Ical, this module is still working as the base code of SuiteCRM is based on SugarCRM 6.5.20
+
+I have been asking the Opacus people on their forums what their intention is, i.e. to support SuiteCRM as well - I have not received any response other then "it is working for the current SuiteCRM. Neither have I received any response for my other questions .... but their response to questions isn't to good anyway.
+
+Therefore, I have been doing some research on how to go about this and write it myself ... and it is really not that tricky - it probably would take me a day to get this going. The module I am currently using basically uses two GNU based utilities (iCalCreator and Sabre) that use GNU for a license to make up the core functionality (connector and Ical).
+
+There is also some code floating about for SugarCRM that are "left behind" ...
+
+I agree, ICAL support should NOT be a module but core functionality. 
+
+
+
+You could go with Google Integration or Exchange, but when they change something, a fix is needed. Open standards like CalDAV and CardDAV are less likely to change enough to break the link.
+
+I recommend you talk to the boys over at OwnCloud. They have modules for CalDAV and CardDAV built into their solution. IF you could link the two system user rights with LDAP or something, you would have user creation syncing with Storage, Calendar, Contacts and CRM. And if its using LDAP, you can also add Email (Postfix) user access to that list.
+
+Now that would be something! 
+
+

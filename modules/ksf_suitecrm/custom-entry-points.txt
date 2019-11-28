@@ -1,0 +1,41 @@
+Your location is the recommended location as per the 6.5 documentation. All of the files within custom/Extension/application/Ext/EntryPointRegistry/ are compiled into the file custom/application/Ext/EntryPointRegistry/entry_point_registry.ext.php when a Quick Repair and Rebuild is done.
+
+As you've tagged this with SuiteCRM, I assume you're using their fork of the 6.5 CE. However, if you want to use your code with later versions (7.7+) of SugarCRM, take note that they have noted their intention to deprecate Entry Points in the near future in favour of extending "Endpoints" for their REST API (v10)
+
+
+
+
+There are two best-practice options that utilize the Extension framework in SugarCRM 6.x. Which to use depends on the use of the entry point. The entry point you've specified is best general-purpose, application-wide entry points.
+
+    File Location: custom/Extension/application/Ext/EntryPointRegistry/customEntryPoint.php
+
+    Provides for an entry point URL like index.php?entryPoint=customEntryPoint
+
+If instead you find that an entry point could be more focused to a single Sugar module, you can make it module-specific. An example use case might be creating a webhook-type functionality to allow a third party payment service to interact directly with a custom Invoice module. The advantage here is organization; custom code placement is as specific and granular as possible.
+
+    File Location: custom/Extension/modules/abc_InvoiceModule/Ext/EntryPointRegistry/third_party_webhook.php
+    Provides for an entry point URL like index.php?module=abc_InvoiceModule&entryPoint=third_party_webhook
+
+
+
+
+
+
+Entry points can be defined in so many places, the key here will be to find all of the definition files and then cat each one of them to find what they're doing.
+
+Possible Entry Point Locations
+
+    custom Extension-Framework, application-wide entry points:
+        $ ls -1d custom/Extension/application/Ext/EntryPointRegistry
+    custom Extension-Framework, module-specific entry points:
+        $ ls -1d custom/Extension/modules/*/Ext/EntryPointRegistry
+    custom non-ext-framework (legacy), application-wide entry points
+        $ ls custom/include/MVC/Controller/entry_point_registry.php
+    custom non-ext-framework (legacy) module-specific entry points are housed in custom/modules...
+        $ ls custom/modules/*/entry_point_registry.php
+    These can be in the root level module dir as well. I don't think any out of the box modules ever did this, but you could do it with a custom module
+        $ ls modules/*/entry_point_registry.php
+    Out-of-the-box application wide entry points...
+        include/MVC/Controller/entry_point_registry.php
+
+

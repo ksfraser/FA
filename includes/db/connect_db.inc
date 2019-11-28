@@ -31,7 +31,7 @@ function set_global_connection($company=-1)
 	///// This non empty sql_mode values can interphere with FA, so all is set empty during
 	///// our sessions.
 	///// We are, however, investigating the existing code to be compatible in the future.
-	///// We are also working on a mysql/mysql solution to go to release 2.4.
+	///// We are also working on a mysql/mysqli solution to go to release 2.4.
 	if (strncmp(mysql_get_server_info(), "5.6", 3) >= 0) 
 		db_query("SET sql_mode = ''");
 	/////

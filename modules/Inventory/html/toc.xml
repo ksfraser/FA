@@ -1,0 +1,217 @@
+<toc label="Frontaccounting Inventory Counting Module" topic="index.html">
+  <topic label="Classes" href="annotated.html">
+    <topic label="Class List" href="annotated.html">
+      <topic label="generic_interface" href="dc/d4e/classgeneric__interface.html">
+        <topic label="__construct" href="dc/d4e/classgeneric__interface.html#a1776ffb8e07b10eebcc6b71c7a057ea9"/>
+        <topic label="append_file" href="dc/d4e/classgeneric__interface.html#ab12f6446b4f5986859cf5c3596d66e2f"/>
+        <topic label="base_page" href="dc/d4e/classgeneric__interface.html#ae447e539a3b57457ab7053131114dc72"/>
+        <topic label="close_file" href="dc/d4e/classgeneric__interface.html#a2816e5f9355bb2051a08b36f5fe37b90"/>
+        <topic label="display" href="dc/d4e/classgeneric__interface.html#afee00299dfab91da297364712a556128"/>
+        <topic label="overwrite_file" href="dc/d4e/classgeneric__interface.html#afa46d3c4fda07165bbf46c5b43177f01"/>
+        <topic label="related_tabs" href="dc/d4e/classgeneric__interface.html#af90523f08023ce9450f373f5c9dbf10e"/>
+        <topic label="run" href="dc/d4e/classgeneric__interface.html#a2eda996cce2eb81ba95b3c13499f2a29"/>
+        <topic label="show_form" href="dc/d4e/classgeneric__interface.html#a56cb641385fbc70dbb4496fcc87e6487"/>
+        <topic label="$errors" href="dc/d4e/classgeneric__interface.html#a0fed4a23a18ce292a0d7934b809c615d"/>
+        <topic label="$help_context" href="dc/d4e/classgeneric__interface.html#a0ab93db3295a794300dac66c6e48bbb7"/>
+        <topic label="$javascript" href="dc/d4e/classgeneric__interface.html#a69d365bc7157d8d74366b900ce99f584"/>
+        <topic label="$page_title" href="dc/d4e/classgeneric__interface.html#a3537970983f08f4fabef6acfc21762d5"/>
+      </topic>
+      <topic label="generic_orders" href="d3/d2b/classgeneric__orders.html">
+        <topic label="__construct" href="d3/d2b/classgeneric__orders.html#ad96a6adbcf3f1d2eaec7b3eefcf8cb8c"/>
+        <topic label="action_show_form" href="d3/d2b/classgeneric__orders.html#a58246a65d39b0a1f79a520c54bf160a5"/>
+        <topic label="base_page" href="d3/d2b/classgeneric__orders.html#adda352a9a97d7d94b34e2ad5289643d2"/>
+        <topic label="checkprefs" href="d3/d2b/classgeneric__orders.html#a733f9e1d53da1f2002ad5580d6215baf"/>
+        <topic label="display" href="d3/d2b/classgeneric__orders.html#a30d91bc07b565db854032cf4687583b6"/>
+        <topic label="export_orders" href="d3/d2b/classgeneric__orders.html#afb2ea2f9acc44492b9f1880f31131df5"/>
+        <topic label="form_export" href="d3/d2b/classgeneric__orders.html#ae17ab2370a928c300c4900d1b14976d2"/>
+        <topic label="get_id_range" href="d3/d2b/classgeneric__orders.html#a636930f29dd1a4214d9beb7b0b992fb2"/>
+        <topic label="get_purchase_order" href="d3/d2b/classgeneric__orders.html#ac0a1f57dd5fe0ee9cad423a8581323b9"/>
+        <topic label="get_supplier_order" href="d3/d2b/classgeneric__orders.html#a77d76b233e40d4c76e7d93c4a2b87815"/>
+        <topic label="install" href="d3/d2b/classgeneric__orders.html#a73da33c51344d619ad219c5c3533157a"/>
+        <topic label="loadprefs" href="d3/d2b/classgeneric__orders.html#a5921f90917717297983148c16bfcdff7"/>
+        <topic label="related_tabs" href="d3/d2b/classgeneric__orders.html#a9510fade9bbc4e505930f08750ef1c5f"/>
+        <topic label="run" href="d3/d2b/classgeneric__orders.html#aa26ae7d2601973a71a16a0f40a9946f8"/>
+        <topic label="show_form" href="d3/d2b/classgeneric__orders.html#a04c2ba96918f5aed83649677feec28d5"/>
+        <topic label="updateprefs" href="d3/d2b/classgeneric__orders.html#a713ac2d657b69a5b68bcd93c085f6bff"/>
+        <topic label="$action" href="d3/d2b/classgeneric__orders.html#acfdc001bf2e21ac8d63d8265f3b2dd3f"/>
+        <topic label="$config_values" href="d3/d2b/classgeneric__orders.html#aa9882dc26f8860b93d947905dfca7483"/>
+        <topic label="$db_Host" href="d3/d2b/classgeneric__orders.html#a5b9ac946cce6674e2b7abcfd396f82ea"/>
+        <topic label="$db_Name" href="d3/d2b/classgeneric__orders.html#ab37c01fb6bfad57f908e01b6c65e5d9d"/>
+        <topic label="$db_Password" href="d3/d2b/classgeneric__orders.html#af6abeff7193a46c1785edef999aebe72"/>
+        <topic label="$db_User" href="d3/d2b/classgeneric__orders.html#a24279845da685a00cf035df4bbe339d1"/>
+        <topic label="$found" href="d3/d2b/classgeneric__orders.html#a8b5bbce48d66545ab58b43f4be772872"/>
+        <topic label="$help_context" href="d3/d2b/classgeneric__orders.html#a0886ded57343072f2ad3821288d00454"/>
+        <topic label="$last_order_no" href="d3/d2b/classgeneric__orders.html#a723c673ed302846be920efe7ef6b656e"/>
+        <topic label="$order_no" href="d3/d2b/classgeneric__orders.html#a9a99b3d242d00f9dff29c452930cdc46"/>
+        <topic label="$purchase_order" href="d3/d2b/classgeneric__orders.html#ad9f0450540b7abed0a3952217421268b"/>
+        <topic label="$redirect_to" href="d3/d2b/classgeneric__orders.html#ad884a4bee50042666a9c9aebece716bd"/>
+        <topic label="$tabs" href="d3/d2b/classgeneric__orders.html#ae9ac8a364ccd57159c7c2f7cb9828444"/>
+        <topic label="$vendor" href="d3/d2b/classgeneric__orders.html#a9eb2c59dd61c0dde32ff3171a522bd69"/>
+      </topic>
+      <topic label="hooks_Inventory" href="dd/d41/classhooks___inventory.html">
+        <topic label="install_access" href="dd/d41/classhooks___inventory.html#ab5c9c0ba2bcb53683571ff27ab5000dd"/>
+        <topic label="install_options" href="dd/d41/classhooks___inventory.html#a92994ac980fa7a6e8256e12c999cde84"/>
+        <topic label="$module_name" href="dd/d41/classhooks___inventory.html#a85ac46d599d8926eb60fd90b828dbccd"/>
+      </topic>
+      <topic label="Inventory" href="da/d71/class_inventory.html">
+        <topic label="__construct" href="da/d71/class_inventory.html#a3d94ae6f942f9c10ba12a75b57ec1d43"/>
+        <topic label="add_all_list" href="da/d71/class_inventory.html#a9f10a2dacd1fa4e3b82c7d62f451bb4b"/>
+        <topic label="add_item" href="da/d71/class_inventory.html#ad141ddfa4b1b812f60ef7ad0ef8d391f"/>
+        <topic label="call_table" href="da/d71/class_inventory.html#abcdb59c12133ade607ed4ef6d80bec94"/>
+        <topic label="can_process" href="da/d71/class_inventory.html#a05cfd3bab20f8d1d40a8f83beb23d694"/>
+        <topic label="clearcart" href="da/d71/class_inventory.html#a2ff0a0bf19271240f31d948ac2373141"/>
+        <topic label="copy_from_session" href="da/d71/class_inventory.html#a47208c8f736cae33d5293f0c160266cb"/>
+        <topic label="copy_to_session" href="da/d71/class_inventory.html#a5d05f6203e1f1d0d26b4ad1a6ee416b0"/>
+        <topic label="create_cart" href="da/d71/class_inventory.html#a6fb9d26bbc7d5385e77dd2fd01da307b"/>
+        <topic label="create_table_inventory_last_performed" href="da/d71/class_inventory.html#af8d9a21653be97fe48c954893313733b"/>
+        <topic label="delete_all_items" href="da/d71/class_inventory.html#a9460265e3641d0fa9f14fe584d2369c0"/>
+        <topic label="find_cart_item" href="da/d71/class_inventory.html#a20a38a02a619c23ac051bef0f804b533"/>
+        <topic label="get_item_description" href="da/d71/class_inventory.html#a56d65f3277dff3761e841f2c0a7909d2"/>
+        <topic label="get_item_qoh_location" href="da/d71/class_inventory.html#ab93ab1de4e3622b63b07a3ec17bb5753"/>
+        <topic label="get_items_qoh_location" href="da/d71/class_inventory.html#abe1f31716dc97f457dc66411526cfcc6"/>
+        <topic label="handle_delete_item" href="da/d71/class_inventory.html#a509402207c6adb506bbd9a22a15415e9"/>
+        <topic label="handle_new_inventory" href="da/d71/class_inventory.html#aa794599f6f24788a4eea4343ecd90cdb"/>
+        <topic label="handle_new_item" href="da/d71/class_inventory.html#a4bd02c483dcc9f4f76ccb86a4aee44f4"/>
+        <topic label="handle_update_item" href="da/d71/class_inventory.html#afe4428608c97c76ee1e5f7bbd6ce4083"/>
+        <topic label="hasBarcode" href="da/d71/class_inventory.html#a5a32d543b372a64b4def7948d4582c9b"/>
+        <topic label="init_tables_completed" href="da/d71/class_inventory.html#a27f4d6058f0ed5decaaabbec1408f39e"/>
+        <topic label="install" href="da/d71/class_inventory.html#a8e1cc8e71fe7c1340e246f23a9c14b7a"/>
+        <topic label="isItemCode" href="da/d71/class_inventory.html#ac788e157a403fd8192b4dd2eedf57378"/>
+        <topic label="isStockid" href="da/d71/class_inventory.html#ac66fe979ed1b2d30e64972356757df8c"/>
+        <topic label="process" href="da/d71/class_inventory.html#abbef2528107ec0d7d4bb1a0c4dd2ada4"/>
+        <topic label="process_inventory" href="da/d71/class_inventory.html#a1c90cc40b9139610f3db802b67d7c211"/>
+        <topic label="record_last_inv_date" href="da/d71/class_inventory.html#abac339a921acc7633bad02779bff228b"/>
+        <topic label="write" href="da/d71/class_inventory.html#aabb97aaa0e58e324b6077cc0a5593384"/>
+        <topic label="xfer_all_settings" href="da/d71/class_inventory.html#a5980667d55e7f4df41ee1ca8c6e4e1f7"/>
+        <topic label="$add_quantity" href="da/d71/class_inventory.html#a0cade591b02c5dc6e280d7d90e2fa3b4"/>
+        <topic label="$barcode" href="da/d71/class_inventory.html#a4b9f25d8866f4f876d1646b1a5f693df"/>
+        <topic label="$change_line_number" href="da/d71/class_inventory.html#ae2d8bc329f9ebbdfd75325b5e8f27a59"/>
+        <topic label="$Comments" href="da/d71/class_inventory.html#a47686bff60ceb7967af2b8c5395bc40e"/>
+        <topic label="$copyfromcount" href="da/d71/class_inventory.html#a6e30b011ebf9c05093679577559aceeb"/>
+        <topic label="$copytocount" href="da/d71/class_inventory.html#a4235854bd547f566b916bc56c479a644"/>
+        <topic label="$deliver_to" href="da/d71/class_inventory.html#a43ce64bb2165484553d6c95406764e4c"/>
+        <topic label="$delivery_address" href="da/d71/class_inventory.html#a017f82d9a4aa2f57753cbd473a7be595"/>
+        <topic label="$document_date" href="da/d71/class_inventory.html#a151f90398aa3afc94c3ab5eef340943b"/>
+        <topic label="$ex_rate" href="da/d71/class_inventory.html#add9d7263f9803f41cc37cb3d57a9f28c"/>
+        <topic label="$from_location" href="da/d71/class_inventory.html#add61c6c29ac22e95ff7393f247b4cf24"/>
+        <topic label="$holdtank" href="da/d71/class_inventory.html#aecb8d5b7cc910234b879b6d014e887ed"/>
+        <topic label="$item_text" href="da/d71/class_inventory.html#aff1f3648941f2cd2c8e787989b679bb8"/>
+        <topic label="$line_items" href="da/d71/class_inventory.html#aefba336f82cf7c89b2ab89c4f732d9c5"/>
+        <topic label="$location" href="da/d71/class_inventory.html#aa787e03e29020e679e25b6504711f908"/>
+        <topic label="$locationPrefix" href="da/d71/class_inventory.html#a111643a727ee9481ab774c5a2ca40ee8"/>
+        <topic label="$locationPrefix2" href="da/d71/class_inventory.html#a636172fcf4605cce00cefe5b753acb44"/>
+        <topic label="$path_to_root" href="da/d71/class_inventory.html#ad41a55d723a128faa987dd710a1d7d14"/>
+        <topic label="$reference" href="da/d71/class_inventory.html#a62106a6a3b9f340a4493d0e638a9fb21"/>
+        <topic label="$stock_id" href="da/d71/class_inventory.html#ac6b30b7db054bca3509a961d4b21143d"/>
+        <topic label="$table_interface" href="da/d71/class_inventory.html#a886ee1cbe6cb6a36a4573057f41bef25"/>
+        <topic label="$title" href="da/d71/class_inventory.html#a85828227481d0b6af837a2924bc69c2e"/>
+        <topic label="$to_location" href="da/d71/class_inventory.html#ae8dc058519cb65b6f98c5b861e9b4b6c"/>
+        <topic label="$trans_no" href="da/d71/class_inventory.html#a6c461cfddac57ddd5f56f394cee33328"/>
+        <topic label="$trans_type" href="da/d71/class_inventory.html#a09b60b4e48ba34b348a644aad86bc914"/>
+        <topic label="$update_quantity" href="da/d71/class_inventory.html#a22a5cb92bfa2d65eb7070e8c5164ba61"/>
+        <topic label="$url" href="da/d71/class_inventory.html#a23522a816fa22f04ddbe1bb7fe55db56"/>
+      </topic>
+      <topic label="inventory_cart" href="da/d94/classinventory__cart.html">
+        <topic label="__construct" href="da/d94/classinventory__cart.html#ad181b1f15c4e0342cd9cd54df9a2c8b7"/>
+        <topic label="can_process" href="da/d94/classinventory__cart.html#aa47a62325020ad6b5eb6acf5927ce65a"/>
+        <topic label="cart2session" href="da/d94/classinventory__cart.html#a6ca9bac672c850544da5ec593d89458f"/>
+        <topic label="get_stock_id" href="da/d94/classinventory__cart.html#ada03f4b41aa7aef0b29aa187a09ae857"/>
+        <topic label="handle_delete_item" href="da/d94/classinventory__cart.html#ae283c95df0a280d6037ad59d0f6e71f1"/>
+        <topic label="handle_update_item" href="da/d94/classinventory__cart.html#a00e14d7734a32d9192631ab8349d024e"/>
+        <topic label="increment_item_count" href="da/d94/classinventory__cart.html#af2060bcea0c8fd54ae0a2e5550a44935"/>
+        <topic label="isItemCode" href="da/d94/classinventory__cart.html#a1dbd58ee440d2ec8763a8cb5d0241f67"/>
+        <topic label="isStockid" href="da/d94/classinventory__cart.html#a919740e1d8f9b8d004549eb21e8b551d"/>
+        <topic label="new_item" href="da/d94/classinventory__cart.html#aa609c5eeaf39f8fe416ac2093d81d94b"/>
+        <topic label="serialize" href="da/d94/classinventory__cart.html#a1d31465361c00aad624a82933b3c1d63"/>
+        <topic label="session2cart" href="da/d94/classinventory__cart.html#a62b8732c8d7f083f58c7839d020c0ba6"/>
+        <topic label="unserialize" href="da/d94/classinventory__cart.html#ac988218bdcff3a458f505c4999e3e4b3"/>
+        <topic label="$cart_items" href="da/d94/classinventory__cart.html#a3612f3ff91eec58064ba266f07c501f9"/>
+        <topic label="$comments" href="da/d94/classinventory__cart.html#afb8a0f36b69039235bce9a1533c52557"/>
+        <topic label="$document_date" href="da/d94/classinventory__cart.html#aa6ec8ee5813e4dc2c5f4d4bcc86315cd"/>
+        <topic label="$from_location" href="da/d94/classinventory__cart.html#a9f2fa9795e85409eb761c75010e7bf81"/>
+        <topic label="$reference" href="da/d94/classinventory__cart.html#adb6a248e9e7e1692096b86e0a46ea7d3"/>
+        <topic label="$to_location" href="da/d94/classinventory__cart.html#a2e5e203494a0074bdee0b793b2cf38c1"/>
+      </topic>
+      <topic label="Inventory_ui" href="da/d83/class_inventory__ui.html">
+        <topic label="__construct" href="da/d83/class_inventory__ui.html#a903fc6b7eb51afa2c4f6c1392783973d"/>
+        <topic label="add_item" href="da/d83/class_inventory__ui.html#ab1eb2c3cdb2a43e6ff70b6ee5a0177e8"/>
+        <topic label="adjustment_edit_item_controls" href="da/d83/class_inventory__ui.html#a5692fdde9f762dad33c69b721365481b"/>
+        <topic label="adjustment_options_controls" href="da/d83/class_inventory__ui.html#a5066d159626933340a36ecf6ccbcd105"/>
+        <topic label="call_table" href="da/d83/class_inventory__ui.html#aaf654bb6c84957067ee398ab44e3cf22"/>
+        <topic label="can_process" href="da/d83/class_inventory__ui.html#ade75d16c1775ae3c2c40b3ac9ad6339f"/>
+        <topic label="clearcart_form" href="da/d83/class_inventory__ui.html#a107e020384575635892dd82bf07a5e46"/>
+        <topic label="config_form" href="da/d83/class_inventory__ui.html#a791ffee677350961cb676a08372fb479"/>
+        <topic label="confirm_dialog" href="da/d83/class_inventory__ui.html#a3f96b768221aab8a1676c18cc9acc06c"/>
+        <topic label="display_adjustment_items" href="da/d83/class_inventory__ui.html#a20ada151ac5c6c59298f56e00b3ebdb5"/>
+        <topic label="display_inventory_header" href="da/d83/class_inventory__ui.html#a7ab791c3e613331a41de68de9b5e7b63"/>
+        <topic label="display_inventory_summary" href="da/d83/class_inventory__ui.html#a2c9cd2fb8448bb17cbebd6394ab19522"/>
+        <topic label="get_item_description" href="da/d83/class_inventory__ui.html#a37a17c8d4b2d63c774dc3404754df4f4"/>
+        <topic label="handle_delete_item" href="da/d83/class_inventory__ui.html#aaa12492aec2f41782ca4467e2d0bb8c1"/>
+        <topic label="handle_new_item" href="da/d83/class_inventory__ui.html#a180a927dec0a650428c79c80a55eb8a1"/>
+        <topic label="handle_update_item" href="da/d83/class_inventory__ui.html#abd5a2b4048e33b9c1518db7c44115f4f"/>
+        <topic label="handlePOST" href="da/d83/class_inventory__ui.html#a0bdd5eda22187fd5ed67fc9b03edbbba"/>
+        <topic label="init_tables_completed_form" href="da/d83/class_inventory__ui.html#ab88e4bea473aad102c4850f5447d0579"/>
+        <topic label="init_tables_form" href="da/d83/class_inventory__ui.html#ae2a5be945a5320013f6d973f5c9338f0"/>
+        <topic label="Inventory_form" href="da/d83/class_inventory__ui.html#a42f3094f748f65b77fe3be03452994ac"/>
+        <topic label="isHoldingTankSet" href="da/d83/class_inventory__ui.html#aaa3f36bec8fb25199f697bf1983864aa"/>
+        <topic label="line_start_focus" href="da/d83/class_inventory__ui.html#a5f2b542e69b9b6c8fe66d6ca513532f4"/>
+        <topic label="module_usage_form" href="da/d83/class_inventory__ui.html#af471f1ac90fef82d9f75185c7c8377f2"/>
+        <topic label="overunder_form" href="da/d83/class_inventory__ui.html#a2b914b6cf2b424e15f026edbe0e0170a"/>
+        <topic label="page_modified" href="da/d83/class_inventory__ui.html#a8348636c222a752d1eb99e368eadd142"/>
+        <topic label="page_processing" href="da/d83/class_inventory__ui.html#ad48e9be2b4334c75b632a1fc3280a462"/>
+        <topic label="process_form" href="da/d83/class_inventory__ui.html#a36f2f5f79b5aff91d0b736e92f13ff6a"/>
+        <topic label="processing_end" href="da/d83/class_inventory__ui.html#a0b19598c5da12d8b6575839fe43ed57c"/>
+        <topic label="processing_start" href="da/d83/class_inventory__ui.html#a0d542d348553d2eae53d09c6b50fcdc5"/>
+        <topic label="scan_form" href="da/d83/class_inventory__ui.html#a208526e58fa535e58764a7364316b4ae"/>
+        <topic label="submenu_choices" href="da/d83/class_inventory__ui.html#ad89a4d653f5839e27c355aba1098aa8f"/>
+        <topic label="table_memo_field" href="da/d83/class_inventory__ui.html#a494952c93f34161134321691d81cb690"/>
+        <topic label="upc_table" href="da/d83/class_inventory__ui.html#aa651f97c1b8cfc4a05ea091df4f0f0c8"/>
+        <topic label="xfer_all_to_holding" href="da/d83/class_inventory__ui.html#ad950a22f482e9f1a778b6771234bce42"/>
+        <topic label="xfer_all_to_holding_form" href="da/d83/class_inventory__ui.html#aa78746090dbe3bcdaf4478de2efa721b"/>
+        <topic label="xfer_all_to_location" href="da/d83/class_inventory__ui.html#a86eea7fe792774c8a15ae86e07e66e2e"/>
+        <topic label="xfer_all_to_location_form" href="da/d83/class_inventory__ui.html#a90577c96830f5f59f301034f4e130b2f"/>
+        <topic label="xferall_form" href="da/d83/class_inventory__ui.html#ad1ce51a3c48c8abb4278e93160cd1c08"/>
+      </topic>
+      <topic label="item" href="d0/ddc/classitem.html">
+        <topic label="__construct" href="d0/ddc/classitem.html#a6034ca2afb124263ba90707959afaf41"/>
+        <topic label="get_item_description" href="d0/ddc/classitem.html#ac1e7020aea1578a37ba70dd37ba5ca13"/>
+        <topic label="get_item_qoh_location" href="d0/ddc/classitem.html#aa76507a7473d77d4f2472616abcb664f"/>
+        <topic label="get_stock_id" href="d0/ddc/classitem.html#ac8ddae8b84bb5d8c044b0779e1843542"/>
+        <topic label="increase_count" href="d0/ddc/classitem.html#aa3b7b9f2808a49c87af5043f38dd59d3"/>
+        <topic label="is_me" href="d0/ddc/classitem.html#a210605b6202b2951189d6848fcd54b6e"/>
+        <topic label="isItemCode" href="d0/ddc/classitem.html#a9d1f895627df632f2134f0161d5da726"/>
+        <topic label="isStockid" href="d0/ddc/classitem.html#a17a922f5ec3b2241675aea5ef0fdc8d5"/>
+        <topic label="update_counted" href="d0/ddc/classitem.html#ac76cffc0c8c70c5e5aaeda74e35a55f8"/>
+        <topic label="$barcode" href="d0/ddc/classitem.html#a1d115888a094a2d8b1af138cb872dadd"/>
+        <topic label="$counted" href="d0/ddc/classitem.html#aab048fbbe2ff803cf2367fa465be0f3a"/>
+        <topic label="$debug" href="d0/ddc/classitem.html#aa8fccc6e8adc31bc3f93609244f8b6a8"/>
+        <topic label="$description" href="d0/ddc/classitem.html#a3a05562f1a44a3afbde5af0382503e8e"/>
+        <topic label="$location" href="d0/ddc/classitem.html#a960d2ea48d7f3b60b7fe360e10b331f7"/>
+        <topic label="$qoh" href="d0/ddc/classitem.html#a4bc44758eac5607db2febc8fb03a47aa"/>
+        <topic label="$stock_id" href="d0/ddc/classitem.html#a3bd53b1d94f98aaea6065fd652d21962"/>
+        <topic label="$title" href="d0/ddc/classitem.html#a06cded759cb0ed22235de6288a6d56be"/>
+      </topic>
+    </topic>
+    <topic label="Class Index" href="classes.html"/>
+    <topic label="Class Hierarchy" href="hierarchy.html">
+      <topic label="db_base">
+        <topic label="generic_interface" href="dc/d4e/classgeneric__interface.html">
+          <topic label="Inventory" href="da/d71/class_inventory.html">
+            <topic label="Inventory_ui" href="da/d83/class_inventory__ui.html"/>
+          </topic>
+        </topic>
+        <topic label="generic_orders" href="d3/d2b/classgeneric__orders.html"/>
+      </topic>
+      <topic label="hooks">
+        <topic label="hooks_Inventory" href="dd/d41/classhooks___inventory.html"/>
+      </topic>
+      <topic label="inventory_cart" href="da/d94/classinventory__cart.html"/>
+      <topic label="item" href="d0/ddc/classitem.html"/>
+    </topic>
+    <topic label="Class Members" href="functions.html">
+      <topic label="All" href="functions.html"/>
+      <topic label="Functions" href="functions_func.html"/>
+      <topic label="Variables" href="functions_vars.html"/>
+    </topic>
+  </topic>
+</toc>

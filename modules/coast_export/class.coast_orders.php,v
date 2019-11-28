@@ -1,0 +1,168 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2015.06.03.00.15.04;	author root;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@<?php
+
+require_once( 'class.generic_orders.php' ); 
+
+
+//class coast_orders
+class coast_orders extends generic_orders
+{
+	var $include_header;
+	function __construct( $host, $user, $pass, $database, $pref_tablename )
+	{
+		//echo "coast orders constructor";
+		parent::__construct( $host, $user, $pass, $database, $pref_tablename );
+		$this->set_var( 'vendor', "Coast" );
+		$this->set_var( 'include_header', TRUE );
+	}
+	function export_orders()
+	{
+		/*
+		 *	Coast Music's B2B site can import an order in a CSV with  2 columns
+		 *	The first row is ignored
+		 *	Needs MODEL NUMBER and QUANTITY
+		 *	Any other columns are ignored (i.e. we can put a description as a third column)
+		 *	Only 999 rows are accepted.
+		 *	
+		 *	If there are more than 999 rows, we will create only the first 999 lines
+		 *	and set MAXOIDS to 999 so that this can be run a second time.
+		 */
+		$MAXROWSALLOWED = 999;
+		$headers = array( 'Model', 'Quantity', 'Description' );
+
+		/*
+		 *	Table Purchase Orders
+		 *		order_no
+		 *		supplier_id
+		 *
+		 *	table Purchase Orders Details	
+		 *		po_detail_item (index)
+		 *		order_no
+		 *		item_code (this is our code)
+		 *		description
+		 *		quantity_ordered
+		 *
+		 *
+		 */
+	
+		$inserted = array();
+		$ignored = array();
+		$failed = array();
+		if( !isset( $this->db_connection ) )
+			$this->connect_db();	//connect to DB setting db_connection used below.
+		if( !isset( $this->order_no ) )
+		{
+			if( isset( $_POST['order_no'] ) )
+			{
+				$this->set_var( 'order_no', $_POST['order_no'] );
+			}
+			else if( isset( $_GET['order_no'] ) )
+			{
+				$this->set_var( 'order_no', $_GET['order_no'] );
+			}
+			else
+			{
+				return FALSE;	//ERROR
+			}
+		}
+		/*******************************************************************
+		 *
+		 *	Open the file and write the header row
+		 *
+		 *******************************************************************/
+		$fp = fopen( '/tmp/coast_order_' . $this->order_no . '.csv', 'w' );
+/*
+		if( $this->include_header )
+		{
+			foreach( $headers as $column )
+			{
+				fwrite( $fp, $column . "," );
+			}
+			fwrite( $fp, "\n" );
+		}
+*/
+		/******************************************************************
+		 *
+		 *	Should be able to use $this->get_purchase_order
+		 *	so that this is generic - only need to change the output format...
+		 *	
+		 *	Could even add in mapping into the prefs so that we can
+		 *	change the output on the fly.	
+		 *
+		 ******************************************************************/
+//		$this->get_purchase_order();
+//		foreach( $this->purchase_order->line_items as $po_line_details )
+//		{
+//			/*
+//			 *        var $line_no;
+//			 *        var $po_detail_rec;
+//			 *        var $grn_item_id;
+//			 *        var $stock_id;
+//			 *        var $item_description;
+//			 *        var $price;
+//			 *        var $units;
+//			 *        var $req_del_date;
+//			 *        var $tax_type;
+//			 *        var $tax_type_name;
+//			 *
+//			 *        var $quantity;          // current/entry quantity of PO line
+//			 *        var $qty_inv;   // quantity already invoiced against this line
+//			 *        var $receive_qty;       // current/entry GRN quantity
+//			 *        var $qty_received;      // quantity already received against this line
+//			 *
+//			 *        var $standard_cost;
+//			 *        var $descr_editable;
+//			 */
+//
+//				fwrite( $fp, '"' . $po_line_details->stock_id . '",' );
+//				fwrite( $fp, '"' . $po_line_details->units . '",' );
+//				fwrite( $fp, '"' . $po_line_details->item_description . '",' );
+//				fwrite( $fp, '"' . $po_line_details->line_no . '",' );
+//		}
+            $sql = "SELECT item_code as Model, quantity_ordered as Quantity, description as Description FROM `" . $this->company_prefix . "purch_order_details` WHERE order_no = '$this->order_no'";
+		echo $sql;
+            $orders = mysql_query($sql, $this->db_connection);
+            display_notification("Found " . db_num_rows($orders) . " lines in the order");
+            $ignoredrows = $rowcount = 0;
+            while( ($cust = mysql_fetch_assoc($orders)) AND ($rowcount < $MAXROWSALLOWED) ) 
+		{
+			foreach( $headers as $column )
+			{
+				fwrite( $fp, '"' . $cust[$column] . '",' );
+			}
+			fwrite( $fp, "\n" );
+			$rowcount++;
+
+            	}	//!WHILE
+            	while ($cust = mysql_fetch_assoc($orders) )
+		{
+			$ignoredrows++;
+		}
+		fflush( $fp );
+		fclose( $fp );
+            display_notification("$rowcount rows of items created, $ignoredrows rows of items ignored, $MAXROWSALLOWED rows allowed.");
+	}
+}
+?>
+@

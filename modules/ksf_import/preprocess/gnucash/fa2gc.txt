@@ -1,0 +1,6 @@
+http://fhs-laptop1.ksfraser.com/ksf/accounting/gl/inquiry/gl_account_inquiry.php?TransFromDate=01/01/2017&TransToDate=04/21/2019&Dimension=0&Dimension2=0&account=1001
+
+take a look in that file - generates a filtered list of transactions that happened.
+*Use it to generate a CSV of them
+*Use it to generate an OFX of them
+Import into GC see if it will update the transactions with a reference number.

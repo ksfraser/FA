@@ -1,0 +1,5 @@
+                add_gl_trans($trans_type, $trans_id, $to, $co['retained_earnings_act'],
+                        0, 0, _("Closing Year"), -$balance);
+                add_gl_trans($trans_type, $trans_id, $to, $co['profit_loss_year_act'],
+                        0, 0, _("Closing Year"), $balance);
+

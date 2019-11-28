@@ -1,0 +1,12 @@
+Display ksf_shipping data
+
+Shipping ETA departure supplier
+Typical transit and Customs days
+ETA Arrival at Location (calculated)
+integrate into shipping tracking?
+-tracking number
+-latest eta
+-last update in FA
+-last update on shipping site
+-last reported location
+

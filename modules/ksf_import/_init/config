@@ -1,0 +1,10 @@
+Package: ksf_import
+Name: ksf_import
+Description: Module for importing bank files
+Author: Kevin Fraser <kevin@ksfraser.com>
+Maintenance: Kevin Fraser <kevin@ksfraser.com>
+Homepage: http://ksfraser.com
+Type: extension
+InstallPath: modules/ksf_import
+Filename: ksf_import
+Version: 1.0

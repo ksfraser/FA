@@ -1,0 +1,5 @@
+http://woothemes.github.io/woocommerce-rest-api-docs/
+
+kevin@fraserhighlandshoppe.ca
+consumer ck_adb5f7a50b2861790bd7edd25895c9a380bd7df6
+secret cs_9d7e95d5b05de9200c0efca2d3ac54e6ee15c9a4

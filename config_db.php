@@ -22,7 +22,7 @@ $tb_pref_counter = 3;
 $db_connections = array (
   0 => 
   array (
-    'name' => 'ADMIN COMPANY',
+    'name' => 'ADMIN COMPANY local',
     'host' => 'localhost',
     'dbuser' => 'fhs',
     'dbpassword' => 'fhs',
@@ -31,16 +31,16 @@ $db_connections = array (
   ),
   1 => 
   array (
-    'name' => 'FHS laptop',
-    'host' => 'fhs-laptop1.ksfraser.com',
+    'name' => 'FHS Mickey devel',
+    'host' => 'mickey.ksfraser.com',
     'dbuser' => 'fhs',
     'dbpassword' => 'fhs',
-    'dbname' => 'fhs',
+    'dbname' => 'devel_fhs_frontaccounting',
     'tbpref' => '1_',
   ),
   2 => 
   array (
-    'name' => 'DEVEL FHS',
+    'name' => 'DEVEL FHS ws001',
     'host' => 'fhsws001.ksfraser.com',
     'dbuser' => 'fhs',
     'dbpassword' => 'fhs',
@@ -49,11 +49,11 @@ $db_connections = array (
   ),
   3 => 
   array (
-    'name' => 'FHS Mickey',
-    'host' => 'mickey.ksfraser.com',
+    'name' => 'FHS laptop',
+    'host' => 'fhs-laptop1.ksfraser.com',
     'dbuser' => 'fhs',
     'dbpassword' => 'fhs',
-    'dbname' => 'fhs_frontaccounting',
+    'dbname' => 'fhs',
     'tbpref' => '1_',
   ),
   4 => 

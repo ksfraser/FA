@@ -1,0 +1,103 @@
+\hypertarget{classksf__data__dictionary}{}\section{ksf\+\_\+data\+\_\+dictionary Class Reference}
+\label{classksf__data__dictionary}\index{ksf\+\_\+data\+\_\+dictionary@{ksf\+\_\+data\+\_\+dictionary}}
+Inheritance diagram for ksf\+\_\+data\+\_\+dictionary\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{d4/d83/classksf__data__dictionary}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classksf__data__dictionary_acb25c29a1061b3a6d9e30c06fbb2c10e}{}\label{classksf__data__dictionary_acb25c29a1061b3a6d9e30c06fbb2c10e} 
+{\bfseries \+\_\+\+\_\+construct} ( \$host, \$user, \$pass, \$database, \$pref\+\_\+tablename, \$ui\+\_\+caller)
+\item 
+\hypertarget{classksf__data__dictionary_a7c16a24545d7b021f36cbe8db1960240}{}\label{classksf__data__dictionary_a7c16a24545d7b021f36cbe8db1960240} 
+{\bfseries define\+\_\+table} ()
+\item 
+\hyperlink{classksf__data__dictionary_af5a8a952ccf5cf307449559a8c0219b3}{fix\+\_\+stock\+\_\+id\+\_\+size} ()
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classksf__data__dictionary_a073be682441a5cac9003e3b1d35add67}{}\label{classksf__data__dictionary_a073be682441a5cac9003e3b1d35add67} 
+{\bfseries \$db}
+\item 
+\hypertarget{classksf__data__dictionary_ae9ffadd22abc35408de8169e195d9c60}{}\label{classksf__data__dictionary_ae9ffadd22abc35408de8169e195d9c60} 
+{\bfseries \$ck}
+\item 
+\hypertarget{classksf__data__dictionary_acef5fa3bf3049242c863eefdd829f306}{}\label{classksf__data__dictionary_acef5fa3bf3049242c863eefdd829f306} 
+{\bfseries \$cs}
+\item 
+\hypertarget{classksf__data__dictionary_a8f8039fa67a90e858eb3affbc8899f2c}{}\label{classksf__data__dictionary_a8f8039fa67a90e858eb3affbc8899f2c} 
+{\bfseries \$server}
+\item 
+\hypertarget{classksf__data__dictionary_ad9cee0d471b634e5e231b3b2283fbd43}{}\label{classksf__data__dictionary_ad9cee0d471b634e5e231b3b2283fbd43} 
+{\bfseries \$rest\+\_\+path}
+\item 
+\hypertarget{classksf__data__dictionary_a52e49c26728a76d726311d6ce6a4604e}{}\label{classksf__data__dictionary_a52e49c26728a76d726311d6ce6a4604e} 
+{\bfseries \$environment}
+\item 
+\hypertarget{classksf__data__dictionary_ac5293f7337f3c456435a15fb3a36790b}{}\label{classksf__data__dictionary_ac5293f7337f3c456435a15fb3a36790b} 
+{\bfseries \$debug}
+\item 
+\hypertarget{classksf__data__dictionary_a1897d718b0ce22d30ffc8d4a4eff0f05}{}\label{classksf__data__dictionary_a1897d718b0ce22d30ffc8d4a4eff0f05} 
+{\bfseries \$alters\+\_\+needed}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+data\+\_\+dictionary module \begin{DoxyVerb}Purpose of this module is to alter Front Accounting tables
+so that column widths are large enough for the modules
+we have added.
+
+We will have a form to launch the table alters.
+
+We will take an array of tables, their column name,
+and the new sizes/attributes.
+
+The form will launch an ALTER TABLES set of queries.
+Probably should set it to be ATOMIC so that if an update
+fails they are all rolled back.  However, fields too large
+is less of a problem than too small.
+
+Eventually I might add a table to store the alterations,
+as well as a screen to populate the table.\end{DoxyVerb}
+
+
+\hyperlink{classksf__data__dictionary}{ksf\+\_\+data\+\_\+dictionary} extends generic\+\_\+fa\+\_\+interface \begin{DoxyVerb}This class can be extended in a number of ways.
+$this->alters_needed needs to have any field defining routine added since
+it is called by the UI screen.
+
+You could simply add a function and update alters_needed.
+
+You can extend the class, creating a new function that defines the table.
+You would also need to alter the UI class to find the extended class...
+
+You could alter the routine fix_stock_id_size by adding more tables into the
+array definition.
+
+You could use this class and call $this->modify_table_column() with your own 
+table definition.\end{DoxyVerb}
+ 
+
+\subsection{Member Function Documentation}
+\hypertarget{classksf__data__dictionary_af5a8a952ccf5cf307449559a8c0219b3}{}\label{classksf__data__dictionary_af5a8a952ccf5cf307449559a8c0219b3} 
+\index{ksf\+\_\+data\+\_\+dictionary@{ksf\+\_\+data\+\_\+dictionary}!fix\+\_\+stock\+\_\+id\+\_\+size@{fix\+\_\+stock\+\_\+id\+\_\+size}}
+\index{fix\+\_\+stock\+\_\+id\+\_\+size@{fix\+\_\+stock\+\_\+id\+\_\+size}!ksf\+\_\+data\+\_\+dictionary@{ksf\+\_\+data\+\_\+dictionary}}
+\subsubsection{\texorpdfstring{fix\+\_\+stock\+\_\+id\+\_\+size()}{fix\_stock\_id\_size()}}
+{\footnotesize\ttfamily ksf\+\_\+data\+\_\+dictionary\+::fix\+\_\+stock\+\_\+id\+\_\+size (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+fix\+\_\+stock\+\_\+id\+\_\+size \begin{DoxyVerb}Because of variation products (have attributes such as size and color) where 
+everything else is the same, we want mostly human readable SKUs so that we
+can easily type them in without having to hunt for them.  This requires longer
+SKU lengths.  Default of 20 doesn't work for us anymore.
+
+This function alters all of the tables (that we know of) to have the longer
+length.  The Length is defined in an include file where we are putting
+lengths so we can do this to other tables as needed too.\end{DoxyVerb}
+ 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+class.\+ksf\+\_\+data\+\_\+dictionary.\+php\end{DoxyCompactItemize}

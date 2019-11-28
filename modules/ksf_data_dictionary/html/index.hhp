@@ -1,0 +1,46 @@
+[OPTIONS]
+Compatibility=1.1
+Full-text search=Yes
+Contents file=index.hhc
+Default Window=main
+Default topic=index.html
+Index file=index.hhk
+Language=0x409 English (United States)
+Title=Frontaccounting Inventory Counting Module
+
+[WINDOWS]
+main="Frontaccounting Inventory Counting Module","index.hhc","index.hhk","index.html","index.html",,,,,0x23520,,0x10387e,,,,,,,,0
+
+[FILES]
+d6/df1/classhooks__ksf__data__dictionary.html
+d3/df8/classhooks__ksf__data__dictionary-members.html
+d4/d83/classksf__data__dictionary.html
+dd/da6/classksf__data__dictionary-members.html
+d0/d52/classksf__data__dictionary__ui.html
+dd/d25/classksf__data__dictionary__ui-members.html
+d1/db2/classorigin__ui2.html
+d6/d1b/classorigin__ui2-members.html
+index.html
+annotated.html
+classes.html
+hierarchy.html
+functions.html
+functions_func.html
+functions_vars.html
+tab_a.png
+tab_b.png
+tab_h.png
+tab_s.png
+nav_h.png
+nav_f.png
+bc_s.png
+doxygen.png
+closed.png
+open.png
+bdwn.png
+sync_on.png
+sync_off.png
+d6/df1/classhooks__ksf__data__dictionary.png
+d4/d83/classksf__data__dictionary.png
+d0/d52/classksf__data__dictionary__ui.png
+d1/db2/classorigin__ui2.png

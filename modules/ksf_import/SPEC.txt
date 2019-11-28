@@ -1,0 +1,7 @@
+Dream can export a CSV
+
+Have a table to store each data line.
+Have a status on each line whether it has been imported as a customer payment or not
+Need to recognize chargebacks etc
+Need to create a customer payment.
+

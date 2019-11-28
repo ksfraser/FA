@@ -1,0 +1,48 @@
+Client Info
+
+User Agent : BitRock InstallBuilder HTTP Client
+Remote Address : 127.0.0.1
+
+Server Info
+
+Host : localhost
+PHP Version : 5.6.21
+Server : Apache
+Admin : admin@example.com
+
+Document Root : C:/Bitnami/orangehrm-3.3.2-1/apache2/htdocs
+ROOT_PATH : C:\Bitnami\orangehrm-3.3.2-1\apps\orangehrm\htdocs
+
+OrangeHRM Installation Log
+
+Thu, 26 May 2016 20:22:41 -0700 DB Creation - Starting
+Thu, 26 May 2016 20:22:42 -0700 DB Creation - Done
+Thu, 26 May 2016 20:22:42 -0700 DB Creation - No Errors
+Thu, 26 May 2016 20:22:42 -0700 Fill Data Phase 1 - Starting
+Thu, 26 May 2016 20:22:42 -0700 Fill Data Phase 1 - Connected to the DB Server
+Thu, 26 May 2016 20:22:42 -0700 Fill Data Phase 1 - Selected the DB
+Thu, 26 May 2016 20:22:42 -0700 Fill Data Phase 1 - Reading DB Script
+Thu, 26 May 2016 20:22:42 -0700 Fill Data Phase 1 - Opened DB Script
+Thu, 26 May 2016 20:22:42 -0700 Fill Data Phase 1 - Read DB script
+Thu, 26 May 2016 20:22:42 -0700 Fill Data Phase 1 - There are 284 Statements in the DB script
+Thu, 26 May 2016 20:26:18 -0700 Fill Data Phase 1 - Done
+Thu, 26 May 2016 20:26:18 -0700 Fill Data Phase 1 - No Errors
+Thu, 26 May 2016 20:26:18 -0700 Fill Data Phase 2 - Starting
+Thu, 26 May 2016 20:26:18 -0700 Fill Data Phase 2 - Connected to the DB Server
+Thu, 26 May 2016 20:26:18 -0700 Fill Data Phase 2 - Selected the DB
+Thu, 26 May 2016 20:26:18 -0700 Fill Data Phase 2 - Reading DB Script
+Thu, 26 May 2016 20:26:18 -0700 Fill Data Phase 2 - Opened DB Script
+Thu, 26 May 2016 20:26:18 -0700 Fill Data Phase 2 - Read DB script
+Thu, 26 May 2016 20:26:18 -0700 Fill Data Phase 2 - There are 127 Statements in the DB script
+Thu, 26 May 2016 20:26:26 -0700 Fill Data Phase 1 - Connected to the DB Server
+Thu, 26 May 2016 20:26:26 -0700 Fill Data Phase 2 - Done
+Thu, 26 May 2016 20:26:26 -0700 Fill Data Phase 2 - No Errors
+Thu, 26 May 2016 20:26:27 -0700 Create DB user - Starting
+Thu, 26 May 2016 20:26:27 -0700 Create DB user - Done
+Thu, 26 May 2016 20:26:27 -0700 Create DB user - No Errors
+Thu, 26 May 2016 20:26:27 -0700 Create OrangeHRM user - Starting
+Thu, 26 May 2016 20:26:28 -0700 Create OrangeHRM user - Done
+Thu, 26 May 2016 20:26:28 -0700 Create OrangeHRM user - No Errors
+Thu, 26 May 2016 20:26:28 -0700 Write Conf - Starting
+Thu, 26 May 2016 20:26:28 -0700 Write Conf - Done
+Thu, 26 May 2016 20:26:28 -0700 Write Conf - No Errors

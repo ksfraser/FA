@@ -1,0 +1,80 @@
+On Purchase (vendor) tab add a priority tab.
+Create a "suggested PO" cart.  List all items that would show up in Monthly Inventory Planning report as well as any items that are on backorder (sales order).
+Mark any items in the list that are available from other vendors
+Mark any items that are typically purchased from this vendor (see past purchases, mark where greater than threshold)
+Have threshold for "typical" value i.e. 50%
+Mark any items that are typically not purchased from this vendor (threshold, activity by time, activity by purchases)
+config value for thresholds
+Have a transfer to Purchase Order button.  (maybe use textcart to generate copy and paste data)
+
+
+select d.item_code, o.ord_date, d.delivery_date, d.quantity_ordered, d.quantity_received, o.supplier_id, s.supp_name, abs(datediff(d.delivery_date, o.ord_date) )
+from 1_purch_order_details d, 1_purch_orders o, 1_suppliers s 
+where o.order_no=d.order_no 
+ and o.supplier_id=s.supplier_id 
+order by d.item_code, s.supp_name;
+
+
+
+ITEM, SUPPLIER, TIME TO ARRIVE
+select d.item_code, s.supp_name, abs(datediff(d.delivery_date, o.ord_date) )
+from 1_purch_order_details d, 1_purch_orders o, 1_suppliers s 
+where o.order_no=d.order_no 
+ and o.supplier_id=s.supplier_id 
+order by d.item_code, s.supp_name;
+
+ITEM, QTY, SUPPLIER, TIME TO ARRIVE   (for weighting)
+select d.item_code, d.quantity_ordered,  s.supp_name, abs(datediff(d.delivery_date, o.ord_date) )
+from 1_purch_order_details d, 1_purch_orders o, 1_suppliers s 
+where o.order_no=d.order_no 
+ and o.supplier_id=s.supplier_id 
+order by d.item_code, s.supp_name;
+
+Purchase Data
+1_purch_data
+| supplier_id          | int(11)     | NO   | PRI | 0       |       |
+| stock_id             | varchar(64) | NO   | PRI |         |       |
+| price                | double      | NO   |     | 0       |       |
+| suppliers_uom        | char(50)    | NO   |     |         |       |
+| conversion_factor    | double      | NO   |     | 1       |       |
+| supplier_description | char(50)    | NO   |     |         |       |
+
+desc 2_loc_stock;
++---------------+------------+------+-----+---------+-------+
+| Field         | Type       | Null | Key | Default | Extra |
++---------------+------------+------+-----+---------+-------+
+| loc_code      | char(5)    | NO   | PRI |         |       |
+| stock_id      | char(20)   | NO   | PRI |         |       |
+| reorder_level | bigint(20) | NO   |     | 0       |       |
++---------------+------------+------+-----+---------+-------+
+
+QTY on hand by location
+ select *, sum(qty) from 1_stock_moves group by stock_id, loc_code;
+desc 1_stock_moves;
++------------------+-------------+------+-----+------------+----------------+
+| Field            | Type        | Null | Key | Default    | Extra          |
++------------------+-------------+------+-----+------------+----------------+
+| trans_id         | int(11)     | NO   | PRI | NULL       | auto_increment |
+| trans_no         | int(11)     | NO   |     | 0          |                |
+| stock_id         | varchar(64) | YES  | MUL | NULL       |                |
+| type             | smallint(6) | NO   | MUL | 0          |                |
+| loc_code         | char(5)     | NO   |     |            |                |
+| tran_date        | date        | NO   |     | 0000-00-00 |                |
+| person_id        | int(11)     | YES  |     | NULL       |                |
+| price            | double      | NO   |     | 0          |                |
+| reference        | char(40)    | NO   |     |            |                |
+| qty              | double      | NO   |     | 1          |                |
+| discount_percent | double      | NO   |     | 0          |                |
+| standard_cost    | double      | NO   |     | 0          |                |
+| visible          | tinyint(1)  | NO   |     | 1          |                |
++------------------+-------------+------+-----+------------+----------------+
+
+QTY on hand  (can be found in ksf_qoh)
+ select *, sum(qty) from 1_stock_moves group by stock_id;
+
+QTY and Reorder by stock_id, loc_code
+select sm.stock_id, sm.loc_code, sum(sm.qty) as quantity, ls.reorder_level from 1_stock_moves sm, 1_loc_stock ls where ls.stock_id=sm.stock_id and ls.loc_code=sm.loc_code group by sm.stock_id, sm.loc_code
+
+QTY less than reorder
+select sm.stock_id, sm.loc_code, sum(sm.qty) as quantity, ls.reorder_level from 1_stock_moves sm, 1_loc_stock ls where ls.stock_id=sm.stock_id and ls.loc_code=sm.loc_code and quantity < reorder_level group by sm.stock_id, sm.loc_code
+

@@ -1,0 +1,92 @@
+2016-05-26 21:19:24 2488 [Note] Plugin 'FEDERATED' is disabled.
+2016-05-26 21:19:29 2488 [Note] InnoDB: Using atomics to ref count buffer pool pages
+2016-05-26 21:19:29 2488 [Note] InnoDB: The InnoDB memory heap is disabled
+2016-05-26 21:19:29 2488 [Note] InnoDB: Mutexes and rw_locks use Windows interlocked functions
+2016-05-26 21:19:29 2488 [Note] InnoDB: Memory barrier is not used
+2016-05-26 21:19:29 2488 [Note] InnoDB: Compressed tables use zlib 1.2.3
+2016-05-26 21:19:30 2488 [Note] InnoDB: Not using CPU crc32 instructions
+2016-05-26 21:19:31 2488 [Note] InnoDB: Initializing buffer pool, size = 128.0M
+2016-05-26 21:19:31 2488 [Note] InnoDB: Completed initialization of buffer pool
+2016-05-26 21:19:32 2488 [Note] InnoDB: Highest supported file format is Barracuda.
+2016-05-26 21:19:36 2488 [Note] InnoDB: 128 rollback segment(s) are active.
+2016-05-26 21:19:37 2488 [Note] InnoDB: Waiting for purge to start
+2016-05-26 21:19:37 2488 [Note] InnoDB: 5.6.30 started; log sequence number 1625977
+2016-05-26 21:19:37 2488 [Warning] No existing UUID has been found, so we assume that this is the first time that this server has been started. Generating a new UUID: d7bdd100-23b9-11e6-bbd1-00ffa8c5f335.
+2016-05-26 21:19:37 2488 [Note] Server hostname (bind-address): '127.0.0.1'; port: 3306
+2016-05-26 21:19:37 2488 [Note]   - '127.0.0.1' resolves to '127.0.0.1';
+2016-05-26 21:19:37 2488 [Note] Server socket created on IP: '127.0.0.1'.
+2016-05-26 21:19:40 2488 [Note] Event Scheduler: Loaded 0 events
+2016-05-26 21:19:40 2488 [Note] C:\Bitnami\ORANGE~1.2-1\mysql\bin\mysqld.exe: ready for connections.
+Version: '5.6.30'  socket: ''  port: 3306  MySQL Community Server (GPL)
+2016-05-26 21:20:16 2488 [Note] C:\Bitnami\ORANGE~1.2-1\mysql\bin\mysqld.exe: Normal shutdown
+
+2016-05-26 21:20:16 2488 [Note] Giving 0 client threads a chance to die gracefully
+2016-05-26 21:20:16 2488 [Note] Event Scheduler: Purging the queue. 0 events
+2016-05-26 21:20:16 2488 [Note] Shutting down slave threads
+2016-05-26 21:20:16 2488 [Note] Forcefully disconnecting 0 remaining clients
+2016-05-26 21:20:16 2488 [Note] Binlog end
+2016-05-26 21:20:17 2488 [Note] Shutting down plugin 'partition'
+2016-05-26 21:20:17 2488 [Note] Shutting down plugin 'PERFORMANCE_SCHEMA'
+2016-05-26 21:20:17 2488 [Note] Shutting down plugin 'INNODB_SYS_DATAFILES'
+2016-05-26 21:20:17 2488 [Note] Shutting down plugin 'INNODB_SYS_TABLESPACES'
+2016-05-26 21:20:17 2488 [Note] Shutting down plugin 'INNODB_SYS_FOREIGN_COLS'
+2016-05-26 21:20:17 2488 [Note] Shutting down plugin 'INNODB_SYS_FOREIGN'
+2016-05-26 21:20:17 2488 [Note] Shutting down plugin 'INNODB_SYS_FIELDS'
+2016-05-26 21:20:17 2488 [Note] Shutting down plugin 'INNODB_SYS_COLUMNS'
+2016-05-26 21:20:17 2488 [Note] Shutting down plugin 'INNODB_SYS_INDEXES'
+2016-05-26 21:20:17 2488 [Note] Shutting down plugin 'INNODB_SYS_TABLESTATS'
+2016-05-26 21:20:17 2488 [Note] Shutting down plugin 'INNODB_SYS_TABLES'
+2016-05-26 21:20:17 2488 [Note] Shutting down plugin 'INNODB_FT_INDEX_TABLE'
+2016-05-26 21:20:17 2488 [Note] Shutting down plugin 'INNODB_FT_INDEX_CACHE'
+2016-05-26 21:20:17 2488 [Note] Shutting down plugin 'INNODB_FT_CONFIG'
+2016-05-26 21:20:17 2488 [Note] Shutting down plugin 'INNODB_FT_BEING_DELETED'
+2016-05-26 21:20:17 2488 [Note] Shutting down plugin 'INNODB_FT_DELETED'
+2016-05-26 21:20:17 2488 [Note] Shutting down plugin 'INNODB_FT_DEFAULT_STOPWORD'
+2016-05-26 21:20:17 2488 [Note] Shutting down plugin 'INNODB_METRICS'
+2016-05-26 21:20:17 2488 [Note] Shutting down plugin 'INNODB_BUFFER_POOL_STATS'
+2016-05-26 21:20:17 2488 [Note] Shutting down plugin 'INNODB_BUFFER_PAGE_LRU'
+2016-05-26 21:20:17 2488 [Note] Shutting down plugin 'INNODB_BUFFER_PAGE'
+2016-05-26 21:20:17 2488 [Note] Shutting down plugin 'INNODB_CMP_PER_INDEX_RESET'
+2016-05-26 21:20:17 2488 [Note] Shutting down plugin 'INNODB_CMP_PER_INDEX'
+2016-05-26 21:20:17 2488 [Note] Shutting down plugin 'INNODB_CMPMEM_RESET'
+2016-05-26 21:20:17 2488 [Note] Shutting down plugin 'INNODB_CMPMEM'
+2016-05-26 21:20:17 2488 [Note] Shutting down plugin 'INNODB_CMP_RESET'
+2016-05-26 21:20:17 2488 [Note] Shutting down plugin 'INNODB_CMP'
+2016-05-26 21:20:17 2488 [Note] Shutting down plugin 'INNODB_LOCK_WAITS'
+2016-05-26 21:20:17 2488 [Note] Shutting down plugin 'INNODB_LOCKS'
+2016-05-26 21:20:17 2488 [Note] Shutting down plugin 'INNODB_TRX'
+2016-05-26 21:20:17 2488 [Note] Shutting down plugin 'InnoDB'
+2016-05-26 21:20:17 2488 [Note] InnoDB: FTS optimize thread exiting.
+2016-05-26 21:20:17 2488 [Note] InnoDB: Starting shutdown...
+2016-05-26 21:20:18 2488 [Note] InnoDB: Shutdown completed; log sequence number 1625987
+2016-05-26 21:20:18 2488 [Note] Shutting down plugin 'BLACKHOLE'
+2016-05-26 21:20:18 2488 [Note] Shutting down plugin 'ARCHIVE'
+2016-05-26 21:20:18 2488 [Note] Shutting down plugin 'MRG_MYISAM'
+2016-05-26 21:20:18 2488 [Note] Shutting down plugin 'MyISAM'
+2016-05-26 21:20:18 2488 [Note] Shutting down plugin 'MEMORY'
+2016-05-26 21:20:18 2488 [Note] Shutting down plugin 'CSV'
+2016-05-26 21:20:18 2488 [Note] Shutting down plugin 'sha256_password'
+2016-05-26 21:20:18 2488 [Note] Shutting down plugin 'mysql_old_password'
+2016-05-26 21:20:18 2488 [Note] Shutting down plugin 'mysql_native_password'
+2016-05-26 21:20:18 2488 [Note] Shutting down plugin 'binlog'
+2016-05-26 21:20:18 2488 [Note] C:\Bitnami\ORANGE~1.2-1\mysql\bin\mysqld.exe: Shutdown complete
+
+2016-05-26 21:21:35 3660 [Note] Plugin 'FEDERATED' is disabled.
+2016-05-26 21:21:38 3660 [Note] InnoDB: Using atomics to ref count buffer pool pages
+2016-05-26 21:21:38 3660 [Note] InnoDB: The InnoDB memory heap is disabled
+2016-05-26 21:21:38 3660 [Note] InnoDB: Mutexes and rw_locks use Windows interlocked functions
+2016-05-26 21:21:38 3660 [Note] InnoDB: Memory barrier is not used
+2016-05-26 21:21:38 3660 [Note] InnoDB: Compressed tables use zlib 1.2.3
+2016-05-26 21:21:38 3660 [Note] InnoDB: Not using CPU crc32 instructions
+2016-05-26 21:21:39 3660 [Note] InnoDB: Initializing buffer pool, size = 128.0M
+2016-05-26 21:21:39 3660 [Note] InnoDB: Completed initialization of buffer pool
+2016-05-26 21:21:39 3660 [Note] InnoDB: Highest supported file format is Barracuda.
+2016-05-26 21:21:40 3660 [Note] InnoDB: 128 rollback segment(s) are active.
+2016-05-26 21:21:40 3660 [Note] InnoDB: Waiting for purge to start
+2016-05-26 21:21:41 3660 [Note] InnoDB: 5.6.30 started; log sequence number 1625987
+2016-05-26 21:21:41 3660 [Note] Server hostname (bind-address): '127.0.0.1'; port: 3306
+2016-05-26 21:21:41 3660 [Note]   - '127.0.0.1' resolves to '127.0.0.1';
+2016-05-26 21:21:41 3660 [Note] Server socket created on IP: '127.0.0.1'.
+2016-05-26 21:21:41 3660 [Note] Event Scheduler: Loaded 0 events
+2016-05-26 21:21:41 3660 [Note] C:\Bitnami\orangehrm-3.3.2-1\mysql\bin\mysqld.exe: ready for connections.
+Version: '5.6.30'  socket: ''  port: 3306  MySQL Community Server (GPL)

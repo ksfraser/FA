@@ -1,0 +1,10 @@
+Package: ksf_price_sticker_need_change
+Name: ksf_price_sticker_need_change
+Description: Indicate what SKUs have price changes requiring price sticker updates
+Author: Kevin Fraser <kevin@ksfraser.com>
+Maintenance: Kevin Fraser <kevin@ksfraser.com>
+Homepage: http://ksfraser.com
+Type: extension
+InstallPath: modules/ksf_price_sticker_need_change
+Filename: ksf_price_sticker_need_change
+Version: 1.0

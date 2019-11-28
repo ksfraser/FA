@@ -1,0 +1,125 @@
+\hypertarget{classinventory__cart}{}\section{inventory\+\_\+cart Class Reference}
+\label{classinventory__cart}\index{inventory\+\_\+cart@{inventory\+\_\+cart}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classinventory__cart_ad181b1f15c4e0342cd9cd54df9a2c8b7}{}\label{classinventory__cart_ad181b1f15c4e0342cd9cd54df9a2c8b7} 
+{\bfseries \+\_\+\+\_\+construct} ( \$date=null)
+\item 
+\hypertarget{classinventory__cart_aa609c5eeaf39f8fe416ac2093d81d94b}{}\label{classinventory__cart_aa609c5eeaf39f8fe416ac2093d81d94b} 
+{\bfseries new\+\_\+item} ( \$stock\+\_\+id)
+\item 
+\hypertarget{classinventory__cart_a1d31465361c00aad624a82933b3c1d63}{}\label{classinventory__cart_a1d31465361c00aad624a82933b3c1d63} 
+{\bfseries serialize} ()
+\item 
+\hypertarget{classinventory__cart_ac988218bdcff3a458f505c4999e3e4b3}{}\label{classinventory__cart_ac988218bdcff3a458f505c4999e3e4b3} 
+{\bfseries unserialize} (\$data)
+\item 
+\hypertarget{classinventory__cart_a6ca9bac672c850544da5ec593d89458f}{}\label{classinventory__cart_a6ca9bac672c850544da5ec593d89458f} 
+{\bfseries cart2session} ()
+\item 
+\hypertarget{classinventory__cart_a62b8732c8d7f083f58c7839d020c0ba6}{}\label{classinventory__cart_a62b8732c8d7f083f58c7839d020c0ba6} 
+{\bfseries session2cart} ()
+\item 
+\hypertarget{classinventory__cart_aa47a62325020ad6b5eb6acf5927ce65a}{}\label{classinventory__cart_aa47a62325020ad6b5eb6acf5927ce65a} 
+{\bfseries can\+\_\+process} ()
+\item 
+\hypertarget{classinventory__cart_a00e14d7734a32d9192631ab8349d024e}{}\label{classinventory__cart_a00e14d7734a32d9192631ab8349d024e} 
+{\bfseries handle\+\_\+update\+\_\+item} ()
+\item 
+\hypertarget{classinventory__cart_ae283c95df0a280d6037ad59d0f6e71f1}{}\label{classinventory__cart_ae283c95df0a280d6037ad59d0f6e71f1} 
+{\bfseries handle\+\_\+delete\+\_\+item} (\$line\+\_\+no)
+\item 
+\hyperlink{classinventory__cart_af2060bcea0c8fd54ae0a2e5550a44935}{increment\+\_\+item\+\_\+count} ( \$stock\+\_\+id, \$count)
+\item 
+\hypertarget{classinventory__cart_ada03f4b41aa7aef0b29aa187a09ae857}{}\label{classinventory__cart_ada03f4b41aa7aef0b29aa187a09ae857} 
+{\bfseries get\+\_\+stock\+\_\+id} ( \$item\+\_\+code)
+\item 
+\hyperlink{classinventory__cart_a919740e1d8f9b8d004549eb21e8b551d}{is\+Stockid} ( \$stock\+\_\+id)
+\item 
+\hyperlink{classinventory__cart_a1dbd58ee440d2ec8763a8cb5d0241f67}{is\+Item\+Code} ( \$item\+\_\+code)
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classinventory__cart_adb6a248e9e7e1692096b86e0a46ea7d3}{}\label{classinventory__cart_adb6a248e9e7e1692096b86e0a46ea7d3} 
+{\bfseries \$reference}
+\item 
+\hypertarget{classinventory__cart_afb8a0f36b69039235bce9a1533c52557}{}\label{classinventory__cart_afb8a0f36b69039235bce9a1533c52557} 
+{\bfseries \$comments}
+\item 
+\hypertarget{classinventory__cart_aa6ec8ee5813e4dc2c5f4d4bcc86315cd}{}\label{classinventory__cart_aa6ec8ee5813e4dc2c5f4d4bcc86315cd} 
+{\bfseries \$document\+\_\+date}
+\item 
+\hypertarget{classinventory__cart_a9f2fa9795e85409eb761c75010e7bf81}{}\label{classinventory__cart_a9f2fa9795e85409eb761c75010e7bf81} 
+{\bfseries \$from\+\_\+location}
+\item 
+\hypertarget{classinventory__cart_a2e5e203494a0074bdee0b793b2cf38c1}{}\label{classinventory__cart_a2e5e203494a0074bdee0b793b2cf38c1} 
+{\bfseries \$to\+\_\+location}
+\item 
+\hypertarget{classinventory__cart_a3612f3ff91eec58064ba266f07c501f9}{}\label{classinventory__cart_a3612f3ff91eec58064ba266f07c501f9} 
+{\bfseries \$cart\+\_\+items}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+This module is for doing a stock taking (aka inventory).
+
+T\+O\+DO\+: Test that cart2session puts the cart\+\_\+items into it. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classinventory__cart_af2060bcea0c8fd54ae0a2e5550a44935}{}\label{classinventory__cart_af2060bcea0c8fd54ae0a2e5550a44935} 
+\index{inventory\+\_\+cart@{inventory\+\_\+cart}!increment\+\_\+item\+\_\+count@{increment\+\_\+item\+\_\+count}}
+\index{increment\+\_\+item\+\_\+count@{increment\+\_\+item\+\_\+count}!inventory\+\_\+cart@{inventory\+\_\+cart}}
+\subsubsection{\texorpdfstring{increment\+\_\+item\+\_\+count()}{increment\_item\_count()}}
+{\footnotesize\ttfamily inventory\+\_\+cart\+::increment\+\_\+item\+\_\+count (\begin{DoxyParamCaption}\item[{}]{\$stock\+\_\+id,  }\item[{}]{\$count }\end{DoxyParamCaption})}
+
+Increment the count or add new item
+
+
+\begin{DoxyParams}{Parameters}
+{\em string} & stock\+\_\+id \\
+\hline
+{\em int} & count \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Bool success/fail 
+\end{DoxyReturn}
+\hypertarget{classinventory__cart_a1dbd58ee440d2ec8763a8cb5d0241f67}{}\label{classinventory__cart_a1dbd58ee440d2ec8763a8cb5d0241f67} 
+\index{inventory\+\_\+cart@{inventory\+\_\+cart}!is\+Item\+Code@{is\+Item\+Code}}
+\index{is\+Item\+Code@{is\+Item\+Code}!inventory\+\_\+cart@{inventory\+\_\+cart}}
+\subsubsection{\texorpdfstring{is\+Item\+Code()}{isItemCode()}}
+{\footnotesize\ttfamily inventory\+\_\+cart\+::is\+Item\+Code (\begin{DoxyParamCaption}\item[{}]{\$item\+\_\+code }\end{DoxyParamCaption})}
+
+check for a foreign/part code. Sets stock\+\_\+id if found.
+
+
+\begin{DoxyParams}{Parameters}
+{\em string} & stock\+\_\+id/item\+\_\+code \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+bool whether item is in item\+\_\+codes A\+ND stock\+\_\+id$<$$>$item\+\_\+code 
+\end{DoxyReturn}
+\hypertarget{classinventory__cart_a919740e1d8f9b8d004549eb21e8b551d}{}\label{classinventory__cart_a919740e1d8f9b8d004549eb21e8b551d} 
+\index{inventory\+\_\+cart@{inventory\+\_\+cart}!is\+Stockid@{is\+Stockid}}
+\index{is\+Stockid@{is\+Stockid}!inventory\+\_\+cart@{inventory\+\_\+cart}}
+\subsubsection{\texorpdfstring{is\+Stockid()}{isStockid()}}
+{\footnotesize\ttfamily inventory\+\_\+cart\+::is\+Stockid (\begin{DoxyParamCaption}\item[{}]{\$stock\+\_\+id }\end{DoxyParamCaption})}
+
+Is the item in the ?stock\+\_\+master? databas
+
+
+\begin{DoxyParams}{Parameters}
+{\em string} & the stock\+\_\+id to check \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+bool Is the item in the ?stock\+\_\+master? database 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+class.\+item.\+php\end{DoxyCompactItemize}

@@ -1,0 +1,111 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2015.06.03.00.15.10;	author root;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@<?php
+/**********************************************
+Name: COAST purchase order export
+modified for COAST 1.5.1 and FrontAccounting 2.3.15 by kfraser 
+Free software under GNU GPL
+***********************************************/
+
+$page_security = 'SA_COASTEXPORT';
+$path_to_root="../..";
+
+include($path_to_root . "/includes/session.inc");
+add_access_extensions();
+set_ext_domain('modules/coast_export');
+
+include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/data_checks.inc");
+/*
+include_once($path_to_root . "/purchases/includes/db/branches_db.inc");
+include_once($path_to_root . "/purchases/includes/cart_class.inc");
+include_once($path_to_root . "/purchases/includes/ui/purchases_order_ui.inc");
+*/
+include_once($path_to_root . "/modules/coast_export/class.coast_orders.php");
+
+error_reporting(E_ALL);
+ini_set("display_errors", "on");
+
+global $db; // Allow access to the FA database connection
+$debug_sql = 0;  // Change to 1 for debug messages
+$prefsDB = "coast_export_prefs";
+
+page(_($help_context = "Coast Music Interface"));
+                //echo __FILE__ . ":" . __LINE__ . "<br />";
+//end_page();
+
+$coastc = new coast_orders( "defiant.ksfraser.com", "fhs", "fhs", "fhs", "coast_export_prefs" );
+$found = $coastc->is_installed();
+$coastc->set_var( 'found', $found );
+
+if ($found) {
+	$coastc->loadprefs();
+}
+else
+{
+	$coastc->install();
+}
+// Show information to connect to COAST Database 
+$action = $found ? 'cexport' : 'show';
+if (isset($_GET['action']) && $found) $action = $_GET['action'];
+
+if (isset($_POST['action'])) {
+    $action = $_POST['action'];
+
+    // Create Table
+    if ($action == 'create') {
+	$coastc->install( "coast_export.php" );
+    }
+    if ($action == 'update') {
+	$coastc->loadprefs();
+	$coastc->checkprefs();
+    } else {
+    }
+    
+// Customer Import from COAST Database
+   if ($action == 'c_export') {
+	//$coastc->minmax_oids();
+	$coastc->export_orders();
+
+    }
+} else {	//POST versus GET
+    if ($action == 'cexport') 
+    { 
+	// Preview Customer Import page
+//	$cid = $coastc->get_id_range();
+    }
+}
+$coastc->base_page( $action, "Coast Music PO Export" );	//start the display of data that the forms below complete.
+
+	$coastc->show_form( $action );
+/*
+if ($action == 'show') {
+	$coastc->action_show_form( $found );
+}
+if ($action == 'cexport') {
+	$coastc->action_cexport_form();
+}
+*/
+
+?>
+@

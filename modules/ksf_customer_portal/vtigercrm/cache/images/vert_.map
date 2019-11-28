@@ -1,0 +1,12 @@
+<img src="cache/images/vert_" border="0" usemap="#cache/images/vert_">
+<map name="cache/images/vert_">
+	<area shape="rect" coords="47,115,68,131" href="index.php?module=Accounts&action=ListView&from_homepagedb=true&type=dbrd&query=true&owner=Kevin Fraser&viewname=4" alt="Organizations=%d" title="Organizations=%d">
+	<area shape="rect" coords="105,123,126,131" href="index.php?module=Potentials&action=ListView&from_homepagedb=true&type=dbrd&query=true&owner=Kevin Fraser&viewname=10" alt="Opportunities=%d" title="Opportunities=%d">
+	<area shape="rect" coords="163,59,184,131" href="index.php?module=Contacts&action=ListView&from_homepagedb=true&type=dbrd&query=true&owner=Kevin Fraser&viewname=7" alt="Contacts=%d" title="Contacts=%d">
+	<area shape="rect" coords="221,104,242,131" href="index.php?module=Leads&action=ListView&from_homepagedb=true&type=dbrd&query=true&owner=Kevin Fraser&viewname=1" alt="Leads=%d" title="Leads=%d">
+	<area shape="rect" coords="279,129,299,131" href="index.php?module=Quotes&action=ListView&from_homepagedb=true&type=dbrd&query=true&owner=Kevin Fraser&viewname=16" alt="Quotes=%d" title="Quotes=%d">
+	<area shape="rect" coords="336,129,357,131" href="index.php?module=SalesOrder&action=ListView&from_homepagedb=true&type=dbrd&query=true&owner=Kevin Fraser&viewname=26" alt="Sales Order=%d" title="Sales Order=%d">
+	<area shape="rect" coords="394,129,415,131" href="index.php?module=Invoice&action=ListView&from_homepagedb=true&type=dbrd&query=true&owner=Kevin Fraser&viewname=21" alt="Invoice=%d" title="Invoice=%d">
+	<area shape="rect" coords="452,33,473,131" href="index.php?module=Calendar&action=ListView&from_homepagedb=true&type=dbrd&query=true&owner=Kevin Fraser&viewname=19" alt="Calendar=%d" title="Calendar=%d">
+	<area shape="rect" coords="510,127,531,131" href="index.php?module=Campaigns&action=ListView&from_homepagedb=true&type=dbrd&query=true&owner=Kevin Fraser&viewname=29" alt="Campaigns=%d" title="Campaigns=%d">
+</map>

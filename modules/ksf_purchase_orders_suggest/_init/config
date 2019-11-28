@@ -1,0 +1,10 @@
+Package: ksf_purchase_orders_suggest
+Name: ksf_purchase_orders_suggest
+Description: 
+Author: Kevin Fraser <kevin@ksfraser.com>
+Maintenance: Kevin Fraser <kevin@ksfraser.com>
+Homepage: http://ksfraser.com
+Type: extension
+InstallPath: modules/ksf_purchase_orders_suggest
+Filename: ksf_purchase_orders_suggest
+Version: 1.0

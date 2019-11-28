@@ -1,0 +1,392 @@
+head	1.10;
+access;
+symbols;
+locks
+	root:1.10; strict;
+comment	@# @;
+
+
+1.10
+date	2015.11.02.05.01.45;	author root;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2015.10.19.03.47.02;	author root;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2015.10.18.01.37.17;	author root;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2015.10.11.21.49.58;	author root;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2015.10.04.19.11.32;	author root;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2015.10.04.17.29.04;	author root;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2015.10.04.05.46.19;	author root;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2015.10.04.05.39.17;	author root;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2015.09.26.15.29.47;	author root;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2015.06.03.00.15.11;	author root;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.10
+log
+@compared to generate_EAN
+Minor change to install_options to remove MENU_MAINTENANCE from one
+of the items to see the impact.
+@
+text
+@<?php
+define ('SS_CDNTAX', 116<<8);
+
+global $path_to_common;
+//$path_to_common = "../ksf_modules_common/";
+$path_to_common = dirname ( realpath ( __FILE__ ) ) . "/../ksf_modules_common/";
+
+
+//DO NOT USE - or _ in module names/directories.  Apparantly there is some code somewhere that is parsing this
+//and not having the info show up in the Role setup (you can't assign access) :(
+
+class hooks_CDNTAX extends hooks {
+	var $module_name = 'CDNTAX'; 
+
+	/*
+	*	Add a new menu tab into FA
+	*/
+/*
+*	function install_tabs( $apps )
+*	{
+*		require_once( 'class.my_app.php' );	//MUST extend application
+*							//First line of constructor ?must be?
+*							//$this->application( "my_app", _($this->help_context = "&My App") );
+*		$apps->add_application( new my_app );
+*	}
+*/
+	function install_tabs( $app )
+	{
+		require_once( 'class.CDNTAX.php' );	
+		//$app->add_application( new CRMAPP );
+	}
+
+	/*
+		Install additonal menu options provided by module
+	*/
+	function install_options($app) {
+		global $path_to_root;
+
+		switch($app->id) {
+			case 'GL':
+				$app->add_rapp_function(2, _('CDNTAX'), 
+					$path_to_root.'/modules/CDNTAX/controller.php', 'SA_CDNTAX', MENU_MAINTENANCE);
+				break;
+				//$app->add_rapp_function(2, _('CDNTAX Profit and Loss'), 
+				//	$path_to_root.'/modules/CDNTAX/profit_loss.php', 'SA_CDNTAX', MENU_MAINTENANCE);
+				$app->add_rapp_function(2, _('CDNTAX Profit and Loss'), 
+					$path_to_root.'/modules/CDNTAX/profit_loss.php', 'SA_CDNTAX');
+				break;
+			/*
+			*	Tie into the install_tabs
+			*/
+/*
+*			case 'my_app':
+*				$app->add_lapp_function(1, _('My App'), 
+*					$path_to_root.'/modules/my_app/my_app.php', 'SA_MYAPP', MENU_MAINTENANCE);
+*				break;
+*/
+		}
+	}
+
+	function install_access()
+	{
+		$security_sections[SS_CDNTAX] = _("CDNTAX");
+
+		$security_areas['SA_CDNTAX'] = array(SS_CDNTAX|2, _("CDNTAX"));	//First sub access level
+		$security_areas['SA_CDNTAX_ADMIN'] = array(SS_CDNTAX|3, _("CDNTAX_ADMIN"));	//For types, categories, outcomes
+
+		return array($security_areas, $security_sections);
+	}
+        /* This method is called on extension activation for company.   */
+        function activate_extension($company, $check_only=true)
+        {
+                global $db_connections;
+/*
+                $updates = array(
+                        //'install_myapp.sql' => array('assets'),
+			'sql/crm_campaign_types.sql' => array('crm_campaign_types'),
+			'sql/crm_mailinglist.sql' => array('crm_mailinglist'),
+
+                );
+
+                return $this->update_databases($company, $updates, $check_only);
+*/
+        }
+        /* This method is called on extension deactivation for company.   */
+        function deactivate_extension($company, $check_only=true)
+        {
+                global $db_connections;
+/*
+                $updates = array(
+                        'drop_myapp.sql' => array('assets')
+                );
+
+                return $this->update_databases($company, $updates, $check_only);
+*/
+        }
+
+}
+?>
+@
+
+
+1.9
+log
+@Update for cloning into CDNTAX
+@
+text
+@d4 5
+d29 1
+a29 1
+		require_once( 'class.CRMAPP.php' );	
+d44 5
+d65 1
+a65 1
+		$security_areas['SA_CDNTAX'] = array(SS_CDNTAX|1, _("CDNTAX"));	//First sub access level
+@
+
+
+1.8
+log
+@added SQL creation script files but commented out
+@
+text
+@d2 1
+a2 1
+define ('SS_FACRM', 116<<8);
+d7 2
+a8 2
+class hooks_FACRM extends hooks {
+	var $module_name = 'FACRM CRM'; 
+d35 3
+a37 5
+			case 'orders':
+				$app->add_rapp_function(2, _('FACRM'), 
+					$path_to_root.'/modules/FACRM/controller.php', 'SA_FACRM', MENU_MAINTENANCE);
+				$app->add_rapp_function(2, _('FACRM2'), 
+					$path_to_root.'/modules/FACRM/controller.php', 'SA_FACRM2', MENU_MAINTENANCE);
+a47 10
+/*
+			case 'AP':
+				$app->add_rapp_function(2, _('FACRM'), 
+					$path_to_root.'/modules/FACRM/class.CRM_CONTROLLER.php', 'SA_FACRM');
+				break;
+			case 'GL':
+				$app->add_rapp_function(2, _('FACRM'), 
+					$path_to_root.'/modules/FACRM/class.CRM_CONTROLLER.php', 'SA_FACRM');
+				break;
+*/
+d53 1
+a53 1
+		$security_sections[SS_FACRM] = _("FACRM");
+d55 2
+a56 6
+		$security_areas['SA_FACRM'] = array(SS_FACRM|1, _("FACRM"));	//First sub access level
+		$security_areas['SA_FACRM2'] = array(SS_FACRM|2, _("FACRM2"));	//Second sub access level
+		$security_areas['SA_FACRM_ADMIN'] = array(SS_FACRM|3, _("FACRM_ADMIN"));	//For types, categories, outcomes
+		$security_areas['SA_FACRM_ACTIVITY'] = array(SS_FACRM|3, _("FACRM_ACTIVITY"));	//Manage Activities
+		$security_areas['SA_FACRM_EVENT'] = array(SS_FACRM|3, _("FACRM_EVENT"));	//Manage Events.
+		$security_areas['SA_FACRM_CAMPAIGN'] = array(SS_FACRM|3, _("FACRM_CAMPAIGN"));	//Manage Campaigns
+a66 17
+			'sql/crm_activity_persons.sql' => array('crm_activity_persons'),
+			'sql/crm_campaign_event_persons.sql' => array('crm_campaign_event_persons'),
+			'sql/crm_campaign_outcome_codes.sql' => array('crm_campaign_outcome_codes'),
+			'sql/crm_categories.sql' => array('crm_categories'),
+			'sql/crm_person_details.sql' => array('crm_person_details'),
+			'sql/crm_activity.sql' => array('crm_activity'),
+			'sql/crm_campaign_event.sql' => array('crm_campaign_event'),
+			'sql/crm_campaign_persons.sql' => array('crm_campaign_persons'),
+			'sql/crm_ical_invite.sql' => array('crm_ical_invite'),
+			'sql/crm_prefs.sql' => array('crm_prefs'),
+			'sql/crm_activity_types.sql' => array('crm_activity_types'),
+			'sql/crm_campaign_event_types.sql' => array('crm_campaign_event_types'),
+			'sql/crm_campaigns.sql' => array('crm_campaigns'),
+			'sql/crm_mailinglist_persons.sql' => array('crm_mailinglist_persons'),
+			'sql/crm_satisfaction_survey.sql' => array('crm_satisfaction_survey'),
+			'sql/crm_campaign_details.sql' => array('crm_campaign_details'),
+			'sql/crm_campaign_mailing.sql' => array('crm_campaign_mailing'),
+@
+
+
+1.7
+log
+@removed as app for now as it is giving unserialize errors
+@
+text
+@d69 4
+d82 21
+a102 1
+                        'install_myapp.sql' => array('assets')
+@
+
+
+1.6
+log
+@updated FA-CRM and FA_CRM to FACRM
+@
+text
+@d4 3
+d11 18
+d41 9
+d78 13
+a90 1
+                        'update.sql' => array('assets')
+@
+
+
+1.5
+log
+@updated security number (module number)
+@
+text
+@d2 1
+a2 1
+define ('SS_FA_CRM', 116<<8);
+d4 2
+a5 2
+class hooks_FA_CRM extends hooks {
+	var $module_name = 'FA_CRM CRM'; 
+d15 4
+a18 4
+				$app->add_rapp_function(2, _('FA_CRM'), 
+					$path_to_root.'/modules/FA-CRM/controller.php', 'SA_FA_CRM', MENU_MAINTENANCE);
+				$app->add_rapp_function(2, _('FA_CRM2'), 
+					$path_to_root.'/modules/FA-CRM/controller.php', 'SA_FA_CRM2', MENU_MAINTENANCE);
+d22 2
+a23 2
+				$app->add_rapp_function(2, _('FA_CRM'), 
+					$path_to_root.'/modules/FA-CRM/class.CRM_CONTROLLER.php', 'SA_FA_CRM');
+d26 2
+a27 2
+				$app->add_rapp_function(2, _('FA_CRM'), 
+					$path_to_root.'/modules/FA-CRM/class.CRM_CONTROLLER.php', 'SA_FA_CRM');
+d35 1
+a35 1
+		$security_sections[SS_FA_CRM] = _("FA_CRM");
+d37 2
+a38 2
+		$security_areas['SA_FA_CRM'] = array(SS_FA_CRM|1, _("FA_CRM"));	//First sub access level
+		$security_areas['SA_FA_CRM2'] = array(SS_FA_CRM|2, _("FA_CRM2"));	//Second sub access level
+@
+
+
+1.4
+log
+@changed to call controller.php rather than a class file
+@
+text
+@d2 1
+a2 1
+define ('SS_FA_CRM', 101<<8);
+d5 1
+a5 1
+	var $module_name = 'FA_CRM'; 
+d17 2
+d37 2
+a38 1
+		$security_areas['SA_FA_CRM'] = array(SS_FA_CRM|101, _("FA_CRM"));
+@
+
+
+1.3
+log
+@Added activate_extension
+updated install_options
+@
+text
+@d16 1
+a16 1
+					$path_to_root.'/modules/FA-CRM/class.CRM_CONTROLLER.php', 'SA_FA_CRM', MENU_MAINTENANCE);
+@
+
+
+1.2
+log
+@Initial revision as new module FA-CRM
+@
+text
+@d2 1
+a2 1
+define ('SS_FA-CRM', 101<<8);
+d4 2
+a5 2
+class hooks_FA-CRM extends hooks {
+	var $module_name = 'FA-CRM'; 
+d15 13
+a27 2
+				$app->add_rapp_function(2, _('FA-CRM'), 
+					$path_to_root.'/modules/FA-CRM/FA-CRM.php', 'SA_FA-CRM');
+d33 1
+a33 1
+		$security_sections[SS_FA-CRM] = _("FA-CRM");
+d35 1
+a35 1
+		$security_areas['SA_FA-CRM'] = array(SS_FA-CRM|101, _("FA-CRM"));
+d39 13
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d2 1
+a2 1
+define ('SS_COASTORDERS', 101<<8);
+d4 2
+a5 2
+class hooks_coast_export extends hooks {
+	var $module_name = 'Export COAST'; 
+d14 3
+a16 3
+			case 'AP':
+				$app->add_rapp_function(2, _('Export COAST'), 
+					$path_to_root.'/modules/coast_export/coast_export.php', 'SA_COASTEXPORT');
+d22 1
+a22 1
+		$security_sections[SS_COASTORDERS] = _("Export COAST");
+d24 1
+a24 1
+		$security_areas['SA_COASTEXPORT'] = array(SS_COASTORDERS|101, _("Export COAST"));
+@

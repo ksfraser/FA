@@ -1,0 +1,50 @@
+113c113
+< 		//$sql = "SELECT supp_name, order_no FROM " . $this->company_prefix . "purch_orders o, " . $this->company_prefix . "suppliers s where s.supplier_id = o.supplier_id";
+---
+> 		$sql = "SELECT supp_name, order_no FROM " . $this->company_prefix . "purch_orders o, " . $this->company_prefix . "suppliers s where s.supplier_id = o.supplier_id";
+212,250d211
+< 	/**********************************************************************************************//**
+< 	 *
+< 	 * Must have table, column and type set
+< 	 *
+< 	 * @params $tables_array array with values
+< 	 * 	table		(required)
+< 	 * 	column		(required)
+< 	 * 	type		(required)
+< 	 * 	length		(optional)
+< 	 * 	nullnotnull	(optional)
+< 	 * 	default		(optional)
+< 	 * 	auto_increment	(optional) value unimportant.  If set, field set to auto_increment
+< 	 * 	comment		(optional)
+< 	 *
+< 	 * *********************************************************************************************/
+< 	function modify_table_column( $tables_array )
+< 	{
+< 		foreach( $tables_array as $row )
+< 		{
+< 				//ALTER TABLE t1 MODIFY b BIGINT NOT NULL;
+< 			$sql = "ALTER TABLE " . $row['table'] . " MODIFY " . $row['column'] . " " . $row['type'];
+< 			if( isset( $row['length'] ) )
+< 				$sql .= "(" . $row['length']  . ")";
+< 			if( isset( $row['nullnotnull'] ) )
+< 				$sql .= " " . $row['nullnotnull'] . " ";
+< 			if( isset( $row['default'] ) )
+< 				$sql .= " DEFAULT '" . $row['default'] . "' ";
+< 			if( isset( $row['autoincrement'] ) )
+< 				$sql .= " AUTO_INCREMENT ";
+< 			if( isset( $row['comment'] ) )
+< 				$sql .= " COMMENT '" . $row['comment']  . "' ";
+< 			$res = db_query( $sql, "Couldn't alter STOCK_ID length in " . $row['table'] );
+< 			if( false !== $res )
+< 			{
+< 				//$this->notify( "Altered " . $row['table'] . " Column " . $row['column'], "WARN" );
+< 				display_notification( "Altered " . $row['table'] . " Column " . $row['column'] );
+< 			}
+< 		}
+< 	}
+263,267d223
+< 	}
+< 	function backtrace()
+< 	{
+< 		echo "<br />";
+< 		array_walk(debug_backtrace(),create_function('$a,$b','print "{$a[\'function\']}()(".basename($a[\'file\']).":{$a[\'line\']});<br /> ";'));

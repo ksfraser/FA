@@ -1,0 +1,424 @@
+234,237d233
+< 		if( ! isset( $this->updated_at ) )
+< 		{
+< 			$this->updated_at = date("Y-m-d");
+< 		}
+243c239,243
+< 					tax_status = '" . $this->tax_status . "'";
+---
+> 					sale_price = '" . $this->sale_price . "',
+> 					tax_status = '" . $this->tax_status . "',
+> 					tax_class = '" . $this->tax_class . "',
+> 					shipping_class = '" . $this->shipping_class . "'
+> 				";
+266c266,269
+< 				$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ . " CODE " . $this->code . " and msg " . $this->message, "NOTIFY");
+---
+> 			if( $this->debug >= 1 )
+> 			{
+> 				display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ . " CODE " . $this->code . " and msg " . $this->message);
+> 			}
+276c279,282
+< 				$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ , "NOTIFY");
+---
+> 			if( $this->debug >= 1 )
+> 			{
+> 				display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ );
+> 			}
+283c289
+< 					$this->notify("<br />" . __METHOD__ . ":" . __LINE__ . "<Br />");
+---
+> 					echo "<br />" . __METHOD__ . ":" . __LINE__ . "<Br />";
+286a293
+> 						echo "<br />" . __LINE__ . "<Br />";
+290c297
+< 						$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ , "NOTIFY");
+---
+> 						echo "<br />" . __LINE__ . "<Br />";
+300c307,310
+< 				$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__, "WARN" );
+---
+> 				if( $this->debug >= 1 )
+> 				{
+> 					display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ );
+> 				}
+307c317
+< 					$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ , "NOTIFY");
+---
+> 					echo "<br />" . __METHOD__ . ":" . __LINE__ . "<Br />";
+311c321
+< 						$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ , "NOTIFY");
+---
+> 						echo "<br />" . __LINE__ . "<Br />";
+315c325
+< 						$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ , "NOTIFY");
+---
+> 						echo "<br />" . __LINE__ . "<Br />";
+325c335,338
+< 				$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__, "WARN" );
+---
+> 				if( $this->debug >= 1 )
+> 				{
+> 					display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ );
+> 				}
+329,330c342,346
+< 				$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ . " UNHANDLED CODE " . $this->code . " and msg " . $this->message, "ERROR");
+< 				$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__, "WARN" );
+---
+> 				display_error( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ . " UNHANDLED CODE " . $this->code . " and msg " . $this->message);
+> 			if( $this->debug >= 1 )
+> 			{
+> 				display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ );
+> 			}
+334c350,353
+< 				$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__, "WARN" );
+---
+> 			if( $this->debug >= 1 )
+> 			{
+> 				display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ );
+> 			}
+338c357,361
+< 				$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ . " UNHANDLED CODE " . $this->code . " and msg " . $this->message);
+---
+> 				display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ . " UNHANDLED CODE " . $this->code . " and msg " . $this->message);
+> 			if( $this->debug >= 1 )
+> 			{
+> 				display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ );
+> 			}
+341a365,368
+> 			if( $this->debug >= 1 )
+> 			{
+> 				display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ );
+> 			}
+346c373,376
+< 		$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__, "WARN" );
+---
+> 		if( $this->debug >= 1 )
+> 		{
+> 			echo "<br />" . __METHOD__ . ":" . __LINE__ . "<br />";
+> 		}
+350,352c380
+< 		//Woo only sends 10 items back at a time :(/  per_page is supposed to change that...
+< 		$args['posts_per_page'] = 500;
+< 		$args['per_page'] = 500;
+---
+> 		$args['posts_per_page'] = '500';
+354d381
+< 		$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__, "WARN" );
+356a384
+> 			echo "<br />" . __FILE__ . ":" . __LINE__ . "<br />";
+365c393,396
+< 		$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__, "WARN" );
+---
+> 		if( $this->debug >= 1 )
+> 		{
+> 			echo "<br />" . __METHOD__ . ":" . __LINE__ . "<br />";
+> 		}
+374c405,408
+< 			$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__, "WARN" );
+---
+> 			if( $this->debug >= 1 )
+> 			{
+> 				echo "<br />" . __METHOD__ . ":" . __LINE__ . " COUNT of products returned: " . $count . "<br />";
+> 			}	
+390c424
+< 					$this->notify( __METHOD__ . " Blank SKU: " . $this->sku . " Desc: " . $this->description, "ERROR" );
+---
+> 					display_error( __METHOD__ . " Blank SKU: " . $this->sku . " Desc: " . $this->description );
+396c430
+< 				$this->notify( __METHOD__ . ":" . __LINE__  , "NOTIFY" );
+---
+> 				echo "<br />" . __METHOD__ . ":" . __LINE__ . " PRODUCT obj<br />";
+413c447,450
+< 		$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__, "NOTIFY" );
+---
+> 		if( $this->debug >= 1 )
+> 		{
+> 			display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ );
+> 		}
+443c480,483
+< 				$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ . " Prod " . $this->sku, "WARN");
+---
+> 				if( $this->debug >= 2 )
+> 				{
+> 					display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ . " Prod " . $this->sku);
+> 				}
+446d485
+< 				$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ . "VARDUMP");
+449c488,491
+< 				$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__, "WARN");
+---
+> 				if( $this->debug >= 2 )
+> 				{
+> 					display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ );
+> 				}
+452c494,497
+< 				$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__, "WARN");
+---
+> 				if( $this->debug >= 2 )
+> 				{
+> 					display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ );
+> 				}
+477c522,525
+< 					$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__, "WARN");
+---
+> 					if( $this->debug >= 2 )
+> 					{
+> 						display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ );
+> 					}
+481c529,532
+< 			$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__, "WARN");
+---
+> 			if( $this->debug >= 2 )
+> 			{
+> 				display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ );
+> 			}
+485c536,539
+< 		$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__, "ERROR");
+---
+> 		if( $this->debug >= 1 )
+> 		{
+> 			display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__);
+> 		}
+490d543
+< 			$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__, "WARN");
+492a546
+> 				echo "<br /><br />" . __METHOD__  . ":" . __LINE__ . "<br />";
+497a552
+> 				display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__);
+517a573,576
+> 				if( $this->debug >= 1 )
+> 				{
+> 					display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__);
+> 				}
+519a579,582
+> 				if( $this->debug >= 1 )
+> 				{
+> 				display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__);
+> 				}
+520a584,587
+> 				if( $this->debug >= 1 )
+> 				{
+> 				display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__);
+> 				}
+522d588
+< 				$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__, "WARN");
+529d594
+< 		$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__, "WARN");
+537d601
+< 		$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__, "WARN");
+587c651
+< 	
+---
+> 
+772,773d835
+< 			//Need to reset values between each product.
+< 			$this->reset_values();
+778,794d839
+< 			$this->name = utf8_encode( str_replace( $remove_desc_array , $removed_desc_array , $prod_data['description'] ) );
+< 			$this->slug = $prod_data['stock_id'];
+< 			$this->title = utf8_encode( str_replace( $remove_desc_array , $removed_desc_array , $prod_data['description'] ) );
+< 			$this->permalink = null;
+< 			$this->type = "simple";	//OVERRIDE in calling routine as appropriate.
+< 			$this->status = "publish";
+< 			$this->featured = false;
+< 			$this->catalog_visibility = "visible";
+< 			$this->description = utf8_encode( str_replace( $remove_desc_array , $removed_desc_array , $prod_data['long_description'] ) );
+< 			$this->short_description = utf8_encode( str_replace( $remove_desc_array , $removed_desc_array , $prod_data['description'] ) );
+< 			$this->sku = $prod_data['stock_id'];
+< 			$this->regular_price = $prod_data['price'];
+< 			$this->sale_price = null;
+< 			$this->date_on_sale_from = null;
+< 			$this->date_on_sale_to = null;
+< 			$this->price_html = null;
+< 
+796,811c841,844
+< 			$this->virtual = false;
+< 			/*****************************************************************//**
+< 			 *Downloads
+< 			 *
+< 			 * 	id, name, file(url) are properties within an array
+< 			 *
+< 			 * ********************************************************************/
+< 			/*
+< 			 *	$this->download = array( "id" => XXX, "name" => YYY, "file" => ZZZ );
+< 			 * */
+< 			$this->downloadable = false;
+< 			$this->downloads = null;
+< 			$this->download_limit = null;
+< 			$this->download_expiry = null;
+< 			$this->download_type = null;
+< 
+---
+> 			$this->status = "publish";
+> 			//$this->featured = false;
+> 			//$this->virtual = false;
+> 			//$this->downloadable = false;
+813,814c846,850
+< 			$this->backorders = "notify";
+< 			$this->sold_individually = false;	//true only allows 1 of this product per order
+---
+> 			$this->catalog_visibility = "visible";
+> 			$this->backorders = "yes";
+> 			$this->sold_individually = false;
+> 			$this->reviews_allowed = "1";
+> 			$this->menu_order = "1";
+819d854
+< 						'button_text',
+834,835d868
+< 			$this->in_stock = true;
+< 
+847,853c880,881
+< 
+< 			$this->reviews_allowed = "1";
+< 			$this->parent_id = null;
+< 			$this->purchase_note = null;
+< 
+< 			$this->categories = array( "id" => $prod_data['woo_category_id'] );	//Should also have name and slug?
+< 												//Can we add extra categories in FA through foreign_codes?
+---
+> 			//$this->categories = array();
+> 			$this->categories = array( "id" => $prod_data['woo_category_id'] );
+856,862c884
+< 			//$this->tags = array( "id" => XXX, "name" => YYY, "slug" => ZZZ );
+< 			$this->tags = $this->product_tags( $stock_id );
+< 			$this->images = $this->product_images( $stock_id );
+< 			$this->attributes = $this->product_attributes( $stock_id );
+< 			$this->default_attributes = $this->product_default_attributes( $stock_id );
+< 			$this->variations = $this->product_variations( $stock_id );
+< 			$this->menu_order = "1";
+---
+> 			//$this->tags = array("");
+865a888,894
+> 			$this->sku = $prod_data['stock_id'];
+> 			$this->slug = $prod_data['stock_id'];
+> 			$this->title = utf8_encode( str_replace( $remove_desc_array , $removed_desc_array , $prod_data['description'] ) );
+> 			$this->name = utf8_encode( str_replace( $remove_desc_array , $removed_desc_array , $prod_data['description'] ) );
+> 			$this->description = utf8_encode( str_replace( $remove_desc_array , $removed_desc_array , $prod_data['long_description'] ) );
+> 			$this->short_description = utf8_encode( str_replace( $remove_desc_array , $removed_desc_array , $prod_data['description'] ) );
+> 			$this->regular_price = $prod_data['price'];
+866a896,897
+> 			$this->in_stock = true;
+> 			$this->images = $this->product_images( $stock_id );
+991,994c1022,1025
+< 			if( $this->debug >= 1 )
+< 			{
+< 				display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__);
+< 			}
+---
+> 		if( $this->debug >= 1 )
+> 		{
+> 			display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__);
+> 		}
+1040,1142d1070
+< 	function product_tags( $stock_id )
+< 	{
+< 		return null;
+< 		/*
+< 		require_once( 'class.woo_tags.php' );
+< 		$w_imgs = new woo_tags( null, null, null, $stock_id, $this->client );
+< 		return $w_imgs->run();
+< 		 */
+< 	}
+< 	function product_category( $stock_id )
+< 	{
+< 		return null;
+< 		/*
+< 		require_once( 'class.woo_category.php' );
+< 		$w_imgs = new woo_category( null, null, null, $stock_id, $this->client );
+< 		return $w_imgs->run();
+< 		*/
+< 	}
+< 	function product_downloads( $stock_id )
+< 	{
+< 		return null;
+< 		/*
+< 		require_once( 'class.woo_downloads.php' );
+< 		$w_imgs = new woo_downloads( null, null, null, $stock_id, $this->client );
+< 		return $w_imgs->run();
+< 		*/
+< 	}
+< 	function product_dimensions( $stock_id )
+< 	{
+< 		return null;
+< 		/*
+< 		require_once( 'class.woo_dimensions.php' );
+< 		$w_imgs = new woo_dimensions( null, null, null, $stock_id, $this->client );
+< 		return $w_imgs->run();
+< 		*/
+< 	}
+< 	function product_attributes( $stock_id )
+< 	{
+< 		return null;
+< 		/*
+< 		 *	For a Variable Product, the ATTRIBUTES is just a list
+< 		 *	of the possible combinations. 
+< 		 *		id(global)/name, 
+< 		 *		position, 
+< 		 *		visible t/f, 
+< 		 *		variation(t/f can be used for variations), 
+< 		 *		options (values)
+< 		 *	The DEFAULT ATTRIBUTES is the default.
+< 		 *		id/name
+< 		 *		option
+< 		 *
+< 		 *	In a Variation, the ATTRIBUTES is an array of the appropriate
+< 		 *	IDs or NAMEs plus the OPTION.
+< 		 * */
+< 		require_once( 'class.woo_prod_variation_attributes.php' );
+< 		$w_attr = new woo_prod_variation_attributes( null, null, null, $stock_id, $this->client );
+< 		$arr = $w_attr->get_by_sku( $stock_id );
+< 		$retarr = array();
+< 		$name = "";
+< 		foreach( $arr as $sku => $val )
+< 		{
+< 			if( $name != $val['name'] )
+< 			{
+< 				if( isset( $values ) )	//don't set blank first array
+< 				{
+< 					$retarr[] = array( 'visible' => 'true',
+< 			       			'variation' => 'true',
+< 						'name' => $name,
+< 						'options' => $values );
+< 					unset( $values );
+< 				}
+< 				$name = $val['name'];
+< 				$values = array();
+< 				$values[] = $val['option'];
+< 			}
+< 		}
+< 		$retarr[] = array( 'visible' => 'true',
+< 		 		'variation' => 'true',
+< 				'name' => $name,
+< 				'options' => $values );
+< 		return $retarr;
+< 	}
+< 	function product_default_attributes( $stock_id )
+< 	{
+< 		require_once( 'class.woo_prod_variation_attributes.php' );
+< 		$w_attr = new woo_prod_variation_attributes( null, null, null, $stock_id, $this->client );
+< 		$arr = $w_attr->get_by_sku( $stock_id );
+< 		$retarr = array();
+< 		foreach( $arr as $sku => $val )
+< 		{
+< 			$retarr[] = $val;
+< 		}
+< 		return $retarr;
+< 	}
+< 	function product_variations( $stock_id )
+< 	{
+< 		return null;
+< 		/*
+< 		require_once( 'class.woo_variations.php' );
+< 		$w_imgs = new woo_variations( null, null, null, $stock_id, $this->client );
+< 		return $w_imgs->run();
+< 		*/
+< 	}
+1144,1150d1071
+< 	{
+< 		require_once( 'class.woo_images.php' );
+< 		$w_imgs = new woo_images( $stock_id, $this->client );
+< 		return $w_imgs->run();
+< 	}
+< 
+< 	function product_images_old( $stock_id )

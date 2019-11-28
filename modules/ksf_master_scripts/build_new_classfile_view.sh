@@ -1,0 +1,228 @@
+#!/bin/sh
+
+#1 is class
+#2 is action
+#3 is action Human Readable
+
+echo "<?php" > class.$1_view.php
+
+echo "
+
+\$path_to_root = \"../..\";
+
+/*******************************************
+ * If you change the list of properties below, ensure that you also modify
+ * build_write_properties_array
+ * */
+
+require_once( '../ksf_modules_common/defines.inc.php' ); 
+require_once( '../ksf_modules_common/class.table_interface.php' ); 
+require_once( '../ksf_modules_common/class.generic_fa_interface.php' );
+
+/*************************************************************//**
+ * 
+ *
+ * Inherits:
+ *                 function __construct( \$host, \$user, \$pass, \$database, \$pref_tablename )
+                function eventloop( \$event, \$method )
+                function eventregister( \$event, \$method )
+                function add_submodules()
+                function module_install()
+                function install()
+                function loadprefs()
+                function updateprefs()
+                function checkprefs()
+                function call_table( \$action, \$msg )
+                function action_show_form()
+                function show_config_form()
+                function form_export()
+                function related_tabs()
+                function show_form()
+                function base_page()
+                function display()
+                function run()
+                function modify_table_column( \$tables_array )
+                / *@fp@* /function append_file( \$filename )
+                /*@fp@* /function overwrite_file( \$filename )
+                /*@fp@* /function open_write_file( \$filename )
+                function write_line( \$fp, \$line )
+                function close_file( \$fp )
+                function file_finish( \$fp )
+                function backtrace()
+                function write_sku_labels_line( \$stock_id, \$category, \$description, \$price )
+		function show_generic_form(\$form_array)
+ * Provides:
+        function __construct( \$prefs )
+        function define_table()
+        function form_$2
+        function form_$2_completed
+        function action_show_form()
+        function install()
+        function master_form()
+ * 
+ *
+ * ***************************************************************/
+
+
+class $1_view extends generic_fa_interface_view {
+	var \$id_$1;	//!< Index of table
+	function __construct( \$prefs, $controller )
+	{
+		parent::__construct( null, null, null, null, \$prefs, $ontroller, false );	//generic_interface has legacy mysql connection
+
+		\$this->tabs[] = array( 'title' => 'Module How-To', 'action' => 'usage_form', 'form' => 'usage_form', 'hidden' => FALSE );
+		\$this->tabs[] = array( 'title' => 'Config Updated', 'action' => 'update', 'form' => 'checkprefs', 'hidden' => TRUE );
+		\$this->tabs[] = array( 'title' => 'Configuration', 'action' => 'config', 'form' => 'show_config_form', 'hidden' => FALSE );	//form is inherited
+
+		\$this->tabs[] = array( 'title' => '$1 Updated', 'action' => 'form_$1_completed', 'form' => 'form_$1_completed', 'hidden' => TRUE );
+		\$this->tabs[] = array( 'title' => 'Update $1', 'action' => 'form_$1', 'form' => 'form_$1', 'hidden' => FALSE );
+		//We could be looking for plugins here, adding menu's to the items.
+		\$this->add_submodules();
+							
+	}
+	function usage_form()
+	{
+		$this->title = "How to Use this Module";
+		start_form(true);
+                start_table(TABLESTYLE2, "width=40%");
+                table_section_title( "How to use this module" );
+		table_section(1);
+		label_row( "Configuration", "Configuration screen for things like DEBUG level." );
+		label_row( "$2", "This tab is where you XYZ" );
+                table_section_title( "Known Bugs" );
+		label_row( "Bug 1 - Edit button", "Edit buttons (pencil) doesn't actually launch an edit screen.  Low priority at this time as I have DB access.  Work around is to delete and re-add.  See Delete bug below." );
+		label_row( "Bug 2 - Delete Button", "Delete button (X) doesn't reload the table listing the mappings. Work around is to switch tabs (e.g. come to this tab) and return." );
+		label_row( "Bug 3 - Configuration", "Config screen doesn't display any of the config variables.  As the only one this module has is DEBUG, this is very low priority as there isn't any non EXCEPTION debugging code currently included" );
+                table_section_title( "Roadmap" );
+		label_row( "V2", "No Planned enhancements other than bug fixes." );
+                table_section_title( "Developer Documentation" );
+		label_row( "Documentation", '<a href="html/index.html">Class and member Documentation</a>' );
+		end_table(1);
+                end_form();
+	}
+
+	function form_$2
+	{
+		\$this->call_table( 'form_$2_completed', \"$3\" );
+	}
+	function form_$2_completed
+	{	//Need to add code here to do whatever this submodule is for...
+	}
+	/*********************************************************************************//**
+	 *master_form
+	 *	Display the summary of items with edit/delete
+	 *		
+	 *	assumes entry_array has been built (constructor)
+	 *	assumes table_details has been built (constructor)
+	 *	assumes selected_id has been set (constructor?)
+	 *	assumes iam has been set (constructor)
+	 *
+	 * ***********************************************************************************/
+	function master_form()
+	{
+		\$title = "$2";
+		\$_SESSION['page_title'] = _($help_context = $title);
+		\$this->item_form();
+		\$msg = "$2";
+		\$action = \$this->action;
+		\$this->form_add( \$action, \$msg );
+	}
+
+	/*html table header row*/function form_header()
+	{
+		\$th = array();
+		\$this->tabledef2headers();
+		foreach( \$this->header_arr as \$name => \$label )
+			\$th[] = \$label;
+		if( \$this->show_inactive )
+			inactive_control_column(\$th);
+		table_header( \$th);
+		return \$th;
+	}
+	function form_item_rows()
+	{
+		if( isset( \$this->controller ) )
+		{
+			if( isset( \$this->controller->model ) )
+			{
+				\$result = \$this->controller->model->getAll();
+				\$primary_key = \$this->controller->model->getPrimaryKey();
+				\$k = 0;
+				while (\$myrow = db_fetch(\$result)) 
+				{			
+					alt_table_row_color( \$k ); 
+					foreach( \$this->header_arr as \$name => \$label )
+					{
+						if( isset( \$myrow[\$name] ) )
+							label_cell( \$myrow[\$name] );
+						else
+						if( \$name == 'edit' )
+							edit_button_cell("Edit" . \$myrow[\$primary_key], _("Edit"), "Edit item");
+						else
+						if( \$name == 'delete' )
+							delete_button_cell("Delete" . \$myrow[\$primary_key], _("Delete"), "Delete Item");
+						else
+							label_cell("");
+					}
+					if( \$this->show_inactive )
+						inactive_control_cell( \$myrow[\$primary_key], \$myrow["inactive"], \$primary_key, \$primary_key);
+					end_row();
+				}
+				start_row();
+				//hidden('action', \$action );
+				hidden('ksf_payment_destinations', \$this->action );
+				end_row();
+			}
+		}
+	
+	}
+	function form_add( \$action, \$msg )
+	{
+		div_start( 'form_add' );
+		start_form();
+	       	start_table(TABLESTYLE2, "width=40%");
+		//table_section_title( \$msg );
+		\$th = array( _("Payment Terms"), _("Bank Account") );
+		table_header( \\$th );
+		start_row();
+		/***fUNCTION SPECIFIC INPUTS
+		\$this->comboPaymentList();
+		\$this->comboBankAccountList();
+		****************************/
+		end_row();
+		start_row();
+		//hidden('action', \$action );
+		hidden('ksf_payment_destinations', \$action );
+		end_row();
+		if( \$this->controller->selected_id >= 0 )
+		{
+			start_row();
+			\$this->comboPaymentList();
+			\$this->comboBankAccountList();
+			end_row();
+		}
+	        end_table(1);
+		//\$name, \$value, \$echo=true, \$title=false, \$atype=false, \$icon=false
+	        submit_center( \$action, \$msg );
+		end_form();
+		div_end();
+	}
+	function item_form()
+	{
+		display_heading("$2");
+		div_start('display_form');
+		start_form();
+		//start_form(true);	//Makes a multi-part/encoded form
+		start_table(TABLESTYLE2, "width=40%");
+		$th = $this->form_header();
+		$this->form_item_rows();
+		if( $this->show_inactive )
+			inactive_control_row($th);
+	        end_table(1);
+	        end_form();
+		div_end();
+	}
+
+
+}" >> class.$1_view.php
+

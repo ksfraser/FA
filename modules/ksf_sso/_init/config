@@ -1,0 +1,10 @@
+Package: ksf_sso
+Name: ksf_sso
+Description: Allow Singl Sign On using OpenID.  Based upon Wordpress Jetpack code.
+Author: Kevin Fraser <kevin@ksfraser.com>
+Maintenance: Kevin Fraser <kevin@ksfraser.com>
+Homepage: http://ksfraser.com
+Type: extension
+InstallPath: modules/ksf_sso
+Filename: ksf_sso
+Version: 1.0

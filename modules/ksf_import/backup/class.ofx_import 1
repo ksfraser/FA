@@ -1,0 +1,85 @@
+<?php
+
+
+$path_to_root = "../..";
+
+/*******************************************
+ * If you change the list of properties below, ensure that you also modify
+ * build_write_properties_array
+ * */
+
+require_once( 'class.bank_import_staging.php' );
+
+class ofx_import extends bank_import_staging {
+	var $id_ofx_import;	//!< Index of table
+	var $parser;
+	var $filename;
+	var $ofx;
+	function __construct()
+	{
+		require_once( 'OfxParser/Parser.php' );
+		$this->parser = new Parser();
+		
+	}
+	function loadFile()
+	{
+		$this->ofx = $this->parser->loadFromFile( $this->filename );
+	}
+	function getBankTransactions()
+	{
+		$bankAccount = reset($this->ofx->bankAccounts);
+		// Get the statement start and end dates
+		//$startDate = $bankAccount->statement->startDate;
+		//$endDate = $bankAccount->statement->endDate;
+		//
+		// Get the statement transactions for the account
+		$transactions = $bankAccount->statement->transactions;
+		var_dump( $transactions );
+	}
+	function form_ofx_import
+	{
+		$this->call_table( 'form_ofx_import_completed', "OFX_Import" );
+	}
+	function form_ofx_import_completed
+	{	//Need to add code here to do whatever this submodule is for...
+	}
+	/*********************************************************************************//**
+	 *master_form
+	 *	Display the summary of items with edit/delete
+	 *		
+	 *	assumes entry_array has been built (constructor)
+	 *	assumes table_details has been built (constructor)
+	 *	assumes selected_id has been set (constructor?)
+	 *	assumes iam has been set (constructor)
+	 *
+	 * ***********************************************************************************/
+	function master_form()
+	{
+		global $Ajax;
+		$this->notify( __METHOD__ . "::"  . __METHOD__ . ":" . __LINE__, "WARN" );
+		$this->create_full();
+		div_start('form');
+		$count = $this->fields_array2var();
+		
+		$sql = "SELECT ";
+		$rowcount = 0;
+		foreach( $this->entry_array as $row )
+		{
+			if( $rowcount > 0 ) $sql .= ", ";
+			$sql .= $row['name'];
+			$rowcount++;
+		}
+		$sql .= " from " . $this->table_details['tablename'];
+		if( isset( $this->table_details['orderby'] ) )
+			$sql .= " ORDER BY " . $this->table_details['orderby'];
+	
+		$this->notify( __METHOD__ . ":" . __METHOD__ . ":" . __LINE__ . ":" . $sql, "WARN" );
+		$this->notify( __METHOD__ . ":" . __METHOD__ . ":" . __LINE__ . ":" . " Display data", "WARN" );
+		$this->display_table_with_edit( $sql, $this->entry_array, $this->table_details['primarykey'] );
+		div_end();
+		div_start('generate');
+		div_end();
+	}
+
+	
+}
