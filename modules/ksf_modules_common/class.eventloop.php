@@ -57,35 +57,39 @@ class eventloop extends origin
 		 * Loop through the $configArray to set loading modules in right order
 		 */
 		//var_dump( $configArray );
-		foreach( $configArray as $carray )
+		if( isset( $configArray ) AND  count( $configArray ) > 0 )
 		{
-			//var_dump( $carray );
-			$modarray[$carray['loadpriority']][] = $carray;
-		}
-
-		//var_dump( $modarray );
-		foreach( $modarray as $priarray )
-		{
-			foreach( $priarray as $marray )
+			foreach( $configArray as $carray )
 			{
-		
-				$res = include_once( $moduledir . "/" . $marray['loadFile'] );
-				if( TRUE == $res )
+				//var_dump( $carray );
+				$modarray[$carray['loadpriority']][] = $carray;
+			}
+		}
+		if( isset( $modarray ) AND count( $modarray ) > 0 )
+		{
+			//var_dump( $modarray );
+			foreach( $modarray as $priarray )
+			{
+				foreach( $priarray as $marray )
 				{
-					$this->ObserverNotify( $this, 'NOTIFY_LOG_INFO', "Module " . $marray['ModuleName'] . " being added" );
-					//echo "Module " . $marray['ModuleName'] . " being added <br />";
-					$marray['objectName'] = new $marray['className'];
-					if( isset( $marray['objectName']->observers ) )
+					$res = include_once( $moduledir . "/" . $marray['loadFile'] );
+					if( TRUE == $res )
 					{
-						foreach( $marray['objectName']->observers as $obs )
+						$this->ObserverNotify( $this, 'NOTIFY_LOG_INFO', "Module " . $marray['ModuleName'] . " being added" );
+						//echo "Module " . $marray['ModuleName'] . " being added <br />";
+						$marray['objectName'] = new $marray['className'];
+						if( isset( $marray['objectName']->observers ) )
 						{
-							$this->observers[] = $obs;
+							foreach( $marray['objectName']->observers as $obs )
+							{
+								$this->observers[] = $obs;
+							}
 						}
 					}
-				}
-				else
-				{
-					echo "Attempt to open " . $moduledir . "/" . $marray['loadFile'] . " FAILED!<br />";
+					else
+					{
+						echo "Attempt to open " . $moduledir . "/" . $marray['loadFile'] . " FAILED!<br />";
+					}
 				}
 			}
 		}
@@ -107,11 +111,11 @@ class eventloop extends origin
 			}
 */
 		}
-	
 	}
 	function ObserverRegister( /*Class Instance*/$observer, $event )
         {
-               	$this->observers[$event][] = $observer;	//Indirect modification has no effect ERROR
+               	//$this->observers[$event][] = $observer;	//Indirect modification has no effect ERROR
+		$this->observers[$event] = array_merge( $this->observers[$event], $observer );
                	return SUCCESS;
         	}
          function ObserverDeRegister( $observer )

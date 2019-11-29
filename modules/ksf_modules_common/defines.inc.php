@@ -133,6 +133,7 @@ define( 'KSF_NO_MATCH_FOUND', 5737 );
 define( 'KSF_INVALID_DATA_TYPE', 5738 );
 define( 'KSF_INVALID_DATA_VALUE', 5739 );
 define( 'KSF_UNKNOWN_DATA_TYPE', 5740 );
+define( 'KSF_FCN_NOT_OVERRIDDEN', 5741 );
 /************************************************************************//**
  * Data Access levels
  *  Think filesystem RWX values R = 0/1, W = 0/2 and X = 0/4
