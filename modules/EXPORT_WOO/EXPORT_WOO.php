@@ -42,7 +42,7 @@ if( isset( $_POST['edit_form'] ) )
 else
 {
 	$eventloop = new eventloop( "." );
-	$coastc = new EXPORT_WOO( "defiant.ksfraser.com", "fhs", "fhs", "fhs", "EXPORT_WOO_prefs" );
+	$coastc = new EXPORT_WOO( "mickey.ksfraser.com", "fhs", "fhs", "fhs", "EXPORT_WOO_prefs" );
 	$found = $coastc->is_installed();
 	$coastc->set_var( 'found', $found );
 	$coastc->set_var( 'help_context', "Export to Woo Commerce Interface" );

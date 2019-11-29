@@ -21,7 +21,9 @@ class EXPORT_WOO extends generic_fa_interface
 	var $environment;
 	var $maxpics;	//!< int maximum number of pics for a product.  Integrate into module allowing more than 1!
 	var $debug;
+	var $test_max_send;
 	var $force_update; //!< bool update ALL products/... rather than only find ones with a timestamp newer here than our record with Woo
+	var $modules;		//!< array of modules for building menues, triggerring maintenance activities
 	function __construct( $host, $user, $pass, $database, $pref_tablename )
 	{
 		simple_page_mode(true);
@@ -50,6 +52,7 @@ class EXPORT_WOO extends generic_fa_interface
 		$this->config_values[] = array( 'pref_name' => 'woo_ck', 'label' => 'WOO api Key (ck_...)' );
 		$this->config_values[] = array( 'pref_name' => 'woo_cs', 'label' => 'WOO api Secret (cs_...)' );
 		$this->config_values[] = array( 'pref_name' => 'debug', 'label' => 'Debug (0,1+)' );
+		$this->config_values[] = array( 'pref_name' => 'test_max_send', 'label' => 'Max Send during test(1+)' );
 
 		$this->config_values[] = array( 'pref_name' => 'woo_server2', 'label' => 'Base URL for 2nd WOO server (...wordpress)' );
 		$this->config_values[] = array( 'pref_name' => 'woo_rest_path2', 'label' => 'Path for REST API 2nd  ("/wp-json/wc/v1/)' );
@@ -74,6 +77,7 @@ class EXPORT_WOO extends generic_fa_interface
 		//Hidden tabs are just action handlers, without accompying GUI elements.
 		//$this->tabs[] = array( 'title' => '', 'action' => '', 'form' => '', 'hidden' => FALSE );
 		$this->tabs[] = array( 'title' => 'Install Module', 'action' => 'create', 'form' => 'install', 'hidden' => TRUE );
+		$this->tabs[] = array( 'title' => 'Reinstall (reset) Woo', 'action' => 'reset_store', 'form' => 'form_reset_store', 'hidden' => FALSE );
 		$this->tabs[] = array( 'title' => 'Config Updated', 'action' => 'update', 'form' => 'checkprefs', 'hidden' => TRUE );
 
 		$this->tabs[] = array( 'title' => 'Configuration', 'action' => 'config', 'form' => 'action_show_form', 'hidden' => FALSE );
@@ -99,19 +103,21 @@ class EXPORT_WOO extends generic_fa_interface
 		//
 		//$this->tabs[] = array( 'title' => 'Orders Export', 'action' => 'export_orders_form', 'form' => 'export_orders_form', 'hidden' => FALSE );
 		//$this->tabs[] = array( 'title' => 'Orders Exported', 'action' => 'exported_orders_form', 'form' => 'exported_orders_form', 'hidden' => TRUE );
-		$this->tabs[] = array( 'title' => 'Orders Import', 'action' => 'import_orders_form', 'form' => 'import_orders_form', 'hidden' => FALSE );
-		$this->tabs[] = array( 'title' => 'Orders Imported', 'action' => 'imported_orders_form', 'form' => 'imported_orders_form', 'hidden' => TRUE );
+//		$this->tabs[] = array( 'title' => 'Orders Import', 'action' => 'import_orders_form', 'form' => 'import_orders_form', 'hidden' => FALSE );
+//		$this->tabs[] = array( 'title' => 'Orders Imported', 'action' => 'imported_orders_form', 'form' => 'imported_orders_form', 'hidden' => TRUE );
 
 		//$this->tabs[] = array( 'title' => 'Customer Export', 'action' => 'export_customer_form', 'form' => 'export_customer_form', 'hidden' => FALSE );
 		//$this->tabs[] = array( 'title' => 'Customer Exported', 'action' => 'exported_customer_form', 'form' => 'exported_customer_form', 'hidden' => TRUE );
 		//$this->tabs[] = array( 'title' => 'Customer Import', 'action' => 'import_customer_form', 'form' => 'import_customer_form', 'hidden' => FALSE );
 		//$this->tabs[] = array( 'title' => 'Customer Imported', 'action' => 'imported_customer_form', 'form' => 'imported_customer_form', 'hidden' => TRUE );
 
+/*
 		$this->tabs[] = array( 'title' => 'Variable Products Master SKUs', 'action' => 'create_woo_prod_variable_master_form', 'form' => 'create_woo_product_variable_master_form', 'hidden' => FALSE );
 		$this->tabs[] = array( 'title' => 'Variable Products Variables', 'action' => 'create_woo_prod_variable_variables_form', 'form' => 'create_woo_product_variable_variables_form', 'hidden' => FALSE );
 		$this->tabs[] = array( 'title' => 'Variable Products Variables Values', 'action' => 'create_woo_prod_variables_values_form', 'form' => 'create_woo_product_variables_values_form', 'hidden' => FALSE );
 		$this->tabs[] = array( 'title' => 'Variable Products SKU Combos', 'action' => 'create_woo_prod_variable_sku_combos_form', 'form' => 'create_woo_product_variable_sku_combos_form', 'hidden' => FALSE );
 		$this->tabs[] = array( 'title' => 'Variable Products ALL SKU Combos', 'action' => 'create_woo_prod_variable_sku_full_form', 'form' => 'create_woo_product_variable_sku_full_form', 'hidden' => FALSE );
+*/
 
 		//$this->tabs[] = array( 'title' => 'Coupons create', 'action' => 'create_coupons_form', 'form' => 'create_coupons_form', 'hidden' => FALSE );
 		//$this->tabs[] = array( 'title' => 'Coupons created', 'action' => 'created_coupons_form', 'form' => 'created_coupons_form', 'hidden' => TRUE );
@@ -342,6 +348,18 @@ class EXPORT_WOO extends generic_fa_interface
 	function created_coupons_form()
 	{
 	}
+	function form_reset_store()
+	{
+		$this->call_table( 'reset_store_act', "Reset the Woocommerce Store" );
+	}
+	function reset_store_act()
+	{
+	/*	foreach( $this->modules as $module )
+		{
+			$module->rebuild_woocommerce();
+		}
+			
+	}
 	function form_products_export()
 	{
 		//$this->call_table( 'pexed', "Export" );
@@ -470,73 +488,10 @@ class EXPORT_WOO extends generic_fa_interface
 	 ************************************************************************/
 	function populate_woo()
 	{
-		require_once( 'class.woo.php' );
-		$woo = new woo( null, null, null, null, $this );
+		require_once( 'class.model_woo.php' );
+		$mwoo = new model_woo( null, null, null, null, $this );
 		display_notification("WOO");
-		$woo->insert_product();
-		$woo->update_product_details();
-		$woo->update_prices();
-		$woo->zero_null_prices();
-		$woo->update_qoh_count();
-		$woo->staledate_specials();
-		//$woo->update_specials();
-		$woo->update_tax_data();
-		//$woo->update_shipping_dimensions();
-		//$woo->update_crosssells();
-		$woo->update_category_data();
-				//. "woo.woo_cat as woo_category_id"
-				//", " . TB_PREF . "woo_categories_xref woo"
-				//. "and woo.fa_cat = sm.category_id"
-		/*
-		$sql2 = "replace into " . TB_PREF . "woo 
-				( stock_id, 
-				category_id, 
-				category, 
-				description, 
-				long_description, 
-				units, 
-				price,
-				instock"
-				// . ", tax_status"
-				// . ", tax_class"
-				// . ", shipping_class"
-				// . ", upsell_ids"
-				// . ", crosssell_ids"
-				."	)
-			 select 
-				sm.stock_id, 
-				sm.category_id, 
-				sc.description as category, 
-				sm.description, 
-				sm.long_description, 
-				sm.units, 
-				p.price,
-				mv.instock"  
-				// . ", tax_status"
-				// . ", tax_class"
-				// . ", shipping_class"
-				// . ", upsell_ids"
-				// . ", crosssell_ids"
-				//. "woo.woo_cat as woo_category_id"
-			 . "from 
-				" . TB_PREF . "stock_master sm, 
-				" . TB_PREF . "prices p, 
-				" . TB_PREF . "stock_category sc,
-				" . TB_PREF . "qoh mv,
-				" . TB_PREF . "woo_categories_xref woo
-			where 
-				sm.stock_id = p.stock_id 
-				and p.sales_type_id='1' 
-				and mv.stock_id = sm.stock_id
-				and sm.category_id = sc.category_id"
-				//. "and woo.fa_cat = sm.category_id"
-				;
-            	//display_notification("WOO1");
-		$res = db_query( $sql2 );
-		 */
-		$woo->update_category_xref();
-		display_notification("WOO3");
-		$rowcount = $woo->count_rows();
+		$rowcount = $mwoo->populate_woo_table();
             	display_notification("$rowcount rows of items exist.");
 	}
 /*

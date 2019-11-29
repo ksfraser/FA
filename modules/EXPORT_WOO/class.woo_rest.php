@@ -16,15 +16,20 @@ class woo_rest
 {
 	private $wc;
 	private $client;
-	function __construct( $serverURL, /*UNUSED*/$subpath, $data_array, $key, $secret, /*UNUSE*/$conn_type, /*UNUSED*/$woo_rest_path, /*deprec*/$header_array = null, $environment = "devel", $debug = 0 )
+	function __construct( $serverURL, $key, $secret, $options = null, $client = null )
 	{
+		if( null != $client )
+			$this->client = $client;
         	//Need the index.php since .htaccess changes didn't work
-		$options = array(
-        		'wp_api' => true, // Enable the WP REST API integration
-        		'version' => 'wc/v3', // WooCommerce WP REST API version
-			'ssl_verify' => 'false',
-        		//'query_string_auth' => true // Force Basic Authentication as query string true and using under HTTPS
-		);
+		if( null == $options )
+		{
+			$options = array(
+        			'wp_api' => true, // Enable the WP REST API integration
+        			'version' => 'wc/v3', // WooCommerce WP REST API version
+				'ssl_verify' => 'false',
+        			//'query_string_auth' => true // Force Basic Authentication as query string true and using under HTTPS
+			);
+		}
 
 		$this->wc = new Client(
         		$serverURL,
@@ -32,6 +37,57 @@ class woo_rest
         		$secret,
         		$options
 		);
+	}
+	function send( $endpoint, $data = [], $client = null )
+	{
+		echo "Client is $client->iam <br />";
+		//check to see if record exists
+		try {
+			$exists = false;
+			if( isset( $client->woo_id ) )
+			{
+				$q = array( 'search' => $client->woo_id );
+				$response = $this->get( $endpoint, $q, $client );
+				//Does name and description match?
+				$exists = $client->fuzzy_match( $response );
+			}
+			else if( isset( $client->id ) )
+			{
+				$q = array( 'search' => $client->id );
+				$response = $this->get( $endpoint, $q, $client );
+				//Does name and description match?
+				$exists = $client->fuzzy_match( $response );
+			}
+			else if( isset( $client->name ) )
+			{
+				$q = array( 'search' => $client->name );
+				$response = $this->get( $endpoint, $q, $client );
+				//Match price, etc else new
+				$exists = $client->fuzzy_match( $response );
+			}
+			else if( isset( $client->description ) )
+			{
+				$q = array( 'search' => $client->description );
+				$response = $this->get( $endpoint, $q, $client );
+				$exists = $client->fuzzy_match( $response );
+			}
+			//Determine if exists.
+			if( $exists )
+				$act = "put";
+			else
+				$act = "post";
+		}
+		catch (Exception $e)
+		{
+			throw $e;
+		}
+		//if( isset( $client->system_of_record ) AND ( true == $client->system_of_record ) )
+		//
+		//Update or Insert
+		$response = $this->$act( $endpoint, $data, $client );
+		//Update Client ID
+
+		return $response;
 	}
 	function post( $endpoint, $data = [], $client = null )
 	{
@@ -43,6 +99,7 @@ class woo_rest
 		{
 			throw $e;
 		}
+		return $response;
 	}
 	function put( $endpoint, $data = [], $client = null )
 	{
@@ -54,6 +111,7 @@ class woo_rest
 		{
 			throw $e;
 		}
+		return $response;
 	}
 	function get( $endpoint, $data = [], $client = null )
 	{
@@ -65,6 +123,7 @@ class woo_rest
 		{
 			throw $e;
 		}
+		return $response;
 	}
 	function delete( $endpoint, $data = [], $client = null )
 	{
@@ -76,6 +135,7 @@ class woo_rest
 		{
 			throw $e;
 		}
+		return $response;
 
 	}
 	function data_not_json( $data )
@@ -100,18 +160,19 @@ class woo_rest
 			}
 		}
 		if( strncasecmp( "post", $c_type ) == 0 )
-			$this->post(  $data, $c_type, $client = null  );
+			$response = $this->post(  $data, $c_type, $client = null  );
 		else
 		if( strncasecmp( "put", $c_type ) == 0 )
-			$this->put( $data, $c_type, $client = null  );
+			$response = $this->put( $data, $c_type, $client = null  );
 		else
 		if( strncasecmp( "delete", $c_type ) == 0 )
-			$this->delete( $data, $c_type, $client = null  );
+			$response = $this->delete( $data, $c_type, $client = null  );
 		else
 		if( strncasecmp( "get", $c_type ) == 0 )
-			$this->get( $data, $c_type, $client = null  );
+			$response = $this->get( $data, $c_type, $client = null  );
 		else
 			throw new Exception( "Invalid c_type" );
+		return $response;
 	}
 	/************************************************************
 	*

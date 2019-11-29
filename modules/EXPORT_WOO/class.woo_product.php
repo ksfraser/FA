@@ -108,7 +108,7 @@ class woo_product extends woo_interface {
 	var $cross_sell_ids;	//array 	List of cross-sell products IDs. Cross-sells are products which you promote in the cart, based on the current product.
 	var $parent_id;	//integer 	Product parent ID (post_parent).
 	var $purchase_note;	//string 	Optional note to send the customer after purchase.
-	var $categories;	//array 	List of categories. See Categories properties.
+	var $categories;	//array 	List of categories. See Categories properties.		id => 9, ...
 	var $tags;	//array 	List of tags. See Tags properties.
 	var $images;	//array 	List of images. See Images properties
 	var $attributes;	//array 	List of attributes. See Attributes properties.   USED for variations
@@ -117,7 +117,7 @@ class woo_product extends woo_interface {
 	var $grouped_products;	//string 	List of grouped products ID, only for group type products.  read-only
 	var $menu_order;		//integer 	Menu order, used to custom sort products.
 		/*******/
-	var $woo_rest;
+	//var $woo_rest;	//woo_interface
 	var $header_array;
 	var $woo_rest_path_base;
 	var $woo_rest_path;
@@ -150,6 +150,23 @@ class woo_product extends woo_interface {
 	
 		set_time_limit( 300 );
 		parent::__construct($serverURL, $key, $secret, $options, $client);
+
+		$this->provides[] = array( 'title' => 'Configuration', 'action' => 'config', 'form' => 'action_show_form', 'hidden' => FALSE );
+                $this->provides[] = array( 'title' => 'Init Tables', 'action' => 'init_tables_form', 'form' => 'init_tables_form', 'hidden' => FALSE );
+                $this->provides[] = array( 'title' => 'Init Tables Completed', 'action' => 'init_tables_complete_form', 'form' => 'init_tables_complete_form', 'hidden' => TRUE );
+                $this->provides[] = array( 'title' => 'Products Export Prep', 'action' => 'productsexport', 'form' => 'form_products_export', 'hidden' => FALSE );
+                $this->provides[] = array( 'title' => 'Products Export Prepped', 'action' => 'pexed', 'form' => 'form_products_exported', 'hidden' => TRUE );
+                $this->provides[] = array( 'title' => 'QOH Populated', 'action' => 'qoh', 'form' => 'populate_qoh', 'hidden' => TRUE );
+                $this->provides[] = array( 'title' => 'WOO Populated', 'action' => 'woo', 'form' => 'populate_woo', 'hidden' => TRUE );
+                $this->provides[] = array( 'title' => 'Missing Products from internal WOO table', 'action' => 'missingwoo', 'form' => 'missing_woo', 'hidden' => FALSE );
+
+                $this->provides[] = array( 'title' => 'Send Categories to WOO', 'action' => 'send_categories_form', 'form' => 'send_categories_form', 'hidden' => FALSE );
+                $this->provides[] = array( 'title' => 'Categories Sent to WOO', 'action' => 'sent_categories_form', 'form' => 'sent_categories_form', 'hidden' => TRUE );
+
+                $this->provides[] = array( 'title' => 'Products REST Export', 'action' => 'export_rest_products', 'form' => 'export_rest_products_form', 'hidden' => FALSE );
+                $this->provides[] = array( 'title' => 'Products REST Exported', 'action' => 'exported_rest_products', 'form' => 'exported_rest_products_form', 'hidden' => TRUE );
+                //$this->provides[] = array( 'title' => 'Export File', 'action' => 'exportfile', 'form' => 'export_file_form', 'hidden' => FALSE );
+
 		$this->products_sent = $this->products_updated = 0;
 		if( isset( $client ) )
 			if( isset( $client->force_update ) )
@@ -165,6 +182,15 @@ class woo_product extends woo_interface {
 	{
 		$this->build_data_array();
 		$this->woo_rest = new woo_rest( $this->serverURL, $this->subpath, $this->data_array, $this->key, $this->secret, $this->conn_type, $this->woo_rest_path, null, $this->enviro, $this->debug );
+	}
+	function fuzzy_match( $data )
+	{
+		//Does data match close enough that we will call that our match?
+		//Should probably score on set data
+		//and have a threshold.
+		echo "<br /><br />" . __METHOD__ . ":" . __LINE__ . "<br /><br />";
+		var_dump( $data );
+		return FALSE;
 	}
 	/*********************************************************************************************//**
 	 * Woo_Interface now builds the properties_array and write_properties_array from the defined table!
@@ -612,6 +638,16 @@ class woo_product extends woo_interface {
 		//one
 		set_time_limit( 60 );
 	
+		if( isset( $this->woo_rest ) )
+		{
+			$endpoint = "products";
+			$this->build_data_array();
+			$response = $this->woo_rest->send( $endpoint, $this->data_array, $this );
+			$this->id = $response->id;
+			//need to confirm returned structure
+			//$this->update_wootable_woodata();	
+			$this->products_sent++;
+		} else
 		if( isset( $this->wc_client ) )
 		{
 			try 
@@ -927,8 +963,8 @@ class woo_product extends woo_interface {
 		$remove_desc_array = array(  "**Use Custom Form**,", "**Use Custom Order Form**,", );
 		$removed_desc_array = array( "",                     "",                           );
 		
-		require_once( 'class.woo.php' );
-		$woo = new woo( $this->serverURL, $this->key, $this->secret, $this->options, $this );
+		require_once( 'class.model_woo.php' );
+		$woo = new model_woo( $this->serverURL, $this->key, $this->secret, $this->options, $this );
 		$woo->stock_id = $this->stock_id;
 		$woo->select_product();
 		//Need to reset values between each product.
@@ -946,8 +982,8 @@ class woo_product extends woo_interface {
 		//		$this->name = utf8_encode( str_replace( $remove_desc_array , $removed_desc_array , $prod_data['description'] ) );
 		if( ! isset( $this->description ) )
 		{
-			display_notification( __METHOD__  . ":" . __LINE__ . " Leaving woo2wooproduct ERROR no data");
-			throw new Exception( __METHOD__ . ":" . __LINE__ . " Description not set" );
+			display_notification( __METHOD__  . ":" . __LINE__ . " woo2wooproduct Description not set");
+			//throw new Exception( __METHOD__ . ":" . __LINE__ . " Description not set" );
 		}
 		$this->slug = $this->stock_id;
 		$this->title = utf8_encode( str_replace( $remove_desc_array, $removed_desc_array, $this->description ) );
@@ -999,6 +1035,10 @@ class woo_product extends woo_interface {
 			$this->stock_quantity = $this->instock;
 		else
 			$this->stock_quantity = 0;
+		if( $this->stock_quantity < 1 )
+		{
+			$this->in_stock = false;
+		}
 
 		/*Shipping*/
 		//TODO:
@@ -1018,37 +1058,37 @@ class woo_product extends woo_interface {
 
 
 		/* made obselete above by foreach woo...
-		$var_array = array( 'sale_price', 
-					'date_on_sale_from', 
-					'date_on_sale_to', 
-					'external_url', 
-					'button_text',
-					'tax_status', 
-					'tax_class', 
-					'shipping_class',
-					'upsell_ids',
-					'cross_sell_ids',
-					'weight'
-			);
-		foreach($var_array as $var )
-		{
-			if( isset( $prod_data[$var] ) && strlen( $prod_data[$var] ) > 1 )
-			{
-				$this->$var = utf8_encode( $prod_data[$var] );
-			}
-		}
-
-		$dim_var_array = array( 'width', 
-					'length', 
-					'height'
-			);
-		foreach($dim_var_array as $var )
-		{
-			if( isset( $prod_data[$var] ) && strlen( $prod_data[$var] ) > 1 )
-			{
-				$this->dimensions[$var] = utf8_encode( $prod_data[$var] );
-			}
-		}
+*				$var_array = array( 'sale_price', 
+*							'date_on_sale_from', 
+*							'date_on_sale_to', 
+*							'external_url', 
+*							'button_text',
+*							'tax_status', 
+*							'tax_class', 
+*							'shipping_class',
+*							'upsell_ids',
+*							'cross_sell_ids',
+*							'weight'
+*					);
+*				foreach($var_array as $var )
+*				{
+*					if( isset( $prod_data[$var] ) && strlen( $prod_data[$var] ) > 1 )
+*					{
+*						$this->$var = utf8_encode( $prod_data[$var] );
+*					}
+*				}
+*		
+*				$dim_var_array = array( 'width', 
+*							'length', 
+*							'height'
+*					);
+*				foreach($dim_var_array as $var )
+*				{
+*					if( isset( $prod_data[$var] ) && strlen( $prod_data[$var] ) > 1 )
+*					{
+*						$this->dimensions[$var] = utf8_encode( $prod_data[$var] );
+*					}
+*				}
 		 !obsolete */
 
 		$this->reviews_allowed = TRUE;
@@ -1056,10 +1096,9 @@ class woo_product extends woo_interface {
 		$this->purchase_note = null;
 
 		if( isset( $this->woo_category_id ) )
-			$this->categories = array( "id" => $this->woo_category_id );	//Should also have name and slug?
-		//$this->categories = array( "id" => $prod_data['woo_category_id'] );	//Should also have name and slug?
+			$this->categories = array( "id" => $this->woo_category_id );	//Woo API is expecting id=>NUM.  
 											//Can we add extra categories in FA through foreign_codes?
-		//Here we could look at foreign codes for additional categories.
+											//We can also add a XREF table
 
 		//$this->tags = array( "id" => XXX, "name" => YYY, "slug" => ZZZ );
 		$this->tags = $this->product_tags( $stock_id );
@@ -1112,15 +1151,21 @@ class woo_product extends woo_interface {
 	{		
 		$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ . " Entering send_simple_products", "WARN");
 		//Check for how many we are expecting to send...
-		require_once( 'class.woo.php' );
-		$woo = new woo( $this->serverURL, $this->key, $this->secret, $this->options, $this);
+		require_once( 'class.model_woo.php' );
+		$woo = new model_woo( $this->serverURL, $this->key, $this->secret, $this->options, $this);
 		$woo->debug = $this->debug;
 		$woo->filter_new_only = TRUE;
 		$tosend = $woo->count_new_products();
 		if( $tosend <= 0 )
 			return -1;
 		$this->notify( __METHOD__  . ":" . __LINE__ . " About to send " . $tosend . " rows (all, not simple) to Woo", "WARN" );
-		$res = $woo->new_simple_product_ids();
+		$test_max_send = 0;
+		if( isset( $this->client->environment ) AND ( $this->client->environment == "devel" ) )
+		{
+			if( isset( $this->client->test_max_send ) )
+				$test_max_send = $this->client->test_max_send;
+		}
+		$res = $woo->new_simple_product_ids( $test_max_send );
 		$sendcount = 0;
 		$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__, "DEBUG");
 		foreach( $res as $stock_id )
@@ -1140,12 +1185,18 @@ class woo_product extends woo_interface {
 			}
 			catch( Exception $e )
 			{
-				$this->notify( $e->getMessage(), "WARN" );
+				$this->notify(  __METHOD__  . ":" . __LINE__ . " " .  $e->getMessage(), "WARN" );
 				if( WC_CLIENT_NOT_SET == $e->getCode() )
 				{
 					//WC-Client not set
 					$this->notify( __METHOD__  . ":" . __LINE__ . " Leaving send_simple_products wc_client not set", "WARN" );
 					throw $e;
+				}
+				if( $this->debug > 0 )
+				{
+					echo "<br /><br />" .  __METHOD__  . ":" . __LINE__ . "<br />";
+					var_dump( $e );
+					echo "<br /><br />";
 				}
 			}
 			/*finally

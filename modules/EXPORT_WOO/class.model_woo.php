@@ -11,10 +11,8 @@ require_once( 'class.woo_interface.php' );
 /******************************************************************//**
  * This class is a MVC Model class - designed for handling the WOO table in frontaccounting.
  *
- * The module also currently has the Admin screens attached which should be
- * separated out to follow the MVC framework...
  * *******************************************************************/
-class woo extends woo_interface {
+class model_woo extends woo_interface {
 		var $stock_id;
 		var $updated_ts;
 		var $woo_last_update;
@@ -102,6 +100,29 @@ class woo extends woo_interface {
 		$this->table_details['index'][1]['columns'] = "customer_id,first_name,last_name,address_1,city,state";
 		$this->table_details['index'][1]['keyname'] = "customer-billing_address_customer";
 		 */
+	}
+	/*******************************************//**********
+	* Initial population of data.  Probably should only run once
+	*
+	* @params none
+	* @returns int count of rows
+	****************************************************/
+	/*@int@*/ function populate_woo_table()
+	{
+               $this->insert_product();
+                $this->update_product_details();
+                $this->update_prices();
+                $this->zero_null_prices();
+                $this->update_qoh_count();
+                $this->staledate_specials();
+                //$this->update_specials();
+                $this->update_tax_data();
+                //$this->update_shipping_dimensions();
+                //$this->update_crosssells();
+                $this->update_category_data();
+                $this->update_category_xref();
+                $rowcount = $this->count_rows();
+		return $rowcount;
 	}
 	/**************************************************************//**
 	 * Select the details of 1 product.  Requires that stock_id is set
@@ -245,6 +266,22 @@ class woo extends woo_interface {
 		$updateprod_sql .= " where stock_id = '" . $this->stock_id . "'";
 		$res = db_query( $updateprod_sql, "Couldn't update woo_id after export" );
 	}
+	/**********************************************//***
+	* If you have to rebuild your woocommerce store you need to resend everything
+	*
+	* Clear the data that tells this module to send an
+	* update rather than a send
+	*
+	* @param none
+	* @return none
+	***********************************************/
+	function clear_woocommerce_data()
+	{
+		$sql_update = "update " . $this->table_details['tablename'] . " woo
+			set
+				woo.woo_last_update = '0000-01-01', woo.woo_id = null";
+		$res = db_query( $sql_update, "Couldnt reset Woocommerce data to null" );
+	}
 	function staledate_specials()
 	{
 		$sql_update4 = "update " . $this->table_details['tablename'] . " woo
@@ -342,48 +379,13 @@ class woo extends woo_interface {
 			* This function should be split into a data portion (model of MVC)
 			* and a gui portion in a separate class (view of MVC).
 	************************************************************************/
-	function missing_from_table()
+	function missing_from_table_query()
 	{
-            	display_notification("Missing from WOO");
 		$missing_sql = "select sm.stock_id, sm.description, c.description, sm.inactive, sm.editable 
 				from " . TB_PREF . "stock_master sm, " . TB_PREF . "stock_category c
 				where sm.category_id = c.category_id and sm.stock_id not in (select stock_id from " . TB_PREF . "woo)";
 		 global $all_items;
-		$selected_id = "0";
-		$name = "";
-		$editkey = TRUE;
-		$opts = array('cells'=>true, 'show_inactive'=>'1');
-		$all_option = FALSE;
-		$submit_on_change = TRUE;
-                set_editor('item', $name, $editkey);
-		start_form();
-		start_table();
-		table_section_title(_("Possible Causes of problems leading to these items being missing from WOO"));
-		label_row(_("Product is inactive (e.g. duplicate or depreciated)"), NULL);
-		label_row(_("No retail price set (Price type 1) in prices:"), NULL);
-		label_row(_("No total (instock) in QOH (stock_id not in stock_master or issues in stock_moves"), NULL);
-		label_row(_("An issue with the Category description/id"), NULL);
-	//	label_row(_("No Transaction History (no inventory movement):"), NULL);
-		label_row("&nbsp;", NULL);
-		label_row("Press F4 to pop open a window to edit the item details", null);
-		table_section(1);
-	        $ret = combo_input($name, $selected_id, $missing_sql, 'stock_id', 'sm.description',
-	        array_merge(
-	          array(
-	                'format' => '_format_stock_items',
-	                'spec_option' => $all_option===true ?  _("All Items") : $all_option,
-	                'spec_id' => $all_items,
-			'search_box' => true,
-	        	'search' => array("sm.stock_id", "c.description","sm.description"),
-	                'search_submit' => get_company_pref('no_item_list')!=0,
-	                'size'=>10,
-	                'select_submit'=> $submit_on_change,
-	                'category' => 2,
-	                'order' => array('c.description','sm.stock_id')
-	          ), $opts) );
-			echo $ret;
-		end_table();
-		end_form();
+		return $missing_sql;
 
 	}
 	/*******************************************************************************//**
@@ -422,10 +424,10 @@ class woo extends woo_interface {
 	 *
 	 * @returns array stock_ids
 	 * ******************************************************************/
-	/*@array@*/function new_simple_product_ids()
+	/*@array@*/function new_simple_product_ids( $max = 0 )
 	{
 		$this->filter_new_only = TRUE;
-		return $this->simple_product_ids();
+		return $this->simple_product_ids( $max );
 	}
 	/*****************************************************************//**
 	 * Return an array of stock_ids belonging to simple products that are new
@@ -442,9 +444,9 @@ class woo extends woo_interface {
 	 *
 	 * @returns array stock_ids
 	 * ******************************************************************/
-	/*@array@*/function simple_product_ids()
+	/*@array@*/function simple_product_ids( $max = 0 )
 	{
-		$res = $this->select_simple_products();
+		$res = $this->select_simple_products( $max );
 		$resarray = array();
 
 		while( $prod_data = db_fetch_assoc( $res ) )
@@ -467,26 +469,33 @@ class woo extends woo_interface {
 	 *
 	 * Should be split into MODEL and VIEW classes
 	 *   Could call VIEW function through db_query
+	* @params int max number of rows to return for testing to limit test run time.  Default no limit
 	 * @returns mysql_res
 	 * ******************************************************************/
-	/*@mysql_res@*/function select_simple_products()
+	/*@mysql_res@*/function select_simple_products( $max = 0 )
 	{
 		if( ! defined( $this->table_details['tablename'] ) )
 			$this->define_table();
 		$prod_sql = 	"select stock_id from " . $this->table_details['tablename'];
 		if( $this->filter_new_only )
+		{
 			$prod_sql .= " WHERE woo_id = ''";	//Otherwise need to do an UPDATE not CREATE
+			$prod_sql .= " or woo_id = '-1'";	//Otherwise need to do an UPDATE not CREATE
+		}
 		//This will ensure we send only items that haven't already been inserted.
 		$prod_sql .= " AND stock_id not in (SELECT sm.stock_id FROM " . TB_PREF . "stock_master sm 
 			INNER JOIN (SELECT stock_id FROM " . TB_PREF . "woo_prod_variable_master GROUP BY stock_id) vm
 			ON sm.stock_id LIKE  concat( vm.stock_id, '%') )";
-		if( $this->debug == 1 )
+		if( $max > 0 )
+		{
+			$prod_sql .= " LIMIT " . $max;
+		}
+		else if( $this->debug == 1 )
 		{
 			$prod_sql .= " LIMIT 10";
 			//$prod_sql .= "ORDER BY RAND() LIMIT 10";
 		}
-		else
-		if( $this->debug >= 2)
+		else if( $this->debug >= 2)
 		{
 			$prod_sql .= "ORDER BY RAND() LIMIT 1";
 		}

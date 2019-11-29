@@ -6,15 +6,15 @@
  * */
 
 require_once( 'class.woo_interface.php' );
+require_once( 'class.model_woo.php' );
 //require_once( 'class.EXPORT_WOO.inc.php' ); //Constants
 
 /******************************************************************//**
- * This class is a MVC Model class - designed for handling the WOO table in frontaccounting.
+ * This class is a MVC Controller/View class - designed for handling the WOO table in frontaccounting.
  *
- * The module also currently has the Admin screens attached which should be
- * separated out to follow the MVC framework...
  * *******************************************************************/
 class woo extends woo_interface {
+		var $model;
 		var $stock_id;
 		var $updated_ts;
 		var $woo_last_update;
@@ -55,123 +55,61 @@ class woo extends woo_interface {
 			$this->force_update = $client->force_update;
 
 		//$this->define_table();
+		$this->model = new model_woo( $serverURL, $key, $secret, $options, $this );
 		return;
 	}
 	function define_table()
 	{
-		$sidl = 'varchar(' . STOCK_ID_LENGTH . ')';
-		$this->fields_array[] = array('name' => 'stock_id', 'label' => 'SKU', 'type' => $sidl, 'null' => 'NOT NULL',  'readwrite' => 'readwrite' );
-		$this->fields_array[] = array('name' => 'updated_ts', 'type' => 'timestamp', 'null' => 'NOT NULL', 'default' => 'CURRENT_TIMESTAMP');
-		$this->fields_array[] = array('name' => 'woo_last_update', 'type' => 'timestamp', 'null' => 'NOT NULL',);
-		$this->fields_array[] = array('name' => 'woo_id', 'type' => 'varchar(32)' );
-		$this->fields_array[] = array('name' => 'category_id', 'type' => 'int(11)' );
-		$this->fields_array[] = array('name' => 'category', 'type' => 'varchar(64)' );
-		$this->fields_array[] = array('name' => 'woo_category_id', 'type' => 'int(11)' );
-		$this->fields_array[] = array('name' => 'description', 'type' => 'varchar(200)' );
-		$this->fields_array[] = array('name' => 'long_description', 'type' => 'varchar(500)' );
-		$this->fields_array[] = array('name' => 'units', 'type' => 'varchar(20)' );
-		$this->fields_array[] = array('name' => 'price', 'type' => 'double' );
-		$this->fields_array[] = array('name' => 'instock', 'type' => 'int(11)' );
-		$this->fields_array[] = array('name' => 'saleprice', 'type' => 'float' );
-		$this->fields_array[] = array('name' => 'date_on_sale_from', 'type' => 'date', 'null' => 'NOT NULL');
-		$this->fields_array[] = array('name' => 'date_on_sale_to', 'type' => 'date', 'null' => 'NOT NULL');
-		$this->fields_array[] = array('name' => 'external_url', 'type' => 'varchar(128)' );
-		$this->fields_array[] = array('name' => 'tax_status', 'type' => 'varchar(32)' );
-		$this->fields_array[] = array('name' => 'tax_class', 'type' => 'varchar(32)' );
-		$this->fields_array[] = array('name' => 'weight', 'type' => 'float' );
-		$this->fields_array[] = array('name' => 'length', 'type' => 'float' );
-		$this->fields_array[] = array('name' => 'width', 'type' => 'float' );
-		$this->fields_array[] = array('name' => 'height', 'type' => 'float' );
-		$this->fields_array[] = array('name' => 'shipping_class', 'type' => 'varchar(32)' );
-		$this->fields_array[] = array('name' => 'upsell_ids', 'type' => 'varchar(128)' );
-		$this->fields_array[] = array('name' => 'crosssell_ids', 'type' => 'varchar(128)' );
-		$this->fields_array[] = array('name' => 'parent_id', 'type' => 'varchar(32)' );
-		$this->fields_array[] = array('name' => 'attributes', 'type' => 'varchar(255)' );
-		$this->fields_array[] = array('name' => 'default_attributes', 'type' => 'varchar(255)' );
-		$this->fields_array[] = array('name' => 'variations', 'type' => 'varchar(255)' );
-
-		//$this->table_details['tablename'] = TB_PREF . "woo_categories_xref";
-		$this->table_details['tablename'] = $this->company_prefix . "woo";
-		$this->table_details['primarykey'] = "stock_id";
-
-		/*
-		$this->table_details['index'][0]['type'] = 'unique';
-		$this->table_details['index'][0]['columns'] = "order_id,first_name,last_name,address_1,city,state";
-		$this->table_details['index'][0]['keyname'] = "order-billing_address_customer";
-		$this->table_details['index'][1]['type'] = 'unique';
-		$this->table_details['index'][1]['columns'] = "customer_id,first_name,last_name,address_1,city,state";
-		$this->table_details['index'][1]['keyname'] = "customer-billing_address_customer";
-		 */
+		//$this->model->define_table();
 	}
 	/**************************************************************//**
 	 * Select the details of 1 product.  Requires that stock_id is set
 	 *
 	 * ****************************************************************/
+	/********
+	*
+		class.model_woo.php:    function select_product()
+		class.woo.php:  function select_product()
+		class.woo.php:          $this->model->select_product();
+		class.woo_product.20170708.php:         $woo->select_product();
+		class.woo_product.php:          $woo->select_product();
+		class.woo_target_xref.php:      function select_product()
+	*
+	********/
 	function select_product()
 	{
-		$prod_sql = 	"select stock_id, woo_category_id, description, long_description, price, instock, 
-				sale_price, date_on_sale_from, date_on_sale_to, external_url, tax_status, tax_class, 
-				weight, length, width, height, shipping_class, upsell_ids, crosssell_ids, parent_id, 
-				attributes, default_attributes, variations, woo_id
-				from " . TB_PREF . "woo";
-		$prod_sql .= " where stock_id = '" . $this->stock_id . "'";
-		$res = db_query( $prod_sql, __LINE__ . " Couldn't select product(s) for export" );
-		$prod_data = db_fetch_assoc( $res );
-		foreach( $this->fields_array as $fieldrow )
-		{
-			if( isset( $prod_data[ $fieldrow['name'] ] ) )
-				$this->$fieldrow['name'] = $prod_data[ $fieldrow['name'] ];
-		}
+		$this->model->select_product();
 	}
-	function insert_product()
+	/*****************************************//**
+	* Reset id and date so that we resend everything
+	*
+	********************************************/
+	function clear_woocommerce_data()
 	{
-		$sql_create = "insert ignore into " . $this->table_details['tablename'] . " ( stock_id"
-				. ", category_id"
-				. ", description"
-				. ", long_description"
-				. ", units"
-				."	)
-			 select 
-				sm.stock_id 
-				, sm.category_id"
-				. ", sm.description"
-				. ", sm.long_description"
-				. ", sm.units"
-			. " from " . TB_PREF . "stock_master sm"
-			. " WHERE inactive=0"
-			;
-		$res = db_query( $sql_create, "Couldnt create items in  WOO" );
+		$this->model->clear_woocommerce_data();
+	}
+	/********
+	*
+	*
+	********/
+	private function insert_product()
+	{
+		$res = $this->model->insert_product();
 		$this->tell( WOO_PRODUCT_INSERT, __METHOD__ );
 	}
-	function update_product_details()
+	private function update_product_details()
 	{
-		$sql_update = "update " . $this->table_details['tablename'] . " woo, " . TB_PREF . "stock_master sm
-			set
-				woo.category_id = sm.category_id
-				, woo.description = sm.description
-				, woo.long_description = sm.long_description
-				, woo.units = sm.units
-			where woo.stock_id = sm.stock_id";
-		$res = db_query( $sql_update, "Couldnt update stock_master details in  WOO" );
+		$res = $this->model->update_product_details();
 		$this->tell( WOO_PRODUCT_UPDATE, __METHOD__ );
 	}
-	function update_prices()
+	private function update_prices()
 	{
-		$sql_update2 = "update " . $this->table_details['tablename'] . " woo,  " . TB_PREF . "prices p
-			set
-				woo.price = p.price
-			where woo.stock_id = p.stock_id
-				and p.sales_type_id = '1'";
-		$res = db_query( $sql_update2, "Couldnt update prices in  WOO" );
+		$res = $this->model->update_prices();
 		$this->tell( WOO_PRODUCT_PRICE_UPDATE, __METHOD__ );
 	}
-	function zero_null_prices()
+	private function zero_null_prices()
 	{
-		$sql_update2a = "update " . $this->table_details['tablename'] . " woo
-			set
-				woo.price = '0'
-			where woo.price is null";
-		$res = db_query( $sql_update2a, "Couldnt update NULL prices in  WOO" );
+		$res = $this->model->zero_null_prices();
 		//$this->tell( WOO_PRODUCT_PRICE_NULL2ZERO, __METHOD__ );
 	}
 	/*********************************************************************//**
@@ -184,142 +122,100 @@ class woo extends woo_interface {
 	 * been inserted into this table to be updated or the items will be missed.
 	 *
 	 * ***********************************************************************/
-	function update_qoh_count()
+	private function update_qoh_count()
 	{
-		global $path_to_root;
-		if( @include_once( '../ksf_qoh/class.ksf_qoh.php' ) )
-		{
-			//Independant module.  This module is where all
-			//future development for QOH will happen.
-			include_once($path_to_root . "/modules/ksf_qoh/ksf_qoh.inc.php"); //KSF_QOH_PREFS
-			$qoh = new ksf_qoh( KSF_QOH_PREFS );
-			$qoh->define_table();
-			$qoh_table = $qoh->table_interface->table_details['tablename'];
-		}
-		else if( @include_once( 'class.qoh.php' ) )
-		{
-			//included class
-			$qoh = new qoh( null, null, null, null, $this );
-			$qoh->define_table();
-			$qoh_table = $qoh->table_details['tablename'];
-		}
-		else
-		{
-			$qoh_table = TB_PREF . "qoh";
-		}
-		//Grab the count out of the QOH table.  
-
-		$sql_update3 = "update " . $this->table_details['tablename'] . " woo,  " .  $qoh_table . " q
-			set
-				woo.instock = q.instock
-			where woo.stock_id = q.stock_id";
-		$res = db_query( $sql_update3, "Couldnt update Quantity On Hand in  WOO" );
+		$res = $this->model->update_qoh_count();
 		$this->tell( WOO_PRODUCT_QOH_UPDATE, __METHOD__ );
 	}
+	/********
+	*
+class.model_woo.php:    function update_on_sale_data()
+class.woo.php:  function update_on_sale_data()
+class.woo_product.20170708.php:         $woo->update_on_sale_data();
+class.woo_product.php:                  $woo->update_on_sale_data();
+
+	*
+	********/
 	function update_on_sale_data()
 	{
-		if( !isset( $this->stock_id ) )
-			throw new InvalidArgumentException( "stock_id" );
-		$updateprod_sql = "update " . $this->table_details['tablename'] . " set
-					date_on_sale_from = '" . $this->date_on_sale_from . "',
-					date_on_sale_to = '" . $this->date_on_sale_to . "',
-					tax_status = '" . $this->tax_status . "'";
-		$updateprod_sql .= " where stock_id = '" . $this->stock_id . "'";
-		$res = db_query( $updateprod_sql, "Couldn't update product after export" );
+		$res = $this->model->update_on_sale_data();
 	}
+	/********
+	*
+class.model_woo.php:    function update_woo_id()
+class.woo.php:  function update_woo_id()
+class.woo.php:          $res = $this->model->update_woo_id();
+class.woo_product.20170708.php:         $woo->update_woo_id();
+class.woo_product.php:                  $woo->update_woo_id();
+
+	*
+	********/
 	function update_woo_id()
 	{
-		if( !isset( $this->stock_id ) )
-			throw new InvalidArgumentException( "stock_id" );
-		$updateprod_sql = "update " . $this->table_details['tablename'] . " set
-					woo_id = '" . $this->woo_id . "'";		
-		$updateprod_sql .= " where stock_id = '" . $this->stock_id . "'";
-		$res = db_query( $updateprod_sql, "Couldn't update woo_id after export" );
+		$res = $this->model->update_woo_id();
 	}
+	/********
+	*
+class.model_woo.php:    function update_woo_last_update()
+class.woo.php:  function update_woo_last_update()
+class.woo.php:          $res = $this->model->update_woo_last_update();
+class.woo_product.20170708.php:         $woo->update_woo_last_update();
+class.woo_product.php:                  $woo->update_woo_last_update();
+
+	*
+	********/
 	function update_woo_last_update()
 	{
-		if( !isset( $this->stock_id ) )
-			throw new InvalidArgumentException( "stock_id" );
-		$updateprod_sql = "update " . $this->table_details['tablename'] . " set
-					woo_last_update = '" . $this->woo_last_update . "'";
-		$updateprod_sql .= " where stock_id = '" . $this->stock_id . "'";
-		$res = db_query( $updateprod_sql, "Couldn't update woo_id after export" );
+		$res = $this->model->update_woo_last_update();
 	}
-	function staledate_specials()
+	private function staledate_specials()
 	{
-		$sql_update4 = "update " . $this->table_details['tablename'] . " woo
-			set
-				woo.date_on_sale_to = '2015-01-01'";
-		$res = db_query( $sql_update4, "Couldnt invalidate Sales and Specials in  WOO" );
-		$sql_update4a = "update " . $this->table_details['tablename'] . " woo
-			set
-				woo.sale_price = woo.price
-			";
-		$res = db_query( $sql_update4a, "Couldnt set sales prices to prices in WOO" );
+		$res = $this->model->staledate_specials();
 		//$this->tell( WOO_PRODUCT_STALEDATE_SPECIALS, __METHOD__ );
 	}
-	function update_specials()
+	private function update_specials()
 	{
-		$sql_update4 = "update " . $this->table_details['tablename'] . " woo,  " . TB_PREF . "specials s
-			set
-				woo.sale_price = s.sale_price,
-				woo.date_on_sale_from = s.start,
-				woo.date_on_sale_to = s.end
-			where woo.stock_id = s.stock_id";
-		$res = db_query( $sql_update4, "Couldnt update Sales and Specials in  WOO" );
+		$res = $this->model->update_specials();
 		$this->tell( WOO_PRODUCT_SPECIALS_UPDATE, __METHOD__ );
 	}
-	function update_tax_data()
+	private function update_tax_data()
 	{
-				//$sql_update5 = "update " . TB_PREF . "woo woo,  " . TB_PREF . "taxes t
-		//	set
-		//		woo.tax_status = t.tax_status,
-		//		woo.tax_class = t.tax_class
-		//	where woo.stock_id = t.stock_id";
-		$sql_update5 = "update " . $this->table_details['tablename'] . " woo
-			set
-				woo.tax_status = 'taxable',
-				woo.tax_class = 'GST'";
-		$res = db_query( $sql_update5, "Couldnt update TAX data in  WOO" );
+		$res = $this->model->update_tax_data();
 		$this->tell( WOO_PRODUCT_TAXDATA_UPDATE, __METHOD__ );
 	}
-	function update_shipping_dimensions()
+	private function update_shipping_dimensions()
 	{
-		//need to do a check that the ShipDim module is installed
-		$sql_update6 = "update " . $this->table_details['tablename'] . " woo,  " . TB_PREF . "shipdim s
-			set
-				woo.shipping_class = s.shipping_class,
-				woo.length = s.length,
-				woo.width = s.width,
-				woo.height = s.height,
-				woo.weight = s.weight
-			where woo.stock_id = s.stock_id";
-		$res = db_query( $sql_update6, "Couldnt update Shipping Dimensional data in  WOO" );
+		$res = $this->model->update_shipping_dimensions();
 		$this->tell( WOO_PRODUCT_SHIPDIM_UPDATE, __METHOD__ );
 	}
+	/********
+	*
+
+	*
+	********/
 	function update_crosssells()
 	{
-		$sql_update7 = "update " . $this->table_details['tablename'] . " woo,  " . TB_PREF . "related s
-			set
-				woo.upsells_ids = s.upsells_ids,
-				woo.crosssells_ids = s.crosssells_ids,
-			where woo.stock_id = s.stock_id";
-		$res = db_query( $sql_update7, "Couldnt update upsell and cross sell data in  WOO" );
+		$res = $this->model->update_crosssells();
 		$this->tell( WOO_PRODUCT_CROSSSELL_UPDATE, __METHOD__ );
 	}
+	/********
+	*
+
+	*
+	********/
 	function update_category_data()
 	{
-		$sql_update8 = "update " . $this->table_details['tablename'] . " woo,  " . TB_PREF . "stock_category s
-			set
-				woo.category = s.description
-			where woo.category_id = s.category_id";
-		$res = db_query( $sql_update8, "Couldnt update Category data in  WOO" );
+		$res = $this->model->update_category_data();
 		$this->tell( WOO_PRODUCT_CATEGORY_UPDATE, __METHOD__ );
 	}
+	/********
+	*
+
+	*
+	********/
 	function update_category_xref()
 	{
-		$sql3 = "update " . $this->table_details['tablename'] . " woo, " . TB_PREF . "woo_categories_xref xref set woo.woo_category_id = xref.woo_cat where xref.fa_cat = woo.category_id";
-		$res = db_query( $sql3, "Couldnt update categories WOO" );
+		$res = $this->model->update_category_xref();
 		//$this->tell( WOO_PRODUCT_CATEGORY_XREF, __METHOD__ );
 	}
 	/*********************************************************************//**
@@ -342,12 +238,15 @@ class woo extends woo_interface {
 			* This function should be split into a data portion (model of MVC)
 			* and a gui portion in a separate class (view of MVC).
 	************************************************************************/
+	/********
+	*
+
+	*
+	********/
 	function missing_from_table()
 	{
             	display_notification("Missing from WOO");
-		$missing_sql = "select sm.stock_id, sm.description, c.description, sm.inactive, sm.editable 
-				from " . TB_PREF . "stock_master sm, " . TB_PREF . "stock_category c
-				where sm.category_id = c.category_id and sm.stock_id not in (select stock_id from " . TB_PREF . "woo)";
+		$missing_sql = $this->model->missing_from_table_query();
 		 global $all_items;
 		$selected_id = "0";
 		$name = "";
@@ -381,7 +280,7 @@ class woo extends woo_interface {
 	                'category' => 2,
 	                'order' => array('c.description','sm.stock_id')
 	          ), $opts) );
-			echo $ret;
+			echo "$ret";
 		end_table();
 		end_form();
 
@@ -391,6 +290,11 @@ class woo extends woo_interface {
 	 *
 	 * This should be split into a VIEW class and a MODEL class.
 	 * *********************************************************************************/
+	/********
+	*
+
+	*
+	********/
 	function create_price_book()
 	{
 		if( @include_once( $path_to_root . "/modules/ksf_generate_catalogue/class.ksf_generate_catalogue.php" ) )
@@ -412,9 +316,14 @@ class woo extends woo_interface {
 	 *
 	 * @returns int count
 	 * ******************************************************************/
+	/********
+	*
+
+	*
+	********/
 	function count_new_products()
 	{
-		$count = $this->count_filtered( "woo_id = ''" );
+		$count = $this->model->count_filtered( "woo_id = ''" );
 		return $count;
 	}
 	/*****************************************************************//**
@@ -422,42 +331,56 @@ class woo extends woo_interface {
 	 *
 	 * @returns array stock_ids
 	 * ******************************************************************/
+	/********
+	*
+
+	*
+	********/
 	/*@array@*/function new_simple_product_ids()
 	{
-		$this->filter_new_only = TRUE;
-		return $this->simple_product_ids();
+		$this->model->filter_new_only = TRUE;
+		return $this->model->simple_product_ids();
 	}
 	/*****************************************************************//**
 	 * Return an array of stock_ids belonging to simple products that are new
 	 *
 	 * @returns array stock_ids
 	 * ******************************************************************/
+	/********
+	*
+
+	*
+	********/
 	/*@array@*/function all_simple_product_ids()
 	{
-		$this->filter_new_only = FALSE;
-		return $this->simple_product_ids();
+		$this->model->filter_new_only = FALSE;
+		return $this->model->simple_product_ids();
 	}
 	/*****************************************************************//**
 	 * Return an array of stock_ids belonging to simple products
 	 *
 	 * @returns array stock_ids
 	 * ******************************************************************/
+	/********
+	*
+
+	*
+	********/
 	/*@array@*/function simple_product_ids()
 	{
-		$res = $this->select_simple_products();
-		$resarray = array();
-
-		while( $prod_data = db_fetch_assoc( $res ) )
-		{
-			$resarray[] = $prod_data['stock_id'];
-		}
-		return $resarray;
+		$res = $this->model->simple_product_ids();
+		return $res;
 	}
 	/****************************************************************//**
 	 * Runs an MySQL query returning the mysql_res of stock_ids
 	 *
 	 * @returns mysql_res
 	 * ******************************************************************/
+	/********
+	*
+
+	*
+	********/
 	/*@mysql_res@*/function select_simple_products_for_export()
 	{
 		return $this->select_simple_products();
@@ -469,33 +392,14 @@ class woo extends woo_interface {
 	 *   Could call VIEW function through db_query
 	 * @returns mysql_res
 	 * ******************************************************************/
+	/********
+	*
+
+	*
+	********/
 	/*@mysql_res@*/function select_simple_products()
 	{
-		if( ! defined( $this->table_details['tablename'] ) )
-			$this->define_table();
-		$prod_sql = 	"select stock_id from " . $this->table_details['tablename'];
-		if( $this->filter_new_only )
-		{
-			$prod_sql .= " WHERE woo_id = ''";	//Otherwise need to do an UPDATE not CREATE
-			$prod_sql .= " or woo_id = '-1'";	//Otherwise need to do an UPDATE not CREATE
-		}
-		//This will ensure we send only items that haven't already been inserted.
-		$prod_sql .= " AND stock_id not in (SELECT sm.stock_id FROM " . TB_PREF . "stock_master sm 
-			INNER JOIN (SELECT stock_id FROM " . TB_PREF . "woo_prod_variable_master GROUP BY stock_id) vm
-			ON sm.stock_id LIKE  concat( vm.stock_id, '%') )";
-		if( $this->debug == 1 )
-		{
-			$prod_sql .= " LIMIT 10";
-			//$prod_sql .= "ORDER BY RAND() LIMIT 10";
-		}
-		else
-		if( $this->debug >= 2)
-		{
-			$prod_sql .= "ORDER BY RAND() LIMIT 1";
-		}
-		//$prod_sql .= " ORDER BY RAND() LIMIT 5";
-		
-		$res = db_query( $prod_sql, __LINE__ . "Couldn't select product(s) for export" );
+		$res = $this->model->select_simple_products();
 		return $res;
 	}
 	/****************************************************************//**
@@ -505,23 +409,24 @@ class woo extends woo_interface {
 	 *   Could call VIEW function through db_query
 	 * @returns mysql_res
 	 * ******************************************************************/
+	/********
+	*
+
+	*
+	********/
 	/*@mysql_res@*/function select_simple_products_for_update()
 	{
-		$prod_sql = 	"select stock_id 
-				from " . $this->table_details['tablename'];
-		$prod_sql .= " WHERE ";
-		//if( $this->force_update != TRUE )
-			$prod_sql .= " updated_ts > woo_last_update AND";	//need to do an UPDATE because we changed something that hasn't been sent
-		$prod_sql .= " stock_id not in (SELECT sm.stock_id FROM " . TB_PREF . "stock_master sm 
-			INNER JOIN (SELECT stock_id FROM " . TB_PREF . "woo_prod_variable_master GROUP BY stock_id) vm
-			ON sm.stock_id LIKE  concat( vm.stock_id, '%') ) limit 10";
-		$res = db_query( $prod_sql, __LINE__ . "Couldn't select product(s) for export" );
+		$res = $this->model->select_simple_products_for_update();
 		return $res;
 	}
+	/********
+	*
+
+	*
+	********/
 	function delete_by_sku( $sku )
 	{
-		$sql = "delete FROM `" . $this->table_details['tablename'] . "` where stock_id = '" . $sku . "'";
-		$res = db_query( $sql, "Couldn't delete sku" . $sku );
+		$res = $this->model->delete_by_sku( $sku );
 		$this->notify( "Deleted sku " . $sku, "NOTIFY" );
 	}
 }

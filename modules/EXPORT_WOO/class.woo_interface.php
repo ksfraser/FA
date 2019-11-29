@@ -30,6 +30,7 @@ require_once( '../ksf_modules_common/defines.inc.php' );
 class woo_interface extends table_interface
 {
 	var $wc_client;
+	var $woo_rest;
 	var $woo_cs;
 	var $woo_ck;
 	var $write_properties_array;	//The list of WOO product properties (above) that are writeable.
@@ -60,6 +61,8 @@ class woo_interface extends table_interface
 	var $selected_id;	//!< find_submit sets this
 	var $iam;
 	var $interestedin;	//!< array of 'events' we are interested in and their associated data
+	var $provides;		//!< array of functions and menu items to pass back to EXPORT_WOO so that
+				//	each new module can interactively add it to the list
 
 	/******************************************************************************************//**
 	 *
@@ -75,6 +78,7 @@ class woo_interface extends table_interface
 		$this->table_details = array();
 		$this->fields_array = array();
 		$this->client = $client;
+		$this->provides = array();
 		if( isset( $this->client->debug ) )
 			$this->debug = $this->client->debug;
 		else
@@ -96,6 +100,13 @@ class woo_interface extends table_interface
 				'timeout'         => 30,
 				'ssl_verify'      => false,
 			);
+			$rest_options = array(
+                                'wp_api' => true, // Enable the WP REST API integration
+                                'version' => 'wc/v3', // WooCommerce WP REST API version
+                                'ssl_verify' => 'false',
+                                //'query_string_auth' => true // Force Basic Authentication as query string true and using under HTTPS
+                        );
+
 		$this->options = $options;
 		//$this->wc_client = null;
 		//Still used by class.woo_product
@@ -104,15 +115,25 @@ class woo_interface extends table_interface
 			if( null != $client )
 			{
 				$this->wc_client = new WC_API_Client( $serverURL, $client->woo_ck, $client->woo_cs, $options, $client );
+				$this->woo_rest = new woo_rest( $serverURL, $client->woo_ck, $client->woo_cs, $rest_options, $client );
 			}
 			else
+			{
 				$this->wc_client = null;
+				$this->woo_rest = null;
+			}
 		}
 		else
 			if( strlen( $serverURL) > 10 )
+			{
 				$this->wc_client = new WC_API_Client( $serverURL, $key, $secret, $options, $client );
+				$this->woo_rest = new woo_rest( $serverURL, $key, $secret, $rest_options, $client );
+			}
 			else
+			{
 				$this->wc_client = null;
+				$this->woo_rest = null;
+			}
 
 		global $db_connections;
 		$this->company_prefix = $db_connections[$_SESSION["wa_current_user"]->cur_con]['tbpref'];
@@ -138,6 +159,21 @@ class woo_interface extends table_interface
 		$this->build_interestedin();
 		$this->register_with_eventloop();
 		return;
+	}
+	function fuzzy_match( $data )
+	{
+		throw new Exception( "Inheriting Classes need to override this function", KSF_FCN_NOT_OVERRIDDEN );
+	}
+	/********************************************//***
+	* For when we need to rebuild the WooCommerce store
+	*
+	*	Each inheriting class will need to implement
+	*	its own reset routine.  Chances are it is
+	*	a zero/nulling of related Woo IDs.
+	*
+	***********************************************/
+	function rebuild_woocommerce()
+	{
 	}
 	function backtrace()
 	{
@@ -182,7 +218,8 @@ class woo_interface extends table_interface
 		{
 			foreach( $this->interestedin as $key => $val )
 			{
-				$eventloop->ObserverRegister( $this, $key );
+				if( $key <> WOO_DUMMY_EVENT )
+					$eventloop->ObserverRegister( $this, $key );
 			}
 		}
 	}
