@@ -94,6 +94,41 @@ if( ! class_exists( 'generic_fa_interface' ) )
 			$this->tabs[] = array( 'title' => 'Default Action', 'action' => 'default', 'form' => 'default_form', 'hidden' => TRUE );
 			$this->ui_class = null;
 		}
+	        /**********************************************************//**
+	         * Log to screen depending on level
+	         *
+	         * Levels
+	         *      ERROR (display error on screen)
+	         *      WARN (debug level 1)
+	         *      NOTIFY (debug level 2)
+	         *      DEBUG (debug level 3)
+	         *
+	         * ***********************************************************/
+	        function notify( $msg, $level = "ERROR" )
+	        {
+	                if( "ERROR" == $level )
+	                {
+	                        display_error( $msg );
+	                }
+	                else if( "WARN" == $level AND $this->debug >= 1)
+	                {
+	                        display_notification( $msg );
+	                }
+	                else if( "NOTIFY" == $level AND $this->debug >= 2)
+	                {
+	                        display_notification( $msg );
+	                }
+	                else if( "DEBUG" == $level AND $this->debug >= 3)
+	                {
+	                        display_notification( $msg );
+	                }
+	                else
+	                {
+	                        display_notification( $msg );
+	                }
+	
+	        }
+
 		function eventloop( $event, $method )
 		{
 		}
