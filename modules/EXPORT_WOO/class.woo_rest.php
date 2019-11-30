@@ -103,10 +103,10 @@ class woo_rest
 	}
 	function put( $endpoint, $data = [], $client = null )
 	{
-		if( ! is_null( $client ) )
+		if( !isset( $this->client ) AND ( ! is_null( $client ) ) )
 			$this->client = $client;
 		try {
-			$response = $this->wc->put( $endpoint, $data );
+			$response = $this->wc->put( $endpoint . "/" . $this->client->id, $data );
 		} catch( Exception $e )
 		{
 			throw $e;
@@ -115,10 +115,36 @@ class woo_rest
 	}
 	function get( $endpoint, $data = [], $client = null )
 	{
-		if( ! is_null( $client ) )
+		if( !isset( $this->client ) AND ( ! is_null( $client ) ) )
 			$this->client = $client;
 		try {
 			$response = $this->wc->get( $endpoint, $data );
+		} catch( Exception $e )
+		{
+			throw $e;
+		}
+		return $response;
+	}
+	function list_all( $endpoint, $data = [], $client = null )
+	{
+		if( !isset( $this->client ) AND ( ! is_null( $client ) ) )
+			$this->client = $client;
+		try {
+			$response = $this->wc->get( $endpoint, $data );
+		} catch( Exception $e )
+		{
+			throw $e;
+		}
+		return $response;
+	}
+	function retreive_one( $endpoint, $data = [], $client = null )
+	{
+		if( !isset( $this->client ) AND ( ! is_null( $client ) ) )
+			$this->client = $client;
+		if( ! isset( $this->client->id )
+			throw new Exception( "ID not set so can't search for item", KSF_VALUE_NOT_SET );
+		try {
+			$response = $this->wc->get( $endpoint . "/" . $this->client->id, $data );
 		} catch( Exception $e )
 		{
 			throw $e;

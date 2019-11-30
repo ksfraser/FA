@@ -158,6 +158,7 @@ class woo_interface extends table_interface
 		$this->fields_array2entry();
 		$this->build_interestedin();
 		$this->register_with_eventloop();
+		$this->reset_endpoint();
 		return;
 	}
 	function fuzzy_match( $data )
@@ -881,6 +882,38 @@ class woo_interface extends table_interface
 			$nextptr->update_table();
 			$nextptr = $nextptr->next_ptr;
 		}
+	}
+	function reset_endpoint()
+	{
+		throw new Exception( "Inheriting class must override!", KSF_FCN_NOT_OVERRIDDEN );
+	}
+	function error_handler()
+	{
+		throw new Exception( "Inheriting class must override!", KSF_FCN_NOT_OVERRIDDEN );
+	}
+	function retrieve_woo( $search_array = null )
+	{
+  		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
+                try
+                {
+			if( !isset( $this->endpoint ) )
+				throw new Exception( "Endpoint not set so can't query Woocommerce", KSF_VALUE_NOT_SET );
+                        if( isset( $this->woo_rest ) )
+                                $response = $this->woo_rest->get( $this->endpoint, $search );
+                        else
+                                throw new InvalidArgumentException( "WOO_REST not set", KSF_FIELD_NOT_SET );
+                        if( $this->debug >= 2 )
+                        {
+                                echo "<br />" . __FILE__ . ":" . __LINE__ . "<br />";
+                                print_r( $response );
+                        }
+                        $this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
+                        return $response;
+                }
+                catch( Exception $e )
+                {
+                        $this->error_handler( $e );
+                }
 	}
 
 }
