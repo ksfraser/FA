@@ -26,7 +26,7 @@
 //require_once( 'class.woo_rest.php' );	//Part of woo_interface
 require_once( 'class.woo_interface.php' );
 
-class woo_category extends woo_interface{
+class model_woo_category extends woo_interface{
 	var $id;		//	integer 	Unique identifier for the resource.
 	var $name;		//	string 	Category name.  required
 	var $slug;		//	string 	An alphanumeric identifier for the resource unique to its type.
@@ -37,6 +37,7 @@ class woo_category extends woo_interface{
 	var $menu_order;		//	integer 	Menu order, used to custom sort the resource.
 	var $count;		// 	integer 	Number of published categorys for the resource.   RO
 	var $fa_id;
+	var $collection;
 
 	//var $woo_rest;
 	var $header_array;
@@ -76,7 +77,7 @@ class woo_category extends woo_interface{
 		$this->fields_array[] = array('name' => 'parent', 		'type' => 'int(11)', 		'comment' => ' 	Parent Category ID.', 'readwrite' => 'readwrite');
 		$this->fields_array[] = array('name' => 'description', 		'type' => 'varchar(64)', 	'comment' => 'Category Description.', 'readwrite' => 'readwrite'); 	
 		$this->fields_array[] = array('name' => 'display', 		'type' => 'varchar(64)', 	'comment' => 'Display Type.  default/caregories/subcategories/both.', 'readwrite' => 'readwrite'); 	
-		$this->fields_array[] = array('name' => 'image', 		'type' => 'blob', 		'comment' => ' Category Image.', 'readwrite' => 'readwrite');.
+		$this->fields_array[] = array('name' => 'image', 		'type' => 'blob', 		'comment' => ' Category Image.', 'readwrite' => 'readwrite');
 		$this->fields_array[] = array('name' => 'menu_order', 		'type' => 'int(11)', 		'comment' => ' Menu Order.', 'readwrite' => 'readwrite');
 		$this->fields_array[] = array('name' => 'count', 		'type' => 'int(11)', 		'comment' => ' number of published categories', 'readwrite' => 'read');
 		$this->fields_array[] = array('name' => 'fa_id',		'type' => 'int(11)', 		'comment' => ' 	FA Category ID', 'readwrite' => 'read');
@@ -116,12 +117,61 @@ class woo_category extends woo_interface{
 			'menu_order',
 		);
 	}
+	function fuzzy_match( $data )
+	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
+		$match=0;
+/*
+			echo "<br /><br />" . __METHOD__ . ":" . __LINE__ . " DEVELOPMENT----<br /> ";
+			var_dump( $this );
+*/
+			echo "<br /><br />"; 
+			var_dump( $data );
+/*
+			echo "<br /><br />"; 
+			var_dump( $data[0] );
+			echo "<br /><br />"; 
+			var_dump( $data[0]->name );
+			echo "<br /><br />" . __METHOD__ . ":" . __LINE__ . " ----DEVELOPMENT<br /> ";
+*/
+		if( ! strcasecmp( $data[0]->name, $this->name ) )
+		{
+			$match++; 
+			$match++; 
+//			echo  __METHOD__ . ":" . __LINE__ . " MATCH name<br /> ";
+		}
+		if( ! strcasecmp( $data[0]->slug, $this->slug ) )
+		{
+			$match++; 
+//			echo __METHOD__ . ":" . __LINE__ . " MATCH slug<br /> ";
+		}
+		if( ! strcasecmp( $data[0]->description, $this->description ) )
+		{
+			$match++; 
+//			echo __METHOD__ . ":" . __LINE__ . " MATCH description<br /> ";
+		}
+		if( $match > 1 )
+		{
+			$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
+			echo "<br /><br />" . __METHOD__ . ":" . __LINE__ . " ID pre  match--<br /> ";
+			var_dump( $this->id );
+			$this->id = $data[0]->id;
+			echo "<br /><br />" . __METHOD__ . ":" . __LINE__ . " ID Post match--<br /> ";
+			var_dump( $this->id );
+			return TRUE;
+		}
+		echo "<br /><br />" . __METHOD__ . ":" . __LINE__ . " MATCHCOUNT: " . $match . "<br /> ";
+		
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
+		return FALSE;
+	}
 	/**********************************************************************************//**
 	 *
 	 *
 	 * ***********************************************************************************/
 	function error_handler( /*@Exception@*/$e )
 	{
+				$this->log_exception( $e, $client );
 		if ( $e instanceof WC_API_Client_HTTP_Exception ) 
 		{
 			//$msg = $e->getMessage();
@@ -312,15 +362,12 @@ class woo_category extends woo_interface{
 			$this->notify( __METHOD__ . ":" . __LINE__ . " We've been here before. Leaving " . __METHOD__, "WARN" );
 			return 0;
 		}
-
-		////var_dump( $categories_array );
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
-		
-
 		$loadcount = 0;
 		foreach( $categories_array as $cat )
 		{ 
-			set_time_limit( 300 );
+			//5 seconds to process 1 category item should be more than sufficient!
+			set_time_limit( 5 );
 			try
 			{
 				//$cat is an object
@@ -337,23 +384,8 @@ class woo_category extends woo_interface{
 						$this->$fieldname = $cat->$fieldname;
 				}
 				$this->get_fa_id_by_category_name();
-				//We are seeing entries where the description is blank!
-				//$this->notify( __METHOD__ . ":" . __LINE__ . " Var Dump this looking for blank name/description ", "WARN" );
-				////var_dump( $this );
-				//echo "<br /><br />";
 				$this->update_woo_categories_xref();
 				$this->insert_table();
-				/*
-				$wci = $this->select_table( "woo_category_id as woo_category_id", array( 'description' => $this->description ), null, 1 );
-				if( isset( $wci ) )
-				{
-					foreach( $wci as $key => $value )
-					{
-						$this->$key = $value;
-					}
-					$this->update_table();
-				}
-				 */
 				$this->reset_values();
 				$loadcount++;
 			}
@@ -438,8 +470,23 @@ class woo_category extends woo_interface{
 		$extractcount = 0;
 		try {
 			$this->build_data_array();
+/*
+			if( ! is_callable( $this->woo_rest->send( $this->endpoint, $this->data_array, $this ) ) )
+			{
+				echo "<br /><br />" . __METHOD__ . ":" . __LINE__ . " ERROR----<br /> ";
+				var_dump( $this->woo_rest );
+				echo "<br /><br />" . __METHOD__ . ":" . __LINE__ . " ----ERROR<br /> ";
+			//	$this->log_exception( $this->woo_rest, $client );
+			}
+*/
 			$response = $this->woo_rest->send( $this->endpoint, $this->data_array, $this );
-			$this->id = $response->product_category->id;
+			if( $this->debug > 1 )
+			{
+				echo "<br /><br />" . __METHOD__ . ":" . __LINE__ . " SEND RESPONSE----<br /> ";
+				var_dump( $response );
+				echo "<br /><br />" . __METHOD__ . ":" . __LINE__ . " ----SEND RESPONSE<br /> ";
+			}
+			$this->id = $response->id;
 			$this->update_woo_categories_xref();
 			$this->insert_table();
 			//There should be a response, we need to update our xref table so we know what the cat WOO ID is
@@ -449,6 +496,7 @@ class woo_category extends woo_interface{
 			return TRUE;	//Should we return false until the category is updated?
 
 		} catch ( WC_API_Client_Exception $e ) {
+				$this->log_exception( $e, $client );
 			if ( $e instanceof WC_API_Client_HTTP_Exception ) 
 			{
 				//echo __METHOD__ . ":" . __LINE__ . " We hit an error.  Here is the data we sent! <br />";
@@ -507,6 +555,14 @@ class woo_category extends woo_interface{
 			}
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
 		return FALSE;
+		} catch( Exception $e )
+		{
+			$this->notify( __METHOD__ . ":" . __LINE__ . " EXCEPTION " . __METHOD__, "WARN" );
+			echo "<br /><br />" . __METHOD__ . ":" . __LINE__ . " EXCEPTION----<br /> ";
+				$this->log_exception( $e, $this->client );
+			var_dump( $e );
+			echo "<br /><br />" . __METHOD__ . ":" . __LINE__ . " ----EXCEPTION<br /> ";
+
 		}
 		
 	}
@@ -563,9 +619,14 @@ class woo_category extends woo_interface{
 		$sentcount = 0;
 		while( $cat_data = db_fetch_assoc( $res ) )
 		{
+			$this->reset_values();
 			$catcount++;
-			$this->notify( __METHOD__ . ":" . __LINE__ . " Var_dump cat_data from stock_category", "WARN" );
-			//var_dump( $cat_data );
+			if( $this->debug > 0 )
+			{
+				$this->notify( __METHOD__ . ":" . __LINE__ . " Var_dump category data from stock category", "WARN" );
+				echo  __METHOD__ . ":" . __LINE__ . " Var_dump category data from stock category<br />";
+				var_dump( $cat_data );
+			}
 			//No point trying to send a blank item to Woo
 			if( strlen( $cat_data['description'] ) > 1 )
 			{
@@ -576,8 +637,7 @@ class woo_category extends woo_interface{
 				//$this->image;
 				$this->menu_order= $cat_data['category_id'];
 				$this->fa_id= $cat_data['category_id'];
-				if( $this->debug >= 1 )
-					$this->notify( __METHOD__ . ":" . __LINE__ . " Sending  " . $this->name . "::ID " . $this->fa_id, "NOTIFY" );
+				$this->notify( __METHOD__ . ":" . __LINE__ . " Sending  " . $this->name . "::ID " . $this->fa_id, "NOTIFY" );
 				try
 				{
 					$ret = $this->create_category();
@@ -586,6 +646,7 @@ class woo_category extends woo_interface{
 				}
 				catch( OutOfBoundsException $e )
 				{
+					$this->log_exception( $e, $client );
 					//Reset since we sent an item that exists.  Resulting in us loading from WooCommerce the list of categories
 					$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving (recursively) " . __METHOD__, "WARN" );
 					return $this->send_categories_to_woo() + $sendcount;

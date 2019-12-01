@@ -1,0 +1,7 @@
+<?php
+define( 'WOO_SEND_CATEGORY', 5739001 );
+define( 'WOO_RECV_CATEGORY', 5739002 );
+define( 'WOO_MATCH_CATEGORY', 5739003 );
+define( 'WOO_XREF_SET_VAR', 5739004 );
+
+?>

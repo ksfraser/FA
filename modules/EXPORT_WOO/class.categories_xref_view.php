@@ -7,33 +7,24 @@
 
 //This is a simple MODEL class.  AFAIK there aren't any bugs nor TODOs.
 
-require_once( 'class.woo_interface.php' );
-require_once( 'class.categories_xref_model.php' );
+require_once( 'class.table_interface.php' );
 
-/******************************************************
+/*************************************************//*****
+ * Model class of the categories_xref table
  *
  * Current design is this class updates the table.
  * 
  ******************************************************/
-class woo_categories_xref extends woo_interface {
-
+class categories_xref_model extends table_interface {
 	var $fa_cat;
 	var $woo_cat;
 	var $description;
 	var $updated_ts;
-	var $model;
-	function __construct($serverURL = " ", $key, $secret, $options = null, $client = null)
+	function __construct( $caller = null)
 	{
-		//$serverURL = " ", $key, $secret, $options, $client = null
-		parent::__construct( $serverURL = " ", $key, $secret, $options, $client );
-		$this->model = new categories_xref_model();
+		parent::__construct( $caller );
+		$this->define_table();
 	}
-/*
-	function reset_endpoint()
-	{
-		//This is a MODEL class so we shouldn't be doing anything with endpoints directly.
-	}
-*/
 	function define_table()
 	{
 		//$this->fields_array[] = array('name' => 'categories_xref_id', 'type' => 'int(11)', 'auto_increment' => 'yup');
@@ -51,23 +42,17 @@ class woo_categories_xref extends woo_interface {
 	 * Update a cross-ref of FA category x WooCommerce Category
 	 *
 	 * ************************************************************************************************************/
-	/*@bool?@*/function update()
+	function update()
 	{
-		$updateprod_sql = "update " . TB_PREF . "woo_categories_xref set woo_cat='" . $this->woo_cat . "' where fa_cat='" . $this->fa_cat . "')";
-		$res = db_query( $updateprod_sql, __FILE__ . ":" . __LINE__ . "Couldn't update woo_categories_xref" );
-		display_notification( "Updated woo_categories_xref with values " . $this->fa_cat . ", " . $this->woo_cat . ", " . $this->description   );
-		return $res;	//Hope res is a boolean indicating success/fail on query
+		$this->update_table();
 	}
 	/************************************************************************************************************//**
 	 * Insert a cross-ref of FA category x WooCommerce Category
 	 *
 	 * ************************************************************************************************************/
-	/*@bool?@*/function insert()
+	function insert()
 	{
-		$updateprod_sql = "insert ignore into " . TB_PREF . "woo_categories_xref ( fa_cat, woo_cat, description ) values ('" . $this->fa_cat . "', '" . $this->woo_cat . "', '" . $this->description . "')";
-		$res = db_query( $updateprod_sql, __FILE__ . ":" . __LINE__ . "Couldn't update woo_categories_xref" );
-		display_notification( "Updated woo_categories_xref with values " . $this->fa_cat . ", " . $this->woo_cat . ", " . $this->description   );
-		return $res;	//Hope res is a boolean indicating success/fail on query
+		$this->insert_table();
 	}
 	/************************************************************************************************************//**
 	 * Get the WooCommerce category_id from the FrontAccounting one
@@ -76,8 +61,14 @@ class woo_categories_xref extends woo_interface {
 	 * ************************************************************************************************************/
 	/*@int@*/function get_woo_cat()
 	{
-		$sql = "select woo_cat from " . TB_PREF . "woo_categories_xref where fa_cat = '" . $this->fa_cat . "'";
-		$res = db_query( $sql, __FILE__ . ":" . __LINE__ . "Couldn't select woo category");
+		$this->clear_sql_vars();
+ 		$this->select_array = array( '*' );
+                $this->where_array = array();
+		if( isset( $this->fa_cat ) )
+                	$this->where_array['fa_cat'] =  $this->fa_cat;
+                $this->groupby_array = array();
+		$this->buildSelectQuery();
+                $res = $this->query( "Couldn't select woo category", "select");
 		$assoc = db_fetch_assoc( $res );
 		return (int)$assoc['woo_cat'];
 	}
@@ -88,8 +79,14 @@ class woo_categories_xref extends woo_interface {
 	 * ************************************************************************************************************/
 	/*@int@*/function get_fa_cat()
 	{
-		$sql = "select fa_cat from " . TB_PREF . "woo_categories_xref where woo_cat = '" . $this->woo_cat . "'";
-		$res = db_query( $sql, __FILE__ . ":" . __LINE__ . "Couldn't select fa category");
+		$this->clear_sql_vars();
+ 		$this->select_array = array( '*' );
+                $this->where_array = array();
+		if( isset( $this->woo_cat ) )
+                	$this->where_array['woo_cat'] =  $this->woo_cat;
+                $this->groupby_array = array();
+		$this->buildSelectQuery();
+                $res = $this->query( "Couldn't select fa category", "select");
 		$assoc = db_fetch_assoc( $res );
 		return (int)$assoc['fa_cat'];
 	}

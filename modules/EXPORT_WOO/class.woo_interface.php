@@ -5,6 +5,12 @@
  * build_write_properties_array
  * */
 
+/***********
+*
+*	TODO: 	Refactor so that not inheriting table_interface
+		Refactor table_interface so that it uses INTERFACE standards
+*/
+
 /*********************************************************************************************
  *Converting a WOO definition to table definition
 
@@ -26,9 +32,99 @@
 
 require_once( '../ksf_modules_common/class.table_interface.php' );
 require_once( '../ksf_modules_common/defines.inc.php' );
+require_once( 'woo_defines.inc.php' );
+require_once( 'class.woo_rest.php' );
 
 class woo_interface extends table_interface
 {
+	/**********************************************************
+	* INHERITS (table_interface)
+        function get( $field )
+        / * @bool@ *  /function set( $field, $value = null )
+        / * @bool@ *  /function validate( $data_value, $data_type )
+        / * none *  /function select_row( $set_caller = false )
+        / * @mysql_result@ *  /function select_table($fieldlist = " * ", / * @array@ *  /$where = null, / * @array@ *  /$orderby = null, / * @int@ *  /$limit = null)
+        function delete_table()
+        function update_table()
+        / * @bool@ *  /function check_table_for_id()
+        / * @int@ *  /function insert_table()
+        function create_table()
+        function alter_table()
+        / * @int@ *  /function count_rows()
+        / * @int@ *  /function count_filtered($where = null)
+        / * string *  /function getPrimaryKey()
+        / * none *  /function getByPrimaryKey()
+        function assoc2var( $assoc )            Take an associated array and take returned values and place into the calling MODEL class
+        function get( $field )
+        / * @bool@ * /function set( $field, $value = null )
+        / * @bool@ * /function validate( $data_value, $data_type )
+        / * none * /function select_row( $set_caller = false )
+        / * @mysql_result@ * /function select_table($fieldlist = " * ", / * @array@ * /$where = null, / * @array@ * /$orderby = null, / * @int@ * /$limit = null)
+        function query( $msg )
+        function delete_table()
+        function update_table()
+        / * @bool@ * /function check_table_for_id()
+        / * @int@ * /function insert_table()
+        function create_table()
+        function alter_table()
+        / * @int@ * /function count_rows()
+        / * @int@ * /function count_filtered($where = null)
+        / * string * /function getPrimaryKey()
+        / * none * /function getByPrimaryKey()
+        function buildLimit()
+        function buildSelect( $b_validate_in_table = false)
+        function buildFrom()
+        function buildWhere( $b_validate_in_table = false)
+        function buildOrderBy( $b_validate_in_table = false)
+        function buildGroupBy( $b_validate_in_table = false)
+        function buildHaving( )
+        function buildJoin()
+        function buildSelectQuery( $b_validate_in_table = false )
+        function clear_sql_vars()
+        function assoc2var( $assoc )
+        function var2caller()
+	************************************************************************/
+	/**********************************************************
+	* PROVIDES
+	 function fuzzy_match( $data )
+        function rebuild_woocommerce()
+        function backtrace()
+        function tell( $msg, $method )
+        function tell_eventloop( $caller, $event, $msg )
+        function dummy( $obj, $msg )
+        function register_with_eventloop()
+        function build_interestedin()
+        function notified( $obj, $event, $msg )
+        function register( $msg, $method )
+        function notify( $msg, $level = "ERROR" )
+        /  *  @int@ * /function fields_array2var()
+        function master_form()
+        /  *  @array@ * /function fields_array2entry()
+        function display_table_with_edit( $sql, $headers, $index, $return_to = null )
+        function form_post_handler()
+        function display_edit_form( $form_def, $selected_id = -1, $return_to )
+        function combo_list( $sql, $order_by_field, $name, $selected_id=null, $none_option=false, $submit_on_change=false)
+        function combo_list_cells( $sql, $order_by_field, $label, $name, $selected_id = null, $none_option=false, $submit_on_change=false )
+        function combo_list_row( $sql, $order_by_field, $label, $name, $selected_id = null, $none_option=false, $submit_on_change=false )
+        function define_table()
+        function build_write_properties_array()
+        function build_properties_array()
+        function build_foreign_objects_array()
+        function array2var( $data_array )
+        function build_data_array()
+        function reset_values()
+        function extract_data_objects( $srvobj_array )
+        /  *  @int@ * /function extract_data_array( $assoc_array )
+        /  *  @int@ * /function extract_data_obj( $srvobj )
+        function build_json_data()
+        /  *  @bool@ * /function prep_json_for_send( $func = NULL )
+        function ll_walk_insert_fa()
+        function ll_walk_update_fa()
+        function reset_endpoint()
+        function error_handler( /  *  @Exception@ * / $e )
+        function retrieve_woo( $search_array = null )
+        function log_exception( $e, $client )
+	************************************************************************/
 	var $wc_client;
 	var $woo_rest;
 	var $woo_cs;
@@ -63,6 +159,10 @@ class woo_interface extends table_interface
 	var $interestedin;	//!< array of 'events' we are interested in and their associated data
 	var $provides;		//!< array of functions and menu items to pass back to EXPORT_WOO so that
 				//	each new module can interactively add it to the list
+	var $to_tell_code;	//For once a called routine does something, use this code to ->tell
+				//used for woo_rest and other interfaces to notify that something happened
+				//e.g. send succeeded or Updated
+	var $failed_tell_code;	//Code to use if the action failed i.e. search returned nothing
 
 	/******************************************************************************************//**
 	 *
@@ -78,6 +178,7 @@ class woo_interface extends table_interface
 		$this->table_details = array();
 		$this->fields_array = array();
 		$this->client = $client;
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		$this->provides = array();
 		if( isset( $this->client->debug ) )
 			$this->debug = $this->client->debug;
@@ -114,11 +215,13 @@ class woo_interface extends table_interface
 		{
 			if( null != $client )
 			{
+				$this->notify( __METHOD__ . ":" . __LINE__ . "  Build REST interfaces ", "WARN" );
 				$this->wc_client = new WC_API_Client( $serverURL, $client->woo_ck, $client->woo_cs, $options, $client );
 				$this->woo_rest = new woo_rest( $serverURL, $client->woo_ck, $client->woo_cs, $rest_options, $client );
 			}
 			else
 			{
+				$this->notify( __METHOD__ . ":" . __LINE__ . " UNABLE to Build REST interfaces ", "ERROR" );
 				$this->wc_client = null;
 				$this->woo_rest = null;
 			}
@@ -126,11 +229,13 @@ class woo_interface extends table_interface
 		else
 			if( strlen( $serverURL) > 10 )
 			{
+				$this->notify( __METHOD__ . ":" . __LINE__ . "  Build REST interfaces ", "WARN" );
 				$this->wc_client = new WC_API_Client( $serverURL, $key, $secret, $options, $client );
 				$this->woo_rest = new woo_rest( $serverURL, $key, $secret, $rest_options, $client );
 			}
 			else
 			{
+				$this->notify( __METHOD__ . ":" . __LINE__ . " UNABLE to Build REST interfaces ", "ERROR" );
 				$this->wc_client = null;
 				$this->woo_rest = null;
 			}
@@ -159,11 +264,12 @@ class woo_interface extends table_interface
 		$this->build_interestedin();
 		$this->register_with_eventloop();
 		$this->reset_endpoint();
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
 		return;
 	}
 	function fuzzy_match( $data )
 	{
-		throw new Exception( "Inheriting Classes need to override this function", KSF_FCN_NOT_OVERRIDDEN );
+		throw new Exception( "Inheriting class must override " . __METHOD__ . "!", KSF_FCN_NOT_OVERRIDDEN );
 	}
 	/********************************************//***
 	* For when we need to rebuild the WooCommerce store
@@ -199,6 +305,16 @@ class woo_interface extends table_interface
 			if( isset( $msg ) )	//If not set nothing to pass along...
 				if( is_callable( $this->client->eventloop( $msg, $method ) ) )
 					$this->client->eventloop( $msg, $method );
+		else
+		{
+			$this->tell_eventloop( $this, $msg, $method );
+		}
+	}
+	function tell_eventloop( $caller, $event, $msg )
+	{
+		global $eventloop;
+		if( isset( $eventloop ) )
+			$eventloop->ObserverNotify( $trigger_class, $event, $msg );
 	}
 	/***************************************************************//**
 	 *dummy   
@@ -285,22 +401,30 @@ class woo_interface extends table_interface
 	{
 		if( "ERROR" == $level )
 		{
+			$this->ObserverNotify( $this, NOTIFY_LOG_ERROR, $msg );
 			display_error( $msg );
 		}
-		else if( "WARN" == $level AND $this->debug >= 1)
+		else if( "WARN" == $level )
 		{
-			display_notification( $msg );
+			$this->ObserverNotify( $this, NOTIFY_LOG_WARN, $msg );
+			if( $this->debug >= 1 )
+				display_notification( $msg );
 		}
-		else if( "NOTIFY" == $level AND $this->debug >= 2)
+		else if( "NOTIFY" == $level )
 		{
-			display_notification( $msg );
+			$this->ObserverNotify( $this, NOTIFY_LOG_NOTIFY, $msg );
+			if( $this->debug >= 2 )
+				display_notification( $msg );
 		}
-		else if( "DEBUG" == $level AND $this->debug >= 3)
+		else if( "DEBUG" == $level )
 		{
-			display_notification( $msg );
+			$this->ObserverNotify( $this, NOTIFY_LOG_DEBUG, $msg );
+			if( $this->debug >= 3 )
+				display_notification( $msg );
 		}
 		else
 		{
+			$this->ObserverNotify( $this, NOTIFY_LOG_INFO, $msg );
 			display_notification( $msg );
 		}
 
@@ -523,12 +647,16 @@ class woo_interface extends table_interface
 		}
 		else
 		{
-			echo "<br />" . __METHOD__ . " No values set.  Why are we here?<br />";
-			echo "<br />" . __METHOD__ . " Class is " . get_class( $this ) . "<br />";
-			var_dump( $_POST );
-			$this->wc_client = null;
-			echo "<br /><br />" . __METHOD__ . " Class variables are <br />";
-			 var_dump( $this );
+			if( $this->debug > 1 )
+			{
+				echo "<br />" . __METHOD__ . " No values set.  Why are we here?<br />";
+				echo "<br />" . __METHOD__ . " Class is " . get_class( $this ) . "<br />";
+				var_dump( $_POST );
+				$this->wc_client = null;
+				echo "<br /><br />" . __METHOD__ . " Class variables are <br />";
+				var_dump( $this );
+			}
+			throw new Exception( "POST variables not set", KSF_VALUE_NOT_SET );
 		}
 	}
 	function display_edit_form( $form_def, $selected_id = -1, $return_to )
@@ -721,6 +849,11 @@ class woo_interface extends table_interface
 		{
 			unset( $this->$val );
 		}
+		if( $this->debug > 1 )
+		{
+			echo "<br />" . __METHOD__ . ":" . __LINE__ . " Reset values.  Should be nulls for class " . get_class( $this ) . "<br />";
+			var_dump( $this );
+		}
 	}
 
 	/***************************************************************
@@ -885,11 +1018,11 @@ class woo_interface extends table_interface
 	}
 	function reset_endpoint()
 	{
-		throw new Exception( "Inheriting class must override!", KSF_FCN_NOT_OVERRIDDEN );
+		throw new Exception( "Inheriting class " . get_class( $this ) . " must override " . __METHOD__ . "!", KSF_FCN_NOT_OVERRIDDEN );
 	}
-	function error_handler()
+	function error_handler( /*@Exception@*/ $e )
 	{
-		throw new Exception( "Inheriting class must override!", KSF_FCN_NOT_OVERRIDDEN );
+		throw new Exception( "Inheriting class must override " . __METHOD__ . "!", KSF_FCN_NOT_OVERRIDDEN );
 	}
 	function retrieve_woo( $search_array = null )
 	{
@@ -915,7 +1048,23 @@ class woo_interface extends table_interface
                         $this->error_handler( $e );
                 }
 	}
-
+	function log_exception( $e, $client )
+	{
+		echo "<br />" . __FILE__ . ":" . __LINE__ . " Exception CODE:<br />";	
+		var_dump( $e->getCode() );
+		echo "<br />" . __FILE__ . ":" . __LINE__ . " Exception MESSAGE:<br />";	
+		var_dump( $e->getMessage() );
+		if( $e instanceof HttpClientException )
+		{
+			echo "<br />" . __FILE__ . ":" . __LINE__ . " Exception REQUEST:<br />";	
+			var_dump( $e->getRequest );
+			echo "<br />" . __FILE__ . ":" . __LINE__ . " Exception RESPONSE:<br />";	
+			var_dump( $e->getResponse );
+		}
+		else
+			var_dump( $e );
+		$this->notify( $client . " has raised exception: " . $e->getCode() . "::" . $e->getMessage(), "WARN" );
+	}
 }
 
 ?>

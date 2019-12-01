@@ -64,7 +64,7 @@ class woo_category extends woo_interface{
 		parent::__construct($serverURL, $key, $secret, $options, $client);
 		$this->dumped_woocategories_count = 0;
 		$this->loadcount = 0;
-		$this->model = new model_woo_category();
+		$this->model = new model_woo_category( $serverURL, $woo_rest_path, $key, $secret, $options, $client, $enviro );
 		return;
 	}
 	/**************************************************

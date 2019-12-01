@@ -358,6 +358,7 @@ class EXPORT_WOO extends generic_fa_interface
 		{
 			$module->rebuild_woocommerce();
 		}
+	*/
 			
 	}
 	function form_products_export()

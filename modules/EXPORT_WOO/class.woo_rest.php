@@ -12,7 +12,7 @@ use Automattic\WooCommerce\Client;
 *	Client Library looks like it takes arrays of data instead of JSON
 *
 **********************************************************************************************/
-class woo_rest
+class woo_rest 
 {
 	private $wc;
 	private $client;
@@ -20,6 +20,7 @@ class woo_rest
 	{
 		if( null != $client )
 			$this->client = $client;
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
         	//Need the index.php since .htaccess changes didn't work
 		if( null == $options )
 		{
@@ -37,10 +38,29 @@ class woo_rest
         		$secret,
         		$options
 		);
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
 	}
-	function send( $endpoint, $data = [], $client = null )
+	/***********************************//***
+	* Use our client to log messages
+	*************************************/
+	function notify( $msg, $level )
 	{
-		echo "Client is $client->iam <br />";
+		if( isset( $this->client ) )
+			$this->client->notify( $msg, $level );
+	}
+	function send( $endpoint, $data = [], $client )
+	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
+		if( null == $client )
+			throw new Exception( "These functions depend on CLIENT being set and it isn't.", KSF_FIELD_NOT_SET );
+		else
+			$this->client = $client;
+		if( isset( $client->iam ) )
+			echo  __METHOD__ . ":" . __LINE__ .  " Client is $client->iam <br />";
+		else
+			echo "Client is " . get_class( $client ) . "<br />";
+		 echo "<br />" . __METHOD__ . ":" . __LINE__ . " ID PRE GET  match--<br /> ";
+                 var_dump( $client->id );
 		//check to see if record exists
 		try {
 			$exists = false;
@@ -76,6 +96,8 @@ class woo_rest
 				$act = "put";
 			else
 				$act = "post";
+		 	echo "<br /><br />" . __METHOD__ . ":" . __LINE__ . " ID POST GET post match--<br /> ";
+                 	var_dump( $client->id );
 		}
 		catch (Exception $e)
 		{
@@ -84,13 +106,19 @@ class woo_rest
 		//if( isset( $client->system_of_record ) AND ( true == $client->system_of_record ) )
 		//
 		//Update or Insert
+		 echo "<br /><br />" . __METHOD__ . ":" . __LINE__ . " ID Pre PUT/POST--<br /> ";
+                 var_dump( $client->id );
 		$response = $this->$act( $endpoint, $data, $client );
 		//Update Client ID
+		 echo "<br /><br />" . __METHOD__ . ":" . __LINE__ . " ID PosT PUT/POST--<br /> ";
+                 var_dump( $client->id );
 
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
 		return $response;
 	}
 	function post( $endpoint, $data = [], $client = null )
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		if( ! is_null( $client ) )
 			$this->client = $client;
 		try {
@@ -99,34 +127,45 @@ class woo_rest
 		{
 			throw $e;
 		}
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
 		return $response;
 	}
 	function put( $endpoint, $data = [], $client = null )
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		if( !isset( $this->client ) AND ( ! is_null( $client ) ) )
 			$this->client = $client;
 		try {
+			if( ! isset( $this->client->id ) )
+				throw new Exception( "Client ID needed for update (put) not set", KSF_FIELD_NOT_SET );
 			$response = $this->wc->put( $endpoint . "/" . $this->client->id, $data );
 		} catch( Exception $e )
 		{
 			throw $e;
 		}
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
 		return $response;
 	}
 	function get( $endpoint, $data = [], $client = null )
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		if( !isset( $this->client ) AND ( ! is_null( $client ) ) )
 			$this->client = $client;
+		 echo "<br /><br />" . __METHOD__ . ":" . __LINE__ . " ID Pre GET  --<br /> ";
+                 var_dump( $client->id );
+
 		try {
 			$response = $this->wc->get( $endpoint, $data );
 		} catch( Exception $e )
 		{
 			throw $e;
 		}
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
 		return $response;
 	}
 	function list_all( $endpoint, $data = [], $client = null )
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		if( !isset( $this->client ) AND ( ! is_null( $client ) ) )
 			$this->client = $client;
 		try {
@@ -135,13 +174,15 @@ class woo_rest
 		{
 			throw $e;
 		}
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
 		return $response;
 	}
 	function retreive_one( $endpoint, $data = [], $client = null )
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		if( !isset( $this->client ) AND ( ! is_null( $client ) ) )
 			$this->client = $client;
-		if( ! isset( $this->client->id )
+		if( ! isset( $this->client->id ) )
 			throw new Exception( "ID not set so can't search for item", KSF_VALUE_NOT_SET );
 		try {
 			$response = $this->wc->get( $endpoint . "/" . $this->client->id, $data );
@@ -149,10 +190,12 @@ class woo_rest
 		{
 			throw $e;
 		}
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
 		return $response;
 	}
 	function delete( $endpoint, $data = [], $client = null )
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		if( ! is_null( $client ) )
 			$this->client = $client;
 		try {
@@ -161,21 +204,30 @@ class woo_rest
 		{
 			throw $e;
 		}
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
 		return $response;
 
 	}
 	function data_not_json( $data )
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		if( is_object( $data ) )
 			throw new Exception( "Object, not data", KSF_INVALID_DATA_TYPE );
 		$decoded = json_decode( $data, true );
 		if( JSON_ERROR_NONE == json_last_error() )
+		{
+			$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
 			return $decoded;
+		}
 		else
+		{
+			$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
 			return $data;
+		}
 	}
 	function dispatch( $data, $c_type, $client = null )
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		try {
 			$data = $this->data_not_json( $data );
 		} catch( Exception $e )
@@ -198,6 +250,7 @@ class woo_rest
 			$response = $this->get( $data, $c_type, $client = null  );
 		else
 			throw new Exception( "Invalid c_type" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );;
 		return $response;
 	}
 	/************************************************************
@@ -411,12 +464,14 @@ class woo_rest_old extends rest_client
 			display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__);
 		}
 		$this->request->json_data = $json_data;
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		return $this->write2woo( $c_type, $client );
 	}
 	function write2woo_object( $c_obj, $c_type, $client = null )
 	{
 		$this->request->data = http_build_query($c_obj);	//http_build_query would take an object and 
 									//build an array of the public variables
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		return $this->write2woo( $c_type, $client );
 	}
 	/*@string@*/function write2woo( $c_type = "POST", $client = null )
@@ -447,12 +502,14 @@ class woo_rest_old extends rest_client
 					$client->message = $this->response->body->message;
 				}
 			}
+			$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 			return $this->response->body;
 		}
 		else
 		{
 			display_error( "Curl Exec failed::" . $this->errmsg );
 			//return FALSE;
+			$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 			return "Curl Exec failed";
 		}
 	}

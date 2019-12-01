@@ -30,6 +30,7 @@ require_once( $path_to_root . "/includes/db/connect_db.inc" );	//db_escape
         /*@int@* /function count_filtered($where = null)
         /*string* /function getPrimaryKey()
         /*none* /function getByPrimaryKey()
+	function assoc2var( $assoc )		Take an associated array and take returned values and place into the calling MODEL class
 	
  * 
  *
@@ -1004,6 +1005,27 @@ class table_interface
  		
 	}
 	/***!GENERICTABLE***/
+	function assoc2var( $assoc )
+        {
+                foreach( $this->fields_array as $field_spec )
+                {
+                        $field = $field_spec['name'];
+                        if( isset( $assoc[$field] ) )
+                                $this->set( $field, $assoc[$field] );
+                }
+        }
+	function var2caller()
+        {
+		if( ! isset( $this->caller ) )
+			throw new Exception( "Caller not set so can't pass values back", KSF_FIELD_NOT_SET );
+                foreach( $this->fields_array as $field_spec )
+                {
+                        $field = $field_spec['name'];
+                        if( isset( $this->$field ) )
+                                $this->caller->set( $field, $this->$field );
+                }
+        }
+
 
 }
 
