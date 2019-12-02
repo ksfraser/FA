@@ -23,10 +23,10 @@ class categories_xref_model extends woo_interface {
 	function __construct( $caller = null)
 	{
 		parent::__construct( null, null, null, null, $caller );
-		$this->define_table();
 	}
 	function define_table()
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		//$this->fields_array[] = array('name' => 'categories_xref_id', 'type' => 'int(11)', 'auto_increment' => 'yup');
 		$this->fields_array[] = array('name' => 'updated_ts', 'type' => 'timestamp', 'null' => 'NOT NULL', 'default' => 'CURRENT_TIMESTAMP');
 		$this->fields_array[] = array('name' => 'fa_cat', 'type' => 'int(11)');
@@ -37,16 +37,47 @@ class categories_xref_model extends woo_interface {
 		$this->table_details['index'][0]['type'] = 'unique';
 		$this->table_details['index'][0]['columns'] = "fa_cat,woo_cat";
 		$this->table_details['index'][0]['keyname'] = "fa-woo";
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function reset_endpoint() {}
 
+	/************************************************************************************************************//**
+	 * Determine if a record exists.  If it does, update else insert
+	 *
+	 * ************************************************************************************************************/
+	function insert_or_update( $caller )
+	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
+		try {
+			$woo_cat = $this->get_fa_cat( $this );
+			if( $woo_cat > 0 )
+				$this->update( $this );
+			else
+				$this->insert( $this );
+		}
+                catch( Exception $e )
+                {
+                        $this->notify( __METHOD__ . ":" . __LINE__ . ":" . __METHOD__ . " Exception " . $e->getCode() . "::" . $e->getMessage(), "ERROR" );
+                        throw $e;
+                }
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+	}
 	/************************************************************************************************************//**
 	 * Update a cross-ref of FA category x WooCommerce Category
 	 *
 	 * ************************************************************************************************************/
 	function update( $caller )
 	{
-		$this->update_table();
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
+		try {
+			$this->update_table();
+		}
+                catch( Exception $e )
+                {
+                        $this->notify( __METHOD__ . ":" . __LINE__ . ":" . __METHOD__ . " Exception " . $e->getCode() . "::" . $e->getMessage(), "ERROR" );
+                        throw $e;
+                }
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	/************************************************************************************************************//**
 	 * Insert a cross-ref of FA category x WooCommerce Category
@@ -54,7 +85,16 @@ class categories_xref_model extends woo_interface {
 	 * ************************************************************************************************************/
 	function insert( $caller )
 	{
-		$this->insert_table();
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
+		try {
+			$this->insert_table();
+		}
+                catch( Exception $e )
+                {
+                        $this->notify( __METHOD__ . ":" . __LINE__ . ":" . __METHOD__ . " Exception " . $e->getCode() . "::" . $e->getMessage(), "ERROR" );
+                        throw $e;
+                }
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	/************************************************************************************************************//**
 	 * Get the WooCommerce category_id from the FrontAccounting one
@@ -63,15 +103,26 @@ class categories_xref_model extends woo_interface {
 	 * ************************************************************************************************************/
 	/*@int@*/function get_woo_cat( $caller )
 	{
-		$this->clear_sql_vars();
- 		$this->select_array = array( '*' );
-                $this->where_array = array();
-		if( isset( $this->fa_cat ) )
-                	$this->where_array['fa_cat'] =  $this->fa_cat;
-                $this->groupby_array = array();
-		$this->buildSelectQuery();
-                $res = $this->query( "Couldn't select woo category", "select");
-		$assoc = db_fetch_assoc( $res );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
+		try {
+			$this->clear_sql_vars();
+			if( isset( $this->fa_cat ) )
+	                	$this->where_array['fa_cat'] =  $this->fa_cat;
+			else
+				throw new Exception( "Required field not set: fa_cat", KSF_FIELD_NOT_SET );
+	 		$this->select_array = array( '*' );
+			$this->from_array[] = $this->table_details['tablename'];
+	                $this->where_array = array();
+			$this->buildSelectQuery();
+	                $res = $this->query( "Couldn't select woo category", "select");
+			$assoc = db_fetch_assoc( $res );
+		}
+                catch( Exception $e )
+                {
+                        $this->notify( __METHOD__ . ":" . __LINE__ .  " Exception " . $e->getCode() . "::" . $e->getMessage(), "ERROR" );
+                        throw $e;
+                }
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 		return (int)$assoc['woo_cat'];
 	}
 	/************************************************************************************************************//**
@@ -81,21 +132,28 @@ class categories_xref_model extends woo_interface {
 	 * ************************************************************************************************************/
 	/*@int@*/function get_fa_cat( $caller )
 	{
-		$this->clear_sql_vars();
- 		$this->select_array = array( '*' );
-                $this->where_array = array();
-		if( isset( $this->woo_cat ) )
-                	$this->where_array['woo_cat'] =  $this->woo_cat;
-                $this->groupby_array = array();
-		$this->buildSelectQuery();
-                $res = $this->query( "Couldn't select fa category", "select");
-		$assoc = db_fetch_assoc( $res );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
+		try {
+			$this->clear_sql_vars();
+			if( isset( $this->woo_cat ) )
+	                	$this->where_array['woo_cat'] =  $this->woo_cat;
+			else
+				throw new Exception( "Required field not set: woo_cat", KSF_FIELD_NOT_SET );
+	 		$this->select_array = array( '*' );
+			$this->from_array[] = $this->table_details['tablename'];
+	                $this->where_array = array();
+			$this->buildSelectQuery();
+	                $res = $this->query( "Couldn't select fa category", "select");
+			$assoc = db_fetch_assoc( $res );
+		}
+                catch( Exception $e )
+                {
+                        $this->notify( __METHOD__ . ":" . __LINE__ . " Exception " . $e->getCode() . "::" . $e->getMessage(), "ERROR" );
+                        throw $e;
+                }
+
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 		return (int)$assoc['fa_cat'];
-	}
-	function assoc2var( $assoc )
-	{
-		$this->array2var( #assoc );
-		$this->tell_eventloop( $tihs, WOO_XREF_SET_VAR, __METHOD__ );
 	}
 }
 

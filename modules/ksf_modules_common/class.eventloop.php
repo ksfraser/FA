@@ -2,7 +2,7 @@
 
 $path_to_root="../..";
 
-require_once( 'class.origin.php' );
+require_once( 'class.kfLog.php' );	//Extends origin
 
 $configArray = array();
 
@@ -18,12 +18,14 @@ $configArray = array();
         function get_var( $var )
         /*@array@* /function var2data()
         /*@array@* /function fields2data( $fieldlist )
-        /*@NULL@* /function LogError( $message, $level = PEAR_LOG_ERR )
-        /*@NULL@* /function LogMsg( $message, $level = PEAR_LOG_INFO )
+        /*@NULL@* /function LogError( $message, $level = PEAR_LOG_ERR )	//Adds to an array only
+        /*@NULL@* /function LogMsg( $message, $level = PEAR_LOG_INFO )	//adds to an array only
 	function object_var_names()
         function set( $field, $value = null, $enforce_only_native_vars = true )
         /*@NULL@* /function set_var( $var, $value )
 	function get( $field )
+	function Log( $msg, $level )	//kfLog
+
  *
  * Provides:
         function __construct( $moduledir )
@@ -35,7 +37,7 @@ $configArray = array();
  * 
  *
  * ********************************************************************************************/
-class eventloop extends origin
+class eventloop extends kfLog
 {
 	var $config_values = array();   //What fields to be put on config screen
 	var $tabs = array();
@@ -126,6 +128,10 @@ class eventloop extends origin
          function ObserverNotify( $trigger_class, $event, $msg )
          {
 	//	return;
+		if( is_string( $msg ) )
+			$this->Log( get_class( $trigger_class ) . " had event " . $event . " with message " . $msg, 1 );
+		else
+			$this->Log( get_class( $trigger_class ) . " had event " . $event, 1 );
                	if ( isset( $this->observers[$event] ) )
                       foreach ( $this->observers[$event] as $obs )
                       {

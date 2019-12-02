@@ -66,6 +66,7 @@ class table_interface
 	protected $join_clause;
 	protected $query_result;
 	/***!GENERICTABLE***/
+	protected $objLog;
 
 	function __construct( $caller = null )
 	{
@@ -76,7 +77,12 @@ class table_interface
 			$this->properties_array = array();
 		if( null !== $caller )
 			$this->caller = $caller;
+		$this->objLog = new kfLog();
 
+	}
+	function Log( $msg, $level = PEAR_LOG_DEBUG )
+	{
+		$this->objLog->Log( $msg, $level );
 	}
 	/********************************************************//**
 	 * Copied from origin.  Throws exceptions
@@ -84,8 +90,12 @@ class table_interface
 	 * **********************************************************/
 	function get( $field )
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		if( isset( $this->$field ) )
+		{
+			$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 			return $this->$field;
+		}
 		else
 			throw new Exception( __METHOD__ . "  Field " . $field . " not set.  Can't GET", KSF_FIELD_NOT_SET );
 	}
@@ -99,6 +109,7 @@ class table_interface
 	 * **********************************************/
 	/*@bool@*/function set( $field, $value = null )
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		//display_notification( __FILE__ . "::" . __CLASS__ . "::"  . __METHOD__ . ":" . __LINE__, "WARN" );	
 		if( !isset( $field )  )
 			throw new Exception( "Fields not set", KSF_FIELD_NOT_SET );
@@ -112,6 +123,7 @@ class table_interface
 				{
 					$this->validate( $value, $row['type'] );
 					$this->$field = $value;
+					$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 					return TRUE;
 				}
 				catch(InvalidArgumentException $e)
@@ -125,6 +137,7 @@ class table_interface
 			}
 			
 		}
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 		throw new Exception( "Variable <i><b>" . $field . "</b></i> to be set is not a member of the class", KSF_FIELD_NOT_CLASS_VAR );
 	}
 	/*******************************************************************************************//**
@@ -136,6 +149,7 @@ class table_interface
 	 * **********************************************************************************************/
 	/*@bool@*/function validate( $data_value, $data_type )
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		//display_notification( __FILE__ . "::" . __CLASS__ . "::"  . __METHOD__ . ":" . __LINE__, "WARN" );
 		if( strncasecmp( $data_type, "int(1)", 6 ) )
 			$data_type = 'digit';
@@ -159,14 +173,19 @@ class table_interface
 				break;	//fall out of switch and return false
 			case 'int':
 				if( is_int( $data_value ) ) 
+				{
+					$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 					return true;
+				}
 				else 
 					throw new InvalidArgumentException("Expected INT.  Received " . $data_value);
 				break;
 			default:
+				$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 				return true;	//data type not found
 		}
 		//throw new InvalidArgumentException();
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 		return false;
 		/*
 			BadFunctionCallException
@@ -193,6 +212,7 @@ class table_interface
 	 * ***************************************************************************************************************/
 	/*none*/function select_row( $set_caller = false )
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		if( isset( $this->table_details['primarykey'] ) )
 			$key = $this->table_details['primarykey'];
 		else
@@ -222,6 +242,7 @@ class table_interface
 					}
 			}
 		}
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	
 	/*******************************************************************************************************************//**
@@ -235,6 +256,7 @@ class table_interface
 	*******************************************************************************************************************/
 	/*@mysql_result@*/function select_table($fieldlist = "*", /*@array@*/$where = null, /*@array@*/$orderby = null, /*@int@*/$limit = null)
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		$whereset = FALSE;
 		$sql = "SELECT " . $fieldlist . " from `" . $this->table_details['tablename'] . "`";
 		if( isset( $where ) )
@@ -296,11 +318,14 @@ class table_interface
 		if( isset( $limit ) )
 			$sql .= " LIMIT " . $limit;
 		$res = db_query( $sql, "Couldn't select from " . $this->table_details['tablename'] );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 		return $res;
 	}
 	function query( $msg )
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		$this->query_result = db_query( $this->sql, $msg );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 		return $this->query_result;
 	}
 
@@ -312,6 +337,7 @@ class table_interface
 	 * *****************************************************************************************/
 	function delete_table()
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		//display_notification( __FILE__ . "::" . __CLASS__ . "::"  . __METHOD__ . ":" . __LINE__, "WARN" );
 		$pri = $this->table_details['primarykey'];
 		if( !isset( $this->$pri ) )
@@ -320,6 +346,7 @@ class table_interface
 		//var_dump( $sql );
 		db_query( $sql, "Couldn't update table " . $this->table_details['tablename'] . " for key " .  $pri );	
 		//throw new Exception( $sql );	//Causes FA to display_error the msg.  Useful for debugging.
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	/***************************************************************************************//**
 	 * Update a row in the table as long as the prikey has a value set
@@ -329,6 +356,7 @@ class table_interface
 	 * *****************************************************************************************/
 	function update_table()
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		//display_notification( __FILE__ . "::" . __CLASS__ . "::"  . __METHOD__ . ":" . __LINE__, "WARN" );
 		$pri = $this->table_details['primarykey'];
 		if( !isset( $this->$pri ) )
@@ -352,6 +380,7 @@ class table_interface
 	
 		$sql .= " WHERE '" . $pri . "'='" . $this->$pri . "'";
 		db_query( $sql, "Couldn't update table " . $this->table_details['tablename'] . " for key " .  $pri );	
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	/*****************************************************************************//**
 	 *
@@ -360,6 +389,7 @@ class table_interface
 	 * ******************************************************************************/
 	/*@bool@*/function check_table_for_id()
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		if( isset( $this->table_details['primarykey'] ) )
 		{
 			$prikey = $this->table_details['primarykey'];
@@ -384,10 +414,17 @@ class table_interface
 			$res = db_query( $sql, "Couldn't check for count in table " . $this->table_details['tablename'] . " with " .  $sql );	
 			$count = db_fetch_assoc( $res );
 			if( $count['count'] > 0 )
+			{
+				$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 				return TRUE;
+			}
 			else
+			{
+				$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 				return FALSE;
+			}
 		}
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 		return FALSE;
 	}
 	/*******************************************************************************************************//**
@@ -399,6 +436,7 @@ class table_interface
 	/*int index of last insert*/
 	/*@int@*/function insert_table()
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		//display_notification( __FILE__ . "::" . __CLASS__ . "::"  . __METHOD__ . ":" . __LINE__, "WARN" );
 		global $db_connection;
 		$sql = "INSERT IGNORE INTO `" . $this->table_details['tablename'] . "`" . "\n";
@@ -428,10 +466,12 @@ class table_interface
 		else
 			display_error( "No values set so couldn't insert" );
 		$this->db_insert_id = db_insert_id();
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 		return $this->db_insert_id;
 	}
 	function create_table()
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		if( ! isset( $this->table_details['tablename'] ) )
 		{
 			if( method_exists( $this->define_table() ) )
@@ -502,10 +542,12 @@ class table_interface
 		//var_dump( $sql );
 		display_notification( __FILE__ . " Creating table " . $this->table_details['tablename'] );
 		db_query( $sql, "Couldn't create table " . $this->table_details['tablename'] );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 		return $this->alter_table();
 	}
 	function alter_table()
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		//Need a function for doing updates/upgrades between versions.
 		//ASSUMPTION:
 		//	create_table as been run, and if not exist may
@@ -557,6 +599,7 @@ class table_interface
 		//ASSUMING no changes to the engine nor charset
 		//var_dump( $sql );
 		display_notification( __FILE__ . " Altering table " . $this->table_details['tablename'] );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 		return db_query( $sql, "Couldn't alter table " . $this->table_details['tablename'] );
 	}
 	/*****************************************************************************************//**
@@ -566,8 +609,10 @@ class table_interface
 	 * ******************************************************************************************/
 	/*@int@*/function count_rows()
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		$res = db_query( "select count(*) from " . $this->table_details['tablename'], "Couldn't count rows in " . $this->table_details['tablename'] );
 		$count = db_fetch_row( $res );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 		return $count[0];
 	}
 	/*****************************************************************************************//**
@@ -578,21 +623,28 @@ class table_interface
 	 * ******************************************************************************************/
 	/*@int@*/function count_filtered($where = null)
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		if( !isset( $where ) )
 			return $this->count_rows();
 		$res = db_query( "select count(*) from " . $this->table_details['tablename'] . " where " . $where, "Couldn't count rows in " . $this->table_details['tablename'] );
 		$count = db_fetch_row( $res );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 		return $count[0];
 	}
 	/*string*/function getPrimaryKey()
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		if( isset( $this->table_details['primarykey'] ) )
+		{
+			$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 			return $this->table_details['primarykey'];
+		}
 		else
 			throw new Exception( "Primary Key Not Set", KSF_PRIKEY_NOT_DEFINED );
 	}
 	/*none*/function getByPrimaryKey()
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		/*
 		$fields = "*";	//comma separated list
 		$prikey = $this->getPrimaryKey();
@@ -602,6 +654,7 @@ class table_interface
 		return $this->select_table( $fields, $where, $orderby, $limit );
 		*/
 		$this->select_row();
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	/***GENERICTABLE***/
 	/*****************************************//**
@@ -614,6 +667,7 @@ class table_interface
 	 * *****************************************/
 	function buildLimit()
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		if( (strlen( $this->limit_startrow ) < 1) 
 			OR ($this->limit_startrow < 0) 
 		  )
@@ -626,6 +680,7 @@ class table_interface
 			$this->limit = (int)$this->limit_startrow - 1 . "," . (int)$this->limit_numberrows;
 		}
 		$this->limit_clause = $this->limit;
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	/*****************************************//**
 	 * Build the SELECT clause
@@ -638,6 +693,7 @@ class table_interface
 	 * *****************************************/
 	function buildSelect( $b_validate_in_table = false)
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		/**/
 		if( null === $this->select_array )
 			throw new Exception( "Required Field not set", KSF_FIELD_NOT_SET );
@@ -659,6 +715,7 @@ class table_interface
 		}
 		$this->select_clause = "SELECT " . $sql;
  		/**/
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}	
 	/*****************************************//**
 	 * Build the FROM clause
@@ -671,6 +728,8 @@ class table_interface
 	 * *****************************************/
 	function buildFrom()
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
+
 		/**/
 		if( null === $this->from_array )
 			throw new Exception( "Required Field not set", KSF_FIELD_NOT_SET );
@@ -685,6 +744,7 @@ class table_interface
 		}
 		$this->from_clause = " FROM " . $sql;
  		/**/
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}	
 	/*****************************************//**
 	 * Build the WHERE clause
@@ -697,6 +757,7 @@ class table_interface
 	 * *****************************************/
 	function buildWhere( $b_validate_in_table = false)
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		/**/
 		if( null === $this->where_array )
 			throw new Exception( "Required Field not set", KSF_FIELD_NOT_SET );
@@ -721,6 +782,7 @@ class table_interface
 		}
 		$this->where_clause = " WHERE " . $sql;
  		/**/
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}	
 	/*****************************************//**
 	 * Build the ORDERBY clause
@@ -733,6 +795,7 @@ class table_interface
 	 * *****************************************/
 	function buildOrderBy( $b_validate_in_table = false)
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		/**/
 		if( null === $this->orderby_array )
 			throw new Exception( "Required Field not set", KSF_FIELD_NOT_SET );
@@ -757,6 +820,7 @@ class table_interface
 		}
 		$this->orderby_clause = " ORDER BY " . $sql;
  		/**/
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}	
 	/*****************************************//**
 	 * Build the GROUPBY clause
@@ -769,6 +833,7 @@ class table_interface
 	 * *****************************************/
 	function buildGroupBy( $b_validate_in_table = false)
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		/**/
 		if( null === $this->groupby_array )
 			throw new Exception( "Required Field not set", KSF_FIELD_NOT_SET );
@@ -793,6 +858,7 @@ class table_interface
 		}
 		$this->groupby_clause = " GROUP BY " . $sql;
  		/**/
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}	
 	/*****************************************//**
 	 * Build the HAVING clause
@@ -808,6 +874,7 @@ class table_interface
 	 * *****************************************/
 	function buildHaving( )
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		/**/
 		if( null === $this->having_array )
 			throw new Exception( "Required Field not set", KSF_FIELD_NOT_SET );
@@ -825,6 +892,7 @@ class table_interface
 		}
 		$this->having_clause = " HAVING " . $sql;
  		/**/
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}	
 	/*****************************************//**
 	 * Build the JOIN clause
@@ -845,6 +913,7 @@ class table_interface
 	 * *****************************************/
 	function buildJoin() 
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		/**/
 		if( null === $this->join_array )
 			throw new Exception( "Required Field not set", KSF_FIELD_NOT_SET );
@@ -873,9 +942,11 @@ class table_interface
 		}
 		$this->join_clause = $sql;
  		/**/
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}	
 	function buildSelectQuery( $b_validate_in_table = false )
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		/**/
 		try {
 			$this->buildSelect($b_validate_in_table);
@@ -981,9 +1052,11 @@ class table_interface
 			. $this->orderby_clause
 			. $this->limit_clause;
  		/**/
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function clear_sql_vars()
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		
 		$this->select_array = null;
 		$this->where_array = null;
@@ -1002,20 +1075,24 @@ class table_interface
 		$this->having_clause = "";
 		$this->orderby_clause = "";
 		$this->query_results = "";
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
  		
 	}
 	/***!GENERICTABLE***/
 	function assoc2var( $assoc )
         {
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
                 foreach( $this->fields_array as $field_spec )
                 {
                         $field = $field_spec['name'];
                         if( isset( $assoc[$field] ) )
                                 $this->set( $field, $assoc[$field] );
                 }
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
         }
 	function var2caller()
         {
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		if( ! isset( $this->caller ) )
 			throw new Exception( "Caller not set so can't pass values back", KSF_FIELD_NOT_SET );
                 foreach( $this->fields_array as $field_spec )
@@ -1024,6 +1101,7 @@ class table_interface
                         if( isset( $this->$field ) )
                                 $this->caller->set( $field, $this->$field );
                 }
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
         }
 
 

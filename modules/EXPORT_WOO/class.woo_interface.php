@@ -184,61 +184,7 @@ class woo_interface extends table_interface
 			$this->debug = $this->client->debug;
 		else
 			$this->debug = 0;
-		$this->serverURL = $serverURL;
-		$this->key = $key;
-		$this->secret = $secret;
-		/*************************************************************
-		 *	I want to depreciate the use of WC_API_CLIENT since
-		 *	the latest API of WooCommerce uses WP REST interface
-		 *	so the WC interface is depreciated
-		 * ***********************************************************/
-		require_once( 'wc-master/lib/woocommerce-api.php' );
-		if( !isset( $options ) OR $options == null )
-			$options = array(
-				'debug'           => true,
-				'return_as_array' => false,
-				'validate_url'    => false,
-				'timeout'         => 30,
-				'ssl_verify'      => false,
-			);
-			$rest_options = array(
-                                'wp_api' => true, // Enable the WP REST API integration
-                                'version' => 'wc/v3', // WooCommerce WP REST API version
-                                'ssl_verify' => 'false',
-                                //'query_string_auth' => true // Force Basic Authentication as query string true and using under HTTPS
-                        );
-
-		$this->options = $options;
-		//$this->wc_client = null;
-		//Still used by class.woo_product
-		if( strlen( $key ) < 10 )
-		{
-			if( null != $client )
-			{
-				$this->notify( __METHOD__ . ":" . __LINE__ . "  Build REST interfaces ", "WARN" );
-				$this->wc_client = new WC_API_Client( $serverURL, $client->woo_ck, $client->woo_cs, $options, $client );
-				$this->woo_rest = new woo_rest( $serverURL, $client->woo_ck, $client->woo_cs, $rest_options, $client );
-			}
-			else
-			{
-				$this->notify( __METHOD__ . ":" . __LINE__ . " UNABLE to Build REST interfaces ", "ERROR" );
-				$this->wc_client = null;
-				$this->woo_rest = null;
-			}
-		}
-		else
-			if( strlen( $serverURL) > 10 )
-			{
-				$this->notify( __METHOD__ . ":" . __LINE__ . "  Build REST interfaces ", "WARN" );
-				$this->wc_client = new WC_API_Client( $serverURL, $key, $secret, $options, $client );
-				$this->woo_rest = new woo_rest( $serverURL, $key, $secret, $rest_options, $client );
-			}
-			else
-			{
-				$this->notify( __METHOD__ . ":" . __LINE__ . " UNABLE to Build REST interfaces ", "ERROR" );
-				$this->wc_client = null;
-				$this->woo_rest = null;
-			}
+		$this->build_rest_interface($serverURL, $key, $secret, $options, $client);
 
 		global $db_connections;
 		$this->company_prefix = $db_connections[$_SESSION["wa_current_user"]->cur_con]['tbpref'];
@@ -266,6 +212,90 @@ class woo_interface extends table_interface
 		$this->reset_endpoint();
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
 		return;
+	}
+	/***************************************************************************//**
+	* Build the Woo REST interface if required
+	*
+	* If we pass in NULL for all var's to constructor we won't setup the interface
+	*
+	* @param string URL
+	* @param string Key
+	* @param string Secret
+	* @param array Options
+	* @param object Caller
+	*
+	* @return bool Did we setup the interface
+	******************************************************************************/
+	/*@bool@*/function build_rest_interface($serverURL = " ", $key, $secret, $options, $client = null)
+	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
+		if( $serverURL == null AND null == $key AND null == $secret )
+		{
+			//Particular child class doesn't want a REST interface
+			$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+			return FALSE;
+		}
+		$this->serverURL = $serverURL;
+		$this->key = $key;
+		$this->secret = $secret;
+		if( $options == null )
+		{
+			$options = array(
+				'debug'           => true,
+				'return_as_array' => false,
+				'validate_url'    => false,
+				'timeout'         => 30,
+				'ssl_verify'      => false,
+			);
+		}
+
+		$this->options = $options;
+		$rest_options = array(
+                               'wp_api' => true, // Enable the WP REST API integration
+                               'version' => 'wc/v3', // WooCommerce WP REST API version
+                               'ssl_verify' => 'false',
+                               //'query_string_auth' => true // Force Basic Authentication as query string true and using under HTTPS
+                );
+		/*************************************************************
+		 *	I want to depreciate the use of WC_API_CLIENT since
+		 *	the latest API of WooCommerce uses WP REST interface
+		 *	so the WC interface is depreciated
+		 * ***********************************************************/
+		require_once( 'wc-master/lib/woocommerce-api.php' );
+		//$this->wc_client = null;
+		//Still used by class.woo_product
+		if( strlen( $key ) < 10 )
+		{
+			if( null != $client )
+			{
+				$this->notify( __METHOD__ . ":" . __LINE__ . "  Build REST interfaces ", "WARN" );
+				$this->wc_client = new WC_API_Client( $serverURL, $client->woo_ck, $client->woo_cs, $options, $client );
+				$this->woo_rest = new woo_rest( $serverURL, $client->woo_ck, $client->woo_cs, $rest_options, $client );
+			}
+			else
+			{
+				$this->notify( __METHOD__ . ":" . __LINE__ . " UNABLE to Build REST interfaces ", "ERROR" );
+				$this->wc_client = null;
+				$this->woo_rest = null;
+			}
+		}
+		else
+		{
+			if( strlen( $serverURL) > 10 )
+			{
+				$this->notify( __METHOD__ . ":" . __LINE__ . "  Build REST interfaces ", "WARN" );
+				$this->wc_client = new WC_API_Client( $serverURL, $key, $secret, $options, $client );
+				$this->woo_rest = new woo_rest( $serverURL, $key, $secret, $rest_options, $client );
+			}
+			else
+			{
+				$this->notify( __METHOD__ . ":" . __LINE__ . " UNABLE to Build REST interfaces ", "ERROR" );
+				$this->wc_client = null;
+				$this->woo_rest = null;
+			}
+		}
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+		return TRUE;
 	}
 	function fuzzy_match( $data )
 	{
@@ -314,7 +344,7 @@ class woo_interface extends table_interface
 	{
 		global $eventloop;
 		if( isset( $eventloop ) )
-			$eventloop->ObserverNotify( $trigger_class, $event, $msg );
+			$eventloop->ObserverNotify( $caller, $event, $msg );
 	}
 	/***************************************************************//**
 	 *dummy   
@@ -325,7 +355,9 @@ class woo_interface extends table_interface
 	 * 	@returns FALSE
 	 * ******************************************************************/
 	function dummy( $obj, $msg )
-	{
+	{	
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 		return FALSE;
 	}
 	function register_with_eventloop()
@@ -401,30 +433,30 @@ class woo_interface extends table_interface
 	{
 		if( "ERROR" == $level )
 		{
-			$this->ObserverNotify( $this, NOTIFY_LOG_ERROR, $msg );
+			$this->tell_eventloop( $this, 'NOTIFY_LOG_ERROR', $msg );
 			display_error( $msg );
 		}
 		else if( "WARN" == $level )
 		{
-			$this->ObserverNotify( $this, NOTIFY_LOG_WARN, $msg );
+			$this->tell_eventloop( $this, 'NOTIFY_LOG_WARN', $msg );
 			if( $this->debug >= 1 )
 				display_notification( $msg );
 		}
 		else if( "NOTIFY" == $level )
 		{
-			$this->ObserverNotify( $this, NOTIFY_LOG_NOTIFY, $msg );
+			$this->tell_eventloop( $this, 'NOTIFY_LOG_NOTIFY', $msg );
 			if( $this->debug >= 2 )
 				display_notification( $msg );
 		}
 		else if( "DEBUG" == $level )
 		{
-			$this->ObserverNotify( $this, NOTIFY_LOG_DEBUG, $msg );
+			$this->tell_eventloop( $this, 'NOTIFY_LOG_DEBUG', $msg );
 			if( $this->debug >= 3 )
 				display_notification( $msg );
 		}
 		else
 		{
-			$this->ObserverNotify( $this, NOTIFY_LOG_INFO, $msg );
+			$this->tell_eventloop( $this, 'NOTIFY_LOG_INFO', $msg );
 			display_notification( $msg );
 		}
 
@@ -1063,7 +1095,7 @@ class woo_interface extends table_interface
 		}
 		else
 			var_dump( $e );
-		$this->notify( $client . " has raised exception: " . $e->getCode() . "::" . $e->getMessage(), "WARN" );
+		$this->notify( get_class( $client ) . " has raised exception: " . $e->getCode() . "::" . $e->getMessage(), "WARN" );
 	}
 }
 

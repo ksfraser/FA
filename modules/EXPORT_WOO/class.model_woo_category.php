@@ -120,13 +120,15 @@ class model_woo_category extends woo_interface{
 	function fuzzy_match( $data )
 	{
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
+		if( !isset( $data[0] ) )
+			throw new Exception( "fuzzy_match expects a data array.  Not passed in", KSF_VALUE_NOT_SET );
 		$match=0;
 /*
 			echo "<br /><br />" . __METHOD__ . ":" . __LINE__ . " DEVELOPMENT----<br /> ";
 			var_dump( $this );
-*/
 			echo "<br /><br />"; 
 			var_dump( $data );
+*/
 /*
 			echo "<br /><br />"; 
 			var_dump( $data[0] );
@@ -438,8 +440,8 @@ class model_woo_category extends woo_interface{
 	function update_woo_categories_xref()
 	{
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
-		require_once( 'class.woo_categories_xref.php' );
-		$xref = new woo_categories_xref( null, null, null, null, $this );
+		require_once( 'class.categories_xref_model.php' );
+		$xref = new categories_xref_model( null, null, null, null, $this );
 		$xref->fa_cat = $this->fa_id;
 		$xref->woo_cat = $this->id;
 		$xref->description = $this->description;
@@ -454,7 +456,14 @@ class model_woo_category extends woo_interface{
 			$this->notify( __METHOD__ . ":" . __LINE__ . " Description for FA-ID " . $this->fa_id . " is " . $xref->description, "WARN" );
 			//echo __METHOD__ . ":" . __LINE__ . " Description for FA-ID " . $this->fa_id . " is " . $xref->description . "<br /><br />";
 		}
-		$xref->insert_table();
+		try {
+			$xref->insert_or_update( $this );
+		}
+		catch( Exception $e )
+		{
+			$this->notify( __METHOD__ . ":" . __LINE__ . ":" . __METHOD__ . " Exception " . $e->getCode() . "::" . $e->getMessage(), "ERROR" );
+			throw $e;
+		}
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
 		return;
 	}
@@ -650,6 +659,11 @@ class model_woo_category extends woo_interface{
 					//Reset since we sent an item that exists.  Resulting in us loading from WooCommerce the list of categories
 					$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving (recursively) " . __METHOD__, "WARN" );
 					return $this->send_categories_to_woo() + $sendcount;
+				}
+				catch( Exception $e )
+				{
+					$this->notify( __METHOD__ . ":" . __LINE__ . ":" . __METHOD__ . " Exception " . $e->getCode() . "::" . $e->getMessage(), "ERROR" );
+					throw $e;
 				}
 			}
 			else

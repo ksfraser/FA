@@ -101,6 +101,8 @@ class woo_rest
 		}
 		catch (Exception $e)
 		{
+			if( $e->getCode() == KSF_VALUE_NOT_SET )
+				var_dump( $response );
 			throw $e;
 		}
 		//if( isset( $client->system_of_record ) AND ( true == $client->system_of_record ) )

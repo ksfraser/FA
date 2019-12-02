@@ -496,19 +496,6 @@ class EXPORT_WOO extends generic_fa_interface
             	display_notification("$rowcount rows of items exist.");
 	}
 /*
-	//export_rest_coupon	export_rest_customer_form	exported_rest_customer_form
-	function export_rest_coupon_form()
-	{
-		$this->call_table( 'export_rest_coupon', "Send Coupons via REST to WOO" );
-	}
-	function export_rest_customer_form()
-	{
-		$this->call_table( 'export_rest_customer', "Send Customers via REST to WOO" );
-	}
-	function export_rest_refunds_form()
-	{
-		$this->call_table( 'export_rest_refunds', "Send Refunds via REST to WOO" );
-	}
  */
 	/***********************************************************************
 	*
@@ -839,51 +826,6 @@ class EXPORT_WOO extends generic_fa_interface
 	function exported_rest_products_form_poc()
 	{
 /*
-		require_once( 'class.woo_product.php' );
-		
-		$woo_prod = new woo_product( $this->woo_server, $this->woo_rest_path, $this->woo_ck, $this->woo_cs );
-		
-			$woo_prod->name = "Test Product";
-			$woo_prod->slug = "test-product";
-			$woo_prod->type = "simple";
-			$woo_prod->status = "publish";
-			$woo_prod->featured = "0";
-			$woo_prod->catalog_visibility = "visible";
-			$woo_prod->description = "Test Product desc";
-			$woo_prod->short_description = "test prod short desc";
-			$woo_prod->sku = "p-tp2";
-			$woo_prod->regular_price = "9.99";
-			$woo_prod->virtual = "0";
-			$woo_prod->downloadable = "0";
-			//$woo_prod->downloads = "";
-			//$woo_prod->download_limit = "";
-			//$woo_prod->download_expiry = "";
-			//$woo_prod->download_type = "";
-			//$woo_prod->external_url = "";
-			//$woo_prod->button_text = "";
-			$woo_prod->tax_status = "taxable";
-			$woo_prod->tax_class = "GST";
-			$woo_prod->manage_stock = "1";
-			$woo_prod->stock_quantity = "2";
-			$woo_prod->in_stock = "1";
-			$woo_prod->backorders = "yes";
-			$woo_prod->sold_individually = "0";
-			$woo_prod->weight = "1.0";
-			//$woo_prod->dimensions = array();
-			//$woo_prod->shipping_class = "";
-			$woo_prod->reviews_allowed = "1";
-			//$woo_prod->upsell_ids = "";
-			//$woo_prod->cross_sell_ids = "";
-			//$woo_prod->parent_id = "";
-			$woo_prod->purchase_note = "";
-			//$woo_prod->categories = array("test-products");
-			//$woo_prod->tags = array("");
-			//$woo_prod->images = array("");
-			//$woo_prod->attributes = array("");
-			//$woo_prod->default_attributes = "";
-			//$woo_prod->variations = array("");
-			$woo_prod->menu_order = "1";
-		$woo_prod->create_product();
  */	
 	}
 	function export_file_form()
