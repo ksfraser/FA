@@ -363,6 +363,8 @@ class woo_product extends woo_interface {
 			if( $this->debug < 2 )
 				$count += $this->update_simple_products(); //sets products_updated
 			//Not worrying about the variable products for the moment...
+			//$count = $this->send_variable_products();	//sets products_sent
+			//$count += $this->update_variable_products(); //sets products_updated
 			return $count;
 		}
 		catch( Exception $e )
@@ -400,9 +402,9 @@ class woo_product extends woo_interface {
 			echo __METHOD__ . ":" . __LINE__ . " Bad Arg Leaving " . __METHOD__;
 			return;
 		}
-		require_once( 'class.woo.php' );
+		require_once( 'class.model_woo.php' );
 		//standard constructor args...	$this->serverURL, $this->key, $this->secret, $this->options, $this
-		$woo = new woo( $this->serverURL, $this->key, $this->secret, $this->options, $this );
+		$woo = new model_woo( $this->serverURL, $this->key, $this->secret, $this->options, $this );
 		$woo->woo_last_update = $this->updated_at;
 		$woo->updated_ts = $this->updated_at;
 		$woo->woo_id = $this->id;
@@ -675,10 +677,19 @@ class woo_product extends woo_interface {
 		set_time_limit( 60 );
 	
 		try {
-			$endpoint = "products";
-			$response = $this->send2woo();
+			$response = $this->send2woo( "new" );
 			if( $response )
+			{
 				$this->products_sent++;
+				//Need to update the woo_id in _woo
+				$woo = new model_woo( $this->serverURL, $this->key, $this->secret, $this->options, $this );
+                		$woo->stock_id = $this->stock_id;
+                		$woo->woo_id = $this->id;
+                		$woo->update_woo_id();
+				//Need to send the images for this product
+				$this->send_images( null, $this );
+				$this->send_sku( null, $this );
+			}
 			$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 			return $response;
 		}
@@ -728,6 +739,8 @@ class woo_product extends woo_interface {
 			$response = $this->woo_rest->send( $endpoint, $this->data_array, $this );
 			$this->id = $response->id;
 			//$this->products_sent++;
+				$this->send_images( null, $this );
+				$this->send_sku( null, $this );
 			$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 			return TRUE;
 		}
@@ -899,7 +912,7 @@ class woo_product extends woo_interface {
 		$woo = new model_woo( $this->serverURL, $this->key, $this->secret, $this->options, $this );
 		$woo->stock_id = $this->stock_id;
 		$this->sku = $this->stock_id;
-		$this->slug = $this->stock_id;
+	//	$this->slug = $this->stock_id;
 		$woo->select_product();
 		//Need to reset values between each product.
 		$this->reset_values();
@@ -1135,8 +1148,8 @@ class woo_product extends woo_interface {
 	{			
 		$this->notify(  __METHOD__  . ":" . __LINE__ . " Entering update_simple_products", "WARN");
 
-		require_once( 'class.woo.php' );
-		$woo = new woo( $this->serverURL, $this->key, $this->secret, $this->options, $this);
+		require_once( 'class.model_woo.php' );
+		$woo = new model_woo( $this->serverURL, $this->key, $this->secret, $this->options, $this);
 		$woo->debug = $this->debug;
 		$updatecount = 0;
 		$res = $woo->select_simple_products_for_update();
@@ -1168,10 +1181,10 @@ class woo_product extends woo_interface {
 				$this->notify(  __METHOD__  . ":" . __LINE__ . " Calling create PRODUCT", "WARN");
 				try
 				{
-				if( $this->create_product() )
-					$this->notify(  __METHOD__  . ":" . __LINE__ . " Insert Successful", "WARN");
-				else
-					$this->notify(  __METHOD__  . ":" . __LINE__ . " Insert Failed", "WARN");
+					if( $this->create_product() )
+						$this->notify(  __METHOD__  . ":" . __LINE__ . " Insert Successful", "WARN");
+					else
+						$this->notify(  __METHOD__  . ":" . __LINE__ . " Insert Failed", "WARN");
 				}
 				catch( Exception $e )
 				{
@@ -1487,6 +1500,49 @@ class woo_product extends woo_interface {
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 		return $response;
 	}
+	/*******************************************************************************//**
+	 * Send SKU as an update
+	 *
+	 * @param string stock_id optional if this->stock_id set
+	 * @returns bool were we able to process a stock_id
+	 * *******************************************************************************/
+	/*@bool@*/function send_sku( $stock_id = null, $caller )
+	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
+		if( isset( $stock_id )  )
+			$this->stock_id = $stock_id;
+		if( !isset( $this->stock_id ) )
+		{
+			throw new Exception( "Stock ID not available so can't process", KSF_VALUE_NOT_SET );
+		}
+		require_once( 'class.model_woo.php' );
+		$woo = new model_woo( null, null, null, null, $this );
+		$woo->stock_id = $this->stock_id;
+		$woo->select_product();
+		//Need to reset values between each product.
+		$this->reset_values();
+		if( isset( $this->woo_id ) AND $this->woo_id > 0 )
+			$this->id = $this->woo_id;
+		else
+		{
+			//can't send sku to a non existant product
+			throw new Exception( "Non existant Woo ID so can't send updates", KSF_VALUE_NOT_SET );
+		}
+
+		//For EVERY update routine we want to check this!
+		if( $this->is_inactive() )
+			$this->status = "private";
+		else
+			$this->status = "publish";
+		if( isset( $woo->price ) )
+			$this->regular_price = $woo->price;
+		$this->sku = $woo->stock_id;
+
+		$response = $this->send2woo( "update" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+		return $response;
+	}
+
 }
 
 ?>

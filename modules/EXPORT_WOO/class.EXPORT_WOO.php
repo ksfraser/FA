@@ -205,7 +205,7 @@ class EXPORT_WOO extends generic_fa_interface
 				$createdcount++;
 		}
 
-
+/*
 		require_once( 'class.woo_line_items.php' );
 		$line_items = new woo_line_items($this->woo_server, $this->woo_ck, $this->woo_cs, null, $this );
 		if( $line_items->create_table() )
@@ -247,6 +247,7 @@ class EXPORT_WOO extends generic_fa_interface
 		$billing_address_address = new woo_billing_address($this->woo_server, $this->woo_ck, $this->woo_cs, null, $this );
 		if( $billing_address_address->create_table() )
 			$createdcount++;
+*/
 
 		require_once( 'class.woo_prod_variation_attributes.php' );
 		$category_xref_address = new woo_prod_variation_attributes($this->woo_server, $this->woo_ck, $this->woo_cs, null, $this );
@@ -263,6 +264,7 @@ class EXPORT_WOO extends generic_fa_interface
        			
      	display_notification("init tables complete form created " . $createdcount . " tables");
 	}
+/*
 	function create_table_woo_prod_variable_master()
 	{
 		require_once( 'class.woo_prod_variable_master.php' );
@@ -348,6 +350,7 @@ class EXPORT_WOO extends generic_fa_interface
 	function created_coupons_form()
 	{
 	}
+*/
 	function form_reset_store()
 	{
 		$this->call_table( 'reset_store_act', "Reset the Woocommerce Store" );

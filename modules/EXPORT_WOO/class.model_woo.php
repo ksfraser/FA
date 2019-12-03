@@ -67,7 +67,7 @@ class model_woo extends woo_interface {
 		$this->fields_array[] = array('name' => 'category', 'type' => 'varchar(64)' );
 		$this->fields_array[] = array('name' => 'woo_category_id', 'type' => 'int(11)' );
 		$this->fields_array[] = array('name' => 'description', 'type' => 'varchar(200)' );
-		$this->fields_array[] = array('name' => 'long_description', 'type' => 'varchar(500)' );
+		$this->fields_array[] = array('name' => 'long_description', 'type' => 'text' );
 		$this->fields_array[] = array('name' => 'units', 'type' => 'varchar(20)' );
 		$this->fields_array[] = array('name' => 'price', 'type' => 'double' );
 		$this->fields_array[] = array('name' => 'instock', 'type' => 'int(11)' );
@@ -173,8 +173,8 @@ class model_woo extends woo_interface {
 			. " WHERE inactive=0"
 			;
 		$res = db_query( $sql_create, "Couldnt create items in  WOO" );
-		$this->tell( WOO_PRODUCT_INSERT, __METHOD__ );
-//		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+//		$this->tell( WOO_PRODUCT_INSERT, __METHOD__ );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function update_product_details()
 	{
@@ -186,8 +186,9 @@ class model_woo extends woo_interface {
 				, woo.long_description = sm.long_description
 				, woo.units = sm.units
 			where woo.stock_id = sm.stock_id";
+		$this->notify( __METHOD__ . ":" . __LINE__ . " SQL to be run: " . $sql_update, "WARN" );
 		$res = db_query( $sql_update, "Couldnt update stock_master details in  WOO" );
-		$this->tell( WOO_PRODUCT_UPDATE, __METHOD__ );
+//		$this->tell( WOO_PRODUCT_UPDATE, __METHOD__ );
 //		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function update_prices()
@@ -199,7 +200,7 @@ class model_woo extends woo_interface {
 			where woo.stock_id = p.stock_id
 				and p.sales_type_id = '1'";
 		$res = db_query( $sql_update2, "Couldnt update prices in  WOO" );
-		$this->tell( WOO_PRODUCT_PRICE_UPDATE, __METHOD__ );
+//		$this->tell( WOO_PRODUCT_PRICE_UPDATE, __METHOD__ );
 //		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function zero_null_prices()
@@ -254,7 +255,7 @@ class model_woo extends woo_interface {
 				woo.instock = q.instock
 			where woo.stock_id = q.stock_id";
 		$res = db_query( $sql_update3, "Couldnt update Quantity On Hand in  WOO" );
-		$this->tell( WOO_PRODUCT_QOH_UPDATE, __METHOD__ );
+	//	$this->tell( WOO_PRODUCT_QOH_UPDATE, __METHOD__ );
 //		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function update_on_sale_data()
@@ -277,6 +278,7 @@ class model_woo extends woo_interface {
 			throw new InvalidArgumentException( "stock_id" );
 		$updateprod_sql = "update " . $this->table_details['tablename'] . " set
 					woo_id = '" . $this->woo_id . "'";		
+		$updateprod_sql .= ", woo_last_update=now()";
 		$updateprod_sql .= " where stock_id = '" . $this->stock_id . "'";
 		$res = db_query( $updateprod_sql, "Couldn't update woo_id after export" );
 //		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
@@ -306,7 +308,7 @@ class model_woo extends woo_interface {
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		$sql_update = "update " . $this->table_details['tablename'] . " woo
 			set
-				woo.woo_last_update = '0000-01-01', woo.woo_id = null";
+				woo.woo_last_update = '0000-01-01', woo.woo_id = null, woo.woo_category_id = null";
 		$res = db_query( $sql_update, "Couldnt reset Woocommerce data to null" );
 //		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
