@@ -71,6 +71,7 @@ class categories_xref_model extends woo_interface {
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		try {
 			$this->update_table();
+			$this->tell_eventloop( $this, 'KSF_WOO_XREF_UPDATED', get_object_vars( $this ) );
 		}
                 catch( Exception $e )
                 {
@@ -88,6 +89,7 @@ class categories_xref_model extends woo_interface {
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		try {
 			$this->insert_table();
+			$this->tell_eventloop( $this, 'KSF_WOO_XREF_INSERTED', get_object_vars( $this ) );
 		}
                 catch( Exception $e )
                 {

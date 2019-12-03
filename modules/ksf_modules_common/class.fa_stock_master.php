@@ -69,8 +69,8 @@ class fa_stock_master extends table_interface
 	 protected $editable;
 	function __construct( $prefs_db )
 	{
-		//parent::__construct( $prefs_db );
-		//parent::__construct();
+		//parent::__construct( $caller );
+		parent::__construct();
 		$this->table_details['tablename'] = TB_PREF . 'stock_master';
 		$this->fields_array[] = array( 'name' => 'stock_id', 'type' => 'varchar(64)', 'null' => 'NOT NULL', 'readwrite' => 'readwrite', 'default' => '' );
 		$this->fields_array[] = array( 'name' => 'category_id', 'type' => 'int(11)', 'null' => 'NOT NULL', 'readwrite' => 'readwrite', 'default' => '' ); 

@@ -50,17 +50,12 @@ class woo_rest
 	}
 	function send( $endpoint, $data = [], $client )
 	{
+		$exists = 0;
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		if( null == $client )
 			throw new Exception( "These functions depend on CLIENT being set and it isn't.", KSF_FIELD_NOT_SET );
 		else
 			$this->client = $client;
-		if( isset( $client->iam ) )
-			echo  __METHOD__ . ":" . __LINE__ .  " Client is $client->iam <br />";
-		else
-			echo "Client is " . get_class( $client ) . "<br />";
-		 echo "<br />" . __METHOD__ . ":" . __LINE__ . " ID PRE GET  match--<br /> ";
-                 var_dump( $client->id );
 		//check to see if record exists
 		try {
 			$exists = false;
@@ -69,51 +64,107 @@ class woo_rest
 				$q = array( 'search' => $client->woo_id );
 				$response = $this->get( $endpoint, $q, $client );
 				//Does name and description match?
-				$exists = $client->fuzzy_match( $response );
+				$this->notify( __METHOD__ . ":" . __LINE__ . " Calling FuzzyMatch ", "WARN" );
+				if( $client->fuzzy_match( $response ) )
+					$exists++;
 			}
-			else if( isset( $client->id ) )
+		}
+		catch (Exception $e)
+		{
+			if( $e->getCode() !== KSF_INVALID_DATA_TYPE )
+			{
+				if( $e->getCode() == KSF_VALUE_NOT_SET )
+					var_dump( $response );
+				throw $e;
+			}
+		}
+		try {
+			if( isset( $client->id ) )
 			{
 				$q = array( 'search' => $client->id );
 				$response = $this->get( $endpoint, $q, $client );
 				//Does name and description match?
-				$exists = $client->fuzzy_match( $response );
+				$this->notify( __METHOD__ . ":" . __LINE__ . " Calling FuzzyMatch ", "WARN" );
+				if( $client->fuzzy_match( $response ) )
+					$exists++;
 			}
-			else if( isset( $client->name ) )
+		}
+		catch (Exception $e)
+		{
+			if( $e->getCode() !== KSF_INVALID_DATA_TYPE )
+			{
+				if( $e->getCode() == KSF_VALUE_NOT_SET )
+					var_dump( $response );
+				throw $e;
+			}
+		}
+		try {
+			if( isset( $client->name ) )
 			{
 				$q = array( 'search' => $client->name );
 				$response = $this->get( $endpoint, $q, $client );
 				//Match price, etc else new
-				$exists = $client->fuzzy_match( $response );
+				$this->notify( __METHOD__ . ":" . __LINE__ . " Calling FuzzyMatch ", "WARN" );
+				if( $client->fuzzy_match( $response ) )
+					$exists++;
 			}
-			else if( isset( $client->description ) )
-			{
-				$q = array( 'search' => $client->description );
-				$response = $this->get( $endpoint, $q, $client );
-				$exists = $client->fuzzy_match( $response );
-			}
-			//Determine if exists.
-			if( $exists )
-				$act = "put";
-			else
-				$act = "post";
-		 	echo "<br /><br />" . __METHOD__ . ":" . __LINE__ . " ID POST GET post match--<br /> ";
-                 	var_dump( $client->id );
 		}
 		catch (Exception $e)
 		{
-			if( $e->getCode() == KSF_VALUE_NOT_SET )
-				var_dump( $response );
-			throw $e;
+			if( $e->getCode() !== KSF_INVALID_DATA_TYPE )
+			{
+				if( $e->getCode() == KSF_VALUE_NOT_SET )
+					var_dump( $response );
+				throw $e;
+			}
 		}
+		try {
+			if( isset( $client->description ) )
+			{
+				$q = array( 'search' => $client->description );
+				$response = $this->get( $endpoint, $q, $client );
+				$this->notify( __METHOD__ . ":" . __LINE__ . " Calling FuzzyMatch ", "WARN" );
+				if( $client->fuzzy_match( $response ) )
+					$exists++;
+			}
+		}
+		catch (Exception $e)
+		{
+			if( $e->getCode() !== KSF_INVALID_DATA_TYPE )
+			{
+				if( $e->getCode() == KSF_VALUE_NOT_SET )
+					var_dump( $response );
+				throw $e;
+			}
+		}
+		try {
+			if( isset( $client->slug ) )
+			{
+				$q = array( 'search' => $client->slug );
+				$response = $this->get( $endpoint, $q, $client );
+				$this->notify( __METHOD__ . ":" . __LINE__ . " Calling FuzzyMatch ", "WARN" );
+				if( $client->fuzzy_match( $response ) )
+					$exists++;
+			}
+			//Determine if exists.
+		}
+		catch (Exception $e)
+		{
+			if( $e->getCode() !== KSF_INVALID_DATA_TYPE )
+			{
+				if( $e->getCode() == KSF_VALUE_NOT_SET )
+					var_dump( $response );
+				throw $e;
+			}
+		}
+		if( $exists > 0 )
+			$act = "put";
+		else
+			$act = "post";
 		//if( isset( $client->system_of_record ) AND ( true == $client->system_of_record ) )
 		//
 		//Update or Insert
-		 echo "<br /><br />" . __METHOD__ . ":" . __LINE__ . " ID Pre PUT/POST--<br /> ";
-                 var_dump( $client->id );
 		$response = $this->$act( $endpoint, $data, $client );
-		//Update Client ID
-		 echo "<br /><br />" . __METHOD__ . ":" . __LINE__ . " ID PosT PUT/POST--<br /> ";
-                 var_dump( $client->id );
 
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
 		return $response;
@@ -153,13 +204,11 @@ class woo_rest
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		if( !isset( $this->client ) AND ( ! is_null( $client ) ) )
 			$this->client = $client;
-		 echo "<br /><br />" . __METHOD__ . ":" . __LINE__ . " ID Pre GET  --<br /> ";
-                 var_dump( $client->id );
-
 		try {
 			$response = $this->wc->get( $endpoint, $data );
 		} catch( Exception $e )
 		{
+			$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $e->getCode() . ":" . $e->getMessage(), "ERROR" );
 			throw $e;
 		}
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );

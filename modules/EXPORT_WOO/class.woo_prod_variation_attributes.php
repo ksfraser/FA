@@ -34,6 +34,10 @@ class woo_prod_variation_attributes extends woo_interface
 	var $option;	//!< String.				xref prod_variables_values::human readable
 	var $sku;	//!< the SKU that this applies against.
 
+	function reset_endpoint()
+	{
+		$this->endpoint = "";
+	}
 	function define_table()
 	{
 		woo_interface::define_table();	//defines tablename and prikey!

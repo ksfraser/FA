@@ -80,9 +80,23 @@ class table_interface
 		$this->objLog = new kfLog();
 
 	}
+        /**********************************************************//**
+         * Log 
+	 *
+	 *	Inheriting classes can override to provide more complete
+	 *	logging.  A TABLE orientated class shouldn't be sending
+	 * 	to a screen; should be passing messages back through
+	 *	returns or Exceptions.
+         * ***********************************************************/
+        function notify( $msg, $level = "ERROR" )
+        {
+		$this->Log( $msg, $level );
+        }
+
 	function Log( $msg, $level = PEAR_LOG_DEBUG )
 	{
-		$this->objLog->Log( $msg, $level );
+		if( isset( $this->objLog ) )
+			$this->objLog->Log( $msg, $level );
 	}
 	/********************************************************//**
 	 * Copied from origin.  Throws exceptions
@@ -218,7 +232,10 @@ class table_interface
 		else
 			throw new Exception( "Primary Key not defined.  This function uses that field in the query", KSF_PRIKEY_NOT_DEFINED );
 		if( ! isset( $this->$key ) )
+		{
+			var_dump( $this->table_details );
 			throw new Exception( "Primary Key not set.  Required Field for this function", KSF_PRIKEY_NOT_SET );
+		}
 		$sql = "SELECT * from `" . $this->table_details['tablename'] . "` WHERE $key='" . $this->$key . "'";
 		$res = db_query( $sql, "Couldn't select from " . $this->table_details['tablename'] );
 		$row = db_fetch( $res );

@@ -58,6 +58,10 @@ class woo extends woo_interface {
 		$this->model = new model_woo( $serverURL, $key, $secret, $options, $this );
 		return;
 	}
+	function reset_endpoint()
+	{
+		$this->endpoint = "";
+	}
 	function define_table()
 	{
 		//$this->model->define_table();

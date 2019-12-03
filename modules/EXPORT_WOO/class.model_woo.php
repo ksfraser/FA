@@ -101,6 +101,10 @@ class model_woo extends woo_interface {
 		$this->table_details['index'][1]['keyname'] = "customer-billing_address_customer";
 		 */
 	}
+	function reset_endpoint()
+	{
+		$this->endpoint = "products";
+	}
 	/*******************************************//**********
 	* Initial population of data.  Probably should only run once
 	*

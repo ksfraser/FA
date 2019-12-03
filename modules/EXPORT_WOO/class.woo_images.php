@@ -169,10 +169,12 @@ class woo_images {
 			//var_dump($this->remote_img_srv);
 			$img = new woo_image($this->stock_id, 0, $this->client->image_serverurl, $this->client->image_baseurl, $this->client, $this->debug, $this->remote_img_srv);
 			$image['src']  = $img->src;
-			$image['position'] = $img->position;
+		//	$image['position'] = $img->position;
 			$image['name'] = $img->name;
 			$image['alt'] = $img->alt;
-			$image_array[] = $image;
+			//Only add the image to the array of the URL exists.  Otherwise WC refuses the product
+			if( strlen( $image['src'] ) > 10 )
+				$image_array[] = $image;
 			$imagecount++;
 			unset( $img );
 			unset( $image );
