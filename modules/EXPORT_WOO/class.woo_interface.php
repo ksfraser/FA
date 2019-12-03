@@ -330,21 +330,25 @@ class woo_interface extends table_interface
 	 * **************************************************************/
 	function tell( $msg, $method )
 	{
-		$this->notify( __METHOD__ . "::"  . __LINE__, "WARN" );
+		$this->notify( __METHOD__ . "::"  . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		if( isset( $this->client ) )	//if not set nobody to tell
 			if( isset( $msg ) )	//If not set nothing to pass along...
-				if( is_callable( $this->client->eventloop( $msg, $method ) ) )
+		//		if( is_callable( $this->client->eventloop( $msg, $method ) ) )
 					$this->client->eventloop( $msg, $method );
 		else
 		{
 			$this->tell_eventloop( $this, $msg, $method );
 		}
+		$this->notify( __METHOD__ . "::"  . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function tell_eventloop( $caller, $event, $msg )
 	{
+		$this->notify( __METHOD__ . "::"  . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		global $eventloop;
 		if( isset( $eventloop ) )
 			$eventloop->ObserverNotify( $caller, $event, $msg );
+		$this->notify( __METHOD__ . "::"  . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+		
 	}
 	/***************************************************************//**
 	 *dummy   
@@ -362,6 +366,7 @@ class woo_interface extends table_interface
 	}
 	function register_with_eventloop()
 	{
+		$this->notify( __METHOD__ . "::"  . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		global $eventloop;
 		if( null != $eventloop )
 		{
@@ -371,6 +376,7 @@ class woo_interface extends table_interface
 					$eventloop->ObserverRegister( $this, $key );
 			}
 		}
+		$this->notify( __METHOD__ . "::"  . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	/***************************************************************//**
 	 *build_interestedin
@@ -911,6 +917,7 @@ class woo_interface extends table_interface
 			$nextptr = $newobj;
 			$objectcount++;
 			//The next time through the loop does another...
+			//Not unsetting the object because it is part of the dbl linked list
 		}
 		return $objectcount;
 	}
