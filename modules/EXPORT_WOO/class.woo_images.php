@@ -29,17 +29,18 @@ class woo_image {
 	var $alt;	//!<string for Woo
 	var $debug;
 	var $remote_img_srv;	//boolean
-	function __construct( $stock_id, $pic_num, $server_url, $base_url, /*unused*/$client, $debug, $remote_img_srv = FALSE )
+	function __construct( $stock_id, $pic_num, $server_url, $base_url, $client, $debug, $remote_img_srv = FALSE )
 	{
 		$this->stock_id = $stock_id;
 		$this->pic_num = $pic_num;
-		$this->image_server_url = $server_url;
-		$this->image_base_url = $base_url;
+		$this->image_serverurl = $server_url;
+		$this->image_baseurl = $base_url;
 		$this->client = $client;
 		$this->debug = $debug;
-		//echo "<br /><br />" . __METHOD__ . ":" . __LINE__;
 		$this->remote_img_srv = $remote_img_srv;
+		$this->client = $client;
 		$this->run();
+	
 	}
 	/***************************************************************************//**
 	 * See if the image exists and return its name if it does else NULL
@@ -52,7 +53,8 @@ class woo_image {
 	 * ****************************************************************************/
 	/*@string@*/function image_exists( $stock_id )
 	{
-		$filename = $this->image_base_url . item_img_name($stock_id) . ".jpg";
+		$basefilename = item_img_name($stock_id) . ".jpg";
+		$filename = $this->image_baseurl . $basefilename;
 		if( $this->debug > 2 )
 		{
 			echo "<br /><br />" . __METHOD__ . ":" . __LINE__;
@@ -62,16 +64,16 @@ class woo_image {
 		if( $this->remote_img_srv )
 		{
 			//assumption is we copied images directory to remote server so that we can check the files existance!
-			if( file_exists( company_path().'/images/' . item_img_name($stock_id) . ".jpg" ) )
+			if( file_exists( company_path(). '/images/' .  $basefilename ) )
 				return $filename;
 			else
 				return null;
 		}
-		if( file_exists( $filename ) === TRUE )
+		else if( file_exists( $filename ) === TRUE )
 			return $filename;
 		else
 		{
-			$filename = company_path().'/images/' . item_img_name($stock_id) . ".jpg";
+			$filename = company_path().'/images/' .  $basefilename;
 			if( file_exists( $filename ) === TRUE )
 			{
 				global $path_to_root;
@@ -94,7 +96,7 @@ class woo_image {
 	 * **************************************************************************/
 	function run()
 	{
-		if( isset( $this->image_server_url ) AND isset( $this->image_base_url ) )
+		if( isset( $this->image_serverurl ) AND isset( $this->image_baseurl ) )
 		//if( isset( $this->client->image_serverurl ) AND isset( $this->client->image_baseurl ) )
 		{
 			if( $this->pic_num > 0 )
@@ -103,10 +105,12 @@ class woo_image {
 				$image_name = $this->image_exists( $this->stock_id );
 			if( null != $image_name )
 			{
-				$this->src  = $this->image_server_url .  $image_name;
+				$this->src  = $this->image_serverurl .  $image_name;
 				//$this->src  = $this->image_server_url . '/'  . $image_name;
 				$this->position = $this->pic_num;
 				$this->id = $this->pic_num;
+				$this->name = $this->stock_id . '.jpg"';
+				$this->alt = $this->stock_id . '.jpg"';
 			}
 		}
 		else
@@ -115,8 +119,6 @@ class woo_image {
 			//$this->src   = $this->stock_id . '.jpg"';
 			$this->position = $this->pic_num;
 		}
-		$this->name = $this->stock_id;
-		$this->alt = $this->stock_id;
 	}
 }
 
@@ -165,17 +167,17 @@ class woo_images {
 		$imagecount = 0;
 		if( isset( $this->client->image_serverurl ) AND isset( $this->client->image_baseurl ) )
 		{
-			//echo "<br /><br />" . __METHOD__ . ":" . __LINE__;
-			//var_dump($this->remote_img_srv);
 			$img = new woo_image($this->stock_id, 0, $this->client->image_serverurl, $this->client->image_baseurl, $this->client, $this->debug, $this->remote_img_srv);
-			$image['src']  = $img->src;
-		//	$image['position'] = $img->position;
-			$image['name'] = $img->name;
-			$image['alt'] = $img->alt;
-			//Only add the image to the array of the URL exists.  Otherwise WC refuses the product
-			if( strlen( $image['src'] ) > 10 )
+			if( strlen( $img->src ) > 10 )
+			{
+				//Only add the image to the array of the URL exists.  Otherwise WC refuses the product
+				$image['src']  = $img->src;
+				$image['position'] = $img->position;
+				$image['name'] = $img->name;
+				$image['alt'] = $img->alt;
 				$image_array[] = $image;
-			$imagecount++;
+				$imagecount++;
+			}
 			unset( $img );
 			unset( $image );
 
@@ -184,7 +186,7 @@ class woo_images {
 				for ( $j = 1; $j <= $this->client->maxpics; $j++ )
 				{
 					$img = new woo_image($this->stock_id, $j, $this->client->image_serverurl, $this->client->image_baseurl, $this->client, $this->debug, $this->remote_img_srv);
-					if( isset( $img->src ) )
+					if( strlen( $img->src ) > 10 )
 					{
 						$image = array ('src' => $img->src, 'position' => $img->position, 'name' => $img->name, 'alt' => $img->alt );
 						$image_array[] = $image;

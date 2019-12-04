@@ -39,10 +39,10 @@ $woocommerce = new Client(
 );
 
 try {
-        print_r($woocommerce->get(''));
+//        print_r($woocommerce->get(''));
 } catch( Exception $e )
 {
-        var_dump( $e );
+ //       var_dump( $e );
 }
 
 /*
@@ -82,7 +82,11 @@ $data = [
         ],
         [
             'src' => 'http://demo.woothemes.com/woocommerce/wp-content/uploads/sites/56/2013/06/T_2_back.jpg'
-        ]
+        ],
+	[
+		'src' => 'http://fraserhighlandshoppe.ca/Media/front/D-Pad12.jpg'
+		//'src' => 'http://192.168.1.65/devel/fhs/frontaccounting/company/1/images/D-Pad12.jpg'
+	]
     ] 
 ];
 $data2 = [
@@ -97,6 +101,11 @@ $data3 = [
     	'regular_price' => '21.99',
 	'description' => '',
 ];
+
+print_r( parse_url('http://192.168.1.65/devel/fhs/frontaccounting/company/1/images/D-Pad12.jpg' ) );
+print_r( parse_url( 'http://fhsws001.ksfraser.com/devel/fhs/frontaccounting/company/1/images/D-Pad12.jpg' ) );
+print_r( parse_url( 'http://fraserhighlandshoppe.ca/Media/front/D-Pad12.jpg' ) );
+exit;
 
 echo "---------------------------------------------\n\n";
 echo "\n\n Creating a product \n\n";
