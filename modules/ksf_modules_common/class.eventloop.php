@@ -116,10 +116,28 @@ class eventloop extends kfLog
 	}
 	function ObserverRegister( /*Class Instance*/$observer, $event )
         {
+		return FALSE;
                	//$this->observers[$event][] = $observer;	//Indirect modification has no effect ERROR
-		$this->observers[$event] = array_merge( $this->observers[$event], $observer );
-               	return SUCCESS;
+		try {
+			if( isset( $this->observers[$event] ) )
+			{
+               			$this->observers[$event][] = $observer;	//Indirect modification has no effect ERROR
+			}
+			else
+			{
+				$this->observers[$event] = array();
+               			$this->observers[$event][] = $observer;	//Indirect modification has no effect ERROR
+			}
+			//$this->observers[$event] = array_merge( $this->observers[$event], $observer );
+               		return SUCCESS;
+		}
+		catch( Exception $e )
+		{
+			$this->notify( __METHOD__ . ":" . __LINE__  . " Error: " . $e->getMessage(), "ERROR" );
+			$this->notify( __METHOD__ . ":" . __LINE__ . print_r( $this->observers, true ), "WARN" );
         	}
+		return FALSE;
+	}
          function ObserverDeRegister( $observer )
          {
                	$this->observers[] = array_diff( $this->observers, array( $observer) );

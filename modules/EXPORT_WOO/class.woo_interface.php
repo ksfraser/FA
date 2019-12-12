@@ -56,21 +56,7 @@ class woo_interface extends table_interface
         / * none *  /function getByPrimaryKey()
         function assoc2var( $assoc )            Take an associated array and take returned values and place into the calling MODEL class
         function get( $field )
-        / * @bool@ * /function set( $field, $value = null )
-        / * @bool@ * /function validate( $data_value, $data_type )
-        / * none * /function select_row( $set_caller = false )
-        / * @mysql_result@ * /function select_table($fieldlist = " * ", / * @array@ * /$where = null, / * @array@ * /$orderby = null, / * @int@ * /$limit = null)
         function query( $msg )
-        function delete_table()
-        function update_table()
-        / * @bool@ * /function check_table_for_id()
-        / * @int@ * /function insert_table()
-        function create_table()
-        function alter_table()
-        / * @int@ * /function count_rows()
-        / * @int@ * /function count_filtered($where = null)
-        / * string * /function getPrimaryKey()
-        / * none * /function getByPrimaryKey()
         function buildLimit()
         function buildSelect( $b_validate_in_table = false)
         function buildFrom()
@@ -231,7 +217,7 @@ class woo_interface extends table_interface
 	*
 	* @return bool Did we setup the interface
 	******************************************************************************/
-	/*@bool@*/function build_rest_interface($serverURL = " ", $key, $secret, $options, $client = null)
+	/*@bool@*/private function build_rest_interface($serverURL = " ", $key, $secret, $options, $client = null)
 	{
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		if( $serverURL == null AND null == $key AND null == $secret )
@@ -327,14 +313,22 @@ class woo_interface extends table_interface
                         {
                                 foreach( $this->to_match_array as $find )
                                 {
-                                        if( isset( $this->$find )  AND  ! strcasecmp( $product->$find, $this->$find ) )
+                                        if( ! isset( $this->$find ) )
+					{
+                				$this->notify( __METHOD__ . ":" . __LINE__ . " Match on Field :" . $find . ": IMPOSSIBLE.  Not Set", "WARN" );
+					}
+                                        else if( ! isset( $product->$find ) )
+					{
+                				$this->notify( __METHOD__ . ":" . __LINE__ . " Match on Field :" . $find . ": IMPOSSIBLE.  Not Returned", "WARN" );
+					}
+                                        else if(  strcasecmp( $product->$find, $this->$find ) == 0 ) 
                                         {
-                				$this->notify( __METHOD__ . ":" . __LINE__ . " Matched field " . $find . " with value "  . $this->$find, "WARN" );
+                				$this->notify( __METHOD__ . ":" . __LINE__ . " SUCCESS Matched field " . $find . " with value "  . $this->$find, "WARN" );
                                                 $match++;
                                         }
 					else
 					{
-                				$this->notify( __METHOD__ . ":" . __LINE__ . " Match on Field :" . $find . ": FAILED: " . $product->$find . "::"  . $this->$find, "WARN" );
+                				//$this->notify( __METHOD__ . ":" . __LINE__ . " Match on Field :" . $find . ": FAILED: " . $product->$find . "::"  . $this->$find, "WARN" );
 					}
                                 }
                         }

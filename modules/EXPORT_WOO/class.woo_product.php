@@ -108,8 +108,8 @@ class woo_product extends woo_interface {
 	 *
 	 *
 	 * ****************************************************************************************/
-	function __construct( $serverURL, $woo_rest_path,
-				$key, $secret, $enviro = "devel", $client = null )
+	function __construct( $serverURL, /*unused*/ $woo_rest_path,
+				$key, $secret, /*unused*/$enviro = "devel", $client = null )
 	{
 		$this->caller = $client;
 		$options = array();
@@ -403,6 +403,7 @@ class woo_product extends woo_interface {
 	
 		try {
 			$endpoint = "products";
+			unset( $this->sku );	//Looks like every update with a SKU set comes back invald/duplicate
 			$this->build_data_array();
 			$response = $this->woo_rest->send( $endpoint, $this->data_array, $this );
 			$this->id = $response->id;
@@ -420,7 +421,7 @@ class woo_product extends woo_interface {
 			{
 				//Invalid or Duplicate SKU
 				$this->notify( __METHOD__ . ":" . __LINE__ . " stock_id/SKU/Woo ID :: " . $this->stock_id . "::" . $this->sku . "::" . $this->woo_id, "ERROR" );
-			{
+			}
 					
 		}
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
@@ -640,16 +641,15 @@ class woo_product extends woo_interface {
 	}
 	function model_woo()
 	{
-		if( ! isset( $this->pz_model_woo ) OR ( null == $tihs->pz_model_woo ) )
+		if( ! isset( $this->pz_model_woo ) OR ( null == $this->pz_model_woo ) )
 		{
 			require_once( 'class.model_woo.php' );
 			//standard constructor args...	$this->serverURL, $this->key, $this->secret, $this->options, $this
-			$this->pz_model_woo = $woo = new model_woo( $this->serverURL, $this->key, $this->secret, $this->options, $this );
+			$this->pz_model_woo = new model_woo( $this->serverURL, $this->key, $this->secret, $this->options, $this );
 		}
 		else
 		{
-			$woo = $this->pz_model_woo;
-			$woo->reset_values();
+			$this->pz_model_woo->reset_values();
 		}
 		return $this->pz_model_woo;
 	}
@@ -897,7 +897,6 @@ class woo_product extends woo_interface {
 			$msg = $e->getMessage();
 			switch( $e->getCode() )
 			{
-/*
 				case 400:
 					$this->notify( __METHOD__ . ":" . __LINE__ . " Data sent: " . print_r( $this->data_array, true), "WARN" );
 					if( strpos( $msg, "product_invalid_sku" ) !== FALSE )
@@ -916,7 +915,6 @@ class woo_product extends woo_interface {
 						}
 					}
 				break;
-*/
 			}
 		}
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );

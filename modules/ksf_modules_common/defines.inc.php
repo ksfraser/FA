@@ -59,7 +59,7 @@ define( 'SUPP_REF_LENGTH', 30 );
 define( 'SUPP_ACCOUNT_NO_LENGTH', 40 );
 
 //EVENTLOOP Events
-$eventcount = 0;
+$eventcount = 5730;
 define( 'WOO_DUMMY_EVENT', $eventcount ); $eventcount++;	//Used by woo_interface:build_interestedin as example
 define( 'WOO_PRODUCT_INSERT', $eventcount ); $eventcount++;
 define( 'WOO_PRODUCT_UPDATE', $eventcount ); $eventcount++;
@@ -74,6 +74,20 @@ define( 'FA_PRODUCT_PRICE_UPDATE', $eventcount ); $eventcount++;
 define( 'FA_PRODUCT_QOH_UPDATE', $eventcount ); $eventcount++;
 define( 'FA_PRODUCT_CATEGORY_UPDATE', $eventcount ); $eventcount++;
 define( 'FA_CUSTOMER_CREATED', $eventcount ); $eventcount++;
+
+//More EVENTS
+define( 'FA_NEW_STOCK_ID', $eventcount ); $eventcount++;
+define( 'FA_PRODUCT_UPDATED', $eventcount ); $eventcount++;
+define( 'FA_PRODUCT_LINKED', $eventcount ); $eventcount++;
+define( 'FA_PRICE_UPDATED', $eventcount ); $eventcount++;
+define( 'KSF_WOO_RESET_ENDPOINT', $eventcount ); $eventcount++;
+define( 'KSF_WOO_INSTALL', $eventcount ); $eventcount++;
+define( 'KSF_SALE_ADDED', $eventcount ); $eventcount++;
+define( 'KSF_SALE_REMOVED', $eventcount ); $eventcount++;
+define( 'KSF_SALE_EXPIRED', $eventcount ); $eventcount++;
+define( 'KSF_WOO_GET_PRODUCT', $eventcount ); $eventcount++;
+define( 'KSF_WOO_GET_PRODUCTS_ALL', $eventcount ); $eventcount++;
+
 
 
 function currentdate()
