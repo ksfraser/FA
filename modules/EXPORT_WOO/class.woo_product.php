@@ -311,17 +311,7 @@ class woo_product extends woo_interface {
 		{
 			$this->updated_at = date("Y-m-d");
 		}
-		if( ! isset( $this->pz_model_woo ) OR ( null == $tihs->pz_model_woo ) )
-		{
-			require_once( 'class.model_woo.php' );
-			//standard constructor args...	$this->serverURL, $this->key, $this->secret, $this->options, $this
-			$this->pz_model_woo = $woo = new model_woo( $this->serverURL, $this->key, $this->secret, $this->options, $this );
-		}
-		else
-		{
-			$woo = $this->pz_model_woo;
-			$woo->reset_values();
-		}
+		$woo = $this->model_woo();
 		$woo->woo_last_update = $this->updated_at;
 		$woo->updated_ts = $this->updated_at;
 		$woo->woo_id = $this->id;
@@ -376,17 +366,7 @@ class woo_product extends woo_interface {
 			{
 				$this->products_sent++;
 				//Need to update the woo_id in _woo
-				if( ! isset( $this->pz_model_woo ) OR ( null == $tihs->pz_model_woo ) )
-				{
-					require_once( 'class.model_woo.php' );
-					//standard constructor args...	$this->serverURL, $this->key, $this->secret, $this->options, $this
-					$this->pz_model_woo = $woo = new model_woo( $this->serverURL, $this->key, $this->secret, $this->options, $this );
-				}
-				else
-				{
-					$woo = $this->pz_model_woo;
-					$woo->reset_values();
-				}
+				$woo = $this->model_woo();
                 		$woo->stock_id = $this->stock_id;
                 		$woo->woo_id = $this->id;
                 		$woo->update_woo_id();
@@ -490,18 +470,7 @@ class woo_product extends woo_interface {
 			
 		$remove_desc_array = array(  "**Use Custom Form**,", "**Use Custom Order Form**,", );
 		$removed_desc_array = array( "",                     "",                           );
-		
-		if( ! isset( $this->pz_model_woo ) OR ( null == $tihs->pz_model_woo ) )
-		{
-			require_once( 'class.model_woo.php' );
-			//standard constructor args...	$this->serverURL, $this->key, $this->secret, $this->options, $this
-			$this->pz_model_woo = $woo = new model_woo( $this->serverURL, $this->key, $this->secret, $this->options, $this );
-		}
-		else
-		{
-			$woo = $this->pz_model_woo;
-			$woo->reset_values();
-		}
+		$woo = $this->model_woo();
 		$woo->stock_id = $this->stock_id;
 		$woo->select_product();
 		//Need to reset values between each product.
@@ -631,17 +600,7 @@ class woo_product extends woo_interface {
 	{		
 		$this->notify( __METHOD__  . ":" . __LINE__ . " Entering " . __METHOD__, "WARN");
 		//Check for how many we are expecting to send...
-		if( ! isset( $this->pz_model_woo ) OR ( null == $tihs->pz_model_woo ) )
-		{
-			require_once( 'class.model_woo.php' );
-			//standard constructor args...	$this->serverURL, $this->key, $this->secret, $this->options, $this
-			$this->pz_model_woo = $woo = new model_woo( $this->serverURL, $this->key, $this->secret, $this->options, $this );
-		}
-		else
-		{
-			$woo = $this->pz_model_woo;
-			$woo->reset_values();
-		}
+		$woo = $this->model_woo();
 		$woo->debug = $this->debug;
 		$woo->filter_new_only = TRUE;
 		$tosend = $woo->count_new_products();
@@ -679,15 +638,8 @@ class woo_product extends woo_interface {
 		$this->notify( __METHOD__  . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN");
 		return $sendcount;
 	}
-	/*****************************************************************************//**
-	 *
-	 *	Adds to products_updated
-	 *
-	 * ******************************************************************************/
-	function update_simple_products()
-	{			
-		$this->notify(  __METHOD__  . ":" . __LINE__ . " Entering " . __METHOD__, "WARN");
-
+	function model_woo()
+	{
 		if( ! isset( $this->pz_model_woo ) OR ( null == $tihs->pz_model_woo ) )
 		{
 			require_once( 'class.model_woo.php' );
@@ -699,6 +651,18 @@ class woo_product extends woo_interface {
 			$woo = $this->pz_model_woo;
 			$woo->reset_values();
 		}
+		return $this->pz_model_woo;
+	}
+	/*****************************************************************************//**
+	 *
+	 *	Adds to products_updated
+	 *
+	 * ******************************************************************************/
+	function update_simple_products()
+	{			
+		$this->notify(  __METHOD__  . ":" . __LINE__ . " Entering " . __METHOD__, "WARN");
+		$woo = $this->model_woo();
+
 		$woo->debug = $this->debug;
 		$updatecount = 0;
 		$res = $woo->select_simple_products_for_update();
@@ -933,6 +897,7 @@ class woo_product extends woo_interface {
 			$msg = $e->getMessage();
 			switch( $e->getCode() )
 			{
+/*
 				case 400:
 					$this->notify( __METHOD__ . ":" . __LINE__ . " Data sent: " . print_r( $this->data_array, true), "WARN" );
 					if( strpos( $msg, "product_invalid_sku" ) !== FALSE )
@@ -951,6 +916,7 @@ class woo_product extends woo_interface {
 						}
 					}
 				break;
+*/
 			}
 		}
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
@@ -1012,17 +978,7 @@ class woo_product extends woo_interface {
 	{
 		if( !isset( $this->stock_id ) )
 			throw new Exception( "Stock_id not set.  Needed!", KSF_VALUE_NOT_SET );
-		if( ! isset( $this->pz_model_woo ) OR ( null == $tihs->pz_model_woo ) )
-		{
-			require_once( 'class.model_woo.php' );
-			//standard constructor args...	$this->serverURL, $this->key, $this->secret, $this->options, $this
-			$this->pz_model_woo = $woo = new model_woo( $this->serverURL, $this->key, $this->secret, $this->options, $this );
-		}
-		else
-		{
-			$woo = $this->pz_model_woo;
-			$woo->reset_values();
-		}
+		$woo = $this->model_woo();
 		$woo->stock_id = $this->stock_id;
 		$woo->select_product();
 		return $woo;
