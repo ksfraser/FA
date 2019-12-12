@@ -11,6 +11,40 @@ require_once( 'class.woo_interface.php' );
 /******************************************************************//**
  * This class is a MVC Model class - designed for handling the WOO table in frontaccounting.
  *
+ * Provides:
+  	function __construct($serverURL, $key, $secret, $options, $client)
+        function define_table()
+        function reset_endpoint()
+        /*@int@*/ function populate_woo_table()
+        function select_product()
+        function insert_product()
+        function update_product_details()
+        function update_prices()
+        function zero_null_prices()
+        function update_qoh_count()
+        function update_on_sale_data()
+        function update_woo_id()
+        function update_woo_last_update()
+        function clear_woocommerce_data()
+        function staledate_specials()
+        function update_specials()
+        function update_tax_data()
+        function update_shipping_dimensions()
+        function update_crosssells()
+        function update_category_data()
+        function update_category_xref()
+        function missing_from_table_query()
+        function create_price_book()
+        function count_new_products()
+        /*@array@*/function new_simple_product_ids( $max = 0 )
+        /*@array@*/function all_simple_product_ids()
+        /*@array@*/function simple_product_ids( $max = 0 )
+        /*@mysql_res@*/function select_simple_products_for_export()
+        /*@mysql_res@*/function select_simple_products( $max = 0 )
+        /*@mysql_res@*/function select_simple_products_for_update()
+        function delete_by_sku( $sku )
+
+ *
  * *******************************************************************/
 class model_woo extends woo_interface {
 		var $stock_id;
@@ -55,6 +89,47 @@ class model_woo extends woo_interface {
 		//$this->define_table();
 		return;
 	}
+	function build_interestedin()
+        {
+                //This NEEDS to be overridden
+                $this->interestedin[WOO_DUMMY_EVENT]['function'] = "dummy";
+                $this->interestedin[FA_NEW_STOCK_ID]['function'] = "insert_product";
+                $this->interestedin[FA_PRODUCT_UPDATED]['function'] = "update_product_details";
+                $this->interestedin[FA_PRODUCT_LINKED]['function'] = "update_crosssells";
+                $this->interestedin[FA_PRICE_UPDATED]['function'] = "update_prices";
+                $this->interestedin[KSF_WOO_RESET_ENDPOINT]['function'] = "reset_endpoint";
+                $this->interestedin[KSF_WOO_INSTALL]['function'] = "define_table";
+                $this->interestedin[KSF_WOO_INSTALL]['function'] = "populate_woo_table";
+                $this->interestedin[KSF_SALE_ADDED]['function'] = "update_on_sale_data";
+                $this->interestedin[KSF_SALE_REMOVED]['function'] = "update_on_sale_data";
+                $this->interestedin[KSF_SALE_EXPIRED]['function'] = "update_on_sale_data";
+                $this->interestedin[KSF_WOO_GET_PRODUCT]['function'] = "select_product";	//stock_id must be set
+                $this->interestedin[KSF_WOO_GET_PRODUCTS_ALL]['function'] = "";
+/*
+        function zero_null_prices()
+        function update_qoh_count()
+        function update_woo_id()
+        function update_woo_last_update()
+        function clear_woocommerce_data()
+        function staledate_specials()
+        function update_specials()
+        function update_tax_data()
+        function update_shipping_dimensions()
+        function update_crosssells()
+        function update_category_data()
+        function update_category_xref()
+        function missing_from_table_query()
+        function create_price_book()
+        function count_new_products()
+        /*@array@*/function new_simple_product_ids( $max = 0 )
+        /*@array@*/function all_simple_product_ids()
+        /*@array@*/function simple_product_ids( $max = 0 )
+        /*@mysql_res@*/function select_simple_products_for_export()
+        /*@mysql_res@*/function select_simple_products( $max = 0 )
+        /*@mysql_res@*/function select_simple_products_for_update()
+        function delete_by_sku( $sku )
+*/
+        }
 	function define_table()
 	{
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
@@ -106,6 +181,7 @@ class model_woo extends woo_interface {
 	{
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		$this->endpoint = "products";
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	/*******************************************//**********
 	* Initial population of data.  Probably should only run once
@@ -256,7 +332,7 @@ class model_woo extends woo_interface {
 			where woo.stock_id = q.stock_id";
 		$res = db_query( $sql_update3, "Couldnt update Quantity On Hand in  WOO" );
 	//	$this->tell( WOO_PRODUCT_QOH_UPDATE, __METHOD__ );
-//		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function update_on_sale_data()
 	{
@@ -269,19 +345,22 @@ class model_woo extends woo_interface {
 					tax_status = '" . $this->tax_status . "'";
 		$updateprod_sql .= " where stock_id = '" . $this->stock_id . "'";
 		$res = db_query( $updateprod_sql, "Couldn't update product after export" );
-//		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function update_woo_id()
 	{
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		if( !isset( $this->stock_id ) )
+		{
+			$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "ERROR" );
 			throw new InvalidArgumentException( "stock_id" );
+		}
 		$updateprod_sql = "update " . $this->table_details['tablename'] . " set
 					woo_id = '" . $this->woo_id . "'";		
 		$updateprod_sql .= ", woo_last_update=now()";
 		$updateprod_sql .= " where stock_id = '" . $this->stock_id . "'";
 		$res = db_query( $updateprod_sql, "Couldn't update woo_id after export" );
-//		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function update_woo_last_update()
 	{
@@ -292,7 +371,7 @@ class model_woo extends woo_interface {
 					woo_last_update = '" . $this->woo_last_update . "'";
 		$updateprod_sql .= " where stock_id = '" . $this->stock_id . "'";
 		$res = db_query( $updateprod_sql, "Couldn't update woo_id after export" );
-//		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	/**********************************************//***
 	* If you have to rebuild your woocommerce store you need to resend everything
@@ -310,7 +389,7 @@ class model_woo extends woo_interface {
 			set
 				woo.woo_last_update = '0000-01-01', woo.woo_id = null, woo.woo_category_id = null";
 		$res = db_query( $sql_update, "Couldnt reset Woocommerce data to null" );
-//		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function staledate_specials()
 	{
@@ -325,7 +404,7 @@ class model_woo extends woo_interface {
 			";
 		$res = db_query( $sql_update4a, "Couldnt set sales prices to prices in WOO" );
 		//$this->tell( WOO_PRODUCT_STALEDATE_SPECIALS, __METHOD__ );
-//		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function update_specials()
 	{
@@ -338,7 +417,7 @@ class model_woo extends woo_interface {
 			where woo.stock_id = s.stock_id";
 		$res = db_query( $sql_update4, "Couldnt update Sales and Specials in  WOO" );
 		$this->tell( WOO_PRODUCT_SPECIALS_UPDATE, __METHOD__ );
-//		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function update_tax_data()
 	{
@@ -354,7 +433,7 @@ class model_woo extends woo_interface {
 				woo.tax_class = 'GST'";
 		$res = db_query( $sql_update5, "Couldnt update TAX data in  WOO" );
 		$this->tell( WOO_PRODUCT_TAXDATA_UPDATE, __METHOD__ );
-//		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function update_shipping_dimensions()
 	{
@@ -370,7 +449,7 @@ class model_woo extends woo_interface {
 			where woo.stock_id = s.stock_id";
 		$res = db_query( $sql_update6, "Couldnt update Shipping Dimensional data in  WOO" );
 		$this->tell( WOO_PRODUCT_SHIPDIM_UPDATE, __METHOD__ );
-//		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function update_crosssells()
 	{
@@ -382,7 +461,7 @@ class model_woo extends woo_interface {
 			where woo.stock_id = s.stock_id";
 		$res = db_query( $sql_update7, "Couldnt update upsell and cross sell data in  WOO" );
 		$this->tell( WOO_PRODUCT_CROSSSELL_UPDATE, __METHOD__ );
-//		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function update_category_data()
 	{
@@ -393,7 +472,7 @@ class model_woo extends woo_interface {
 			where woo.category_id = s.category_id";
 		$res = db_query( $sql_update8, "Couldnt update Category data in  WOO" );
 		$this->tell( WOO_PRODUCT_CATEGORY_UPDATE, __METHOD__ );
-//		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function update_category_xref()
 	{
@@ -401,7 +480,7 @@ class model_woo extends woo_interface {
 		$sql3 = "update " . $this->table_details['tablename'] . " woo, " . TB_PREF . "woo_categories_xref xref set woo.woo_category_id = xref.woo_cat where xref.fa_cat = woo.category_id";
 		$res = db_query( $sql3, "Couldnt update categories WOO" );
 		//$this->tell( WOO_PRODUCT_CATEGORY_XREF, __METHOD__ );
-//		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	/*********************************************************************//**
 	 *To show which products did not make it into the end table.
@@ -430,7 +509,7 @@ class model_woo extends woo_interface {
 				from " . TB_PREF . "stock_master sm, " . TB_PREF . "stock_category c
 				where sm.category_id = c.category_id and sm.stock_id not in (select stock_id from " . TB_PREF . "woo)";
 		 global $all_items;
-	//	$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 		return $missing_sql;
 
 	}
@@ -455,7 +534,7 @@ class model_woo extends woo_interface {
 			$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 			return FALSE;
 		}
-	//	$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 
 	}
 	/*****************************************************************//**
@@ -467,7 +546,7 @@ class model_woo extends woo_interface {
 	{
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		$count = $this->count_filtered( "woo_id = ''" );
-	//	$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 		return $count;
 	}
 	/*****************************************************************//**
@@ -479,7 +558,7 @@ class model_woo extends woo_interface {
 	{
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		$this->filter_new_only = TRUE;
-	//	$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 		return $this->simple_product_ids( $max );
 	}
 	/*****************************************************************//**
@@ -491,7 +570,7 @@ class model_woo extends woo_interface {
 	{
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		$this->filter_new_only = FALSE;
-	//	$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 		return $this->simple_product_ids();
 	}
 	/*****************************************************************//**
@@ -509,7 +588,7 @@ class model_woo extends woo_interface {
 		{
 			$resarray[] = $prod_data['stock_id'];
 		}
-	//	$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 		return $resarray;
 	}
 	/****************************************************************//**
@@ -520,8 +599,9 @@ class model_woo extends woo_interface {
 	/*@mysql_res@*/function select_simple_products_for_export()
 	{
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
-	//	$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
-		return $this->select_simple_products();
+		$response = $this->select_simple_products();
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+		return $response;
 	}
 	/****************************************************************//**
 	 * Runs an MySQL query returning the mysql_res of stock_ids

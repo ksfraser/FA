@@ -163,6 +163,10 @@ class woo_interface extends table_interface
 				//used for woo_rest and other interfaces to notify that something happened
 				//e.g. send succeeded or Updated
 	var $failed_tell_code;	//Code to use if the action failed i.e. search returned nothing
+	var $to_match_array;    //!< array of fields to compare against for fuzzy_match
+	var $match_need;	//!< int how many fields needed for fuzzymatch to be a match.
+	var $search_array;	//!< array list of vars (fields) to search
+
 
 	/******************************************************************************************//**
 	 *
@@ -177,6 +181,7 @@ class woo_interface extends table_interface
 		$this->iam = get_class( $this );
 		$this->table_details = array();
 		$this->fields_array = array();
+		$this->search_array = array();
 		$this->client = $client;
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		$this->provides = array();
@@ -199,7 +204,7 @@ class woo_interface extends table_interface
 				$this->company_prefix = "0_";
 			}
 		}
-
+		$this->match_need = 2;
 		$this->define_table();
 		$this->write_properties_array = array();
 		$this->properties_array = array();
@@ -297,10 +302,57 @@ class woo_interface extends table_interface
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 		return TRUE;
 	}
-	function fuzzy_match( $data )
-	{
-		throw new Exception( "Inheriting class must override " . __METHOD__ . "!", KSF_FCN_NOT_OVERRIDDEN );
-	}
+        /************************************************************************************************//**
+        * Match a returned product from WooCommerce to our current one.
+        *
+        *If we find a match, we return the product.  Exits on first match
+        * Will search against an array to_match_array
+        *
+        * @param array array of stdObj holding data from WC
+        * @param int number of matches required for product to match
+        * @param did we find a match
+        ***************************************************************************************************/
+        function fuzzy_match( $data )
+        {
+                $this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
+
+                if( ! is_array( $data ) )
+                        throw new Exception( "fuzzy_match expects a data array.  Not passed in", KSF_INVALID_DATA_TYPE );
+                foreach( $data as $product )
+                {
+                        $match=0;
+                	$this->notify( __METHOD__ . ":" . __LINE__ . " Trying to match against returned object " . print_r( $product, true ), "INFO" );
+                	$this->notify( __METHOD__ . ":" . __LINE__ . " Trying to match with us: " . print_r( $this->data_array, true ), "INFO" );
+                        if( is_array( $this->to_match_array ) )
+                        {
+                                foreach( $this->to_match_array as $find )
+                                {
+                                        if( isset( $this->$find )  AND  ! strcasecmp( $product->$find, $this->$find ) )
+                                        {
+                				$this->notify( __METHOD__ . ":" . __LINE__ . " Matched field " . $find . " with value "  . $this->$find, "WARN" );
+                                                $match++;
+                                        }
+					else
+					{
+                				$this->notify( __METHOD__ . ":" . __LINE__ . " Match on Field :" . $find . ": FAILED: " . $product->$find . "::"  . $this->$find, "WARN" );
+					}
+                                }
+                        }
+                        else
+                        {
+				throw new Exception( "No array to match against", KSF_VAR_NOT_SET );
+                        }
+                        if( $match >= $this->match_need )
+                        {
+                                $this->id = $prod->id;
+                                $this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
+                                return TRUE;
+                        }
+                }
+                $this->notify( __METHOD__ . ":" . __LINE__ . " NO MATCHES FOUND", "WARN" );
+                $this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
+                return FALSE;
+        }
 	/********************************************//***
 	* For when we need to rebuild the WooCommerce store
 	*

@@ -59,94 +59,22 @@ class woo_rest
 		//check to see if record exists
 		try {
 			$exists = false;
-			if( isset( $client->woo_id ) )
+			
+			if( isset( $client->search_array ) AND is_array( $client->search_array ) )
 			{
-				$q = array( 'search' => $client->woo_id );
-				$response = $this->get( $endpoint, $q, $client );
-				//Does name and description match?
-				$this->notify( __METHOD__ . ":" . __LINE__ . " Calling FuzzyMatch ", "WARN" );
-				if( $client->fuzzy_match( $response ) )
-					$exists++;
+				foreach( $client->search_array as $search_field )
+				{
+					if( isset( $client->$search_field ) AND strlen( $client->$search_field ) > 1 )
+					{
+						$this->notify( __METHOD__ . ":" . __LINE__ . " Searching for match on " . $client->$search_field, "WARN" );
+						$q = array( 'search' => $client->$search_field );
+						$response = $this->get( $endpoint, $q, $client );
+						//Does name and description match?
+						if( $client->fuzzy_match( $response ) )
+							$exists++;
+					}
+				}
 			}
-		}
-		catch (Exception $e)
-		{
-			if( $e->getCode() !== KSF_INVALID_DATA_TYPE )
-			{
-				if( $e->getCode() == KSF_VALUE_NOT_SET )
-					var_dump( $response );
-				throw $e;
-			}
-		}
-		try {
-			if( isset( $client->id ) )
-			{
-				$q = array( 'search' => $client->id );
-				$response = $this->get( $endpoint, $q, $client );
-				//Does name and description match?
-				$this->notify( __METHOD__ . ":" . __LINE__ . " Calling FuzzyMatch ", "WARN" );
-				if( $client->fuzzy_match( $response ) )
-					$exists++;
-			}
-		}
-		catch (Exception $e)
-		{
-			if( $e->getCode() !== KSF_INVALID_DATA_TYPE )
-			{
-				if( $e->getCode() == KSF_VALUE_NOT_SET )
-					var_dump( $response );
-				throw $e;
-			}
-		}
-		try {
-			if( isset( $client->name ) )
-			{
-				$q = array( 'search' => $client->name );
-				$response = $this->get( $endpoint, $q, $client );
-				//Match price, etc else new
-				$this->notify( __METHOD__ . ":" . __LINE__ . " Calling FuzzyMatch ", "WARN" );
-				if( $client->fuzzy_match( $response ) )
-					$exists++;
-			}
-		}
-		catch (Exception $e)
-		{
-			if( $e->getCode() !== KSF_INVALID_DATA_TYPE )
-			{
-				if( $e->getCode() == KSF_VALUE_NOT_SET )
-					var_dump( $response );
-				throw $e;
-			}
-		}
-		try {
-			if( isset( $client->description ) )
-			{
-				$q = array( 'search' => $client->description );
-				$response = $this->get( $endpoint, $q, $client );
-				$this->notify( __METHOD__ . ":" . __LINE__ . " Calling FuzzyMatch ", "WARN" );
-				if( $client->fuzzy_match( $response ) )
-					$exists++;
-			}
-		}
-		catch (Exception $e)
-		{
-			if( $e->getCode() !== KSF_INVALID_DATA_TYPE )
-			{
-				if( $e->getCode() == KSF_VALUE_NOT_SET )
-					var_dump( $response );
-				throw $e;
-			}
-		}
-		try {
-			if( isset( $client->slug ) )
-			{
-				$q = array( 'search' => $client->slug );
-				$response = $this->get( $endpoint, $q, $client );
-				$this->notify( __METHOD__ . ":" . __LINE__ . " Calling FuzzyMatch ", "WARN" );
-				if( $client->fuzzy_match( $response ) )
-					$exists++;
-			}
-			//Determine if exists.
 		}
 		catch (Exception $e)
 		{
@@ -223,6 +151,7 @@ class woo_rest
 			$response = $this->wc->get( $endpoint, $data );
 		} catch( Exception $e )
 		{
+			$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $e->getCode() . ":" . $e->getMessage(), "ERROR" );
 			throw $e;
 		}
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
@@ -239,6 +168,7 @@ class woo_rest
 			$response = $this->wc->get( $endpoint . "/" . $this->client->id, $data );
 		} catch( Exception $e )
 		{
+			$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $e->getCode() . ":" . $e->getMessage(), "ERROR" );
 			throw $e;
 		}
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
@@ -253,6 +183,7 @@ class woo_rest
 			$response = $this->wc->delete( $endpoint, $data );
 		} catch( Exception $e )
 		{
+			$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $e->getCode() . ":" . $e->getMessage(), "ERROR" );
 			throw $e;
 		}
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );

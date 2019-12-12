@@ -5,6 +5,14 @@
  * build_write_properties_array appropriately
  * */
 
+/*******************************************************************************************
+* TODO
+*
+*	Refactor the woo=pz_model_woo code to use just the pz
+*	Maybe move the build/reset pz_model_woo into a function
+*
+********************************************************************************************/
+
 /*******************************************************************************************//**
  * This module is for handling frontaccounting to WooCommerce products.
  *
@@ -93,7 +101,8 @@ class woo_product extends woo_interface {
 	var $get_product_by_sku_count; //every time we go in there we can get 10 items back from woo_commerce.  Can use to change which page...
 
 	var $force_update; //!< grabbing from client (i.e. EXPORT_WOO)
-	var $send_images;
+	var $b_send_images;	//!< bool whether we should send images.  Func of name too
+	var $pz_model_woo;	//!< place to store model_woo object
 
 	/***************************************************************************************//**
 	 *
@@ -115,48 +124,17 @@ class woo_product extends woo_interface {
 			if( isset( $client->force_update ) )
 				$this->force_update = $client->force_update;
 			if( isset( $client->send_images ) )
-				$this->send_images = $client->send_images;
+				$this->b_send_images = $client->send_images;
 			else
-				$this->send_images = FALSE;	//testing is failing but that could be a local machine problem
+				$this->b_send_images = FALSE;	//testing is failing but that could be a local machine problem
+		$this->to_match_array = array( "slug", "sku", "description", "short_description" );
+		$this->search_array = array( "woo_id", "name", "slug", "sku", "description", "short_description" );
 		return;
 	}
 	//function notify (inherited from woo_interface)
 	function reset_endpoint()	//Required by _interface
 	{
 		$this->endpoint = "products";
-	}
-	function fuzzy_match( $data )
-	{
-   		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
-
-                if( !isset( $data[0] ) )
-                        throw new Exception( "fuzzy_match expects a data array.  Not passed in", KSF_INVALID_DATA_TYPE );
-                $match=0;
-                if( isset( $this->slug ) AND  ! strcasecmp( $data[0]->slug, $this->slug ) )
-                {
-                        $match++;
-                }
-                if( isset( $this->sku ) AND  ! strcasecmp( $data[0]->sku, $this->sku ) )
-                {
-                        $match++;
-                }
-                if(  isset( $this->description ) AND ! strcasecmp( $data[0]->description, $this->description ) )
-                {
-                        $match++;
-                }
-                if( isset( $this->short_description ) AND ! strcasecmp( $data[0]->short_description, $this->short_description ) )
-                {
-                        $match++;
-                }
-                if( $match > 2 )
-                {
-                        $this->id = $data[0]->id;
-                        $this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
-                        return TRUE;
-                }
-                $this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
-                return FALSE;
-
 	}
 	/*********************************************************************************************//**
 	 * Woo_Interface now builds the properties_array and write_properties_array from the defined table!
@@ -315,27 +293,35 @@ class woo_product extends woo_interface {
 	{
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entered " . __METHOD__, "WARN" );
 		echo __METHOD__ . ":" . __LINE__ . " Entered " . __METHOD__;
-		if( ! isset( $this->updated_at ) )
-		{
-			$this->updated_at = date("Y-m-d");
-		}
 		if( ! isset( $this->id ) )
 		{
 			throw new InvalidArgumentException( __METHOD__ . ":" . __LINE__ . "ID from woo not set" );
 			$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
 			echo __METHOD__ . ":" . __LINE__ . " Bad Arg Leaving " . __METHOD__;
-			return;
+			return FALSE;
 		}
 		if( ! isset( $this->sku ) )
 		{
 			throw new InvalidArgumentException( __METHOD__ . ":" . __LINE__ . " SKU from woo not set" );
 			$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
 			echo __METHOD__ . ":" . __LINE__ . " Bad Arg Leaving " . __METHOD__;
-			return;
+			return FALSE;
 		}
-		require_once( 'class.model_woo.php' );
-		//standard constructor args...	$this->serverURL, $this->key, $this->secret, $this->options, $this
-		$woo = new model_woo( $this->serverURL, $this->key, $this->secret, $this->options, $this );
+		if( ! isset( $this->updated_at ) )
+		{
+			$this->updated_at = date("Y-m-d");
+		}
+		if( ! isset( $this->pz_model_woo ) OR ( null == $tihs->pz_model_woo ) )
+		{
+			require_once( 'class.model_woo.php' );
+			//standard constructor args...	$this->serverURL, $this->key, $this->secret, $this->options, $this
+			$this->pz_model_woo = $woo = new model_woo( $this->serverURL, $this->key, $this->secret, $this->options, $this );
+		}
+		else
+		{
+			$woo = $this->pz_model_woo;
+			$woo->reset_values();
+		}
 		$woo->woo_last_update = $this->updated_at;
 		$woo->updated_ts = $this->updated_at;
 		$woo->woo_id = $this->id;
@@ -372,7 +358,7 @@ class woo_product extends woo_interface {
 	 * This function should send a new product to WooCommerce, "creating" it.
 	 *
 	 * Assumption is that this object has all of the data set appropriately
-	 * for us to conver the variables into an array, and pass it along.
+	 * for us to convert the variables into an array, and pass it along.
 	 *
 	 * ******************************************************************************/
 	/*@bool@*/function create_product_wc()
@@ -382,12 +368,25 @@ class woo_product extends woo_interface {
 		set_time_limit( 60 );
 	
 		try {
-			$response = $this->send2woo( "new" );
+			if( ! isset( $this->id ) )
+				$response = $this->send2woo( "new" );
+			else
+				$response = $this->send2woo( "update" );
 			if( $response )
 			{
 				$this->products_sent++;
 				//Need to update the woo_id in _woo
-				$woo = new model_woo( $this->serverURL, $this->key, $this->secret, $this->options, $this );
+				if( ! isset( $this->pz_model_woo ) OR ( null == $tihs->pz_model_woo ) )
+				{
+					require_once( 'class.model_woo.php' );
+					//standard constructor args...	$this->serverURL, $this->key, $this->secret, $this->options, $this
+					$this->pz_model_woo = $woo = new model_woo( $this->serverURL, $this->key, $this->secret, $this->options, $this );
+				}
+				else
+				{
+					$woo = $this->pz_model_woo;
+					$woo->reset_values();
+				}
                 		$woo->stock_id = $this->stock_id;
                 		$woo->woo_id = $this->id;
                 		$woo->update_woo_id();
@@ -435,6 +434,14 @@ class woo_product extends woo_interface {
 		}
 		catch( Exception $e )
 		{
+			$msg =  $e->getMessage();
+			$this->notify( __METHOD__ . ":" . __LINE__ . " Error " . $e->getCode() . "::" . $msg, "ERROR" );
+			if( strpos( $msg, "product_invalid_sku" ) !== FALSE )
+			{
+				//Invalid or Duplicate SKU
+				$this->notify( __METHOD__ . ":" . __LINE__ . " stock_id/SKU/Woo ID :: " . $this->stock_id . "::" . $this->sku . "::" . $this->woo_id, "ERROR" );
+			{
+					
 		}
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 		return FALSE;
@@ -449,13 +456,15 @@ class woo_product extends woo_interface {
 		$this->notify( __METHOD__  . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN");
 		return;
 	}
-	function seek( $search_query = "", $callback = null )
+	function seek( $search_array = "", $callback = null )
 	{
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
-		if( strlen( $search_query ) < 5 )
-			throw new Exception( "Search Query is too short", KSF_VALUE_NOT_SET );
+		//if( strlen( $search_query ) < 5 )
+		//	throw new Exception( "Search Query is too short", KSF_VALUE_NOT_SET );
+		if( ! is_array( $search_array ) )
+			throw new Exception( "Search Param is invalid", KSF_VALUE_NOT_SET );
 		$endpoint = "products";
-		$response = $this->woo_rest->get( $endpoint, $search_query, $this );
+		$response = $this->woo_rest->get( $endpoint, $search_array, $this );
 		if( isset( $callback ) )
 			$callback( $response );
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
@@ -482,8 +491,17 @@ class woo_product extends woo_interface {
 		$remove_desc_array = array(  "**Use Custom Form**,", "**Use Custom Order Form**,", );
 		$removed_desc_array = array( "",                     "",                           );
 		
-		require_once( 'class.model_woo.php' );
-		$woo = new model_woo( $this->serverURL, $this->key, $this->secret, $this->options, $this );
+		if( ! isset( $this->pz_model_woo ) OR ( null == $tihs->pz_model_woo ) )
+		{
+			require_once( 'class.model_woo.php' );
+			//standard constructor args...	$this->serverURL, $this->key, $this->secret, $this->options, $this
+			$this->pz_model_woo = $woo = new model_woo( $this->serverURL, $this->key, $this->secret, $this->options, $this );
+		}
+		else
+		{
+			$woo = $this->pz_model_woo;
+			$woo->reset_values();
+		}
 		$woo->stock_id = $this->stock_id;
 		$woo->select_product();
 		//Need to reset values between each product.
@@ -613,8 +631,17 @@ class woo_product extends woo_interface {
 	{		
 		$this->notify( __METHOD__  . ":" . __LINE__ . " Entering " . __METHOD__, "WARN");
 		//Check for how many we are expecting to send...
-		require_once( 'class.model_woo.php' );
-		$woo = new model_woo( $this->serverURL, $this->key, $this->secret, $this->options, $this);
+		if( ! isset( $this->pz_model_woo ) OR ( null == $tihs->pz_model_woo ) )
+		{
+			require_once( 'class.model_woo.php' );
+			//standard constructor args...	$this->serverURL, $this->key, $this->secret, $this->options, $this
+			$this->pz_model_woo = $woo = new model_woo( $this->serverURL, $this->key, $this->secret, $this->options, $this );
+		}
+		else
+		{
+			$woo = $this->pz_model_woo;
+			$woo->reset_values();
+		}
 		$woo->debug = $this->debug;
 		$woo->filter_new_only = TRUE;
 		$tosend = $woo->count_new_products();
@@ -638,7 +665,8 @@ class woo_product extends woo_interface {
 				if( $this->create_product_wc() )
 				{
 					$sendcount++;
-					$this->send_images( null, $this );
+					//create_product_wc already calls send_images (as does update...)
+					//$this->send_images( null, $this );
 				}
 			}
 			catch( Exception $e )
@@ -658,20 +686,29 @@ class woo_product extends woo_interface {
 	 * ******************************************************************************/
 	function update_simple_products()
 	{			
-		$this->notify(  __METHOD__  . ":" . __LINE__ . " Entering update_simple_products", "WARN");
+		$this->notify(  __METHOD__  . ":" . __LINE__ . " Entering " . __METHOD__, "WARN");
 
-		require_once( 'class.model_woo.php' );
-		$woo = new model_woo( $this->serverURL, $this->key, $this->secret, $this->options, $this);
+		if( ! isset( $this->pz_model_woo ) OR ( null == $tihs->pz_model_woo ) )
+		{
+			require_once( 'class.model_woo.php' );
+			//standard constructor args...	$this->serverURL, $this->key, $this->secret, $this->options, $this
+			$this->pz_model_woo = $woo = new model_woo( $this->serverURL, $this->key, $this->secret, $this->options, $this );
+		}
+		else
+		{
+			$woo = $this->pz_model_woo;
+			$woo->reset_values();
+		}
 		$woo->debug = $this->debug;
 		$updatecount = 0;
 		$res = $woo->select_simple_products_for_update();
 
 		while( $prod_data = db_fetch_assoc( $res ) )
 		{
-			$this->notify(  __METHOD__  . ":" . __LINE__ . " WHILE LOOP update_simple_products", "WARN");
+			$this->notify(  __METHOD__  . ":" . __LINE__ . " WHILE LOOP " . __FUNCTION__, "WARN");
 			if( $this->debug > 1 AND $updatecount > 0 )
 			{
-				$this->notify(  __METHOD__  . ":" . __LINE__ . " Leaving update_simple_products", "WARN");
+				$this->notify(  __METHOD__  . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN");
 				return $updatecount;	//Only action 1 item
 			}
 			$this->notify(  __METHOD__  . ":" . __LINE__ . " Calling woo2wooproduct", "WARN");
@@ -679,9 +716,7 @@ class woo_product extends woo_interface {
 			$this->type = "simple";
 			if( isset( $this->id ) AND $this->id > 0 )
 			{
-				$this->notify(  __METHOD__  . ":" . __LINE__ . " Calling update PRODUCT", "WARN");
-			//try
-			//{
+				$this->notify(  __METHOD__  . ":" . __LINE__ . " Calling update PRODUCT for " . $this->stock_id, "WARN");
 				if( $this->update_product() )
 					$updatecount++;
 				else
@@ -689,6 +724,7 @@ class woo_product extends woo_interface {
 			}
 			else
 			{
+				$this->notify(  __METHOD__  . ":" . __LINE__ . " ID set but reading less than 1: " . $this->id, "WARN");
 				unset( $this->id );
 				$this->notify(  __METHOD__  . ":" . __LINE__ . " Calling create PRODUCT", "WARN");
 				try
@@ -705,6 +741,8 @@ class woo_product extends woo_interface {
 						//no wc_client
 						throw $e;
 					}
+					$this->notify(  __METHOD__  . ":" . __LINE__ . " " .  $e->getMessage(), "WARN" );
+					
 				}
 			}
 			//}
@@ -804,6 +842,11 @@ class woo_product extends woo_interface {
 		return $w_imgs->run();
 		*/
 	}
+	/*******************************************************************************//**
+	* Called by send_images to build the image array
+	* @param none but uses internal vars
+	* @return none but sets internal vars
+	**********************************************************************************/
 	function product_images()
 	{
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
@@ -828,6 +871,11 @@ class woo_product extends woo_interface {
 	/*@bool@*/function send_images( $stock_id = null, $caller )
 	{
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
+		if( ! $this->b_send_images )
+		{
+			$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+			return FALSE;
+		}
 		if( isset( $stock_id )  )
 			$this->stock_id = $stock_id;
 		if( !isset( $this->stock_id ) )
@@ -854,6 +902,12 @@ class woo_product extends woo_interface {
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 		return $response;
 	}
+	/**********************************************************************//**
+	* Send product details to WooCommerce.  Insert or Update as appropriate
+	*
+	* @param string is this a new product AFAIK or an update
+	* @return bool did we send?  
+	**************************************************************************/
 	/*@bool@*/function send2woo( /*@string@*/$new_or_update = "new" )
 	{
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
@@ -875,11 +929,27 @@ class woo_product extends woo_interface {
 		}
 		catch( Exception $e )
 		{
-			$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $e->getCode() . ":" . $e->getMessage(), "ERROR" );
+			$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $e->getCode() . ":" . $e->getMessage(), "WARN" );
+			$msg = $e->getMessage();
 			switch( $e->getCode() )
 			{
 				case 400:
-					$this->notify( __METHOD__ . ":" . __LINE__ . " Data sent: " . print_r( $this->data_array, true), "ERROR" );
+					$this->notify( __METHOD__ . ":" . __LINE__ . " Data sent: " . print_r( $this->data_array, true), "WARN" );
+					if( strpos( $msg, "product_invalid_sku" ) !== FALSE )
+					{
+						//we need to Update our woo table as well as then resend an update to WC
+						$response = $this->seek( array( 'search' => $this->sku ) );
+						if( $this->fuzzy_match( $response ) )
+						{
+							if( $this->update_wootable_woodata() )
+								$this->send2woo( "update" );
+							else
+								$this->notify( __METHOD__ . ":" . __LINE__ . " Recovery Attempt failed ", "ERROR" );
+						}
+						else
+						{
+						}
+					}
 				break;
 			}
 		}
@@ -928,10 +998,31 @@ class woo_product extends woo_interface {
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 		return $response;
 	}
+	/*******************************************************************//**
+	* Select a row matching the set stock_id
+	*
+	*	Called by send_prices
+	*	Called by send_sku
+	*	Called by send_images
+	*
+	* @param none but uses stock_id
+	* @return object model_woo
+	***********************************************************************/
 	function woo_select_product()
 	{
-		require_once( 'class.model_woo.php' );
-		$woo = new model_woo( null, null, null, null, $this );
+		if( !isset( $this->stock_id ) )
+			throw new Exception( "Stock_id not set.  Needed!", KSF_VALUE_NOT_SET );
+		if( ! isset( $this->pz_model_woo ) OR ( null == $tihs->pz_model_woo ) )
+		{
+			require_once( 'class.model_woo.php' );
+			//standard constructor args...	$this->serverURL, $this->key, $this->secret, $this->options, $this
+			$this->pz_model_woo = $woo = new model_woo( $this->serverURL, $this->key, $this->secret, $this->options, $this );
+		}
+		else
+		{
+			$woo = $this->pz_model_woo;
+			$woo->reset_values();
+		}
 		$woo->stock_id = $this->stock_id;
 		$woo->select_product();
 		return $woo;
