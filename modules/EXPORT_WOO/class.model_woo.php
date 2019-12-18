@@ -359,7 +359,9 @@ class model_woo extends woo_interface {
 					woo_id = '" . $this->woo_id . "'";		
 		$updateprod_sql .= ", woo_last_update=now()";
 		$updateprod_sql .= " where stock_id = '" . $this->stock_id . "'";
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Updating stock_id:  " . $this->stock_id  . " with " . $this->woo_id, "WARN" );
 		$res = db_query( $updateprod_sql, "Couldn't update woo_id after export" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Query: " . $updateprod_sql, "DEBUG" );
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function update_woo_last_update()

@@ -1,0 +1,46 @@
+Exporting data to WooCommerce:
+
+1st time ever
+	*Send Simple Products to WooCommerce
+		*Product Created on WooCommerce
+		*Woo ID updated into FA table
+		*SKU sent/set in WC
+		*Image sent/set in WC
+			*Add-on handling multiple Images
+	*Send Variable Products to WooCommerce
+		*BASE Product Created on WooCommerce
+		*Woo ID updated into FA table
+		*Variation Attributes Sent to WC
+			*IDs set in FA tables
+		*Variation sent to WC
+			*SKU sent/set in WC
+			*Image sent/set in WC
+				*Add-on handling multiple Images
+
+Updates
+	*Send Simple Products to WooCommerce
+		*Update Description
+		*Update Price
+		*Update Image
+	*Send Variable Products to WooCommerce
+		*Add Attributes
+			*Add variations
+		*Update Variations
+			*Update Description
+			*Update Price
+			*Update Image
+
+Rebuild
+	*Send Simple Products to WooCommerce
+		*Match existing WC item to our item
+			*Match SKU
+			*Update FA Woo table
+			*Send updates (updates tests)
+	*Send Variable Products to WooCommerce
+		*Match existing WC item to our item
+			*Match SKU
+			*Update FA Woo table
+			*Send updates (updates tests)
+	**What happens if product is in wrong type (simple/variable)
+	**Can we download the master list from WC and then match
+		*what if wc has items we don't?  create/stage/warn?

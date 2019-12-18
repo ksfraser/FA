@@ -58,8 +58,11 @@ class woo_rest
 			$this->client = $client;
 		//check to see if record exists
 		try {
-			$exists = false;
-			
+			if( isset( $client->id ) )
+			{
+				//try and match the client against the record in WC
+				//No need to search if we have the ID
+			}
 			if( isset( $client->search_array ) AND is_array( $client->search_array ) )
 			{
 				foreach( $client->search_array as $search_field )
@@ -71,7 +74,10 @@ class woo_rest
 						$response = $this->get( $endpoint, $q, $client );
 						//Does name and description match?
 						if( $client->fuzzy_match( $response ) )
+						{
 							$exists++;
+							break; //Don't need to keep searching.  fuzzy sets the ID so put should work
+						}
 					}
 				}
 			}

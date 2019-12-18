@@ -152,6 +152,7 @@ class woo_interface extends table_interface
 	var $to_match_array;    //!< array of fields to compare against for fuzzy_match
 	var $match_need;	//!< int how many fields needed for fuzzymatch to be a match.
 	var $search_array;	//!< array list of vars (fields) to search
+	var $match_worth;	//!< array value of match (against need) for a field
 
 
 	/******************************************************************************************//**
@@ -191,6 +192,7 @@ class woo_interface extends table_interface
 			}
 		}
 		$this->match_need = 2;
+		$this->match_worth = array();
 		$this->define_table();
 		$this->write_properties_array = array();
 		$this->properties_array = array();
@@ -304,11 +306,14 @@ class woo_interface extends table_interface
 
                 if( ! is_array( $data ) )
                         throw new Exception( "fuzzy_match expects a data array.  Not passed in", KSF_INVALID_DATA_TYPE );
+		$f1 = $this->to_match_array[0];
+		if( isset( $this->$f1 ) )
+                	$this->notify( __METHOD__ . ":" . __LINE__ . " Fuzzy Match on " . $this->$f1, true , "NOTIFY" );
                 foreach( $data as $product )
                 {
                         $match=0;
-                	$this->notify( __METHOD__ . ":" . __LINE__ . " Trying to match against returned object " . print_r( $product, true ), "INFO" );
-                	$this->notify( __METHOD__ . ":" . __LINE__ . " Trying to match with us: " . print_r( $this->data_array, true ), "INFO" );
+                	$this->notify( __METHOD__ . ":" . __LINE__ . " Trying to match against returned object " . print_r( $product, true ), "DEBUG" );
+                	$this->notify( __METHOD__ . ":" . __LINE__ . " Trying to match with us: " . print_r( $this->data_array, true ), "DEBUG" );
                         if( is_array( $this->to_match_array ) )
                         {
                                 foreach( $this->to_match_array as $find )
@@ -324,7 +329,12 @@ class woo_interface extends table_interface
                                         else if(  strcasecmp( $product->$find, $this->$find ) == 0 ) 
                                         {
                 				$this->notify( __METHOD__ . ":" . __LINE__ . " SUCCESS Matched field " . $find . " with value "  . $this->$find, "WARN" );
-                                                $match++;
+						if( isset( $this->match_worth[$find] ) )
+						{
+							$match .= $this->match_worth[$find];
+						}
+                                                else 
+							$match++;
                                         }
 					else
 					{
@@ -338,7 +348,7 @@ class woo_interface extends table_interface
                         }
                         if( $match >= $this->match_need )
                         {
-                                $this->id = $prod->id;
+                                $this->id = $product->id;
                                 $this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
                                 return TRUE;
                         }
