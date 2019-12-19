@@ -485,7 +485,7 @@ class woo_product extends woo_interface {
 		if( isset( $woo->woo_id ) AND $woo->woo_id > 0 )
 		{
 			$this->notify( __METHOD__ . ":" . __LINE__ . " Setting ID=woo_id::" . $woo->woo_id , "WARN" );
-			$this->id = $this->woo_id;
+			$this->id = $woo>woo_id;
 		}
 		else
 		{
@@ -501,7 +501,6 @@ class woo_product extends woo_interface {
 				$this->$fieldrow['name'] = utf8_encode( $woo->$fieldrow['name'] );
 			}
 		}
-		$this->notify( __METHOD__ . ":" . __LINE__ . " TRACE ***ID=woo_id::" . $this->id . ":" . $woo->woo_id , "WARN" );
 		$this->name = $this->short_description = utf8_encode( str_replace( $remove_desc_array, $removed_desc_array, $this->description ) );
 
 		$this->featured = false;
@@ -520,7 +519,6 @@ class woo_product extends woo_interface {
 		$this->sale_price = null;
 		$this->date_on_sale_from = null;
 		$this->date_on_sale_to = null;
-		$this->notify( __METHOD__ . ":" . __LINE__ . " TRACE ***ID=woo_id::" . $this->id . ":" . $woo->woo_id , "WARN" );
 		if( $this->is_inactive() )
 		{
 			$this->status = "private";
@@ -530,16 +528,13 @@ class woo_product extends woo_interface {
 			$this->status = "publish";
 			$this->catalog_visibility = "visible";
 		}
-		$this->notify( __METHOD__ . ":" . __LINE__ . " TRACE ***ID=woo_id::" . $this->id . ":" . $woo->woo_id , "WARN" );
 		if( $this->tax_class == "GST" )
 			$this->tax_class = "Standard";	//Woo provides Standard, Reduced Rate, Zero
 		else
 			$this->tax_class = "Reduced Rate";	//Woo provides Standard, Reduced Rate, Zero
 		$this->price_html = null;
 		$this->virtual = false;
-		$this->notify( __METHOD__ . ":" . __LINE__ . " TRACE ***ID=woo_id::" . $this->id . ":" . $woo->woo_id , "WARN" );
 		$this->set_download_info();
-		$this->notify( __METHOD__ . ":" . __LINE__ . " TRACE ***ID=woo_id::" . $this->id . ":" . $woo->woo_id , "WARN" );
 
 		$this->manage_stock = true;
 		//$this->managing_stock = true;
@@ -550,11 +545,8 @@ class woo_product extends woo_interface {
 			$this->stock_quantity = $this->instock;
 		else
 			$this->stock_quantity = 0;
-		$this->notify( __METHOD__ . ":" . __LINE__ . " TRACE ***ID=woo_id::" . $this->id . ":" . $woo->woo_id , "WARN" );
 		$this->set_stock_status();
-		$this->notify( __METHOD__ . ":" . __LINE__ . " TRACE ***ID=woo_id::" . $this->id . ":" . $woo->woo_id , "WARN" );
 		$this->set_shipping_info();
-		$this->notify( __METHOD__ . ":" . __LINE__ . " TRACE ***ID=woo_id::" . $this->id . ":" . $woo->woo_id , "WARN" );
 		/*************************
 		* !variation
 		*************************/
@@ -572,18 +564,17 @@ class woo_product extends woo_interface {
 			
 
 		//$this->tags = array( "id" => XXX, "name" => YYY, "slug" => ZZZ );
-		$this->notify( __METHOD__ . ":" . __LINE__ . " TRACE ***ID=woo_id::" . $this->id . ":" . $woo->woo_id , "WARN" );
 		$this->tags = $this->product_tags( $stock_id );
-		$this->notify( __METHOD__ . ":" . __LINE__ . " TRACE ***ID=woo_id::" . $this->id . ":" . $woo->woo_id , "WARN" );
 //->send_images( $stock_id, $this );
-		$this->notify( __METHOD__ . ":" . __LINE__ . " TRACE ***ID=woo_id::" . $this->id . ":" . $woo->woo_id , "WARN" );
 		$this->attributes = $this->product_attributes( $stock_id );
-		$this->notify( __METHOD__ . ":" . __LINE__ . " TRACE ***ID=woo_id::" . $this->id . ":" . $woo->woo_id , "WARN" );
 		$this->default_attributes = $this->product_default_attributes( $stock_id );
 		$this->notify( __METHOD__ . ":" . __LINE__ . " TRACE ***ID=woo_id::" . $this->id . ":" . $woo->woo_id , "WARN" );
+//product_variations is reseting ID
 		$this->variations = $this->product_variations( $stock_id );
-		$this->notify( __METHOD__ . ":" . __LINE__ . " TRACE ***ID=woo_id::" . $this->id . ":" . $woo->woo_id , "WARN" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " TRACE ***ID=MODEL_woo_id::" . $this->id . ":" . $this->model_woo->woo_id , "WARN" );
 		$this->menu_order = "1";
+//id is being reste to null on exit.  Local variable?
+//->model_woo should have the id set
 
 		$this->notify( __METHOD__  . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN");
 		return TRUE;
@@ -696,8 +687,10 @@ class woo_product extends woo_interface {
 			}
 			$this->notify(  __METHOD__  . ":" . __LINE__ . " Calling woo2wooproduct", "WARN");
 			$this->woo2wooproduct( $prod_data['stock_id'], __FUNCTION__);
+			$this->notify( __METHOD__ . ":" . __LINE__ . " TRACE ***ID=woo_id::" . $this->id, "WARN" );
+			$this->notify( __METHOD__ . ":" . __LINE__ . " TRACE ***ID=MODEL_woo_id::" . $this->model_woo->woo_id, "WARN" );
 			$this->type = "simple";
-			if( isset( $this->id ) AND $this->id > 0 )
+			if( isset( $this->id ) AND ( $this->id > 0 ) )
 			{
 				$this->notify(  __METHOD__  . ":" . __LINE__ . " Calling update PRODUCT for " . $this->stock_id, "WARN");
 				if( $this->update_product() )
@@ -836,6 +829,8 @@ class woo_product extends woo_interface {
 	}
 	function product_variations( $stock_id )
 	{
+		$this->notify( __METHOD__  . ":" . __LINE__ . " Entering " . __METHOD__, "WARN");
+		$this->notify( __METHOD__  . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN");
 		return null;
 		/*
 		require_once( 'class.woo_variations.php' );
