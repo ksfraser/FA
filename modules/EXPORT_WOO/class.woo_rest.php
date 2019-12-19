@@ -63,6 +63,7 @@ class woo_rest
 				//try and match the client against the record in WC
 				//No need to search if we have the ID
 				$response = $this->get( $endpoint . "/" . $client->id, null , $client );
+				//$response = $this->get( $endpoint, null , $client );
 				$this->notify( __METHOD__ . ":" . __LINE__ . " Now we need to match the returned item on the CLIENT:" . print_r( $response, true ), "WARN" );
 				if( $client->fuzzy_match( $response ) )
 				{
@@ -143,12 +144,15 @@ class woo_rest
 	function get( $endpoint, $data = [], $client = null )
 	{
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
+		if( null === $data )
+			$data = array();
 		if( !isset( $this->client ) AND ( ! is_null( $client ) ) )
 		{
 			$this->client = $client;
 			$this->notify( __METHOD__ . ":" . __LINE__ . " ->client wasn't set. (Used for ->notify)", "ERROR" );
 		}
 		try {
+			$this->notify( __METHOD__ . ":" . __LINE__ . " USING endpoint: " . $endpoint, "ERROR" );
 			$response = $this->wc->get( $endpoint, $data );
 		} catch( Exception $e )
 		{

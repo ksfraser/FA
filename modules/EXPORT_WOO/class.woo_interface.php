@@ -153,6 +153,7 @@ class woo_interface extends table_interface
 	var $match_need;	//!< int how many fields needed for fuzzymatch to be a match.
 	var $search_array;	//!< array list of vars (fields) to search
 	var $match_worth;	//!< array value of match (against need) for a field
+	var $need_rest_interface;	//!< do we need to setup the Rest interface.  Most inheriting classes don't
 
 
 	/******************************************************************************************//**
@@ -176,7 +177,8 @@ class woo_interface extends table_interface
 			$this->debug = $this->client->debug;
 		else
 			$this->debug = 0;
-		$this->build_rest_interface($serverURL, $key, $secret, $options, $client);
+		if( $this->need_rest_interface === true )
+			$this->build_rest_interface($serverURL, $key, $secret, $options, $client);
 
 		global $db_connections;
 		$this->company_prefix = $db_connections[$_SESSION["wa_current_user"]->cur_con]['tbpref'];
@@ -312,23 +314,23 @@ class woo_interface extends table_interface
                 foreach( $data as $product )
                 {
                         $match=0;
-                	$this->notify( __METHOD__ . ":" . __LINE__ . " Trying to match against returned object " . print_r( $product, true ), "DEBUG" );
-                	$this->notify( __METHOD__ . ":" . __LINE__ . " Trying to match with us: " . print_r( $this->data_array, true ), "DEBUG" );
+                	//$this->notify( __METHOD__ . ":" . __LINE__ . " Trying to match against returned object " . print_r( $product, true ), "DEBUG" );
+                	//$this->notify( __METHOD__ . ":" . __LINE__ . " Trying to match with us: " . print_r( $this->data_array, true ), "DEBUG" );
                         if( is_array( $this->to_match_array ) )
                         {
                                 foreach( $this->to_match_array as $find )
                                 {
                                         if( ! isset( $this->$find ) )
 					{
-                				$this->notify( __METHOD__ . ":" . __LINE__ . " Match on Field :" . $find . ": IMPOSSIBLE.  Not Set", "WARN" );
+                				$this->notify( __METHOD__ . ":" . __LINE__ . " Match on Field :" . $find . ": IMPOSSIBLE.  Not Set", "DEBUG" );
 					}
                                         else if( ! isset( $product->$find ) )
 					{
-                				$this->notify( __METHOD__ . ":" . __LINE__ . " Match on Field :" . $find . ": IMPOSSIBLE.  Not Returned", "WARN" );
+                				$this->notify( __METHOD__ . ":" . __LINE__ . " Match on Field :" . $find . ": IMPOSSIBLE.  Not Returned", "DEBUG" );
 					}
                                         else if(  strcasecmp( $product->$find, $this->$find ) == 0 ) 
                                         {
-                				$this->notify( __METHOD__ . ":" . __LINE__ . " SUCCESS Matched field " . $find . " with value "  . $this->$find, "WARN" );
+                				$this->notify( __METHOD__ . ":" . __LINE__ . " SUCCESS Matched field " . $find . " with value "  . $this->$find, "DEBUG" );
 						if( isset( $this->match_worth[$find] ) )
 						{
 							$match .= $this->match_worth[$find];

@@ -115,6 +115,7 @@ class woo_product extends woo_interface {
 		$this->caller = $client;
 		$options = array();
 		set_time_limit( 30 );
+		$this->need_rest_interface = TRUE;
 		parent::__construct($serverURL, $key, $secret, $options, $client);
 
 	//	$this->provides[] = array( 'title' => 'Configuration', 'action' => 'config', 'form' => 'action_show_form', 'hidden' => FALSE );
@@ -640,7 +641,6 @@ class woo_product extends woo_interface {
 				$this->notify(  __METHOD__  . ":" . __LINE__ . " " .  $e->getMessage(), "WARN" );
 			}
 		}
-		$this->notify( __METHOD__  . ":" . __LINE__ . " Leaving send_simple_products", "WARN" );
 		$this->products_sent += $sendcount;
 		$this->notify( __METHOD__  . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN");
 		return $sendcount;
@@ -804,7 +804,7 @@ class woo_product extends woo_interface {
 		{
 			$this->notify( __METHOD__  . ":" . __LINE__ . " Setting new class ohject.  Should only happen once per instance ", "NOTICE");
 			require_once( 'class.woo_prod_variation_attributes.php' );
-			$this->woo_prod_variation_attributes = new woo_prod_variation_attributes( $this->serverURL, $this->key, $this->secret, $stock_id, $this->client );
+			$this->woo_prod_variation_attributes = new woo_prod_variation_attributes( $this->serverURL, $this->key, $this->secret, $this->stock_id, $this->client );
 		}
 		$this->notify( __METHOD__  . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN");
 		return $this->woo_prod_variation_attributes;
