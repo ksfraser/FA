@@ -18,9 +18,9 @@ class woo_rest
 	private $client;
 	function __construct( $serverURL, $key, $secret, $options = null, $client = null )
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		if( null != $client )
 			$this->client = $client;
-		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
         	//Need the index.php since .htaccess changes didn't work
 		if( null == $options )
 		{
@@ -144,12 +144,17 @@ class woo_rest
 	{
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		if( !isset( $this->client ) AND ( ! is_null( $client ) ) )
+		{
 			$this->client = $client;
+			$this->notify( __METHOD__ . ":" . __LINE__ . " ->client wasn't set. (Used for ->notify)", "ERROR" );
+		}
 		try {
 			$response = $this->wc->get( $endpoint, $data );
 		} catch( Exception $e )
 		{
 			$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $e->getCode() . ":" . $e->getMessage(), "ERROR" );
+			$this->notify( __METHOD__ . ":" . __LINE__ . " CLIENT " . print_r( $this, true ), "ERROR" );
+			$this->notify( __METHOD__ . ":" . __LINE__ . " CLIENT " . print_r( $this->client, true ), "ERROR" );
 			throw $e;
 		}
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
