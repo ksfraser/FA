@@ -485,7 +485,7 @@ class woo_product extends woo_interface {
 		if( isset( $woo->woo_id ) AND $woo->woo_id > 0 )
 		{
 			$this->notify( __METHOD__ . ":" . __LINE__ . " Setting ID=woo_id::" . $woo->woo_id , "WARN" );
-			$this->id = $woo>woo_id;
+			$this->id = $woo->woo_id;
 		}
 		else
 		{
@@ -568,13 +568,10 @@ class woo_product extends woo_interface {
 //->send_images( $stock_id, $this );
 		$this->attributes = $this->product_attributes( $stock_id );
 		$this->default_attributes = $this->product_default_attributes( $stock_id );
-		$this->notify( __METHOD__ . ":" . __LINE__ . " TRACE ***ID=woo_id::" . $this->id . ":" . $woo->woo_id , "WARN" );
-//product_variations is reseting ID
+		$this->notify( __METHOD__ . ":" . __LINE__ . " TRACE ***ID=woo_id::" . $this->id . ":" . $woo->woo_id , "DEBUG" );
 		$this->variations = $this->product_variations( $stock_id );
-		$this->notify( __METHOD__ . ":" . __LINE__ . " TRACE ***ID=MODEL_woo_id::" . $this->id . ":" . $this->model_woo->woo_id , "WARN" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " TRACE ***ID=MODEL_woo_id::" . $this->id . ":" . $this->pz_model_woo->woo_id , "DEBUG" );
 		$this->menu_order = "1";
-//id is being reste to null on exit.  Local variable?
-//->model_woo should have the id set
 
 		$this->notify( __METHOD__  . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN");
 		return TRUE;
@@ -688,7 +685,7 @@ class woo_product extends woo_interface {
 			$this->notify(  __METHOD__  . ":" . __LINE__ . " Calling woo2wooproduct", "WARN");
 			$this->woo2wooproduct( $prod_data['stock_id'], __FUNCTION__);
 			$this->notify( __METHOD__ . ":" . __LINE__ . " TRACE ***ID=woo_id::" . $this->id, "WARN" );
-			$this->notify( __METHOD__ . ":" . __LINE__ . " TRACE ***ID=MODEL_woo_id::" . $this->model_woo->woo_id, "WARN" );
+			$this->notify( __METHOD__ . ":" . __LINE__ . " TRACE ***ID=MODEL_woo_id::" . $this->pz_model_woo->woo_id, "WARN" );
 			$this->type = "simple";
 			if( isset( $this->id ) AND ( $this->id > 0 ) )
 			{

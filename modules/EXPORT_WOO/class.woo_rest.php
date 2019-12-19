@@ -62,8 +62,15 @@ class woo_rest
 			{
 				//try and match the client against the record in WC
 				//No need to search if we have the ID
+				$response = $this->get( $endpoint . "/" . $client->id, null , $client );
+				$this->notify( __METHOD__ . ":" . __LINE__ . " Now we need to match the returned item on the CLIENT:" . print_r( $response, true ), "WARN" );
+				if( $client->fuzzy_match( $response ) )
+				{
+					$exists++;
+				}
+				
 			}
-			if( isset( $client->search_array ) AND is_array( $client->search_array ) )
+			if( ($exists < 1) AND isset( $client->search_array ) AND is_array( $client->search_array ) )
 			{
 				foreach( $client->search_array as $search_field )
 				{
