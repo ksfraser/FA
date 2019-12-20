@@ -311,6 +311,8 @@ class woo_interface extends table_interface
 		$f1 = $this->to_match_array[0];
 		if( isset( $this->$f1 ) )
                 	$this->notify( __METHOD__ . ":" . __LINE__ . " Fuzzy Match on " . $this->$f1, true , "NOTIFY" );
+		$from_arr = array( "<p>", "</p>" );	//SKU had / replaced with _
+		$to_arr   = array( "",    ""     ); 	//WC returns <p> and other HTML tags on some fields
                 foreach( $data as $product )
                 {
                         $match=0;
@@ -322,25 +324,34 @@ class woo_interface extends table_interface
                                 {
                                         if( ! isset( $this->$find ) )
 					{
-                				$this->notify( __METHOD__ . ":" . __LINE__ . " Match on Field :" . $find . ": IMPOSSIBLE.  Not Set", "DEBUG" );
+                				$this->notify( __METHOD__ . ":" . __LINE__ . " Match on THIS Field :" . $find . ": IMPOSSIBLE.  Not Set", "DEBUG" );
 					}
                                         else if( ! isset( $product->$find ) )
 					{
-                				$this->notify( __METHOD__ . ":" . __LINE__ . " Match on Field :" . $find . ": IMPOSSIBLE.  Not Returned", "DEBUG" );
+                				$this->notify( __METHOD__ . ":" . __LINE__ . " Match on RETURNED Field :" . $find . ": IMPOSSIBLE.  Not Returned", "DEBUG" );
 					}
-                                        else if(  strcasecmp( $product->$find, $this->$find ) == 0 ) 
-                                        {
-                				$this->notify( __METHOD__ . ":" . __LINE__ . " SUCCESS Matched field " . $find . " with value "  . $this->$find, "DEBUG" );
-						if( isset( $this->match_worth[$find] ) )
-						{
-							$match .= $this->match_worth[$find];
-						}
-                                                else 
-							$match++;
-                                        }
-					else
+                                        else
 					{
-                				//$this->notify( __METHOD__ . ":" . __LINE__ . " Match on Field :" . $find . ": FAILED: " . $product->$find . "::"  . $this->$find, "WARN" );
+						$ret = str_replace( $from_arr, $to_arr, $product->$find );
+						if(  strcasecmp( $ret, $this->$find ) == 0 OR strcasecmp( $product->$find, $this->$find ) == 0 ) 
+	                                        {
+	                				$this->notify( __METHOD__ . ":" . __LINE__ . " SUCCESS Matched field " . $find . " with value "  . $this->$find, "DEBUG" );
+							if( isset( $this->match_worth[$find] ) )
+							{
+	                					$this->notify( __METHOD__ . ":" . __LINE__ . " MATCH WORTH " . $this->match_worth[$find], "DEBUG" );
+								$match .= $this->match_worth[$find];
+							}
+	                                                else 
+							{
+	                					$this->notify( __METHOD__ . ":" . __LINE__ . " MATCH WORTH not set.  Adding 1", "DEBUG" );
+								$match++;
+							}
+	                                        }
+						else
+						{
+                					//$this->notify( __METHOD__ . ":" . __LINE__ . " Match on Field :" . $find . ": FAILED: " . $product->$find . "(" . $ret .  ")::"  . $this->$find, "DEBUG" );
+                					$this->notify( __METHOD__ . ":" . __LINE__ . " Match on Field :" . $find . ": FAILED: " . $product->$find . "::"  . $this->$find, "DEBUG" );
+						}
 					}
                                 }
                         }
@@ -900,10 +911,14 @@ class woo_interface extends table_interface
 	}
 	function build_foreign_objects_array()
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		//Extending class needs to override!!
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+		//return;
 	}
 	function array2var( $data_array )
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		foreach( $this->properties_array as $property )
 		{
 			if( isset( $data_array[$property] ) )
@@ -911,9 +926,13 @@ class woo_interface extends table_interface
 				$this->$property = $data_array[$property];
 			}
 		}
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+		//return;
 	}
 	function build_data_array()
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
+
 		/***20180917 KSF Clean up old data arrays so we quit sending sales data, bad images, etc*/
 		if( isset( $this->data_array ) )
 		{
@@ -928,6 +947,8 @@ class woo_interface extends table_interface
 				$this->data_array[$property] = $this->$property;
 			}
 		}
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+		//return;
 	}
 	/*******************************************************************//**
 	 *
