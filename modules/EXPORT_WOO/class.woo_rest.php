@@ -48,6 +48,7 @@ class woo_rest
 		if( isset( $this->client ) )
 			$this->client->notify( $msg, $level );
 	}
+
 	function send( $endpoint, $data = [], $client )
 	{
 		$exists = 0;
@@ -62,9 +63,12 @@ class woo_rest
 			{
 				//try and match the client against the record in WC
 				//No need to search if we have the ID
-				$response = $this->get( $endpoint . "/" . $client->id, null , $client );
+				$this->notify( __METHOD__ . ":" . __LINE__ . " Client SKU: " . $client->sku, "WARN" );
+				$response = array();	//WC should be sending back 1 object, whereas fuzzymatch is expecting an array of objects
+				$response[] = $this->get( $endpoint . "/" . $client->id, null , $client );
 				//$response = $this->get( $endpoint, null , $client );
 				$this->notify( __METHOD__ . ":" . __LINE__ . " Now we need to match the returned item on the CLIENT:" . print_r( $response, true ), "WARN" );
+				$this->notify( __METHOD__ . ":" . __LINE__ . " Client SKU: " . $client->sku, "WARN" );
 				if( $client->fuzzy_match( $response ) )
 				{
 					$exists++;
@@ -95,9 +99,11 @@ class woo_rest
 			if( $e->getCode() !== KSF_INVALID_DATA_TYPE )
 			{
 				if( $e->getCode() == KSF_VALUE_NOT_SET )
-					var_dump( $response );
+					$this->notify( __METHOD__ . ":" . __LINE__ . " RESPONSE not liked by fuzzy_match: " . print_r( $response, true ), "WARN" );
 				throw $e;
 			}
+			$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $e->getCode() . ":" . $e->getMessage(), "ERROR" );
+			throw $e;
 		}
 		if( $exists > 0 )
 			$act = "put";
@@ -111,6 +117,132 @@ class woo_rest
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
 		return $response;
 	}
+	/******************************************************************************************//**
+	* Send an item to WC that we haven't sent before (lack of WC ID in our table)
+	*
+	*	This will catch the case where we have items on WC that match items in FA
+	*	but FA doesn't know it created the item.
+	*
+	*	Assumption ->client is set by calling routine
+	*
+	* @param string REST endpotin
+	* @param array data to send to the endpoint
+	* @return array of response objects
+	**********************************************************************************************/
+	private function send_new( $endpoint, $data = [] )
+	{
+		$exists = 0;
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
+		try {
+			$client = $this->client;
+			if( isset( $client->search_array ) AND is_array( $client->search_array ) )
+			{
+				foreach( $client->search_array as $search_field )
+				{
+					if( isset( $client->$search_field ) AND strlen( $client->$search_field ) > 1 )
+					{
+						$this->notify( __METHOD__ . ":" . __LINE__ . " Searching for match on " . $client->$search_field, "WARN" );
+						$q = array( 'search' => $client->$search_field );
+						$response = $this->get( $endpoint, $q, $client );
+						//Does name and description match?
+						if( $client->fuzzy_match( $response ) )
+						{
+							$exists++;
+							break; //Don't need to keep searching.  fuzzy sets the ID so put should work
+							//This takes care of the case where we are rebuilding a store that has become
+							//disconnected (i.e. items created in the store separate from FA)
+						}
+					}
+				}
+			}
+		}
+		catch (Exception $e)
+		{
+			$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $e->getCode() . ":" . $e->getMessage(), "ERROR" );
+			throw $e;
+		}
+		if( $exists > 0 )
+			$act = "put";
+		else
+			$act = "post";
+		$response = $this->$act( $endpoint, $data, $client );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
+		return $response;
+	}
+	/******************************************************************************************//**
+	* Send updates to an item in WC
+	*
+	*	This will catch the case where we have items on WC that match items in FA
+	*	but FA doesn't know it created the item.
+	*
+	*	Assumption ->client is set by calling routine
+	*
+	* @param string REST endpotin
+	* @param array data to send to the endpoint
+	* @return array of response objects
+	**********************************************************************************************/
+	private function send_update( $endpoint, $data = [] )
+	{
+		$exists = 0;
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
+		//check to see if record exists
+		try {
+			$client = $this->client;
+			if( isset( $client->id ) )
+			{
+				//try and match the client against the record in WC
+				$response = array();	//WC should be sending back 1 object, whereas fuzzymatch is expecting an array of objects
+				$response[] = $this->get( $endpoint . "/" . $client->id, null , $client );
+				$this->notify( __METHOD__ . ":" . __LINE__ . " Now we need to match the returned item on the CLIENT:" . print_r( $response, true ), "DEBUG" );
+				if( $client->fuzzy_match( $response ) )
+				{
+					$response = $this->$act( $endpoint, $data, $client );
+					$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
+					return $response;
+				}
+				
+			}
+			if( ($exists < 1) AND isset( $client->search_array ) AND is_array( $client->search_array ) )
+			{
+				foreach( $client->search_array as $search_field )
+				{
+					if( isset( $client->$search_field ) AND strlen( $client->$search_field ) > 1 )
+					{
+						$this->notify( __METHOD__ . ":" . __LINE__ . " Searching for match on " . $client->$search_field, "WARN" );
+						$q = array( 'search' => $client->$search_field );
+						$response = $this->get( $endpoint, $q, $client );
+						//Does name and description match?
+						if( $client->fuzzy_match( $response ) )
+						{
+							$exists++;
+							break; //Don't need to keep searching.  fuzzy sets the ID so put should work
+						}
+					}
+				}
+			}
+		}
+		catch (Exception $e)
+		{
+			if( $e->getCode() !== KSF_INVALID_DATA_TYPE )
+			{
+				if( $e->getCode() == KSF_VALUE_NOT_SET )
+					$this->notify( __METHOD__ . ":" . __LINE__ . " RESPONSE not liked by fuzzy_match: " . print_r( $response, true ), "WARN" );
+				throw $e;
+			}
+			$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $e->getCode() . ":" . $e->getMessage(), "ERROR" );
+			throw $e;
+		}
+		if( $exists > 0 )
+			$act = "put";
+		else
+			$act = "post";
+		//if( isset( $client->system_of_record ) AND ( true == $client->system_of_record ) )
+		//
+		//Update or Insert
+		$response = $this->$act( $endpoint, $data, $client );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
+		return $response;
+	}
 	function post( $endpoint, $data = [], $client = null )
 	{
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
@@ -120,6 +252,7 @@ class woo_rest
 			$response = $this->wc->post( $endpoint, $data );
 		} catch( Exception $e )
 		{
+			$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $e->getCode() . ":" . $e->getMessage(), "ERROR" );
 			throw $e;
 		}
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
@@ -136,6 +269,7 @@ class woo_rest
 			$response = $this->wc->put( $endpoint . "/" . $this->client->id, $data );
 		} catch( Exception $e )
 		{
+			$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $e->getCode() . ":" . $e->getMessage(), "ERROR" );
 			throw $e;
 		}
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
@@ -144,6 +278,7 @@ class woo_rest
 	function get( $endpoint, $data = [], $client = null )
 	{
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
+				$this->notify( __METHOD__ . ":" . __LINE__ . " Client SKU: " . $client->sku, "WARN" );
 		if( null === $data )
 			$data = array();
 		if( !isset( $this->client ) AND ( ! is_null( $client ) ) )
@@ -152,8 +287,10 @@ class woo_rest
 			$this->notify( __METHOD__ . ":" . __LINE__ . " ->client wasn't set. (Used for ->notify)", "ERROR" );
 		}
 		try {
+				$this->notify( __METHOD__ . ":" . __LINE__ . " Client SKU: " . $client->sku, "WARN" );
 			$this->notify( __METHOD__ . ":" . __LINE__ . " USING endpoint: " . $endpoint, "ERROR" );
 			$response = $this->wc->get( $endpoint, $data );
+				$this->notify( __METHOD__ . ":" . __LINE__ . " Client SKU: " . $client->sku, "WARN" );
 		} catch( Exception $e )
 		{
 			$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $e->getCode() . ":" . $e->getMessage(), "ERROR" );
