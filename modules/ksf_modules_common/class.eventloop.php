@@ -151,7 +151,7 @@ class eventloop extends kfLog implements splSubject
               	$this->observers[] = array_diff( $this->observers, array( $observer) );
               	return SUCCESS;
         }
-	private function initEventGroup(string $event = "*"): void
+	private function initEventGroup($event = "*")
  	{
 		if (!isset($this->observers[$event])) {
 	        	$this->observers[$event] = [];
@@ -183,7 +183,7 @@ class eventloop extends kfLog implements splSubject
 		//Needs to be extended by the inheriting class
                	return SUCCESS;
          }
-	private function getEventObservers(string $event = "*"): array
+	private function getEventObservers($event = "*")
     	{
         	$this->initEventGroup($event);
         	$group = $this->observers[$event];
@@ -191,13 +191,13 @@ class eventloop extends kfLog implements splSubject
         	return array_merge($group, $all);
     	}
 /****************************splSubject************************************************/
-	public function attach(\SplObserver $observer, string $event = "*"): void
+	public function attach(\SplObserver $observer, $event = "*")
     	{
         	$this->initEventGroup($event);
         	$this->observers[$event][] = $observer;
 		$this->storage->attach($observer);	//php.net
     	}
-    	public function detach(\SplObserver $observer, string $event = "*"): void
+    	public function detach(\SplObserver $observer, $event = "*")
     	{
 		$this->storage->detach($observer);	//php.net
         	foreach ($this->getEventObservers($event) as $key => $s) {
@@ -212,8 +212,8 @@ class eventloop extends kfLog implements splSubject
         	}
 		/********!php.net user comments************************/
     	}
-    	//public function notify(string $event = "*", $data = null): void
-    	public function _notify(string $event = "*", $data = null): void
+    	//public function notify(string $event = "*", $data = null)
+    	public function notify( $event = "*", $data = null)
     	{
         	foreach ($this->getEventObservers($event) as $observer) {
             		$observer->update($this, $event, $data);
