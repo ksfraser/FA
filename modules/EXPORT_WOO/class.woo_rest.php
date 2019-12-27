@@ -64,13 +64,11 @@ class woo_rest
 				//try and match the client against the record in WC
 				$response = $this->send_update( $endpoint, $data );
 				$this->notify( __METHOD__ . ":" . __LINE__ . " Now we need to match the returned item on the CLIENT:" . print_r( $response, true ), "DEBUG" );
-				$this->notify( __METHOD__ . ":" . __LINE__ . " Client SKU: " . $client->sku, "DEBUG" );
 			}
 			else
 			{
 				$response = $this->send_new( $endpoint, $data );
 				$this->notify( __METHOD__ . ":" . __LINE__ . " Now we need to match the returned item on the CLIENT:" . print_r( $response, true ), "DEBUG" );
-				$this->notify( __METHOD__ . ":" . __LINE__ . " Client SKU: " . $client->sku, "DEBUG" );
 			}
 		}
 		catch (Exception $e)
@@ -208,7 +206,7 @@ class woo_rest
 		{
 			switch( $e->getCode() )
 			{
-				KSF_NO_MATCH_FOUND:
+				case KSF_NO_MATCH_FOUND:
 					$response = $this->post( $endpoint, $data, $client );
 					$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
 					return $response;
@@ -265,7 +263,6 @@ class woo_rest
 	function get( $endpoint, $data = [], $client = null )
 	{
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
-				$this->notify( __METHOD__ . ":" . __LINE__ . " Client SKU: " . $client->sku, "WARN" );
 		if( null === $data )
 			$data = array();
 		if( !isset( $this->client ) AND ( ! is_null( $client ) ) )
@@ -274,10 +271,8 @@ class woo_rest
 			$this->notify( __METHOD__ . ":" . __LINE__ . " ->client wasn't set. (Used for ->notify)", "ERROR" );
 		}
 		try {
-				$this->notify( __METHOD__ . ":" . __LINE__ . " Client SKU: " . $client->sku, "WARN" );
 			$this->notify( __METHOD__ . ":" . __LINE__ . " USING endpoint: " . $endpoint, "ERROR" );
 			$response = $this->wc->get( $endpoint, $data );
-				$this->notify( __METHOD__ . ":" . __LINE__ . " Client SKU: " . $client->sku, "WARN" );
 		} catch( Exception $e )
 		{
 			$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $e->getCode() . ":" . $e->getMessage(), "ERROR" );
