@@ -37,16 +37,19 @@ $configArray = array();
  * 
  *
  * ********************************************************************************************/
-class eventloop extends kfLog
+class eventloop extends kfLog implements splSubject
 {
 	var $config_values = array();   //What fields to be put on config screen
 	var $tabs = array();
         var $help_context;
 	var $tb_pref;
+	private $observers = [];
+	private $storage;	//From php.net example
 
 	function __construct( $moduledir )
 	{
 		parent::__construct();
+		$this->storage = new SplObjectStorage();	//php.net
  		/* 
 		 * locate Module class files to open 
 		 */
@@ -95,6 +98,8 @@ class eventloop extends kfLog
 				}
 			}
 		}
+		$this->initEventGroup( '*' );
+		$this->initEventGroup( '**' );
 		$this->ObserverNotify( $this, 'NOTIFY_LOG_INFO', "Completed Adding Modules" );
 		$this->ObserverNotify( $this, 'NOTIFY_INIT_CONTROLLER_COMPLETE', "Completed Adding Modules" );
 	}
@@ -116,8 +121,10 @@ class eventloop extends kfLog
 	}
 	function ObserverRegister( /*Class Instance*/$observer, $event )
         {
-		return FALSE;
-               	//$this->observers[$event][] = $observer;	//Indirect modification has no effect ERROR
+		//return FALSE;
+		$this->initEventGroup( $event );
+               	$this->observers[$event][] = $observer;	//Indirect modification has no effect ERROR
+/*
 		try {
 			if( isset( $this->observers[$event] ) )
 			{
@@ -137,14 +144,21 @@ class eventloop extends kfLog
 			$this->notify( __METHOD__ . ":" . __LINE__ . print_r( $this->observers, true ), "WARN" );
         	}
 		return FALSE;
+*/
 	}
-         function ObserverDeRegister( $observer )
-         {
-               	$this->observers[] = array_diff( $this->observers, array( $observer) );
-               	return SUCCESS;
-         }
-         function ObserverNotify( $trigger_class, $event, $msg )
-         {
+        function ObserverDeRegister( $observer )
+        {
+              	$this->observers[] = array_diff( $this->observers, array( $observer) );
+              	return SUCCESS;
+        }
+	private function initEventGroup(string $event = "*"): void
+ 	{
+		if (!isset($this->observers[$event])) {
+	        	$this->observers[$event] = [];
+	     	}
+ 	}
+        function ObserverNotify( $trigger_class, $event, $msg )
+        {
 	//	return;
 		if( is_string( $msg ) )
 			$this->Log( get_class( $trigger_class ) . " had event " . $event . " with message " . $msg, 1 );
@@ -169,5 +183,80 @@ class eventloop extends kfLog
 		//Needs to be extended by the inheriting class
                	return SUCCESS;
          }
+	private function getEventObservers(string $event = "*"): array
+    	{
+        	$this->initEventGroup($event);
+        	$group = $this->observers[$event];
+        	$all = $this->observers["*"];
+        	return array_merge($group, $all);
+    	}
+/****************************splSubject************************************************/
+	public function attach(\SplObserver $observer, string $event = "*"): void
+    	{
+        	$this->initEventGroup($event);
+        	$this->observers[$event][] = $observer;
+		$this->storage->attach($observer);	//php.net
+    	}
+    	public function detach(\SplObserver $observer, string $event = "*"): void
+    	{
+		$this->storage->detach($observer);	//php.net
+        	foreach ($this->getEventObservers($event) as $key => $s) {
+            		if ($s === $observer) {
+                		unset($this->observers[$event][$key]);
+            		}
+        	}
+		/********php.net user comments************************/
+        	$key = array_search($observer,$this->observers, true);
+        	if(false !== $key){
+            		unset($this->observers[$key]);
+        	}
+		/********!php.net user comments************************/
+    	}
+    	//public function notify(string $event = "*", $data = null): void
+    	public function _notify(string $event = "*", $data = null): void
+    	{
+        	foreach ($this->getEventObservers($event) as $observer) {
+            		$observer->update($this, $event, $data);
+        	}
+		//php.net
+		foreach ($this->storage as $obj) {
+            		$obj->update($this);
+        	}
+		//!php.net
+    	}
+/****************************!splSubject************************************************/
 }
+
+
+/****************************splObserver************************************************/
+/****************************php.net****************************************************/
+abstract class Observer implements SplObserver
+{
+    private $observable;
+
+    function __construct(Observable $observable)
+    {
+        $this->observable = $observable;
+        $observable->attach($this);
+    }
+
+    function update(SplSubject $subject)
+    {
+        if ($subject === $this->observable) {
+            $this->doUpdate($subject);
+        }
+    }
+
+    abstract function doUpdate(Observable $observable);
+}
+
+class ConcreteObserver extends Observer
+{
+    function doUpdate(Observable $observable)
+    {
+        //...
+    }
+}
+/****************************!php.net****************************************************/
+/****************************!splObserver************************************************/
 ?>
