@@ -268,16 +268,16 @@ class woo_rest
 		if( !isset( $this->client ) AND ( ! is_null( $client ) ) )
 		{
 			$this->client = $client;
-			$this->notify( __METHOD__ . ":" . __LINE__ . " ->client wasn't set. (Used for ->notify)", "ERROR" );
+			$this->notify( __METHOD__ . ":" . __LINE__ . " ->client wasn't set. (Used for ->notify)", "WARN" );
 		}
 		try {
-			$this->notify( __METHOD__ . ":" . __LINE__ . " USING endpoint: " . $endpoint, "ERROR" );
+			$this->notify( __METHOD__ . ":" . __LINE__ . " USING endpoint: " . $endpoint, "DEBUG" );
 			$response = $this->wc->get( $endpoint, $data );
 		} catch( Exception $e )
 		{
 			$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $e->getCode() . ":" . $e->getMessage(), "ERROR" );
-			$this->notify( __METHOD__ . ":" . __LINE__ . " CLIENT " . print_r( $this, true ), "ERROR" );
-			$this->notify( __METHOD__ . ":" . __LINE__ . " CLIENT " . print_r( $this->client, true ), "ERROR" );
+			$this->notify( __METHOD__ . ":" . __LINE__ . " CLIENT " . print_r( $this, true ), "DEBUG" );
+			$this->notify( __METHOD__ . ":" . __LINE__ . " CLIENT " . print_r( $this->client, true ), "DEBUG" );
 			throw $e;
 		}
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
