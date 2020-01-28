@@ -1,4 +1,32 @@
 <?php
+
+/********************************************//**
+* Bare bones observable (splSubject) class
+*
+*************************************************/
+class Observable implements SplSubject
+{
+    private $storage;
+    function __construct()
+    {
+        $this->storage = new SplObjectStorage();
+    }
+    function attach(SplObserver $observer)
+    {
+        $this->storage->attach($observer);
+    }
+    function detach(SplObserver $observer)
+    {
+        $this->storage->detach($observer);
+    }
+    function notify()
+    {
+        foreach ($this->storage as $obj) {
+            $obj->update($this);
+        }
+    }
+}
+
 class Subject implements \SplSubject
 {
     /**
