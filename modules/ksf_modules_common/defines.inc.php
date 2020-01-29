@@ -137,17 +137,19 @@ $stock_id_tables[] = array( 'table' => TB_PREF . 'woo', 'column' => 'stock_id', 
  *
  *
  * ****************************************************************************/
-define( 'KSF_FIELD_NOT_SET', 5731 );
-define( 'KSF_VALUE_NOT_SET', 5732 );
-define( 'KSF_FIELD_NOT_CLASS_VAR', 5733 );
-define( 'KSF_PRIKEY_NOT_SET', 5734 );
-define( 'KSF_PRIKEY_NOT_DEFINED', 5735 );
-define( 'KSF_TABLE_NOT_DEFINED', 5736 );
-define( 'KSF_NO_MATCH_FOUND', 5737 );
-define( 'KSF_INVALID_DATA_TYPE', 5738 );
-define( 'KSF_INVALID_DATA_VALUE', 5739 );
-define( 'KSF_UNKNOWN_DATA_TYPE', 5740 );
-define( 'KSF_FCN_NOT_OVERRIDDEN', 5741 );
+$eventcount = 573000;
+define( 'KSF_FIELD_NOT_SET', $eventcount ); $eventcount++;
+define( 'KSF_VALUE_NOT_SET', $eventcount ); $eventcount++;
+define( 'KSF_FIELD_NOT_CLASS_VAR', $eventcount ); $eventcount++;
+define( 'KSF_PRIKEY_NOT_SET', $eventcount ); $eventcount++;
+define( 'KSF_PRIKEY_NOT_DEFINED', $eventcount ); $eventcount++;
+define( 'KSF_TABLE_NOT_DEFINED', $eventcount ); $eventcount++;
+define( 'KSF_NO_MATCH_FOUND', $eventcount ); $eventcount++;
+define( 'KSF_INVALID_DATA_TYPE', $eventcount ); $eventcount++;
+define( 'KSF_INVALID_DATA_VALUE', $eventcount ); $eventcount++;
+define( 'KSF_UNKNOWN_DATA_TYPE', $eventcount ); $eventcount++;
+define( 'KSF_FCN_NOT_OVERRIDDEN', $eventcount ); $eventcount++;
+define( 'KSF_FCN_PATH_OVERRIDE', $eventcount ); $eventcount++;
 /************************************************************************//**
  * Data Access levels
  *  Think filesystem RWX values R = 0/1, W = 0/2 and X = 0/4

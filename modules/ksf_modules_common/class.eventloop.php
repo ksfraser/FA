@@ -50,6 +50,8 @@ class eventloop extends kfLog implements splSubject
 	{
 		parent::__construct();
 		$this->storage = new SplObjectStorage();	//php.net
+		$this->initEventGroup( '*' );
+		$this->initEventGroup( '**' );
  		/* 
 		 * locate Module class files to open 
 		 */
@@ -98,8 +100,6 @@ class eventloop extends kfLog implements splSubject
 				}
 			}
 		}
-		$this->initEventGroup( '*' );
-		$this->initEventGroup( '**' );
 		$this->ObserverNotify( $this, 'NOTIFY_LOG_INFO', "Completed Adding Modules" );
 		$this->ObserverNotify( $this, 'NOTIFY_INIT_CONTROLLER_COMPLETE', "Completed Adding Modules" );
 	}
