@@ -330,7 +330,7 @@ class woo_product extends woo_interface {
 		{
 			$this->notify( __METHOD__ . ":" . __LINE__ . " Try " . __METHOD__, "WARN" );
 			$woo->update_on_sale_data();
-			$woo->update_woo_id();
+			$woo->update_woo_id( $woo->id );
 			$woo->update_woo_last_update();
 		}
 		catch( InvalidArgumentException $e )
@@ -385,7 +385,7 @@ class woo_product extends woo_interface {
 				$woo = $this->model_woo();
                 		$woo->stock_id = $this->stock_id;
                 		$woo->woo_id = $this->id;
-                		$woo->update_woo_id();
+                		$woo->update_woo_id( $this->id );
 				//Need to send the images for this product
 				$this->send_images( null, $this );
 				$this->send_sku( null, $this );
@@ -418,7 +418,7 @@ class woo_product extends woo_interface {
 		set_time_limit( 60 );
 		if( $this->recursive_call > 1 )
 		{
-			throw new Exception( "LOOP!" );
+			throw new Exception( "LOOP!", KSF_FCN_PATH_OVERRIDE );
 		}
 	
 		try {
@@ -447,7 +447,14 @@ class woo_product extends woo_interface {
 							$old_woo_id = $this->woo_id;
 							$this->woo_id = null;
 							$this->recursive_call++;
-							$this->update_product();
+							try {
+								$this->update_product();
+							}
+							catch( Exception $e )
+							{
+								$this->recursive_call--;
+								throw $e;
+							}
 							$this->recursive_call--;
 						}
 						break;
@@ -723,10 +730,23 @@ class woo_product extends woo_interface {
 			if( isset( $this->id ) AND ( $this->id > 0 ) )
 			{
 				$this->notify(  __METHOD__  . ":" . __LINE__ . " Calling update PRODUCT for " . $this->stock_id, "WARN");
-				if( $this->update_product() )
-					$updatecount++;
-				else
-					display_notification( __METHOD__  . ":" . __LINE__ . " Product not updated.  DEBUG level: " . $this->debug );
+				try {
+					if( $this->update_product() )
+						$updatecount++;
+					else
+						display_notification( __METHOD__  . ":" . __LINE__ . " Product not updated.  DEBUG level: " . $this->debug );
+				}
+				catch( Exception $e )
+				{
+					if( $e->getCode() == KSF_FCN_PATH_OVERRIDE )
+					{
+						//Do Nothing
+					}
+					else
+					{
+						throw $e;
+					}
+				}
 			}
 			else
 			{

@@ -347,7 +347,11 @@ class model_woo extends woo_interface {
 		$res = db_query( $updateprod_sql, "Couldn't update product after export" );
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
-	function update_woo_id()
+	/***********************************************************//**
+	*
+	* @param UNUSED compatibility with woo_interface
+	**************************************************************/
+	function update_woo_id( /*unused*/ $id )
 	{
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		if( !isset( $this->stock_id ) )

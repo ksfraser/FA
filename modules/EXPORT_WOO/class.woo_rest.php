@@ -101,8 +101,10 @@ class woo_rest
 					}
 				}
 			}
-			$this->notify( __METHOD__ . ":" . __LINE__ . " Throwing Exception " . __METHOD__, "WARN" );
-			throw new Exception( "No Match Found", KSF_NO_MATCH_FOUND );
+			//THIS ISN"T AN EXCEPTION for new - there shouldn't be a match!!
+			//$this->notify( __METHOD__ . ":" . __LINE__ . " Throwing Exception " . __METHOD__, "WARN" );
+			//throw new Exception( "No Match Found", KSF_NO_MATCH_FOUND );
+			return array();
 		}
 		else
 		{
@@ -198,7 +200,7 @@ class woo_rest
 				//try and match the client against the record in WC
 				$response = array();	//WC should be sending back 1 object, whereas fuzzymatch is expecting an array of objects
 				$response[] = $this->get( $endpoint . "/" . $client->id, null , $client );
-				$this->notify( __METHOD__ . ":" . __LINE__ . " Now we need to match the returned item on the CLIENT:" . print_r( $response, true ), "DEBUG" );
+
 				if( $client->fuzzy_match( $response ) )
 				{
 					$response = $this->put( $endpoint, $data, $client );
@@ -231,15 +233,32 @@ class woo_rest
 		}
 		//If we ended up here, the record on the WC ID we have doesn't the data we have (e.g. sku/slug/description)
 		try {
-			$response = $this->send_search( $endpoint, $client );
+			$response_arr = $this->send_search( $endpoint, $client );
 						//This takes care of the case where we are rebuilding a store that has become
 						//disconnected (i.e. items created in the store separate from FA)
+			if( isset( $response_arr[0] ) )
+			{
+				$response = $response_arr[0];
 				//If there is a match we need to update our tables
 				//and then UPDATE WC rather than send new
-				$client->id = $response->id;
-				$response = $this->put( $endpoint, $data, $client );
+				if( isset( $response->id ) )
+				{
+					$client->id = $response->id;
+					$response = $this->put( $endpoint, $data, $client );
+					$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
+					return $response;
+				}
+				else
+				{
+				}
+			}
+			else
+			{
+				//No Match.  Should we be sending NEW instaed of UPDATE??
+				$this->notify( __METHOD__ . ":" . __LINE__ . " No MATCHING Response for UPDATE " . __METHOD__, "ERROR" );
 				$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
-				return $response;
+				return array();
+			}
 		}
 		catch( Exception $e )
 		{
