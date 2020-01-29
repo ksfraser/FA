@@ -357,7 +357,7 @@ class woo_product extends woo_interface {
 		$woo = $this->model_woo();
                 $woo->stock_id = $this->stock_id;
                 $woo->woo_id = $this->id = $id;
-		$woo->update_woo_id();
+		$woo->update_woo_id( $id );
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
 	}
 	/****************************************************************************//**
@@ -423,13 +423,25 @@ class woo_product extends woo_interface {
 	
 		try {
 			$endpoint = "products";
-		//	unset( $this->sku );	//Looks like every update with a SKU set comes back invald/duplicate
 			$this->build_data_array();
-			$response = $this->woo_rest->send( $endpoint, $this->data_array, $this );
-			$this->id = $response->id;
-			//$this->products_sent++;
+			$response_arr = $this->woo_rest->send( $endpoint, $this->data_array, $this );
+			if( is_array( $response_arr ) AND isset( $response_arr[0] ) )
+			{
+				$response = $response_arr[0];
+				if( is_object( $response ) AND isset( $response->id ) )
+				{
+					$this->id = $response->id;
+				}
+			}
+			else if( is_object( $response_arr ) AND isset( $response_arr->id ) )
+			{
+				$this->id = $response_arr->id;
+			}
+			if( isset( $this->id ) )
+			{
 				$this->send_images( null, $this );
 				$this->send_sku( null, $this );
+			}
 			$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 			return TRUE;
 		}

@@ -47,6 +47,8 @@ class woo_rest
 	{
 		if( isset( $this->client ) )
 			$this->client->notify( $msg, $level );
+		else
+			parent::notify( $msg, $level );
 	}
 
 	/*@array@*/ function send( $endpoint, $data = [], $client )
@@ -245,6 +247,8 @@ class woo_rest
 				{
 					$client->id = $response->id;
 					$response = $this->put( $endpoint, $data, $client );
+					if( count( $response ) > 0 )
+						$client->update_woo_id( $client->id );
 					$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
 					return $response;
 				}
@@ -366,7 +370,24 @@ class woo_rest
 			$response = $this->wc->get( $endpoint, $data );
 		} catch( Exception $e )
 		{
-			$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $e->getCode() . ":" . $e->getMessage(), "ERROR" );
+			$code = $e->getCode();
+			$msg = $e->getMessage();
+			switch( $code )
+			{
+				case '404':
+					// ERROR 404:Error: Invalid ID. [woocommerce_rest_product_invalid_id]^	
+					if( false !== stristr( $msg, "woocommerce_rest_product_invalid_id" ) )
+					{
+						$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $code . ":" . $msg, "WARN" );
+						$this->client->update_woo_id( "" );
+						//return false;	//This isn't a fatal error.
+						return array();
+					}
+				default:
+					$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $code . ":" . $msg, "NOTIFY" );
+					throw $e;
+			}
+			//$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $e->getCode() . ":" . $e->getMessage(), "ERROR" );
 			//$this->notify( __METHOD__ . ":" . __LINE__ . " CLIENT " . print_r( $this, true ), "DEBUG" );
 		//	$this->notify( __METHOD__ . ":" . __LINE__ . " CLIENT " . print_r( $this->client, true ), "DEBUG" );
 			throw $e;

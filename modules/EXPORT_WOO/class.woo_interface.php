@@ -213,7 +213,7 @@ class woo_interface extends table_interface
 	function update_woo_id( /*int*/ $id )
 	{
 		//This function MUST be overridden or woo_rest will fail!!
-		throw new Exception( "This function MUST be overridden or woo_rest will fail!!" );
+		throw new Exception( "This function MUST be overridden or woo_rest will fail!!", KSF_FCN_NOT_OVERRIDDEN );
 
 	}
 	/***************************************************************************//**
@@ -513,6 +513,7 @@ class woo_interface extends table_interface
 	 * ***********************************************************/
 	function notify( $msg, $level = "ERROR" )
 	{
+		//$this->tell_eventloop( $this, 'NOTIFY_LOG_DEBUG', "Passed in Logging Level: " . $level );
 		if( "ERROR" == $level )
 		{
 			$this->tell_eventloop( $this, 'NOTIFY_LOG_ERROR', $msg );
@@ -539,7 +540,8 @@ class woo_interface extends table_interface
 		else
 		{
 			$this->tell_eventloop( $this, 'NOTIFY_LOG_INFO', $msg );
-			display_notification( $msg );
+			if( $this->debug >= 2 )
+				display_notification( $msg );
 		}
 
 	}
