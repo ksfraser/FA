@@ -351,6 +351,15 @@ class woo_product extends woo_interface {
 		//}
 		return TRUE;
 	}
+	function update_woo_id( $id )
+	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
+		$woo = $this->model_woo();
+                $woo->stock_id = $this->stock_id;
+                $woo->woo_id = $this->id = $id;
+		$woo->update_woo_id();
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
+	}
 	/****************************************************************************//**
 	 * This function should send a new product to WooCommerce, "creating" it.
 	 *
@@ -407,6 +416,10 @@ class woo_product extends woo_interface {
 	{
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		set_time_limit( 60 );
+		if( $this->recursive_call > 1 )
+		{
+			throw new Exception( "LOOP!" );
+		}
 	
 		try {
 			$endpoint = "products";
@@ -423,7 +436,25 @@ class woo_product extends woo_interface {
 		catch( Exception $e )
 		{
 			$msg =  $e->getMessage();
-			$this->notify( __METHOD__ . ":" . __LINE__ . " Error " . $e->getCode() . "::" . $msg, "ERROR" );
+			$code = $e->getCode();
+			switch( $code )
+			{
+				case '404': if( false !== strstr( $msg, "woocommerce_rest_product_invalid_id" ) )
+						{
+							$this->notify( __METHOD__ . ":" . __LINE__ . " Error " . $code . "::" . $msg . " ::: Woo_ID: " . $this->woo_id, "ERROR" );
+							//Woo doesn't know about this woo_id.  Rebuild case?  Should send it NEW!!
+							$this->notify( __METHOD__ . ":" . __LINE__ . " Resubmit with nulled woo_id " . __METHOD__, "WARN" );
+							$old_woo_id = $this->woo_id;
+							$this->woo_id = null;
+							$this->recursive_call++;
+							$this->update_product();
+							$this->recursive_call--;
+						}
+						break;
+				default:
+					$this->notify( __METHOD__ . ":" . __LINE__ . " Error " . $code . "::" . $msg, "ERROR" );
+					break;
+			}
 			if( strpos( $msg, "product_invalid_sku" ) !== FALSE )
 			{
 				//Invalid or Duplicate SKU
@@ -447,14 +478,16 @@ class woo_product extends woo_interface {
 	function seek( $search_array = "", $callback = null )
 	{
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
-		//if( strlen( $search_query ) < 5 )
-		//	throw new Exception( "Search Query is too short", KSF_VALUE_NOT_SET );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " " . print_r( $search_array, true ), "DEBUG" );
+
 		if( ! is_array( $search_array ) )
 			throw new Exception( "Search Param is invalid", KSF_VALUE_NOT_SET );
 		$endpoint = "products";
 		$response = $this->woo_rest->get( $endpoint, $search_array, $this );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " " . print_r( $response, true ), "DEBUG" );
 		if( isset( $callback ) )
 			$callback( $response );
+
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 		return $response;
 	}
@@ -917,14 +950,18 @@ class woo_product extends woo_interface {
 			{
 				$response = $this->woo_rest->put( $this->endpoint, $this->data_array, $this );
 			}
+			else
+			{
+				throw new Exception( "Invalid variable passed in: " . $new_or_update, KSF_INVALID_DATA_VALUE );
+			}
 			$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 			return TRUE;
 		}
 		catch( Exception $e )
 		{
-			$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $e->getCode() . ":" . $e->getMessage(), "WARN" );
 			$msg = $e->getMessage();
-			switch( $e->getCode() )
+			$code = $e->getCode();
+			switch( $code )
 			{
 				case 400:
 					$this->notify( __METHOD__ . ":" . __LINE__ . " Data sent: " . print_r( $this->data_array, true), "WARN" );
@@ -943,7 +980,9 @@ class woo_product extends woo_interface {
 						{
 						}
 					}
-				break;
+				default:
+					$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $code . ":" . $msg, "WARN" );
+					break;
 			}
 		}
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );

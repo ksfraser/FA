@@ -49,7 +49,7 @@ class woo_rest
 			$this->client->notify( $msg, $level );
 	}
 
-	function send( $endpoint, $data = [], $client )
+	/*@array@*/ function send( $endpoint, $data = [], $client )
 	{
 		$exists = 0;
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
@@ -63,12 +63,10 @@ class woo_rest
 			{
 				//try and match the client against the record in WC
 				$response = $this->send_update( $endpoint, $data );
-				$this->notify( __METHOD__ . ":" . __LINE__ . " Now we need to match the returned item on the CLIENT:" . print_r( $response, true ), "DEBUG" );
 			}
 			else
 			{
 				$response = $this->send_new( $endpoint, $data );
-				$this->notify( __METHOD__ . ":" . __LINE__ . " Now we need to match the returned item on the CLIENT:" . print_r( $response, true ), "DEBUG" );
 			}
 		}
 		catch (Exception $e)
@@ -83,9 +81,9 @@ class woo_rest
 	* Search WC for a matching item
 	* @param string endpoint
 	* @param object client to search against
-	* @return object
+	* @return array of object
 	***********************************************************************************************/
-	private function send_search( $endpoint, $client )
+	/*@array@*/ private function send_search( $endpoint, $client )
 	{
 		if(  isset( $client->search_array ) AND is_array( $client->search_array ) )
 		{
@@ -98,16 +96,21 @@ class woo_rest
 					$response = $this->get( $endpoint, $q, $client );
 					if( $client->fuzzy_match( $response ) )
 					{
+						$this->notify( __METHOD__ . ":" . __LINE__ . " SUCCESS Leaving " . __METHOD__, "WARN" );
 						return $response;
 					}
 				}
 			}
+			$this->notify( __METHOD__ . ":" . __LINE__ . " Throwing Exception " . __METHOD__, "WARN" );
 			throw new Exception( "No Match Found", KSF_NO_MATCH_FOUND );
 		}
 		else
 		{
+			$this->notify( __METHOD__ . ":" . __LINE__ . " Throwing Exception " . __METHOD__, "WARN" );
 			throw new Exception( "Saerch Array not set", KSF_FIELD_NOT_SET );
 		}
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
+		return array();
 	}
 	/******************************************************************************************//**
 	* Send an item to WC that we haven't sent before (lack of WC ID in our table)
@@ -121,29 +124,47 @@ class woo_rest
 	* @param array data to send to the endpoint
 	* @return EXCEPTION|array of response objects (JSON decoded from WC REST API)
 	**********************************************************************************************/
-	private function send_new( $endpoint, $data = [] )
+	/*@array@*/ private function send_new( $endpoint, $data = [] )
 	{
 		$exists = 0;
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		try {
 			$client = $this->client;
 			try {
-				$response = $this->send_search( $endpoint, $client );
+				$response_arr = $this->send_search( $endpoint, $client );
 							//This takes care of the case where we are rebuilding a store that has become
 							//disconnected (i.e. items created in the store separate from FA)
 /************************************************/
-				//If there is a match we need to update our tables
-				//and then UPDATE WC rather than send new
+				if( isset( $response_arr[0] ) )
+				{
+					$response = $response_arr[0];
+					//If there is a match we need to update our tables
+					//and then UPDATE WC rather than send new
+					if( isset( $response->id ) )
+					{
+						$client->update_woo_id( $response->id );
+						$this->notify( __METHOD__ . ":" . __LINE__ . " SKU already exists!! ", "WARN" );
+						//throw new Exception( "Send_Update instead of NEW", KSF_FCN_PATH_OVERRIDE );
+						$exists = 1;
+					}
+					else
+					{
+						$this->notify( __METHOD__ . ":" . __LINE__ . print_r( $response, true ), "DEBUG" );
+					}
+				}
 			}
 			catch( Exception $e )
 			{
 			//throw new Exception( "No Match Found", KSF_NO_MATCH_FOUND );
 			//throw new Exception( "Saerch Array not set", KSF_FIELD_NOT_SET );
+				$this->notify( __METHOD__ . ":" . __LINE__ . " Throwing " . __METHOD__, "WARN" );
+				throw $e;
 			}
 		}
 		catch (Exception $e)
 		{
 			$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $e->getCode() . ":" . $e->getMessage(), "ERROR" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Throwing " . __METHOD__, "WARN" );
 			throw $e;
 		}
 		if( $exists > 0 )
@@ -166,7 +187,7 @@ class woo_rest
 	* @param array data to send to the endpoint
 	* @return EXCEPTION|array of response objects (JSON decoded from WC REST API)
 	**********************************************************************************************/
-	private function send_update( $endpoint, $data = [] )
+	/*@array@*/ private function send_update( $endpoint, $data = [] )
 	{
 		$exists = 0;
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
@@ -181,15 +202,32 @@ class woo_rest
 				if( $client->fuzzy_match( $response ) )
 				{
 					$response = $this->put( $endpoint, $data, $client );
-					$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
+					$this->notify( __METHOD__ . ":" . __LINE__ . " MATCH Leaving " . __METHOD__, "WARN" );
 					return $response;
 				}
 			}
+			//If it isn't set, we can't update that item!
 		}
 		catch (Exception $e)
 		{
-			$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $e->getCode() . ":" . $e->getMessage(), "ERROR" );
-			throw $e;
+			$msg =  $e->getMessage();
+                        $code = $e->getCode();
+                        switch( $code )
+                        {
+                                case '404': if( false !== strstr( $msg, "woocommerce_rest_product_invalid_id" ) )
+                                            {
+                                                $this->notify( __METHOD__ . ":" . __LINE__ . " Error " . $code . "::" . $msg . " ::: Woo_ID: " . $client->woo_id, "ERROR" );
+					//	if( count( $data ) > 0 )
+					//		break;
+                                            }
+						throw $e;
+                                             	break;
+                                default:
+					$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $e->getCode() . ":" . $e->getMessage(), "ERROR" );
+					throw $e;
+                                        break;
+                        }
+
 		}
 		//If we ended up here, the record on the WC ID we have doesn't the data we have (e.g. sku/slug/description)
 		try {
@@ -198,6 +236,7 @@ class woo_rest
 						//disconnected (i.e. items created in the store separate from FA)
 				//If there is a match we need to update our tables
 				//and then UPDATE WC rather than send new
+				$client->id = $response->id;
 				$response = $this->put( $endpoint, $data, $client );
 				$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
 				return $response;
@@ -241,17 +280,50 @@ class woo_rest
 	*****************************************************************/ 
 	function put( $endpoint, $data = [], $client = null )
 	{
+/*
+		if( $this->recursive_call > 1 )
+		{
+			$this->recursive_call--;
+			throw new Exception(  __METHOD__ . ":" . __LINE__ . ":: LOOP", KSF_FCN_PATH_OVERRIDE );
+		}
+*/
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		if( !isset( $this->client ) AND ( ! is_null( $client ) ) )
 			$this->client = $client;
 		try {
 			if( ! isset( $this->client->id ) )
 				throw new Exception( "Client ID needed for update (put) not set", KSF_FIELD_NOT_SET );
-			$response = $this->wc->put( $endpoint . "/" . $this->client->id, $data );
+			$end = $endpoint . "/" . $this->client->id;
+			$this->notify( __METHOD__ . ":" . __LINE__ . " Using endpoint: " . $end, "DEBUG" );
+			$response = $this->wc->put( $end, $data );
 		} catch( Exception $e )
 		{
-			$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $e->getCode() . ":" . $e->getMessage(), "ERROR" );
-			throw $e;
+			$code = $e->getCode();
+			$msg = $e->getMessage();
+			switch( $code )
+			{
+				case '400':
+					if( false !== stristr( $msg, "woocommerce_product_image_upload_error" ) )
+					{
+						$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $code . ":" . $msg, "WARN" );
+						//Remote image doesn't exist?
+						return false;	//This isn't a fatal error.
+					}
+				case '503':	//503:Error: Briefly unavailable for scheduled maintenance. Check back in a minute. [wp_die]
+					if( false !== stristr( $msg, "scheduled maintenance" ) )
+					{
+					/*
+						sleep( 600 );
+						$this->recursive_call++;
+						$response = $this->put( $endpoint, $data, $client );
+						$this->recursive_call--;
+						return $response;
+					*/
+					}
+				default:
+					$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $code . ":" . $msg, "ERROR" );
+					throw $e;
+			}
 		}
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
 		return $response;
@@ -260,7 +332,7 @@ class woo_rest
 	*
 	*@return array JSON Decoded response from WC API
 	*****************************************************************/ 
-	function get( $endpoint, $data = [], $client = null )
+	/*@array@*/ function get( $endpoint, $data = [], $client = null )
 	{
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		if( null === $data )
@@ -276,8 +348,8 @@ class woo_rest
 		} catch( Exception $e )
 		{
 			$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $e->getCode() . ":" . $e->getMessage(), "ERROR" );
-			$this->notify( __METHOD__ . ":" . __LINE__ . " CLIENT " . print_r( $this, true ), "DEBUG" );
-			$this->notify( __METHOD__ . ":" . __LINE__ . " CLIENT " . print_r( $this->client, true ), "DEBUG" );
+			//$this->notify( __METHOD__ . ":" . __LINE__ . " CLIENT " . print_r( $this, true ), "DEBUG" );
+		//	$this->notify( __METHOD__ . ":" . __LINE__ . " CLIENT " . print_r( $this->client, true ), "DEBUG" );
 			throw $e;
 		}
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );

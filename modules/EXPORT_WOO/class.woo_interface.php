@@ -154,6 +154,7 @@ class woo_interface extends table_interface
 	var $search_array;	//!< array list of vars (fields) to search
 	var $match_worth;	//!< array value of match (against need) for a field
 	var $need_rest_interface;	//!< do we need to setup the Rest interface.  Most inheriting classes don't
+	var $recursive_call;	//!< int for counting recursive calls so we don't end up in a loop
 
 
 	/******************************************************************************************//**
@@ -167,6 +168,7 @@ class woo_interface extends table_interface
 	/*@void@*/function __construct($serverURL = " ", $key, $secret, $options, $client = null)
 	{
 		$this->iam = get_class( $this );
+		$this->recursive_call = 0;
 		$this->table_details = array();
 		$this->fields_array = array();
 		$this->search_array = array();
@@ -207,6 +209,12 @@ class woo_interface extends table_interface
 		$this->reset_endpoint();
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
 		return;
+	}
+	function update_woo_id( /*int*/ $id )
+	{
+		//This function MUST be overridden or woo_rest will fail!!
+		throw new Exception( "This function MUST be overridden or woo_rest will fail!!" );
+
 	}
 	/***************************************************************************//**
 	* Build the Woo REST interface if required
@@ -299,10 +307,9 @@ class woo_interface extends table_interface
         * Will search against an array to_match_array
         *
         * @param array array of stdObj holding data from WC
-        * @param int number of matches required for product to match
-        * @param did we find a match
+        * @return did we find a match
         ***************************************************************************************************/
-        function fuzzy_match( $data )
+        /*@bool@*/ function fuzzy_match( $data )
         {
                 $this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 
@@ -310,7 +317,7 @@ class woo_interface extends table_interface
                         throw new Exception( "fuzzy_match expects a data array.  Not passed in", KSF_INVALID_DATA_TYPE );
 		$f1 = $this->to_match_array[0];
 		if( isset( $this->$f1 ) )
-                	$this->notify( __METHOD__ . ":" . __LINE__ . " Fuzzy Match on " . $this->$f1, true , "NOTIFY" );
+                	$this->notify( __METHOD__ . ":" . __LINE__ . " Fuzzy Match on " . $this->$f1, "NOTIFY" );
 		$from_arr = array( "<p>", "</p>" );	//SKU had / replaced with _
 		$to_arr   = array( "",    ""     ); 	//WC returns <p> and other HTML tags on some fields
                 foreach( $data as $product )
@@ -362,7 +369,7 @@ class woo_interface extends table_interface
                         if( $match >= $this->match_need )
                         {
                                 $this->id = $product->id;
-                                $this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
+                                $this->notify( __METHOD__ . ":" . __LINE__ . " SUCCESS Leaving " . __METHOD__, "WARN" );
                                 return TRUE;
                         }
                 }
