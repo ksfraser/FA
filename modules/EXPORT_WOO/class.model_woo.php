@@ -43,6 +43,76 @@ require_once( 'class.woo_interface.php' );
         / *@mysql_res@* /function select_simple_products( $max = 0 )
         / *@mysql_res@* /function select_simple_products_for_update()
         function delete_by_sku( $sku )
+ * Inherits: (woo_interface)
+         function fuzzy_match( $data )
+        function rebuild_woocommerce()
+        function backtrace()
+        function tell( $msg, $method )
+        function tell_eventloop( $caller, $event, $msg )
+        function dummy( $obj, $msg )
+        function register_with_eventloop()
+        function build_interestedin()
+        function notified( $obj, $event, $msg )
+        function register( $msg, $method )
+        function notify( $msg, $level = "ERROR" )
+        /  *  @int@ * /function fields_array2var()
+        function master_form()
+        /  *  @array@ * /function fields_array2entry()
+        function display_table_with_edit( $sql, $headers, $index, $return_to = null )
+        function form_post_handler()
+        function display_edit_form( $form_def, $selected_id = -1, $return_to )
+        function combo_list( $sql, $order_by_field, $name, $selected_id=null, $none_option=false, $submit_on_change=false)
+        function combo_list_cells( $sql, $order_by_field, $label, $name, $selected_id = null, $none_option=false, $submit_on_change=false )
+        function combo_list_row( $sql, $order_by_field, $label, $name, $selected_id = null, $none_option=false, $submit_on_change=false )
+        function define_table()
+        function build_write_properties_array()
+	function build_properties_array()
+        function build_foreign_objects_array()
+        function array2var( $data_array )
+        function build_data_array()
+        function reset_values()
+        function extract_data_objects( $srvobj_array )
+        /  *  @int@ * /function extract_data_array( $assoc_array )
+        /  *  @int@ * /function extract_data_obj( $srvobj )
+        function build_json_data()
+        /  *  @bool@ * /function prep_json_for_send( $func = NULL )
+        function ll_walk_insert_fa()
+        function ll_walk_update_fa()
+        function reset_endpoint()
+        function error_handler( /  *  @Exception@ * / $e )
+        function retrieve_woo( $search_array = null )
+        function log_exception( $e, $client )
+ * INHERITS (table_interface)
+        function get( $field )
+        / * @bool@ *  /function set( $field, $value = null )
+        / * @bool@ *  /function validate( $data_value, $data_type )
+        / * none *  /function select_row( $set_caller = false )
+        / * @mysql_result@ *  /function select_table($fieldlist = " * ", / * @array@ *  /$where = null, / * @array@ *  /$orderby = null, / * @int@ *  /$limit = null)
+        function delete_table()
+        function update_table()
+        / * @bool@ *  /function check_table_for_id()
+        / * @int@ *  /function insert_table()
+        function create_table()
+        function alter_table()
+        / * @int@ *  /function count_rows()
+        / * @int@ *  /function count_filtered($where = null)
+        / * string *  /function getPrimaryKey()
+        / * none *  /function getByPrimaryKey()
+        function assoc2var( $assoc )            Take an associated array and take returned values and place into the calling MODEL class
+        function get( $field )
+        function query( $msg )
+        function buildLimit()
+        function buildSelect( $b_validate_in_table = false)
+        function buildFrom()
+        function buildWhere( $b_validate_in_table = false)
+        function buildOrderBy( $b_validate_in_table = false)
+        function buildGroupBy( $b_validate_in_table = false)
+        function buildHaving( )
+        function buildJoin()
+        function buildSelectQuery( $b_validate_in_table = false )
+        function clear_sql_vars()
+        function assoc2var( $assoc )
+        function var2caller()
 
  *
  * *******************************************************************/
@@ -214,6 +284,20 @@ class model_woo extends woo_interface {
 	 * ****************************************************************/
 	function select_product()
 	{
+		if( ! isset( $this->stock_id ) )
+			throw new Exception( "Stock_id must be set!", KSF_VALUE_NOT_SET );
+/*****THIS DOESN"T WORK AS EXPECTED
+		$this->clear_sql_vars();
+                $this->select_array = array( 'stock_id', 'woo_category_id', 'description', 'long_description', 'price', 'instock', 'sale_price', 'date_on_sale_from', 'date_on_sale_to', 'external_url', 'tax_status', 'tax_class', 'weight', 'length', 'width', 'height', 'shipping_class', 'upsell_ids', 'crosssell_ids', 'parent_id', 'attributes', 'default_attributes', 'variations', 'woo_id');
+		$this->from_array = array( $this->table_details['tablename'] );
+                $this->where_array = array( 'stock_id' => $this->stock_id );
+                $this->groupby_array = array();
+                $this->buildSelectQuery();
+                $res = $this->query( "Couldn't select woo category", "select");
+                $prod_data = db_fetch_assoc( $res );
+****/
+
+/***BELOW TESTED WORKING*/
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		$prod_sql = 	"select stock_id, woo_category_id, description, long_description, price, instock, 
 				sale_price, date_on_sale_from, date_on_sale_to, external_url, tax_status, tax_class, 
@@ -223,6 +307,7 @@ class model_woo extends woo_interface {
 		$prod_sql .= " where stock_id = '" . $this->stock_id . "'";
 		$res = db_query( $prod_sql, __LINE__ . " Couldn't select product(s) for export" );
 		$prod_data = db_fetch_assoc( $res );
+/****/
 		foreach( $this->fields_array as $fieldrow )
 		{
 			if( isset( $prod_data[ $fieldrow['name'] ] ) )
@@ -681,6 +766,103 @@ class model_woo extends woo_interface {
 		$this->notify( "Deleted sku " . $sku, "NOTIFY" );
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
+  	/***************************************************//**
+        * modified from inventory/manage/items.php
+	*
+	* 	As this is a "view" function shouldn't be
+	*	in here in the first place.  Making private
+	*	so it can't be called.
+        *********************************************************/
+        private function display_list_table()
+        {
+		$this->select_all_sql();
+
+/*
+	function display_edit_form( $form_def, $selected_id = -1, $return_to )
+        function combo_list( $sql, $order_by_field, $name, $selected_id=null, $none_option=false, $submit_on_change=false)
+		 return combo_input($name, $selected_id, $sql, $order_by_field,  'name',
+                array(
+                        'order' => $order_by_field,
+                        'spec_option' => $none_option,
+                        'spec_id' => ALL_NUMERIC,
+                        'select_submit'=> $submit_on_change,
+                        'async' => false,
+                ) );
+
+        function combo_list_cells( $sql, $order_by_field, $label, $name, $selected_id = null, $none_option=false, $submit_on_change=false )
+        function combo_list_row( $sql, $order_by_field, $label, $name, $selected_id = null, $none_option=false, $submit_on_change=false )
+*/
+
+		$label = _("Select an item:");
+		$name = 'stock_id';
+		$selected_id = $this->stock_id;
+		$all_option=false;	//_('New item')
+        	$submit_on_change=true; 
+		$all=check_value('show_inactive');
+		$editkey = false;
+
+
+		$valuefield = 'stock_id';
+		$namefield = 'description';	//order by
+
+                start_table(TABLESTYLE_NOBORDER);
+                start_row();
+	        combo_input($name, $selected_id, $this->sql, $valuefield, $namefield,
+		        array_merge(
+		          array(
+		                'format' => '_format_stock_items',
+		                'spec_option' => $all_option===true ?  _("All Items") : $all_option,
+		                'spec_id' => $all_items,
+		                'search_box' => true,
+		                'search' => array("stock_id", "description","category"),
+		                'search_submit' => get_company_pref('no_item_list')!=0,
+		                'size'=>10,
+		                'select_submit'=> $submit_on_change,
+		                'category' => 2,
+		                'order' => array('description','stock_id')
+		          ), $opts) );
+                $new_item = get_post('stock_id')=='';
+                check_cells(_("Show inactive:"), 'show_inactive', null, true);
+                end_row();
+                end_table();
+                if (get_post('_show_inactive_update')) {
+                        $Ajax->activate('stock_id');
+                        set_focus('stock_id');
+                }
+        }
+	function select_all()
+	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
+		$m_result = $this->select_table();
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+	}
+	function select_all_sql()
+	{
+		$this->clear_sql_vars();
+                $this->select_array = array( 
+			'stock_id', 'description', 'updated_ts', 'woo_last_update','woo_id', 'category_id', 'category', 'woo_category_id', 'long_description', 'units', 'price', 'instock', 'saleprice', 'date_on_sale_from', 'date_on_sale_to', 'external_url', 'tax_status', 'tax_class', 'weight', 'length', 'width', 'height', 'shipping_class', 'upsell_ids', 'crosssell_ids', 'parent_id', 'attributes', 'default_attributes', 'variations' );
+
+ 		$this->from_array = array( $this->table_details['tablename'] );
+/*
+                $this->where_array = array();
+                $this->groupby_array = array();
+                $this->orderby_array = array();
+                $this->having_array = array();
+*/
+                $this->buildSelectQuery();	//sets $this->sql
+	}
+	function select_woo_id_stock_id( $stock_id = null )
+	{
+		$this->clear_sql_vars();
+                $this->select_array = array( 'woo_id', 'stock_id', 'category', 'description' );
+ 		$this->from_array = array( $this->table_details['tablename'] );
+		if( null !== $stock_id )
+		{
+			$this->where_array = array( 'stock_id' => $stock_id );
+		}
+                $this->buildSelectQuery();	//sets $this->sql
+	}
+
 }
 
 ?>

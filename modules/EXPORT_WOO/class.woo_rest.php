@@ -47,8 +47,7 @@ class woo_rest
 	{
 		if( isset( $this->client ) )
 			$this->client->notify( $msg, $level );
-		else
-			parent::notify( $msg, $level );
+		//We don't inherit, so can't log ourselves
 	}
 
 	/*@array@*/ function send( $endpoint, $data = [], $client )

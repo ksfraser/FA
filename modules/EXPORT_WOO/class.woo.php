@@ -154,9 +154,9 @@ class.woo_product.php:                  $woo->update_woo_id();
 
 	*
 	********/
-	function update_woo_id()
+	function update_woo_id( $id )
 	{
-		$res = $this->model->update_woo_id();
+		$res = $this->model->update_woo_id( $id );
 	}
 	/********
 	*
@@ -432,6 +432,214 @@ class.woo_product.php:                  $woo->update_woo_last_update();
 	{
 		$res = $this->model->delete_by_sku( $sku );
 		$this->notify( "Deleted sku " . $sku, "NOTIFY" );
+	}
+	//TESTED - generates the view.  Edits/actions don't do anything though
+	function form_add_woo_id_to_sku()
+	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Enterting " . __METHOD__, "WARN" );
+		global $Ajax;
+		var_dump( $_POST );
+		var_dump( $_GET  );
+		if( isset( $_POST['selected_id'] ) )
+			$selected_id = $_POST['selected_id'];
+		else
+			$selected_id = -1;
+		if (list_updated('stock_id')) {
+        		$_POST['NewStockID'] = $stock_id = get_post('stock_id');
+    			//clear_data();
+        		$Ajax->activate('details');
+        		$Ajax->activate('controls');
+		}
+		$submit_button_var_name = 'addupdate';
+
+if (isset($_POST[ $submit_button_var_name]))
+{
+		var_dump( $_POST );
+		var_dump( $_GET  );
+}
+
+
+
+		$this->notify( __METHOD__ . ":" . __LINE__ . " POST:: " .print_r( $_POST , true ), "WARN" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " GET:: " .print_r( $_GET  , true ), "WARN" );
+
+		//Grab _Post and _Get variables...
+		start_form();
+/*
+		switch( $Mode )
+		{
+			case 'Edit':
+					$this->stock_id = $_POST['stock_id'];
+					break;
+			case 'Add':
+			case 'ADD_ITEM':
+			case 'Update':
+			case 'UPDATE_ITEM':
+					if( !check_num( 'woo_id', 0 ) )
+					{
+                				display_error( _("The WOO ID entered must be numeric."));
+                				set_focus('price');
+						break;
+        				}
+					$this->id = $_POST['woo_id'];
+					$this->stock_id = $_POST['stock_id'];
+					$this->add_woo_id_to_sku();
+					break;
+			case 'Delete':
+			case 'RESET':
+			default:
+				break;
+		}
+*/
+
+		$this->model->select_woo_id_stock_id();		//set SQL to display in form
+		$this->notify( $this->model->sql, "DEBUG" );
+
+		$summary_div_table = 'woo_id_table';
+		$combo_div_name = 'woo_id_stock';
+		$edit_div_name = 'woo_id_stock_edit';
+		$this->combo_woo_id_stock_id( $combo_div_name );
+		if( isset( $this->stock_id ) )
+			$this->table_woo_id_stock_id( $summary_div_table );
+		$this->edit_woo_id_stock_id( $edit_div_name );
+
+                if (get_post('_show_inactive_update')) {
+                        $Ajax->activate( $combo_div_name );
+                        set_focus( $summary_div_table );
+                }
+		if (list_updated('stock_id')) {
+			$this->stock_id = $_POST['stock_id'];
+	       	 	$Ajax->activate( $summary_div_table );
+	        	$Ajax->activate( $combo_div_name );
+		}
+		if (list_updated('stock_id') || isset($_POST['_curr_abrev_update']) || isset($_POST['_sales_type_id_update'])) {
+	       	 	// after change of stock, currency or salestype selector
+	        	// display default calculated price for new settings.
+	        	// If we have this price already in db it is overwritten later.
+	       	 	//unset($_POST['price']);
+	        	$Ajax->activate( $combo_div_name );	//Is this effectively a dupe of above?
+		}
+
+		if (@$_GET['popup'])
+		{
+       			hidden('_tabs_sel', get_post('_tabs_sel'));
+        		hidden('popup', @$_GET['popup']);
+		}
+
+        	end_form();
+       	 	//end_page(@$_GET['popup'], false, false);
+
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+
+	}
+	//TESTED - Generates the edit table but nothing happens with data
+	function edit_woo_id_stock_id( $div_name, $selected_id = -1 )
+	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Enterting " . __METHOD__, "WARN" );
+		div_start( $div_name);
+		start_table(TABLESTYLE2);
+		label_row("Stock ID " . $this->stock_id, $this->stock_id);
+		//text_row($label, $name, $value, $size, $max, $title=null, $params="", $post_label="")
+		text_row(_("WOO ID:"), 'woo_id', $this->woo_id, 5, 10);
+		//small_amount_row(_("WOO ID:"), 'woo_id', null, '', '');
+		end_table(1);
+		hidden('selected_id', $selected_id);
+		submit_add_or_update_center($selected_id == -1, '', 'both');
+		div_end();
+		set_focus('woo_id');
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+	}
+	//TESTED - Generates the combo select but changing doesn't do anything
+	function combo_woo_id_stock_id( $div_name  = 'woo_id' )
+	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Enterting " . __METHOD__, "WARN" );
+                $label = _("Select an item:");
+                $name = 'stock_id';
+                $order_by_field = 'stock_id';
+                $selected_id = $this->stock_id;
+                $all_option=false;      //_('New item')
+                //$submit_on_change=true;
+                $submit_on_change=false;
+                $all=check_value('show_inactive');
+                $all_items=check_value('show_inactive');
+                $editkey = true;
+                $editkey = false;
+		$opts = array();
+
+		$valuefield = 'stock_id';
+                $namefield = 'description';     //order by
+
+		div_start( $div_name );
+                start_table(TABLESTYLE_NOBORDER);
+                start_row();
+		echo combo_input($name, $selected_id, $this->model->sql, $valuefield, $namefield,
+                        array_merge(
+                          array(
+                                'format' => '_format_stock_items',
+                                'spec_option' => $all_option===true ?  _("All Items") : $all_option,
+                                'spec_id' => $all_items,
+                                'search_box' => true,
+                                'search' => array("stock_id", "description","category"),
+                                'search_submit' => get_company_pref('no_item_list')!=0,
+                                'size'=>10,
+                                'select_submit'=> $submit_on_change,
+                                'category' => 2,
+                                'order' => array('description','stock_id')
+                          ), $opts) );
+                //check_cells(_("Show missing woo_id:"), $div_name, null, true);
+                end_row();
+                end_table();
+
+		div_end();
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+	}
+	/*****************************************************************//*
+	* Display a table showing Stock ID, Woo ID and Description
+	*
+	*	TESTED generates table, but edit button doesn't do anything
+	*
+	* @param none
+	* @return none
+	*******************************************************************/
+	function table_woo_id_stock_id( $div_name )
+	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Enterting " . __METHOD__, "WARN" );
+		div_start( $div_name );
+		start_table(TABLESTYLE, "width=30%");
+		$th = array(_("stock_id"), _("description"), _("woo_id"), "", "");
+		table_header($th);
+		$k = 0; //row colour counter
+		$calculated = false;
+		$this->model->select_woo_id_stock_id( $this->stock_id );		//set SQL to display in form
+		$db_res = $this->model->query( "Can't grab woo_id data" );
+		while( $myrow = db_fetch($db_res) )
+		{
+        		alt_table_row_color($k);
+        		label_cell($myrow["stock_id"]);
+    			label_cell($myrow["description"]);
+    			amount_cell($myrow["woo_id"]);
+        		edit_button_cell("Edit".$myrow['stock_id'], _("Edit"));
+        		delete_button_cell("Delete".$myrow['stock_id'], _("Delete"));
+    			end_row();
+		}
+		end_table();
+		if( db_num_rows($db_res) == 0)
+		{
+        		//if (get_company_pref('add_pct') != -1)
+                	//$calculated = true;
+        		display_note(_("This is a random message until I get around to fixing it LOL."), 1);
+		}
+		div_end();
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+	}
+	function add_woo_id_to_sku()
+	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Enterting " . __METHOD__, "WARN" );
+		$woo = $this->model;
+		$woo->id = $this->id;
+		$woo->stock_id = $this->stock_id;
+		$woo->update_woo_id( $this->id );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 }
 

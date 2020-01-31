@@ -88,6 +88,8 @@ class EXPORT_WOO extends generic_fa_interface
 		$this->tabs[] = array( 'title' => 'QOH Populated', 'action' => 'qoh', 'form' => 'populate_qoh', 'hidden' => TRUE );
 		$this->tabs[] = array( 'title' => 'WOO Populated', 'action' => 'woo', 'form' => 'populate_woo', 'hidden' => TRUE );
 		$this->tabs[] = array( 'title' => 'Missing Products from internal WOO table', 'action' => 'missingwoo', 'form' => 'missing_woo', 'hidden' => FALSE );
+		$this->tabs[] = array( 'title' => 'Manually add Woo ID to a product in the internal WOO table', 'action' => 'form_add_woo_id_to_sku', 'form' => 'form_add_woo_id_to_sku', 'hidden' => FALSE );
+		$this->tabs[] = array( 'title' => 'Manually add Woo ID to a product in the internal WOO table', 'action' => 'add_woo_id_to_sku', 'form' => 'add_woo_id_to_sku', 'hidden' => TRUE  );
 		
 		$this->tabs[] = array( 'title' => 'Send Categories to WOO', 'action' => 'send_categories_form', 'form' => 'send_categories_form', 'hidden' => FALSE );
 		$this->tabs[] = array( 'title' => 'Categories Sent to WOO', 'action' => 'sent_categories_form', 'form' => 'sent_categories_form', 'hidden' => TRUE );
@@ -267,66 +269,88 @@ class EXPORT_WOO extends generic_fa_interface
 /*
 	function create_table_woo_prod_variable_master()
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entered " . __METHOD__, "WARN" );
 		require_once( 'class.woo_prod_variable_master.php' );
 		$wpvm = new woo_prod_variable_master( $this->woo_server, $this->woo_ck, $this->woo_cs, null, $this );
 		$wpvm->create_table(); 
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function create_woo_product_variable_master_form()
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entered " . __METHOD__, "WARN" );
 		require_once( 'class.woo_prod_variable_master.php' );
 		$wpvm = new woo_prod_variable_master($this->woo_server, $this->woo_ck, $this->woo_cs, null, $this );
 		$wpvm->master_form();
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function create_table_woo_prod_variable_sku_full()
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entered " . __METHOD__, "WARN" );
 		require_once( 'class.woo_prod_variable_sku_full.php' );
 		$wpvm = new woo_prod_variable_sku_full( $this->woo_server, $this->woo_ck, $this->woo_cs, null, $this );
 		$wpvm->create_table(); 
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function create_woo_product_variable_sku_full_form()
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entered " . __METHOD__, "WARN" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entered " . __METHOD__, "WARN" );
 		require_once( 'class.woo_prod_variable_sku_full.php' );
 		$wpvm = new woo_prod_variable_sku_full($this->woo_server, $this->woo_ck, $this->woo_cs, null, $this );
 		$wpvm->master_form();
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function create_table_woo_prod_variable_sku_combos()
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entered " . __METHOD__, "WARN" );
 		require_once( 'class.woo_prod_variable_sku_combos.php' );
 		$wpvm = new woo_prod_variable_sku_combos( $this->woo_server, $this->woo_ck, $this->woo_cs, null, $this );
 		$wpvm->create_table(); 
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function create_woo_product_variable_sku_combos_form()
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entered " . __METHOD__, "WARN" );
 		require_once( 'class.woo_prod_variable_sku_combos.php' );
 		$wpvm = new woo_prod_variable_sku_combos($this->woo_server, $this->woo_ck, $this->woo_cs, null, $this );
 		$wpvm->master_form();
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function create_table_woo_prod_variable_variables()
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entered " . __METHOD__, "WARN" );
 		require_once( 'class.woo_prod_variable_variables.php' );
 		$wpvm = new woo_prod_variable_variables( $this->woo_server, $this->woo_ck, $this->woo_cs, null, $this );
 		$wpvm->create_table(); 
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function create_woo_product_variable_variables_form()
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entered " . __METHOD__, "WARN" );
 		require_once( 'class.woo_prod_variable_variables.php' );
 		$wpvm = new woo_prod_variable_variables($this->woo_server, $this->woo_ck, $this->woo_cs, null, $this );
 		$wpvm->master_form();
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function create_table_woo_prod_variables_values()
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entered " . __METHOD__, "WARN" );
 		require_once( 'class.woo_prod_variables_values.php' );
 		$wpvm = new woo_prod_variables_values( $this->woo_server, $this->woo_ck, $this->woo_cs, null, $this );
 		$wpvm->create_table(); 
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function create_woo_product_variables_values_form()
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entered " . __METHOD__, "WARN" );
 		require_once( 'class.woo_prod_variables_values.php' );
 		$wpvm = new woo_prod_variables_values($this->woo_server, $this->woo_ck, $this->woo_cs, null, $this );
 		$wpvm->master_form();
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function create_table_woo_prod_variable_child()
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entered " . __METHOD__, "WARN" );
 		$table_details = array();
 		$fields_array = array();
 		$fields_array[] = array('name' => 'id_woo_prod_variable_child', 'type' => 'int(11)', 'auto_increment' => 'TRUE' );
@@ -339,38 +363,50 @@ class EXPORT_WOO extends generic_fa_interface
 		$table_details['index'][0] = array( 'name' => "idx_master_child", 'columns' => "master_stock_id, child_stock_id" );
 
 		$this->create_table( $table_details, $fields_array );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function create_coupons_form()
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entered " . __METHOD__, "WARN" );
 		require_once( 'class.woo_coupons.php' );
 		$coupons = new woo_coupons( $this->woo_server, $this->woo_ck, $this->woo_cs, null, $this );
 		$coupons->debug = $this->debug;
 		$coupons->coupons_form();
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function created_coupons_form()
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entered " . __METHOD__, "WARN" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 */
 	function form_reset_store()
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entered " . __METHOD__, "WARN" );
 		$this->call_table( 'reset_store_act', "Reset the Woocommerce Store" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function reset_store_act()
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entered " . __METHOD__, "WARN" );
 	/*	foreach( $this->modules as $module )
 		{
 			$module->rebuild_woocommerce();
 		}
 	*/
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 			
 	}
 	function form_products_export()
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entered " . __METHOD__, "WARN" );
 		//$this->call_table( 'pexed', "Export" );
 		$this->call_table( 'qoh', "QOH" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function call_table( $action, $msg )
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entered " . __METHOD__, "WARN" );
                 start_form(true);
                  start_table(TABLESTYLE2, "width=40%");
                  table_section_title( $msg );
@@ -378,6 +414,7 @@ class EXPORT_WOO extends generic_fa_interface
                  end_table(1);
                  submit_center( $action, $msg );
                  end_form();
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	/***********************************************************************
 	*
@@ -393,12 +430,47 @@ class EXPORT_WOO extends generic_fa_interface
 	************************************************************************/
 	function missing_woo()
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entered " . __METHOD__, "WARN" );
 		require_once( 'class.woo.php' );
 		$woo = new woo( null, null, null, null, $this );
 		$woo->missing_from_table();	
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+	}
+	/***********************************************************************
+	* Add the Woo_id to a product manually
+	*
+	*	In our testing there is a couple of products that won't match
+	*	up nicely in the search so can't have the invalid woo_id added.
+	*	This will let us do it manually.
+	*
+	***********************************************************************/
+	function form_add_woo_id_to_sku()
+	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entered " . __METHOD__, "WARN" );
+		require_once( 'class.woo.php' );
+		$woo = new woo( null, null, null, null, $this );
+		$woo->form_add_woo_id_to_sku();
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+	}
+	/***********************************************************************
+	* Add the Woo_id to a product manually
+	*
+	*	In our testing there is a couple of products that won't match
+	*	up nicely in the search so can't have the invalid woo_id added.
+	*	This will let us do it manually.
+	*
+	***********************************************************************/
+	function add_woo_id_to_sku()
+	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entered " . __METHOD__, "WARN" );
+		require_once( 'class.woo.php' );
+		$woo = new woo( null, null, null, null, $this );
+		$woo->add_woo_id_to_sku();
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function sales_pricing()
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entered " . __METHOD__, "WARN" );
 		global $path_to_root;
 /*
 		start_table(TABLESTYLE_NOBORDER);
@@ -453,6 +525,7 @@ class EXPORT_WOO extends generic_fa_interface
 		div_end();
 		
 		hidden('popup', @$_REQUEST['popup']);
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function populate_qoh()
 	{
@@ -474,6 +547,7 @@ class EXPORT_WOO extends generic_fa_interface
 			$qoh->form_QOH_completed();
 			$this->call_table( 'woo', "WOO" );
 		}
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	/************************************************************************
 	 *
@@ -497,6 +571,7 @@ class EXPORT_WOO extends generic_fa_interface
 		display_notification("WOO");
 		$rowcount = $mwoo->populate_woo_table();
             	display_notification("$rowcount rows of items exist.");
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 /*
  */
@@ -511,6 +586,7 @@ class EXPORT_WOO extends generic_fa_interface
 	function export_rest_products_form()
 	{
 		$this->call_table( 'exported_rest_products', "Send Products via REST to WOO" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	/***********************************************************************
 	*
@@ -523,6 +599,7 @@ class EXPORT_WOO extends generic_fa_interface
 	function send_categories_form()
 	{
 		$this->call_table( "sent_categories_form", "Send Categories to WOO" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	/***********************************************************************
 	*
@@ -539,6 +616,7 @@ class EXPORT_WOO extends generic_fa_interface
 		$woo_category->debug = $this->debug;
 		$ret = $woo_category->send_categories_to_woo( $this->company_prefix );
 		display_notification( "Sent " . $ret . " categories to WooCommerce" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function exported_rest_variable_products()
 	{
@@ -633,6 +711,7 @@ class EXPORT_WOO extends generic_fa_interface
 			
 				$woo_product->create_product();		
 		}
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	/***********************************************************************
 	*
@@ -653,10 +732,12 @@ class EXPORT_WOO extends generic_fa_interface
             	display_notification( $extractcount . " Customer Imported.");
 		$this->call_table( 'import_order', "Import Another" );
 		$this->call_table( 'import_customer', "Import ALL Another" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function import_customer_form()
 	{
 		$this->call_table( 'imported_customer_form', "Get Customer from WOO" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	/***********************************************************************
 	*
@@ -677,10 +758,12 @@ class EXPORT_WOO extends generic_fa_interface
             	display_notification("Customer Exported.");
 		$this->call_table( 'export_order', "Export Another" );
 		$this->call_table( 'export_customer', "Export ALL Another" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function export_customer_form()
 	{
 		$this->call_table( 'exported_customer_form', "Send Customer to WOO" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	/***********************************************************************
 	*
@@ -701,10 +784,12 @@ class EXPORT_WOO extends generic_fa_interface
             	display_notification( $extractcount . " Orders Imported.");
 		$this->call_table( 'import_order', "Import Another" );
 		$this->call_table( 'import_orders', "Import ALL Another" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function import_orders_form()
 	{
 		$this->call_table( 'imported_orders_form', "Get Orders from WOO" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	/***********************************************************************
 	*
@@ -725,13 +810,16 @@ class EXPORT_WOO extends generic_fa_interface
             	display_notification("Orders Exported.");
 		$this->call_table( 'export_order', "Export Another" );
 		$this->call_table( 'export_orders', "Export ALL Another" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function export_orders_form()
 	{
 		$this->call_table( 'exported_orders_form', "Send Orders to WOO" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function exported_rest_simple_products()
 	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	/***********************************************************************
 	*
@@ -755,6 +843,7 @@ class EXPORT_WOO extends generic_fa_interface
             	display_notification( $sentcount . " Products sent and " . $updatecount . " updated.");
 		$this->call_table( 'export_rest_product', "Export Another" );
 		$this->call_table( 'export_rest_products', "Export ALL Another" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	/***********************************************************************
 	*
@@ -813,12 +902,14 @@ class EXPORT_WOO extends generic_fa_interface
 		submit_center( "exported_rest_products", "Export" );
 		$this->call_table( 'exported_rest_products', "Send Product via REST to WOO" );
 		end_form();
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function form_pricebook()
 	{
 		require_once( 'class.woo.php' );
 		$woo = new woo( null, null, null, null, $this );
 		$woo->create_price_book( $this->mailto, $this->mailfrom );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	/************************************************************************
 	 *
@@ -830,10 +921,12 @@ class EXPORT_WOO extends generic_fa_interface
 	{
 /*
  */	
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function export_file_form()
 	{
 		$this->call_table( 'pexed', "Create Export File for WOO" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	/************************************************************************
 	 *
@@ -959,6 +1052,7 @@ class EXPORT_WOO extends generic_fa_interface
 			mail($this->mailto, $subject, $uu_data, $headers);
             		display_notification("email sent to $this->mailto.");
 		}
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	function export_orders()
 	{
@@ -1077,6 +1171,7 @@ class EXPORT_WOO extends generic_fa_interface
 			mail($this->mailto, $subject, $uu_data, $headers);
 
 		}
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 }
 
