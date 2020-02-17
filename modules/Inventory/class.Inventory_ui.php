@@ -191,7 +191,12 @@ class Inventory_ui extends Inventory
 		$this->tabs[] = array( 'title' => 'Clear Cart', 'action' => 'clearcart', 'form' => 'clearcart_form', 'hidden' => TRUE );
 
 
-		$this->javascript = get_js_open_window(900, 500);
+		$this->javascript = "";
+                global $use_popup_windows;
+                if ($use_popup_windows)
+                {
+			$this->javascript .= get_js_open_window(900, 500);	//popup windows?
+		}
 		$this->javascript .= get_js_date_picker();
 
 		if( ! $this->isHoldingTankSet() )
@@ -201,6 +206,41 @@ class Inventory_ui extends Inventory
 		$this->config_values[] = array( 'pref_name' => 'showPricebookPrice', 'label' => 'Show the pricebook price on counting screen?(0/1)', 'type' => 'boolean' );
 		global $path_to_root;
 		$this->handlePOST();
+	}
+	function install()
+        {
+                if( isset( $this->redirect_to ) )
+                {
+                        header("location: " . $this->redirect_to );
+                }
+        }
+	/***************************************//**
+        *       Overriding because we originally didn't use MVC
+        *
+        *********************************************/
+        function base_page()
+        {
+        	page(_($this->help_context), false, false, "", $this->javascript);
+                $this->related_tabs();
+        }
+  	function show_form()
+        {
+		$action = $this->action; 
+		foreach( $this->tabs as $tab ) 
+		{ 
+			if( $action == $tab['action'] ) 
+			{ 
+				//Call appropriate form 
+				$form = $tab['form']; 
+				if( $this->debug > 2 ) 
+					echo "<br />" . __FILE__ . ":" . __LINE__ . " " .$form . "<br />"; 
+				if( method_exists( $this, $form) AND is_callable( $this->$form() ) ) 
+	`			{ 
+					echo "<br />" . __FILE__ . ":" . __LINE__ . " Calling UI class " .$form . "<br />"; 
+					$this->$form(); 
+				} 
+			} 
+		} 
 	}
 	/**//**
 	 * Clear the cart of all items
@@ -322,6 +362,7 @@ class Inventory_ui extends Inventory
 		} 
 		else
 		{
+			//$this->check_edit_conflicts();
 		}
 	}
 	/**************************************************//**

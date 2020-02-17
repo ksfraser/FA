@@ -24,6 +24,7 @@ define('ST_INVENTORY', 98 );	//For REFERENCES
  *	Need a reminder to set that config item.
  */
 
+/**********************************************************************************
 //from inventory/transfers.php
 $path_to_root = "../..";
 include_once($path_to_root . "/includes/ui/items_cart.inc");
@@ -67,6 +68,7 @@ set_page_security( @$_SESSION['InventoryItems']->trans_type,
                         'AddedDI' => 'SA_Inventory'
                         )
 );
+*********************************************************************************/
 
 
 
@@ -128,37 +130,6 @@ class Inventory extends generic_fa_interface
 		$this->path_to_root = $path_to_root;
 		$this->copyfromcount = 0;
 		$this->copytocount = 0;
-		
-		//$this->config_values[] = array( 'pref_name' => '', 'label' => '' );
-		//$this->config_values[] = array( 'pref_name' => 'mailto', 'label' => 'Email Address to mail the results.' );
-		$this->config_values[] = array( 'pref_name' => 'holdtank', 'label' => 'Inventory HOLDING tank Code.' );
-		//$this->config_values[] = array( 'pref_name' => 'url', 'label' => 'URL' );
-		
-		//The forms/actions for this module
-		//Hidden tabs are just action handlers, without accompying GUI elements.
-		//$this->tabs[] = array( 'title' => '', 'action' => '', 'form' => '', 'hidden' => FALSE );
-		$this->tabs[] = array( 'title' => 'Configuration', 'action' => 'config', 'form' => 'config_form', 'hidden' => FALSE );
-		$this->tabs[] = array( 'title' => 'Init Tables', 'action' => 'init_tables_form', 'form' => 'init_tables_form', 'hidden' => FALSE );
-		$this->tabs[] = array( 'title' => 'Init Tables Completed', 'action' => 'init_tables_completed_form', 'form' => 'init_tables_completed_form', 'hidden' => TRUE );
-		
-		$this->tabs[] = array( 'title' => 'Install Module', 'action' => 'install', 'form' => 'install', 'hidden' => TRUE );
-		$this->tabs[] = array( 'title' => 'Config Updated', 'action' => 'update', 'form' => 'updateprefs', 'hidden' => TRUE );
-		$this->tabs[] = array( 'title' => 'Inventory Scan', 'action' => 'scan_form', 'form' => 'scan_form', 'hidden' => FALSE );
-		$this->tabs[] = array( 'title' => 'Inventory Count', 'action' => 'Inventory_form', 'form' => 'Inventory_form', 'hidden' => FALSE );
-		//$this->tabs[] = array( 'title' => 'Inventory Over and Under', 'action' => 'overunder_form', 'form' => 'overunder_form', 'hidden' => FALSE );
-		$this->tabs[] = array( 'title' => 'Inventory Over and Under', 'action' => 'call_overunder', 'form' => 'overunder_form', 'hidden' => FALSE );
-		$this->tabs[] = array( 'title' => 'Inventory Over and Under', 'action' => 'overunder', 'form' => 'overunder_form', 'hidden' => TRUE );
-		$this->tabs[] = array( 'title' => 'Import Text File', 'action' => 'Import_text_file', 'form' => 'Import_text_file', 'hidden' => FALSE );
-		$this->tabs[] = array( 'title' => 'Process Transfer', 'action' => 'process', 'form' => 'process_form', 'hidden' => TRUE );
-
-		$this->tabs[] = array( 'title' => 'Transfer ALL inventory between locations', 'action' => 'xfer_all_to_location_form', 'form' => 'xfer_all_to_location_form', 'hidden' => FALSE );
-		$this->tabs[] = array( 'title' => 'Transfered ALL inventory between locations', 'action' => 'xfer_all_to_location', 'form' => 'xfer_all_to_location', 'hidden' => TRUE );
-		$this->tabs[] = array( 'title' => 'Import CSV', 'action' => 'call_import', 'form' => 'import_csv', 'hidden' => TRUE );
-
-
-		$this->javascript = get_js_open_window(900, 500);
-		$this->javascript .= get_js_date_picker();
-
 		//Using 998 and 999 to be the starting numbers for barcodes indicating location
 		$this->set_var( 'locationPrefix', "999" );
 		$this->set_var( 'locationPrefix2', "998" );
@@ -176,29 +147,18 @@ class Inventory extends generic_fa_interface
 		{
 			$this->setLocation( $_GET['location'] );
 		}
-	 	//$this->trans_type = ST_Inventory;
 		global $Refs;
-		//$this->reference = $Refs->get_next($this->trans_type);
-		//echo __LINE__ . "<br />\n";
 	        $this->reference = rand();
-		//echo __LINE__ . "<br />\n";
 		$this->create_cart();
-		//$this->submenu_choices();
-		//echo __LINE__ . "<br />\n";
+/***** CONTROLLER **************
 		$this->handlePOST();
-		//var_dump( $_POST );
-		//var_dump( $_SESSION );
-		//echo __LINE__ . "<br />\n";
+***** CONTROLLER **************/
 	}
         function install()
         {
                 $this->create_prefs_tablename();
                 $this->loadprefs();
                 $this->updateprefs();
-                if( isset( $this->redirect_to ) )
-                {
-                        header("location: " . $this->redirect_to );
-                }
         }
 	function create_inventory_count_table()
 	{
@@ -293,54 +253,6 @@ class Inventory extends generic_fa_interface
 		                meta_forward($_SERVER['PHP_SELF'], "AddedDN=$trans_no&Type=$so_type");
 		        }
 		}
-	}
-	function submenu_choices()
-	{
-		if (isset($_GET['AddedID'])) {
-		        $inventory_no = $_GET['AddedID'];
-		        display_notification_centered(sprintf( _("Order # %d has been entered."),$inventory_no));
-		
-		        submenu_view(_("&View This Order"), ST_Inventory, $inventory_no);
-		
-		        submenu_print(_("&Print This Order"), ST_Inventory, $inventory_no, 'prtopt');
-		        submenu_print(_("&Email This Order"), ST_Inventory, $inventory_no, null, 1);
-		        set_focus('prtopt');
-		
-		        submenu_option(_("Make &Delivery Against This Order"),
-		                "/sales/customer_delivery.php?OrderNumber=$inventory_no");
-		
-		        submenu_option(_("Work &Order Entry"),  "/manufacturing/work_inventory_entry.php?");
-		
-		        submenu_option(_("Enter a &New Order"), "/sales/sales_inventory_entry.php?NewOrder=0");
-		
-		        display_footer_exit();
-		} elseif (isset($_GET['UpdatedID'])) {
-		        $inventory_no = $_GET['UpdatedID'];
-		
-		        display_notification_centered(sprintf( _("Order # %d has been updated."),$inventory_no));
-		
-		        submenu_view(_("&View This Order"), ST_Inventory, $inventory_no);
-		
-		        submenu_print(_("&Print This Order"), ST_Inventory, $inventory_no, 'prtopt');
-		        submenu_print(_("&Email This Order"), ST_Inventory, $inventory_no, null, 1);
-		        set_focus('prtopt');
-		
-		        submenu_option(_("Confirm Order Quantities and Make &Delivery"),
-		                "/sales/customer_delivery.php?OrderNumber=$inventory_no");
-		
-		        submenu_option(_("Select A Different &Order"),
-		                "/sales/inquiry/sales_inventorys_view.php?OutstandingOnly=1");
-		
-		        display_footer_exit();
-		
-		} 
- 		else
-        		$this->check_edit_conflicts();
-
-	}
-	function check_edit_conflicts()
-	{
-		return;
 	}
 	function copy_from_session()
 	{
@@ -458,61 +370,12 @@ class Inventory extends generic_fa_interface
 		//display_notification( "Copy TO session location: " . $this->location );
 	        //$_SESSION['cart_id'] = $this->cart_id;
 	}
-
-	function line_start_focus() 
+	function gen_reference()
 	{
-	  global        $Ajax;
-	
-	  $Ajax->activate('items_table');
-	  set_focus('_stock_id_edit');
+		$this->reference = rand();
 	}
 
-	/*@bool@*/ 
-	function can_process() 
-	{
-	
-	        global $Refs, $SysPrefs;
-		$input_error = 0;
-	
-	       	if (!$Refs->is_valid($this->reference) )
-	        {
-	                display_error(_("You must enter a reference."));
-			$this->reference = rand();
-			return $this->can_process();
-	                //set_focus('ref');
-	                //$input_error = 1;
-	        }
-	        elseif (!is_new_reference($this->reference, ST_LOCTRANSFER))
-	        {
-	                //display_error(_("The entered reference is already in use.  Trying another"));
-			$this->reference = rand();
-			return $this->can_process();
-	                //set_focus('ref');
-	                $input_error = 1;
-	        }
-	        elseif (!is_date($this->document_date))
-	        {
-	                display_error(_("The entered transfer date is invalid."));
-	                set_focus('AdjDate');
-	                $input_error = 1;
-	        }
-	        elseif (!is_date_in_fiscalyear($this->document_date))
-	        {
-	                display_error(_("The entered date is not in fiscal year."));
-	                set_focus('AdjDate');
-	                $input_error = 1;
-	        }
-	        elseif ($this->holdtank == $this->location)
-	        {
-	                display_error(_("The locations to transfer from and to must be different."));
-	                set_focus('FromStockLocation');
-	                $input_error = 1;
-	        }
-	        if ($input_error == 1)
-			return FALSE;
-		else
-			return TRUE;
-	}
+
 
 	/*@bool@*/ 
 	function check_item_data()
