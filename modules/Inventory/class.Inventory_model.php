@@ -375,8 +375,6 @@ class Inventory extends generic_fa_interface
 		$this->reference = rand();
 	}
 
-
-
 	/*@bool@*/ 
 	function check_item_data()
 	{
@@ -949,7 +947,7 @@ class Inventory extends generic_fa_interface
 	//Assumption/requirement the passed in variable is a 1D array of SKUs.
 	function csv2cart( $lines_arr )
 	{
-		display_notification( __LINE__ );
+		//display_notification( __LINE__ );
 		$this->create_cart();
 		$this->add_quantity = 1;
 		foreach( $lines_arr as $line )

@@ -47,8 +47,9 @@ require_once( 'class.Inventory.php' );
  *	BUG: isHoldTankSet doesn't work - always returns FALSE.
  */
 
+
+/*** CONTROLLER ***
 //from inventory/transfers.php
-$path_to_root = "../..";
 include_once($path_to_root . "/includes/ui/items_cart.inc");
 include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
@@ -86,6 +87,8 @@ set_page_security( @$_SESSION['InventoryItems']->trans_type,
                         'AddedDI' => 'SA_Inventory'
                         )
 );
+*** CONTROLLER ***/
+$path_to_root = "../..";
 
 
 /************************************************************************************/
@@ -110,8 +113,8 @@ set_page_security( @$_SESSION['InventoryItems']->trans_type,
 class Inventory_ui extends Inventory
 {
 	//var $location;		//Inventory location
-	//var $holdtank;		//!< Location that acts as holding tank for corrections.  Config Value
-	//var $to_location;	//!< Used for the xfer_all functions
+	//var $model->holdtank;		//!< Location that acts as holding tank for corrections.  Config Value
+	//var $model->to_location;	//!< Used for the xfer_all functions
 	//var $from_location;	//!< Used for the xfer_all functions
 	//var $url;
 	//var $javascript; 	//in generic_interface 	//in generic_interface
@@ -143,6 +146,10 @@ class Inventory_ui extends Inventory
 	//var $change_line_number;
 	//var $table_interface;
 	var $showPricebookPrice; //!< Should we show the price on the inventory count screen to aid with price checking while counting
+
+	protected $title;
+	protected $page_title;
+	protected $tabs;
 	/********************************************************************************//**
 	 *
 	 * Constructor
@@ -166,7 +173,7 @@ class Inventory_ui extends Inventory
 	 * *********************************************************************************/
 	function __construct( $host, $user, $pass, $database, $pref_tablename )
 	{
-		
+		$this->tabs = array();
 		//The forms/actions for this module
 		//Hidden tabs are just action handlers, without accompying GUI elements.
 		//$this->tabs[] = array( 'title' => '', 'action' => '', 'form' => '', 'hidden' => FALSE );
@@ -184,8 +191,8 @@ class Inventory_ui extends Inventory
 		$this->tabs[] = array( 'title' => 'Process Transfer', 'action' => 'process', 'form' => 'process_form', 'hidden' => TRUE );
 		$this->tabs[] = array( 'title' => 'Process Transfer', 'action' => 'processall', 'form' => 'process_form', 'hidden' => TRUE );
 
-		$this->tabs[] = array( 'title' => 'Transfer ALL inventory between locations', 'action' => 'xfer_all_to_location_form', 'form' => 'xfer_all_to_location_form', 'hidden' => FALSE );
-		$this->tabs[] = array( 'title' => 'Transfer step 2 ALL inventory between locations', 'action' => 'xfer_all_to_location', 'form' => 'xfer_all_to_location', 'hidden' => TRUE );
+		$this->tabs[] = array( 'title' => 'Transfer ALL inventory between locations', 'action' => 'xfer_all_model->to_location_form', 'form' => 'xfer_all_model->to_location_form', 'hidden' => FALSE );
+		$this->tabs[] = array( 'title' => 'Transfer step 2 ALL inventory between locations', 'action' => 'xfer_all_model->to_location', 'form' => 'xfer_all_model->to_location', 'hidden' => TRUE );
 		$this->tabs[] = array( 'title' => 'Transfer ALL inventory to HOLDING (Zero this location)', 'action' => 'xfer_all_to_holding_form', 'form' => 'xfer_all_to_holding_form', 'hidden' => FALSE );
 		$this->tabs[] = array( 'title' => 'Transfered ALL inventory to HOLDING', 'action' => 'xfer_all_to_holding', 'form' => 'xfer_all_to_holding', 'hidden' => TRUE );
 		$this->tabs[] = array( 'title' => 'Clear Cart', 'action' => 'clearcart', 'form' => 'clearcart_form', 'hidden' => TRUE );
@@ -203,7 +210,7 @@ class Inventory_ui extends Inventory
 			$_POST['action'] = 'config';
 
 		parent::__construct( $host, $user, $pass, $database, $pref_tablename );
-		$this->config_values[] = array( 'pref_name' => 'showPricebookPrice', 'label' => 'Show the pricebook price on counting screen?(0/1)', 'type' => 'boolean' );
+		$this->model->config_values[] = array( 'pref_name' => 'showPricebookPrice', 'label' => 'Show the pricebook price on counting screen?(0/1)', 'type' => 'boolean' );
 		global $path_to_root;
 		$this->handlePOST();
 	}
@@ -263,14 +270,14 @@ class Inventory_ui extends Inventory
 		//Until we have coded this without bugs, we need to return TRUE.
 		return TRUE;
 
-		//For whatever reason we are not finding the holdtank value at the time this is called.
+		//For whatever reason we are not finding the model->holdtank value at the time this is called.
 		//Constructor hasn't happened, so maybe we don't have a DB connection.
 		//Do we need an action handler like Wordpress where you can insert functions
 		//into the normal work flow so that this can be checked before going to a form in tabs?
 		if( $this->is_installed() )
 		{
 			$this->loadprefs();
-			if( isset( $this->holdtank ) AND strlen( $this->holdtank ) > 1 )
+			if( isset( $this->model->holdtank ) AND strlen( $this->model->holdtank ) > 1 )
 				return TRUE;
 			else
 				return FALSE;
@@ -291,19 +298,19 @@ class Inventory_ui extends Inventory
 			$this->document_date = $_POST['document_date'];
 		if (isset($_POST['location']))
 		{
-			$this->location = $_POST['location'];
+			$this->model->location = $_POST['location'];
 		}
 		if (isset($_POST['from_location']))
 		{
 			$this->from_location = $_POST['from_location'];
 		}
-		if (isset($_POST['to_location']))
+		if (isset($_POST['model->to_location']))
 		{
-			$this->to_location = $_POST['to_location'];
+			$this->model->to_location = $_POST['model->to_location'];
 		}
 		else
 		{
-			$this->to_location = $this->holdtank;
+			$this->model->to_location = $this->model->holdtank;
 		}
 		if (isset($_POST['UpdateItem']))
 		{
@@ -370,11 +377,15 @@ class Inventory_ui extends Inventory
 	 *
 	 * @returns NONE
 	 * ***************************************************/
-	function line_start_focus() 
+	function line_start_focus( $activate = 'items_table', $set_focus = '_stock_id_edit' ) 
 	{
-	  global        $Ajax;
-	  $Ajax->activate('items_table');
-	  set_focus('_stock_id_edit');
+	  	global        $Ajax;
+	  	$Ajax->activate( $activate );
+	  	set_focus( $set_focus );
+	}
+	function set_focus( $set_focus )
+	{
+	  	set_focus( $set_focus );
 	}
 
 	/**//**
@@ -425,7 +436,7 @@ class Inventory_ui extends Inventory
 	function handle_update_item()
 	{
 		parent::handle_update_item();	//handle data part
-		display_notification( __LINE__ . ' updated counted for ' . $this->line_items[$_POST['LineNo']]['stock_id'] . ' to ' . $this->line_items[$_POST['LineNo']]['counted'] );
+		display_notification( __LINE__ . ' updated counted for ' . $this->model->line_items[$_POST['LineNo']]['stock_id'] . ' to ' . $this->model->line_items[$_POST['LineNo']]['counted'] );
 	        $this->page_modified();		//handle UI part
 	  	$this->line_start_focus();
 	}
@@ -434,23 +445,11 @@ class Inventory_ui extends Inventory
 	 * */
 	function handle_delete_item($line_no)
 	{
-		display_notification( __LINE__ . ' handle_delete removing ' . $line_no . " item " . $this->line_items[$line_no]['stock_id'] );
+		display_notification( __LINE__ . ' handle_delete removing ' . $line_no . " item " . $this->model->line_items[$line_no]['stock_id'] );
 		parent::handle_delete_item($line_no);	//handle data part
 	        $this->page_modified();			//handle UI part
 	  	$this->line_start_focus();
 	}
-	/**//**
-	 * \fn function isStockid( $stock_id )
-	 * \brief inherited
-	 * \param string $stock_id
-	 * \return bool
-	 * */
-	/**//**
-	 * \fn function isItemCode( $item_code )
-	 * \brief inherited
-	 * \param string $item_code
-	 * \return bool
-	 * */
 
 	/**//**
 	 * Get the description from stock_master for the item
@@ -500,10 +499,10 @@ class Inventory_ui extends Inventory
         	table_section(1);
 		//label, name, selected, showAll, submit_on_change
 		//locations_list_cells(_("Inventory Location:"), 'from_location', $this->from_location, FALSE, FALSE);	//includes/ui/ui_lists.inc
-		if( "xfer_all_to_location_form" == $hidden_action OR "xferall_form" == $hidden_action )
+		if( "xfer_all_model->to_location_form" == $hidden_action OR "xferall_form" == $hidden_action )
 		{
         		locations_list_cells(_("Inventory From Location:"), 'from_location', $this->from_location, FALSE, TRUE);	//includes/ui/ui_lists.inc
-        		locations_list_cells(_("Inventory TO Location:"), 'to_location', $this->to_location, FALSE, TRUE);	//includes/ui/ui_lists.inc
+        		locations_list_cells(_("Inventory TO Location:"), 'model->to_location', $this->model->to_location, FALSE, TRUE);	//includes/ui/ui_lists.inc
 		}
 		else
 	        	locations_list_cells(_("Inventory Location:"), 'from_location', $this->from_location, FALSE, TRUE);	//includes/ui/ui_lists.inc
@@ -598,6 +597,7 @@ class Inventory_ui extends Inventory
 		        //      5 - loc set, media set, new media scanned but previous not cleared for some reason
 
 		//$this->copy_from_session();
+		start_form();
 		if( isset(  $_POST['AddedID'] ) )
 		{
 			echo "View transfer <href=" . $this->path_to_root . "/inventory/view/view_transfer.php?trans_no=" . $_POST['AddedID'] . ">" . $_POST['AddedID'] . "</a><br />"; 
@@ -676,7 +676,7 @@ class Inventory_ui extends Inventory
 
 	/*****************************************************************************************************************
 	 *
-	 * 	function xfer_all_to_location
+	 * 	function xfer_all_model->to_location
 	 *
 	 * 	This function will transfer all inventory from a given location
 	 * 	into another.  You would use this if you have a temporary
@@ -688,21 +688,23 @@ class Inventory_ui extends Inventory
 	 *
 	 *
 	 *****************************************************************************************************************/
-	function xfer_all_to_location()
+/*** CONTROLLER ***
+	function xfer_all_model->to_location()
 	{
 		//display_notification( __method__ . ":" . __LINE__  );
 		//We are given the from, to and date
-		$this->to_location = $_POST['to_location'];
+		$this->model->to_location = $_POST['to_location'];
 		$this->xfer_all_settings( "xfer" );
 		$this->xferall_form();	
 	}
 	function xfer_all_to_holding()
 	{
 		//display_notification( __method__ . ":" . __LINE__  );
-		$this->to_location = $this->holdtank;
+		$this->model->to_location = $this->model->holdtank;
 		$this->xfer_all_settings( "zero" );
 		$this->overunder_form();
 	}
+*** CONTROLLER ***/
 	//Find the list of items in inventory in the FROM location, and add to transfer list
 	/****************************************************************//**
 	 *
@@ -716,8 +718,6 @@ class Inventory_ui extends Inventory
 	 * *******************************************************************/
 	function xfer_all_to_holding_form()
 	{
-		//display_notification( __method__ . ":" . __LINE__  );
-		//Used when we stand down a location like Highland Games
 		start_form();
 		$this->display_inventory_header( __FUNCTION__ );
         	$this->call_table( 'xfer_all_to_holding', "Transfer ALL inventory" );
@@ -726,7 +726,7 @@ class Inventory_ui extends Inventory
 	}
 	/****************************************************************//**
 	 *
-	 *	xfer_all_to_location_form displays a button to initiate the transfer
+	 *	xfer_all_model->to_location_form displays a button to initiate the transfer
 	 *
 	 *	This function displays the form with a button to initiate a transfer
 	 *	of ALL inventory from one location to another.  It zero's the
@@ -735,22 +735,39 @@ class Inventory_ui extends Inventory
 	 *	that count to the TO location.
 	 *
 	 * *******************************************************************/
-	function xfer_all_to_location_form()
+	function xfer_all_model->to_location_form()
 	{
-		//display_notification( __method__ . ":" . __LINE__  );
 		start_form();
 		$this->display_inventory_header( __FUNCTION__ );
-        	$this->call_table( 'xfer_all_to_location', "Transfer ALL inventory" );
+        	$this->call_table( 'xfer_all_model->to_location', "Transfer ALL inventory" );
 		end_form();
+/**** From Controller
+    		start_outer_table(TABLESTYLE, "width=70%");
+                table_section(1);
+                locations_list_cells(_("Inventory FROM Location:"), 'from_location', $this->from_location, FALSE, FALSE);       //includes/ui/ui_lists.inc
+                locations_list_cells(_("Inventory TO Location:"), 'model->to_location', $this->model->to_location, FALSE, FALSE);     //includes/ui/ui_lists.inc
+                table_section(2, "33%");
+                //          $label, $name, $title=null, $check=null, $inc_days=0, $inc_months=0, $inc_years=0, $params=null, $submit_on_change=false)
+                date_row(_("Date:"), 'document_date', $this->document_date, true, 0, 0, 0, null, TRUE);
+                table_section(3, "33%");
+                //hidden( 'action', $hidden_action );
+                end_outer_table();
+                $this->call_table( 'xfer_all_model->to_location', "Transfer ALL inventory" );
+**** From Controller/
+
+	}
+	function set_page_title( $title )
+	{
+		$this->title = $title;
+  		$_SESSION['page_title'] = _($help_context = $this->title);
+		$this->page_title = $_SESSION['page_title'];
 	}
 	 
 	function xferall_form()
 	{
 		//In this form we will display the list of items the system thinks is on hand
 
-		$this->title = "Transfer ALL Inventory from one location to another";
-  		$_SESSION['page_title'] = _($help_context = $this->title);
-		$this->page_title = $_SESSION['page_title'];
+		$this->set_page_title( "Transfer ALL Inventory from one location to another" );
 
 			$this->get_items_qoh_location();
 			$this->copy_to_session();
@@ -763,22 +780,19 @@ class Inventory_ui extends Inventory
 			$this->copy_to_session();
 			hidden( 'AdjDate', $this->document_date );
 			hidden( 'from_location', $this->from_location );
-			hidden( 'to_location', $this->to_location );
-			hidden( 'ref', $this->reference );
+			hidden( 'model->to_location', $this->model->to_location );
+			hidden( 'ref', $this->model->reference );
 			hidden( 'action', 'processall' );
-			submit_center('process', _("Transfer Inventory from " . $this->from_location . " to " . $this->to_location) );
+			submit_center('process', _("Transfer Inventory from " . $this->from_location . " to " . $this->model->to_location) );
 			end_form();
 	}
 	function overunder_form()
 	{
-		//display_notification( __method__ . ":" . __LINE__  );
 		//In this form we will display the list of items we've taken in inventory and show
 		//how many are in stock for the location selected.
 
-		$this->title = "Inventory Over and Under";
-  		$_SESSION['page_title'] = _($help_context = $this->title);
-		$this->page_title = $_SESSION['page_title'];
-		if( count( $this->line_items ) > 0 )
+		$this->set_page_title( "Inventory Over and Under" );
+		if( count( $this->model->line_items ) > 0 )
 		{
 			$this->get_items_qoh_location();
 			$this->copy_to_session();
@@ -790,9 +804,11 @@ class Inventory_ui extends Inventory
 			$this->display_adjustment_items(_("Items for Transfer"), $doEdit, $showStock, "inventory");
 			$this->copy_to_session();
 			hidden( 'AdjDate', $this->document_date );
+                	hidden( 'FromStockLocation', $this->model->location );
+                	hidden( 'ToStockLocation', $this->model->holdtank );
 			hidden( 'from_location', $this->from_location );
-			hidden( 'to_location', $this->holdtank );
-			hidden( 'ref', $this->reference );
+			hidden( 'model->to_location', $this->model->holdtank );
+			hidden( 'ref', $this->model->reference );
 			hidden( 'action', 'process' );
 			submit_center('process', _("Transfer Difference to Holding") );
 			end_form();
@@ -800,11 +816,9 @@ class Inventory_ui extends Inventory
 	}
 	function Inventory_form()
 	{
-		//display_notification( __method__ . ":" . __LINE__  );
-  //      	global $Refs;
-		$this->title = "Inventory Stock Taking";
-		$_SESSION['page_title'] = _($help_context = $this->title);
-		$this->to_location = $this->holdtank;
+		$this->set_page_title( "Inventory Stock Taking" );
+
+		$this->model->to_location = $this->model->holdtank;
 
                 start_form();
 		if( isset(  $_POST['AddedID'] ) )
@@ -823,7 +837,6 @@ class Inventory_ui extends Inventory
 		submit_center_last('clearcart', _("Clear the cart") );
 		div_end();
 		end_form();
-	
 	}
 	/*Not currently called?*/
 	function config_form()
@@ -845,7 +858,7 @@ class Inventory_ui extends Inventory
                         //label_cell($table_st);
                         //end_row();
 		//This currently only puts text boxes on the config screen!
-                foreach( $this->config_values as $row )
+                foreach( $this->model->config_values as $row )
                 {
                                 text_row($row['label'], $row['pref_name'], $this->$row['pref_name'], 20, 40);
                 }
@@ -872,11 +885,9 @@ class Inventory_ui extends Inventory
 	function process_form()
 	{
 		//display_notification( __method__ . ":" . __LINE__  );
-		$this->title = "Process Inventory Transfer";
-  		$_SESSION['page_title'] = _($help_context = $this->title);
+		$this->set_page_title( "Process Inventory Transfer" );
                 start_form();
-		//display_notification( __LINE__ . " Process Form" );
-		$this->reference = 'auto';
+		$this->model->reference = 'auto';
 		if( $this->can_process() )
 			$this->process();
 		else
@@ -902,7 +913,7 @@ class Inventory_ui extends Inventory
 		{
 	        									$th[] = ""; $th[] = "";
 		}
-		$linecount = count($this->line_items);
+		$linecount = count($this->model->line_items);
 	        if ( $linecount )
 		{
 			echo "Line Count: " . $linecount;
@@ -914,7 +925,7 @@ class Inventory_ui extends Inventory
 		$line_no = 0;
 	       	if ( $linecount )
 		{
-	        	foreach ($this->line_items as $stock_item)
+	        	foreach ($this->model->line_items as $stock_item)
 		        {
 		                if ($id != $line_no)
 		                {
@@ -945,15 +956,15 @@ class Inventory_ui extends Inventory
 			                			$stock_item['quantity'] = $stock_item['counted'] - $stock_item['qoh'];
 							else
 			                			$stock_item['quantity'] = $stock_item['counted'];
-							$this->line_items[$line_no]['quantity'] = -$stock_item['quantity'];
+							$this->model->line_items[$line_no]['quantity'] = -$stock_item['quantity'];
 						}
 						else if( "xfer" == $action )
 						{
-							$this->line_items[$line_no]['quantity'] = $stock_item['qoh'];
+							$this->model->line_items[$line_no]['quantity'] = $stock_item['qoh'];
 						}
 						else
 						{
-							$this->line_items[$line_no]['quantity'] = 0;
+							$this->model->line_items[$line_no]['quantity'] = 0;
 						}
 
 						if( $showStock )
@@ -1008,7 +1019,7 @@ class Inventory_ui extends Inventory
 	        unset( $th[3] );
 	        }
 	
-	        if ( count($this->line_items) )
+	        if ( count($this->model->line_items) )
 	             $th[]= '';
 	
 	        table_header($th);
@@ -1093,20 +1104,20 @@ class Inventory_ui extends Inventory
 		if( $id >= 0 )
 		{
 			//We are editing a line item
-			$stock_id = $this->line_items[$id]['stock_id'];
+			$stock_id = $this->model->line_items[$id]['stock_id'];
 		}
 	        if ($line_no != -1 && $line_no == $id)
 	        {
 			//Editing THIS item.
 	                hidden('stock_id', $stock_id);
 		        view_stock_status_cell($stock_id);
-	                label_cell($this->line_items[$id]['item_description'], 'nowrap');
+	                label_cell($this->model->line_items[$id]['item_description'], 'nowrap');
 	                hidden('LineNo', $line_no);
 			//quantity cell not in original...
-			if( isset( $this->line_items[$id]['counted'] ) )
-				$amount = $this->line_items[$id]['counted'];
-			if( isset( $this->line_items[$id]['units'] ) )
-	        		$units = $this->line_items[$id]['units'];
+			if( isset( $this->model->line_items[$id]['counted'] ) )
+				$amount = $this->model->line_items[$id]['counted'];
+			if( isset( $this->model->line_items[$id]['units'] ) )
+	        		$units = $this->model->line_items[$id]['units'];
 	        }
 	        else
 	        {
