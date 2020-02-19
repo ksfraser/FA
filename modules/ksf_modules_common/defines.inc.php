@@ -59,7 +59,7 @@ define( 'SUPP_REF_LENGTH', 30 );
 define( 'SUPP_ACCOUNT_NO_LENGTH', 40 );
 
 //EVENTLOOP Events
-$eventcount = 0;
+$eventcount = 5730;
 define( 'WOO_DUMMY_EVENT', $eventcount ); $eventcount++;	//Used by woo_interface:build_interestedin as example
 define( 'WOO_PRODUCT_INSERT', $eventcount ); $eventcount++;
 define( 'WOO_PRODUCT_UPDATE', $eventcount ); $eventcount++;
@@ -74,6 +74,20 @@ define( 'FA_PRODUCT_PRICE_UPDATE', $eventcount ); $eventcount++;
 define( 'FA_PRODUCT_QOH_UPDATE', $eventcount ); $eventcount++;
 define( 'FA_PRODUCT_CATEGORY_UPDATE', $eventcount ); $eventcount++;
 define( 'FA_CUSTOMER_CREATED', $eventcount ); $eventcount++;
+
+//More EVENTS
+define( 'FA_NEW_STOCK_ID', $eventcount ); $eventcount++;
+define( 'FA_PRODUCT_UPDATED', $eventcount ); $eventcount++;
+define( 'FA_PRODUCT_LINKED', $eventcount ); $eventcount++;
+define( 'FA_PRICE_UPDATED', $eventcount ); $eventcount++;
+define( 'KSF_WOO_RESET_ENDPOINT', $eventcount ); $eventcount++;
+define( 'KSF_WOO_INSTALL', $eventcount ); $eventcount++;
+define( 'KSF_SALE_ADDED', $eventcount ); $eventcount++;
+define( 'KSF_SALE_REMOVED', $eventcount ); $eventcount++;
+define( 'KSF_SALE_EXPIRED', $eventcount ); $eventcount++;
+define( 'KSF_WOO_GET_PRODUCT', $eventcount ); $eventcount++;
+define( 'KSF_WOO_GET_PRODUCTS_ALL', $eventcount ); $eventcount++;
+
 
 
 function currentdate()
@@ -123,16 +137,19 @@ $stock_id_tables[] = array( 'table' => TB_PREF . 'woo', 'column' => 'stock_id', 
  *
  *
  * ****************************************************************************/
-define( 'KSF_FIELD_NOT_SET', 5731 );
-define( 'KSF_VALUE_NOT_SET', 5732 );
-define( 'KSF_FIELD_NOT_CLASS_VAR', 5733 );
-define( 'KSF_PRIKEY_NOT_SET', 5734 );
-define( 'KSF_PRIKEY_NOT_DEFINED', 5735 );
-define( 'KSF_TABLE_NOT_DEFINED', 5736 );
-define( 'KSF_NO_MATCH_FOUND', 5737 );
-define( 'KSF_INVALID_DATA_TYPE', 5738 );
-define( 'KSF_INVALID_DATA_VALUE', 5739 );
-define( 'KSF_UNKNOWN_DATA_TYPE', 5740 );
+$eventcount = 573000;
+define( 'KSF_FIELD_NOT_SET', $eventcount ); $eventcount++;
+define( 'KSF_VALUE_NOT_SET', $eventcount ); $eventcount++;
+define( 'KSF_FIELD_NOT_CLASS_VAR', $eventcount ); $eventcount++;
+define( 'KSF_PRIKEY_NOT_SET', $eventcount ); $eventcount++;
+define( 'KSF_PRIKEY_NOT_DEFINED', $eventcount ); $eventcount++;
+define( 'KSF_TABLE_NOT_DEFINED', $eventcount ); $eventcount++;
+define( 'KSF_NO_MATCH_FOUND', $eventcount ); $eventcount++;
+define( 'KSF_INVALID_DATA_TYPE', $eventcount ); $eventcount++;
+define( 'KSF_INVALID_DATA_VALUE', $eventcount ); $eventcount++;
+define( 'KSF_UNKNOWN_DATA_TYPE', $eventcount ); $eventcount++;
+define( 'KSF_FCN_NOT_OVERRIDDEN', $eventcount ); $eventcount++;
+define( 'KSF_FCN_PATH_OVERRIDE', $eventcount ); $eventcount++;
 /************************************************************************//**
  * Data Access levels
  *  Think filesystem RWX values R = 0/1, W = 0/2 and X = 0/4
