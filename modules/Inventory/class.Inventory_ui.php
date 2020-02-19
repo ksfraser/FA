@@ -1167,6 +1167,7 @@ class Inventory_ui extends Inventory
 	          textarea_row(_("Memo"), 'memo_', null, 50, 3);
 	          end_table(1);
 	}
+/*** CONTROLLER ***
 	function processing_start()
 	{
 	    $this->page_processing(false);
@@ -1179,6 +1180,7 @@ class Inventory_ui extends Inventory
 	        $this->page_processing(true);
 	    unset($_SESSION['Processing']);
 	}
+*** CONTROLLER ***/
 	/*not currently called*/	
 	function confirm_dialog($submit, $msg) {
 	        if (find_post($submit)) {
@@ -1221,7 +1223,5 @@ class Inventory_ui extends Inventory
 		//header( "Location: " . $_SERVER['REQUEST_URI'] );
 		echo '<script>parent.window.location.reload(true);</script>';
 	}
-
-
 }
 ?>

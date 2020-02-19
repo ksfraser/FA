@@ -1558,13 +1558,17 @@ class Inventory extends generic_fa_interface
 	}
 	function adjustment_options_controls()
 	{
+		$this->ui->adjustment_options_controls();
 	}
 	function table_memo_field()
 	{
+		$this->ui->table_memo_field();
+/*** UI ***
 	          echo "<br>";
 	          start_table();
 	          textarea_row(_("Memo"), 'memo_', null, 50, 3);
 	          end_table(1);
+*** UI ***/
 	}
 	function processing_start()
 	{
@@ -1580,6 +1584,8 @@ class Inventory extends generic_fa_interface
 	}
 	
 	function confirm_dialog($submit, $msg) {
+		return $this->ui->confirm_dialog( $submit, $msg );
+/*** UI ***
 	        if (find_post($submit)) {
 	                display_warning($msg);
 	                br();
@@ -1588,6 +1594,7 @@ class Inventory extends generic_fa_interface
 	                return 0;
 	        } else
 	                return get_post('DialogConfirm', 0);
+*** UI ***/
 	}
 	
 	function page_processing($msg = false)
@@ -1595,6 +1602,8 @@ class Inventory extends generic_fa_interface
 		/*
 	        	Block menu/shortcut links during transaction procesing.
 		*/
+		$this->ui->page_processing( $msg );
+/*** UI ***
 	        global $Ajax;
 	
 	        if ($msg === true)
@@ -1606,10 +1615,14 @@ class Inventory extends generic_fa_interface
 	                $Ajax->addScript(true, $js);
 	        } else
 	                add_js_source($js);
+*** UI ***/
 	}
 	
 	function page_modified($status = true)
 	{
+		$this->ui->page_modified( $status );
+
+/*** UI ***
 	        global $Ajax;
 	
 	        $js = "_validate._modified=" . ($status ? 1:0).';';
@@ -1619,6 +1632,7 @@ class Inventory extends generic_fa_interface
 	                add_js_source($js);
 		//header( "Location: " . $_SERVER['REQUEST_URI'] );
 		echo '<script>parent.window.location.reload(true);</script>';
+*** UI ***/
 	}
 
 
