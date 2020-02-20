@@ -221,6 +221,20 @@ class Inventory_ui extends Inventory
                         header("location: " . $this->redirect_to );
                 }
         }
+	function display_message( $msg, $type )
+	{
+		switch( $type )
+		{
+			case "WARN":
+					display_warning( $msg );
+					break;
+			case "ERROR":
+					display_error( $msg );
+					break;
+			default:
+					display_notification( $msg );
+		}
+	}
 	/***************************************//**
         *       Overriding because we originally didn't use MVC
         *

@@ -142,6 +142,9 @@ class Inventory extends generic_fa_interface
 		$this->config_values[] = array( 'pref_name' => 'holdtank', 'label' => 'Inventory HOLDING tank Code.' );
 		//$this->config_values[] = array( 'pref_name' => 'url', 'label' => 'URL' );
 
+		if( strlen( $this->holdtank ) < 2 )
+			$this->ui->display_message( "Holding Tank value not set.  It is necessary for the proper functioning of this module!", "WARN" );
+
 /***** UI ****************************
 		
 		//The forms/actions for this module
@@ -1029,6 +1032,10 @@ class Inventory extends generic_fa_interface
         function xfer_all_to_holding()
         {
                 //display_notification( __method__ . ":" . __LINE__  );
+		/** Mantis 179 **/
+		if( strlen( $this->holdtank ) < 2 )
+			throw new Exception( "Holding Tank setting appears invalid!", KSF_VAR_NOT_SET );
+		/** !Mantis 179 **/
                 $this->to_location = $this->holdtank;
                 $this->xfer_all_settings( "zero" );
                 $this->ui->overunder_form();
@@ -1277,6 +1284,11 @@ class Inventory extends generic_fa_interface
 	}
 	function process()
 	{
+		
+		/** Mantis 179 **/
+		if( strlen( $this->holdtank ) < 2 )
+			throw new Exception( "Holding Tank setting appears invalid!", KSF_VAR_NOT_SET );
+		/** !Mantis 179 **/
 		$trans_no = get_next_trans_no(ST_LOCTRANSFER);
 		foreach( $this->line_items as $item )
 		{
