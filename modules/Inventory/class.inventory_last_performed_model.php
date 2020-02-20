@@ -38,10 +38,9 @@ class inventory_last_performed_model extends table_interface
         }
 	function record_last_inv_date( $stock_id )
 	{
+		$this->inventory_date = 'now()';
 		//Record the fact we did an inventory count for an item for a location
-		$sql = "replace into " . $this->table_details['tablename'] . "( stock_id, location, inventory_date ) values ( '" . $this->stock_id . "', '" . $this->location . "', now() )";
-        	$res = db_query($sql, "Record last inventory failed");
-		
+		$this->ReplaceQuery();
 	}
 }
 ?>

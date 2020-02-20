@@ -131,6 +131,11 @@ class Inventory extends generic_fa_interface
 	var $ui;
 	function __construct( $host, $user, $pass, $database, $pref_tablename )
 	{
+		require_once( 'class.Inventory_model.php' );
+		require_once( 'class.Inventory_ui.php' );
+		$this->model = new Inventory_model( $host, $user, $pass, $database, $pref_tablename );
+		$this->ui = new Inventory_ui( $host, $user, $pass, $database, $pref_tablename );
+
 		parent::__construct( $host, $user, $pass, $database, $pref_tablename );
 		global $path_to_root;
 		$this->path_to_root = $path_to_root;
@@ -172,10 +177,6 @@ class Inventory extends generic_fa_interface
 		$this->javascript .= get_js_date_picker();
 ***** UI ****************************/
 
-		require_once( 'class.Inventory_model.php' );
-		require_once( 'class.Inventory_ui.php' );
-		$this->model = new Inventory_model( $host, $user, $pass, $database, $pref_tablename );
-		$this->ui = new Inventory_ui( $host, $user, $pass, $database, $pref_tablename );
 
   //Make sure the UI has all the set values...
   /*
@@ -1202,7 +1203,7 @@ class Inventory extends generic_fa_interface
                 table_header($th);
                 $k = 0;
                 alt_table_row_color($k);
-                        /* To show a labeled cell...*/
+                        // To show a labeled cell...
                         //label_cell("Table Status");
                         //if ($this->found) $table_st = "Found";
                         //else $table_st = "<font color=red>Not Found</font>";

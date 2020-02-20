@@ -221,6 +221,7 @@ class Inventory_ui extends Inventory
                         header("location: " . $this->redirect_to );
                 }
         }
+/*
 	function display_message( $msg, $type )
 	{
 		switch( $type )
@@ -235,6 +236,7 @@ class Inventory_ui extends Inventory
 					display_notification( $msg );
 		}
 	}
+*/
 	/***************************************//**
         *       Overriding because we originally didn't use MVC
         *
@@ -302,12 +304,8 @@ class Inventory_ui extends Inventory
 	 *
 	 * \warning calls Ajax calls in the browser
 	 * */
-       	function handlePOST()
+	function handlePOST()
 	{
-		//display_notification( __method__ . ":" . __LINE__ . " handlePost" );
-		global $Ajax;
-		if (isset($_POST['AddItem']))
-		        $this->handle_new_item();
 		if (isset($_POST['document_date']))
 			$this->document_date = $_POST['document_date'];
 		if (isset($_POST['location']))
@@ -318,9 +316,9 @@ class Inventory_ui extends Inventory
 		{
 			$this->from_location = $_POST['from_location'];
 		}
-		if (isset($_POST['model->to_location']))
+		if (isset($_POST['to_location']))
 		{
-			$this->model->to_location = $_POST['model->to_location'];
+			$this->model->to_location = $_POST['to_location'];
 		}
 		else
 		{
@@ -330,6 +328,8 @@ class Inventory_ui extends Inventory
 		{
 		        $this->handle_update_item();
 		}
+		if ( isset( $_POST['AddItem'] ) )
+		        $this->handle_new_item();
 		$id = find_submit('Delete');
 		if ($id!=-1)
 		{
