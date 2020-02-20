@@ -703,6 +703,46 @@ class table_interface
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	/*****************************************//**
+	 * Build the REPLACE STATEMENT
+	 *
+	 * repalce is an extension in mysql that does either an insert or a delete then insert.
+	 *
+	 * @param bool should we check the table definition that all variables are in it.  Prevents joined replaces.
+	 * @param NONE but uses internal variables
+	 * *****************************************/
+	function ReplaceQuery( $b_validate_in_table = false)
+	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
+		global $db_connection;
+		$sql = "REPLACE INTO `" . $this->table_details['tablename'] . "`" . "\n";
+		$fieldcount = 0;
+		$fields = "(";
+		$values = "values(";
+		foreach( $this->fields_array as $row )
+		{
+			if( isset( $this->$row['name'] ) )
+			{
+				if( $fieldcount > 0 )
+				{
+					$fields .= ", ";
+					$values .= ", ";
+				}
+				$fields .= "`" . $row['name'] . "`";
+				$values .=  db_escape($this->$row['name']);
+				$fieldcount++;
+			}
+		}
+		$fields .= ")";
+		$values .= ")";
+		$sql .= $fields . $values;
+		if( $fieldcount > 0 )
+			db_query( $sql, "Couldn't replace into table " . $this->table_details['tablename'] . " for " .  $sql );	
+		else
+			display_error( "No values set so couldn't insert" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+		return;
+	}
+	/*****************************************//**
 	 * Build the SELECT clause
 	 *
 	 * adapted from legacy GENERICTABLE
