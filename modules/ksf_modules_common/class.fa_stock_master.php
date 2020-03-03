@@ -223,6 +223,25 @@ class fa_stock_master extends table_interface
 		end_form();
 		return NULL;
 	}
+	/***************************************************//**
+	* Taken from inventory/manage/items.php
+	*********************************************************/
+	function display_list_table()
+	{
+	  	start_table(TABLESTYLE_NOBORDER);
+	        start_row();
+	    	stock_items_list_cells(_("Select an item:"), 'stock_id', null,
+	        	  _('New item'), true, check_value('show_inactive'));
+	        $new_item = get_post('stock_id')=='';
+	        check_cells(_("Show inactive:"), 'show_inactive', null, true);
+	        end_row();
+	        end_table();
+	        if (get_post('_show_inactive_update')) {
+	                $Ajax->activate('stock_id');
+	                set_focus('stock_id');
+	        }
+
+	}
 
 
 }

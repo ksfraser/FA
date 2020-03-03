@@ -88,7 +88,7 @@ class EXPORT_WOO extends generic_fa_interface
 		$this->tabs[] = array( 'title' => 'QOH Populated', 'action' => 'qoh', 'form' => 'populate_qoh', 'hidden' => TRUE );
 		$this->tabs[] = array( 'title' => 'WOO Populated', 'action' => 'woo', 'form' => 'populate_woo', 'hidden' => TRUE );
 		$this->tabs[] = array( 'title' => 'Missing Products from internal WOO table', 'action' => 'missingwoo', 'form' => 'missing_woo', 'hidden' => FALSE );
-		$this->tabs[] = array( 'title' => 'Manually add Woo ID to a product in the internal WOO table', 'action' => 'form_add_woo_id_to_sku', 'form' => 'form_add_woo_id_to_sku', 'hidden' => FALSE );
+		//$this->tabs[] = array( 'title' => 'Manually add Woo ID to a product in the internal WOO table', 'action' => 'form_add_woo_id_to_sku', 'form' => 'form_add_woo_id_to_sku', 'hidden' => FALSE );
 		$this->tabs[] = array( 'title' => 'Manually add Woo ID to a product in the internal WOO table', 'action' => 'add_woo_id_to_sku', 'form' => 'add_woo_id_to_sku', 'hidden' => TRUE  );
 		
 		$this->tabs[] = array( 'title' => 'Send Categories to WOO', 'action' => 'send_categories_form', 'form' => 'send_categories_form', 'hidden' => FALSE );

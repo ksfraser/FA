@@ -864,15 +864,30 @@ class woo_interface extends table_interface
 		//	$this->table_details['tablename'] = $this->company_prefix . "woo_billing_address";
 		//	$this->table_details['primarykey'] = "billing_address_id";
 
+		//20200302 KSF check for model_ in class name
+		//If the class name starts with model_ we want to strip that off.
+		if( ! strncasecmp( "model_", $this->iam, 5 ) )
+		{
+			$tablename = $this->iam;
+		}
+		else
+		{
+			$char = stripos( $this->iam, "_" ) + 1;
+			$tablename = substr( $this->iam, $char );
+		}
+		
+
 		//The following should be common to pretty well EVERY table...
-		$ind = "id_" . $this->iam;
+		$ind = "id_" . $tablename;
 		$this->fields_array[] = array('name' => $ind, 'type' => 'int(11)', 'auto_increment' => 'yes', 'readwrite' => 'read' );
 		$this->fields_array[] = array('name' => 'updated_ts', 'type' => 'timestamp', 'null' => 'NOT NULL', 'default' => 'CURRENT_TIMESTAMP', 'readwrite' => 'read' );
-		$this->table_details['tablename'] = $this->company_prefix . $this->iam;
+		$this->table_details['tablename'] = $this->company_prefix . $tablename;
 		$this->table_details['primarykey'] = $ind;
 		//$this->table_details['index'][0]['type'] = 'unique';
 		//$this->table_details['index'][0]['columns'] = "variablename";
 		//$this->table_details['index'][0]['keyname'] = "variablename";
+
+		//20200302 KSF
 
 	}
 

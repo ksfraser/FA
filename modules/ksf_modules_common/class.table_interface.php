@@ -5,6 +5,7 @@
 //20180531 Added basic code that I had in my GENERICTABLE class from my own framework.
 
 require_once( 'defines.inc.php' );
+require_once( 'class.kfLog.php' );
 
 global $path_to_root;
 if( !isset( $path_to_root ) )
@@ -778,6 +779,11 @@ class table_interface
 		/**/
 		if( null === $this->where_array )
 			throw new Exception( "Required Field not set", KSF_FIELD_NOT_SET );
+		if( count( $this->where_array ) < 1 )
+		{
+			$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+			return;
+		}
 		$fieldcount = 0;
 		$sql = "";
 		if( isset( $this->where_array ) AND is_array( $this->where_array ) )
@@ -816,6 +822,11 @@ class table_interface
 		/**/
 		if( null === $this->orderby_array )
 			throw new Exception( "Required Field not set", KSF_FIELD_NOT_SET );
+		if( count( $this->orderby_array ) < 1 )
+		{
+			$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+			return;
+		}
 		$fieldcount = 0;
 		$sql = "";
 		if( isset( $this->orderby_array ) AND is_array( $this->orderby_array ))
@@ -854,6 +865,11 @@ class table_interface
 		/**/
 		if( null === $this->groupby_array )
 			throw new Exception( "Required Field not set", KSF_FIELD_NOT_SET );
+		if( count( $this->groupby_array ) < 1 )
+		{
+			$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+			return;
+		}
 		$fieldcount = 0;
 		$sql = "";
 		if( isset( $this->groupby_array ) AND is_array( $this->groupby_array ))
@@ -895,6 +911,11 @@ class table_interface
 		/**/
 		if( null === $this->having_array )
 			throw new Exception( "Required Field not set", KSF_FIELD_NOT_SET );
+		if( count( $this->having_array ) < 1 )
+		{
+			$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+			return;
+		}
 		$fieldcount = 0;
 		$sql = "";
 		if( isset( $this->having_array ) AND is_array( $this->having_array ))
@@ -934,6 +955,11 @@ class table_interface
 		/**/
 		if( null === $this->join_array )
 			throw new Exception( "Required Field not set", KSF_FIELD_NOT_SET );
+		if( count( $this->join_array ) < 1 )
+		{
+			$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+			return;
+		}
 		$sql = "";
 		$joincount = 0;
 		$FIELDS = array( 'table1', 'type', 'table2', 'field1', 'field2' );
@@ -1009,7 +1035,7 @@ class table_interface
 			if( KSF_FIELD_NOT_SET == $e->getCode() )
 			{
 				//Not mandatory, continue
-				echo "No Orderby set";
+				//echo "No Orderby set";
 			}
 			else
 			{
@@ -1025,7 +1051,7 @@ class table_interface
 			if( KSF_FIELD_NOT_SET == $e->getCode() )
 			{
 				//Not mandatory, continue
-				echo "No HAVING set";
+				//echo "No HAVING set";
 			}
 			else
 			{
@@ -1041,7 +1067,7 @@ class table_interface
 			if( KSF_FIELD_NOT_SET == $e->getCode() )
 			{
 				//Not mandatory, continue
-				echo "No JOIN to be done!";
+			//	echo "No JOIN to be done!";
 			}
 			else
 			{
@@ -1055,7 +1081,7 @@ class table_interface
 			if( KSF_FIELD_NOT_SET == $e->getCode() )
 			{
 				//Not mandatory, continue
-				echo "No LIMIT to set";
+			//	echo "No LIMIT to set";
 			}
 			else
 			{
