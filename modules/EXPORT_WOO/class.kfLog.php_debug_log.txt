@@ -1,45 +1,52 @@
+ opening module config file C:\xampp\htdocs\devel\fhs\frontaccounting\modules\EXPORT_WOO/modules/config.products.php
+eventloop had event NOTIFY_LOG_INFO with message Module controller.woo_product_attributes.php being added
+eventloop had event NOTIFY_LOG_INFO with message Module controller.woo_product_attributes_types.php being added
+eventloop had event NOTIFY_LOG_INFO with message Adding Module TABSC:\xampp\htdocs\devel\fhs\frontaccounting\modules\EXPORT_WOO/modules
+eventloop had event NOTIFY_LOG_INFO with message Array
+(
+    [ModuleName] => controller.woo_product_attributes.php
+    [loadFile] => products/controller.woo_product_attributes.php
+    [loadpriority] => 2
+    [className] => controller_woo_product_attributes
+    [objectName] => controller_woo_product_attributes
+    [tablename] => woo_product_attributes
+    [tabdata] => Array
+        (
+            [tabtitle] => Product Attributes
+            [action] => p_attr
+            [form] => prod_attributes_form
+            [hidden] => 
+            [class] => controller_woo_product_attributes
+        )
+
+    [taborder] => 5
+)
+
+eventloop had event NOTIFY_LOG_INFO with message Array
+(
+    [ModuleName] => controller.woo_product_attributes_types.php
+    [loadFile] => products/controller.woo_product_attributes_types.php
+    [loadpriority] => 2
+    [className] => controller_woo_product_attributes_types
+    [objectName] => controller_woo_product_attributes_types
+    [tablename] => woo_product_attributes_types
+    [tabdata] => Array
+        (
+            [tabtitle] => Product Attribute Types
+            [action] => p_attr_type
+            [form] => prod_attribute_types_form
+            [hidden] => 
+            [class] => controller_woo_product_attributes_types
+        )
+
+    [taborder] => 4
+)
+
+eventloop had event NOTIFY_TABS_LOADED
 eventloop had event NOTIFY_LOG_INFO with message Completed Adding Modules
 eventloop had event NOTIFY_INIT_CONTROLLER_COMPLETE with message Completed Adding Modules
-woo had event NOTIFY_LOG_WARN with message woo_interface::__construct:176 Entering woo_interface::__construct
-woo had event NOTIFY_LOG_WARN with message woo_interface::register_with_eventloop::445 Entering woo_interface::register_with_eventloop
-woo had event NOTIFY_LOG_WARN with message woo_interface::register_with_eventloop::455 Exiting woo_interface::register_with_eventloop
-woo had event NOTIFY_LOG_WARN with message woo_interface::__construct:210 Leaving woo_interface::__construct
-model_woo had event NOTIFY_LOG_WARN with message woo_interface::__construct:176 Entering woo_interface::__construct
-model_woo had event NOTIFY_LOG_WARN with message model_woo::define_table:205 Entering model_woo::define_table
-model_woo had event NOTIFY_LOG_WARN with message woo_interface::register_with_eventloop::445 Entering woo_interface::register_with_eventloop
-model_woo had event NOTIFY_LOG_WARN with message woo_interface::register_with_eventloop::455 Exiting woo_interface::register_with_eventloop
-model_woo had event NOTIFY_LOG_WARN with message model_woo::reset_endpoint:252 Entering model_woo::reset_endpoint
-model_woo had event NOTIFY_LOG_WARN with message model_woo::reset_endpoint:254 Exiting model_woo::reset_endpoint
-model_woo had event NOTIFY_LOG_WARN with message woo_interface::__construct:210 Leaving woo_interface::__construct
-woo had event NOTIFY_LOG_WARN with message woo::form_add_woo_id_to_sku:438 Enterting woo::form_add_woo_id_to_sku
-woo had event NOTIFY_LOG_WARN with message woo::form_add_woo_id_to_sku:462 POST:: Array
-(
-    [_focus] => _el5e34af224a3cd8.04180621
-)
-
-woo had event NOTIFY_LOG_WARN with message woo::form_add_woo_id_to_sku:463 GET:: Array
-(
-    [action] => form_add_woo_id_to_sku
-)
-
-model_woo had event NOTIFY_LOG_WARN with message table_interface::clear_sql_vars:1101 Entering table_interface::clear_sql_vars
-model_woo had event NOTIFY_LOG_WARN with message table_interface::clear_sql_vars:1120 Exiting table_interface::clear_sql_vars
-model_woo had event NOTIFY_LOG_WARN with message table_interface::buildSelectQuery:991 Entering table_interface::buildSelectQuery
-model_woo had event NOTIFY_LOG_WARN with message table_interface::buildSelect:713 Entering table_interface::buildSelect
-model_woo had event NOTIFY_LOG_WARN with message table_interface::buildSelect:735 Exiting table_interface::buildSelect
-model_woo had event NOTIFY_LOG_WARN with message table_interface::buildFrom:748 Entering table_interface::buildFrom
-model_woo had event NOTIFY_LOG_WARN with message table_interface::buildFrom:764 Exiting table_interface::buildFrom
-model_woo had event NOTIFY_LOG_WARN with message table_interface::buildWhere:777 Entering table_interface::buildWhere
-model_woo had event NOTIFY_LOG_WARN with message table_interface::buildGroupBy:863 Entering table_interface::buildGroupBy
-model_woo had event NOTIFY_LOG_WARN with message table_interface::buildOrderBy:820 Entering table_interface::buildOrderBy
-model_woo had event NOTIFY_LOG_WARN with message table_interface::buildHaving:909 Entering table_interface::buildHaving
-model_woo had event NOTIFY_LOG_WARN with message table_interface::buildJoin:953 Entering table_interface::buildJoin
-model_woo had event NOTIFY_LOG_WARN with message table_interface::buildLimit:687 Entering table_interface::buildLimit
-model_woo had event NOTIFY_LOG_WARN with message table_interface::buildLimit:700 Exiting table_interface::buildLimit
-model_woo had event NOTIFY_LOG_WARN with message table_interface::buildSelectQuery:1097 Exiting table_interface::buildSelectQuery
-woo had event NOTIFY_LOG_DEBUG with message SELECT woo_id, stock_id, category, description FROM 1_woo
-woo had event NOTIFY_LOG_WARN with message woo::combo_woo_id_stock_id:552 Enterting woo::combo_woo_id_stock_id
-woo had event NOTIFY_LOG_WARN with message woo::combo_woo_id_stock_id:591 Exiting woo::combo_woo_id_stock_id
-woo had event NOTIFY_LOG_WARN with message woo::edit_woo_id_stock_id:536 Enterting woo::edit_woo_id_stock_id
-woo had event NOTIFY_LOG_WARN with message woo::edit_woo_id_stock_id:548 Exiting woo::edit_woo_id_stock_id
-woo had event NOTIFY_LOG_WARN with message woo::form_add_woo_id_to_sku:531 Exiting woo::form_add_woo_id_to_sku
+erface::__construct:219 Leaving woo_interface::__construct
+model_woo_product_attributes_types had event NOTIFY_LOG_WARN with message woo_interface::__construct:185 Entering woo_interface::__construct
+model_woo_product_attributes_types had event NOTIFY_LOG_WARN with message woo_interface::register_with_eventloop::454 Entering woo_interface::register_with_eventloop
+model_woo_product_attributes_types had event NOTIFY_LOG_WARN with message woo_interface::register_with_eventloop::464 Exiting woo_interface::register_with_eventloop
+model_woo_product_attributes_types had event NOTIFY_LOG_WARN with message woo_interface::__construct:219 Leaving woo_interface::__construct

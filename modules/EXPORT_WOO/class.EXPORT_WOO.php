@@ -1,11 +1,15 @@
 <?php
 
-//require_once( 'class.generic_orders.php' ); 
 require_once( '../ksf_modules_common/class.generic_fa_interface.php' ); 
 
+/********************************************************************
+* This class is acting like a controller
+*
+* This class is the MASTER controller for the module (called by EXPORT_WOO.php
+*	which is called by hooks.php
+*
+*********************************************************************/
 
-//class EXPORT_WOO
-//class EXPORT_WOO extends generic_orders
 class EXPORT_WOO extends generic_fa_interface
 {
 	var $include_header;
@@ -135,7 +139,16 @@ class EXPORT_WOO extends generic_fa_interface
 		$this->tabs[] = array( 'title' => 'Taxes REST Exported', 'action' => 'exported_rest_taxes', 'form' => 'exported_rest_taxes_form', 'hidden' => TRUE );
  */
 		//We could be looking for plugins here, adding menu's to the items.
-		$this->add_submodules();
+		$moduledir = dirname( __FILE__ ) . '/modules';
+		$this->add_submodules( $moduledir );	//This calls eventloop, loads modules.
+		if( isset( $this->eventloop->tabs ) AND count( $this->eventloop->tabs ) > 0 )
+		{
+			//could probably do an array_merge instead...
+			foreach( $this->eventloop->tabs as $tab )
+			{
+				$this->tabs[] = $tab;
+			}
+		}
 	}
 	function init_tables_form()
 	{
@@ -263,6 +276,9 @@ class EXPORT_WOO extends generic_fa_interface
 		$coupons = new woo_coupons($this->woo_server, $this->woo_ck, $this->woo_cs, null, $this );
 		if( $coupons->create_table() )
 			$createdcount++;
+		if( isset( $this->eventloop ) )
+			$this->eventloop->ObserverNotify( $this, 'NOTIFY_INIT_TABLES', $tabs );
+
        			
      	display_notification("init tables complete form created " . $createdcount . " tables");
 	}

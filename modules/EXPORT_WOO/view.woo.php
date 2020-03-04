@@ -1,50 +1,18 @@
 <?php
 
-/***************************************
-****************************************
+/*****************************************
+* There is many common VIEW activities within a module
 *
-*	Trying to refactor into MVC
-*	copied VIEW code into view.woo.php class view_woo
+*	Code came from woo_interface.  Trying to refactor.
 *
-****************************************
-****************************************/
+******************************************/
 
-/*******************************************
- * If you change the list of properties below, ensure that you also modify
- * build_write_properties_array
- * */
-
-/***********
-*
-*	TODO: 	Refactor so that not inheriting table_interface
-		Refactor table_interface so that it uses INTERFACE standards
-*/
-
-/*********************************************************************************************
- *Converting a WOO definition to table definition
-
- 		//CONVERT Woo definition to table definition
-		// \t -> ;\t\/\/ 'type' =>
-		// \t -> $this->fields_array[] = array('name' => '
-		//integer -> 'int(11)',  'comment' => '
-		//string -> varchar(" . STOCK_ID_LENGTH . ")',  'comment' => '
-		//date-time -> 'timestamp',  'comment' => '
-		//boolean -> 'bool',  'comment' => '
-		//array -> 'int(11)',  'foreign_obj' => '',  'comment' => '
-		//object -> 'int(11)',  'foreign_obj' => '',  'comment' => '
-		//read-only -> 'readwrite' = > 'readonly'
-		//^ -> \t\$this->fields_array[] = array('name' => '
-		//;\t\/\/ -> ',
-		// --> 'comment' => '
-		// $ -> );
- * *******************************************************************************************/
-
-require_once( '../ksf_modules_common/class.table_interface.php' );
+//require_once( '../ksf_modules_common/class.table_interface.php' );		//MODEL
 require_once( '../ksf_modules_common/defines.inc.php' );
 require_once( 'woo_defines.inc.php' );
-require_once( 'class.woo_rest.php' );
+//require_once( 'class.woo_rest.php' );						//CONTROLLER?
 
-class woo_interface extends table_interface
+class view_woo extends table_interface
 {
 	/**********************************************************
 	* INHERITS (table_interface)
@@ -178,9 +146,9 @@ class woo_interface extends table_interface
 	{
 		$this->iam = get_class( $this );
 		$this->recursive_call = 0;
-		$this->table_details = array();
+		//$this->table_details = array();	//MODEL
 		$this->fields_array = array();
-		$this->search_array = array();
+		$this->search_array = array();		//MODEL
 		$this->client = $client;
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		$this->provides = array();
@@ -188,9 +156,12 @@ class woo_interface extends table_interface
 			$this->debug = $this->client->debug;
 		else
 			$this->debug = 0;
+/* **CONTROLLER
 		if( $this->need_rest_interface === true )
 			$this->build_rest_interface($serverURL, $key, $secret, $options, $client);
+*/
 
+/* **MODEL
 		global $db_connections;
 		$this->company_prefix = $db_connections[$_SESSION["wa_current_user"]->cur_con]['tbpref'];
 		if( strlen( $this->company_prefix ) < 2 )
@@ -204,8 +175,12 @@ class woo_interface extends table_interface
 				$this->company_prefix = "0_";
 			}
 		}
+*/
+/* **CONTROLLER
 		$this->match_need = 2;
 		$this->match_worth = array();
+*/
+/* **MODEL
 		$this->define_table();
 		$this->write_properties_array = array();
 		$this->properties_array = array();
@@ -213,190 +188,23 @@ class woo_interface extends table_interface
 		$this->build_write_properties_array();
 		$this->build_properties_array();
 		$this->fields_array2entry();
+*/
 		$this->build_interestedin();
 		$this->register_with_eventloop();
+/* **CONTROLLER/MODEL
 		$this->reset_endpoint();
+*/
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
 		return;
 	}
+/* **MODEL
 	function update_woo_id( /*int*/ $id )
 	{
 		//This function MUST be overridden or woo_rest will fail!!
 		throw new Exception( "This function MUST be overridden or woo_rest will fail!!", KSF_FCN_NOT_OVERRIDDEN );
 
 	}
-	/***************************************************************************//**
-	* Build the Woo REST interface if required
-	*
-	* If we pass in NULL for all var's to constructor we won't setup the interface
-	*
-	* @param string URL
-	* @param string Key
-	* @param string Secret
-	* @param array Options
-	* @param object Caller
-	*
-	* @return bool Did we setup the interface
-	******************************************************************************/
-	/*@bool@*/private function build_rest_interface($serverURL = " ", $key, $secret, $options, $client = null)
-	{
-		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
-		if( $serverURL == null AND null == $key AND null == $secret )
-		{
-			//Particular child class doesn't want a REST interface
-			$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
-			return FALSE;
-		}
-		$this->serverURL = $serverURL;
-		$this->key = $key;
-		$this->secret = $secret;
-		if( $options == null )
-		{
-			$options = array(
-				'debug'           => true,
-				'return_as_array' => false,
-				'validate_url'    => false,
-				'timeout'         => 30,
-				'ssl_verify'      => false,
-			);
-		}
-
-		$this->options = $options;
-		$rest_options = array(
-                               'wp_api' => true, // Enable the WP REST API integration
-                               'version' => 'wc/v3', // WooCommerce WP REST API version
-                               'ssl_verify' => 'false',
-                               //'query_string_auth' => true // Force Basic Authentication as query string true and using under HTTPS
-                );
-		/*************************************************************
-		 *	I want to depreciate the use of WC_API_CLIENT since
-		 *	the latest API of WooCommerce uses WP REST interface
-		 *	so the WC interface is depreciated
-		 * ***********************************************************/
-		require_once( 'wc-master/lib/woocommerce-api.php' );
-		//$this->wc_client = null;
-		//Still used by class.woo_product
-		if( strlen( $key ) < 10 )
-		{
-			if( null != $client )
-			{
-				$this->notify( __METHOD__ . ":" . __LINE__ . "  Build REST interfaces ", "WARN" );
-				$this->wc_client = new WC_API_Client( $serverURL, $client->woo_ck, $client->woo_cs, $options, $client );
-				$this->woo_rest = new woo_rest( $serverURL, $client->woo_ck, $client->woo_cs, $rest_options, $client );
-			}
-			else
-			{
-				$this->notify( __METHOD__ . ":" . __LINE__ . " UNABLE to Build REST interfaces ", "ERROR" );
-				$this->wc_client = null;
-				$this->woo_rest = null;
-			}
-		}
-		else
-		{
-			if( strlen( $serverURL) > 10 )
-			{
-				$this->notify( __METHOD__ . ":" . __LINE__ . "  Build REST interfaces ", "WARN" );
-				$this->wc_client = new WC_API_Client( $serverURL, $key, $secret, $options, $client );
-				$this->woo_rest = new woo_rest( $serverURL, $key, $secret, $rest_options, $client );
-			}
-			else
-			{
-				$this->notify( __METHOD__ . ":" . __LINE__ . " UNABLE to Build REST interfaces ", "ERROR" );
-				$this->wc_client = null;
-				$this->woo_rest = null;
-			}
-		}
-		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
-		return TRUE;
-	}
-        /************************************************************************************************//**
-        * Match a returned product from WooCommerce to our current one.
-        *
-        *If we find a match, we return the product.  Exits on first match
-        * Will search against an array to_match_array
-        *
-        * @param array array of stdObj holding data from WC
-        * @return did we find a match
-        ***************************************************************************************************/
-        /*@bool@*/ function fuzzy_match( $data )
-        {
-                $this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
-
-                if( ! is_array( $data ) )
-                        throw new Exception( "fuzzy_match expects a data array.  Not passed in", KSF_INVALID_DATA_TYPE );
-		$f1 = $this->to_match_array[0];
-		if( isset( $this->$f1 ) )
-                	$this->notify( __METHOD__ . ":" . __LINE__ . " Fuzzy Match on " . $this->$f1, "NOTIFY" );
-		$from_arr = array( "<p>", "</p>" );	//SKU had / replaced with _
-		$to_arr   = array( "",    ""     ); 	//WC returns <p> and other HTML tags on some fields
-                foreach( $data as $product )
-                {
-                        $match=0;
-                	//$this->notify( __METHOD__ . ":" . __LINE__ . " Trying to match against returned object " . print_r( $product, true ), "DEBUG" );
-                	//$this->notify( __METHOD__ . ":" . __LINE__ . " Trying to match with us: " . print_r( $this->data_array, true ), "DEBUG" );
-                        if( is_array( $this->to_match_array ) )
-                        {
-                                foreach( $this->to_match_array as $find )
-                                {
-                                        if( ! isset( $this->$find ) )
-					{
-                				$this->notify( __METHOD__ . ":" . __LINE__ . " Match on THIS Field :" . $find . ": IMPOSSIBLE.  Not Set", "DEBUG" );
-					}
-                                        else if( ! isset( $product->$find ) )
-					{
-                				$this->notify( __METHOD__ . ":" . __LINE__ . " Match on RETURNED Field :" . $find . ": IMPOSSIBLE.  Not Returned", "DEBUG" );
-					}
-                                        else
-					{
-						$ret = str_replace( $from_arr, $to_arr, $product->$find );
-						if(  strcasecmp( $ret, $this->$find ) == 0 OR strcasecmp( $product->$find, $this->$find ) == 0 ) 
-	                                        {
-	                				$this->notify( __METHOD__ . ":" . __LINE__ . " SUCCESS Matched field " . $find . " with value "  . $this->$find, "DEBUG" );
-							if( isset( $this->match_worth[$find] ) )
-							{
-	                					$this->notify( __METHOD__ . ":" . __LINE__ . " MATCH WORTH " . $this->match_worth[$find], "DEBUG" );
-								$match .= $this->match_worth[$find];
-							}
-	                                                else 
-							{
-	                					$this->notify( __METHOD__ . ":" . __LINE__ . " MATCH WORTH not set.  Adding 1", "DEBUG" );
-								$match++;
-							}
-	                                        }
-						else
-						{
-                					//$this->notify( __METHOD__ . ":" . __LINE__ . " Match on Field :" . $find . ": FAILED: " . $product->$find . "(" . $ret .  ")::"  . $this->$find, "DEBUG" );
-                					$this->notify( __METHOD__ . ":" . __LINE__ . " Match on Field :" . $find . ": FAILED: " . $product->$find . "::"  . $this->$find, "DEBUG" );
-						}
-					}
-                                }
-                        }
-                        else
-                        {
-				throw new Exception( "No array to match against", KSF_VAR_NOT_SET );
-                        }
-                        if( $match >= $this->match_need )
-                        {
-                                $this->id = $product->id;
-                                $this->notify( __METHOD__ . ":" . __LINE__ . " SUCCESS Leaving " . __METHOD__, "WARN" );
-                                return TRUE;
-                        }
-                }
-                $this->notify( __METHOD__ . ":" . __LINE__ . " NO MATCHES FOUND", "WARN" );
-                $this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
-                return FALSE;
-        }
-	/********************************************//***
-	* For when we need to rebuild the WooCommerce store
-	*
-	*	Each inheriting class will need to implement
-	*	its own reset routine.  Chances are it is
-	*	a zero/nulling of related Woo IDs.
-	*
-	***********************************************/
-	function rebuild_woocommerce()
-	{
-	}
+*/
 	function backtrace()
 	{
 		echo "<br />";
@@ -556,29 +364,6 @@ class woo_interface extends table_interface
 	}
 
 	/*********************************************************************************//**
-	 *fields_array2var
-	 *	Take the data out of POST variables and put them into
-	 *	the variables defined as table columns (fields_array)
-	 *
-	 *	@returns int count of fields set
-	 *
-	 * ***********************************************************************************/
-	/*@int@*/function fields_array2var()
-	{
-		$count = 0;
-		$this->reset_values();
-		foreach( $this->fields_array as $row )
-		{
-			$var = $row['name'];
-			if( isset( $_POST[$var] ) )
-			{
-				$this->$var = $_POST[$var];
-				$count++;
-			}
-		}
-		return $count;
-	}
-	/*********************************************************************************//**
 	 *master_form
 	 *	Display 2 forms - the summary of items with edit/delete
 	 *		The edit/entry form for 1 row of data
@@ -591,12 +376,9 @@ class woo_interface extends table_interface
 	function master_form()
 	{
 		global $Ajax;
-		//var_dump( $_POST );
-		//var_dump( $_GET );
 		$this->notify( __METHOD__ . "::"  . __LINE__, "WARN" );
 		//simple_page_mode();
 		div_start('form');
-		//$this->notify( __METHOD__ . "::"  . __LINE__ . " Mode: " . $Mode );
 		$this->selected_id = find_submit('Edit');
 		$count = $this->fields_array2var();
 		$key = $this->table_details['primarykey'];
@@ -866,65 +648,6 @@ class woo_interface extends table_interface
 		$this->combo_list_cells( $sql, $order_by_field, $label, $name, $selected_id, $none_option, $submit_on_change);
 		echo "</tr>";
 	}
-	function define_table()
-	{
-		//Inheriting class MUST extend
-		//	$this->fields_array[] = array('name' => 'billing_address_id', 'type' => 'int(11)', 'comment' => '', 'readwrite' => '');  readwrite can be read or write or undefined.
-		//	$this->table_details['tablename'] = $this->company_prefix . "woo_billing_address";
-		//	$this->table_details['primarykey'] = "billing_address_id";
-
-		//20200302 KSF check for model_ in class name
-		//If the class name starts with model_ we want to strip that off.
-		if( ! strncasecmp( "model_", $this->iam, 5 ) )
-		{
-			$tablename = $this->iam;
-		}
-		else
-		{
-			$char = stripos( $this->iam, "_" ) + 1;
-			$tablename = substr( $this->iam, $char );
-		}
-		
-
-		//The following should be common to pretty well EVERY table...
-		$ind = "id_" . $tablename;
-		$this->fields_array[] = array('name' => $ind, 'type' => 'int(11)', 'auto_increment' => 'yes', 'readwrite' => 'read' );
-		$this->fields_array[] = array('name' => 'updated_ts', 'type' => 'timestamp', 'null' => 'NOT NULL', 'default' => 'CURRENT_TIMESTAMP', 'readwrite' => 'read' );
-		$this->table_details['tablename'] = $this->company_prefix . $tablename;
-		$this->table_details['primarykey'] = $ind;
-		//$this->table_details['index'][0]['type'] = 'unique';
-		//$this->table_details['index'][0]['columns'] = "variablename";
-		//$this->table_details['index'][0]['keyname'] = "variablename";
-
-		//20200302 KSF
-
-	}
-
-	function build_write_properties_array()
-	{
-				/*Took the list of properties, and removed the RO ones*/
-		foreach( $this->fields_array as $row )
-		{
-			if( isset( $row['foreign_obj'] ) )
-			{
-				//$this->foreign_objects_array[] = trim( $row['name'] );
-			}
-			else
-			if( isset( $row['readwrite'] ) )
-			{
-				if( strncmp( $row['readwrite'], "read", 4 ) <> 0 )
-				{
-					//Not READONLY
-					$this->write_properties_array[] = trim( $row['name'] );
-				}
-			}
-			else
-			{
-				//Assuming NOT set therefore RW
-				$this->write_properties_array[] = trim( $row['name'] );
-			}
-		}
-	}
 	function build_properties_array()
 	{
 		/*All properties*/
@@ -941,47 +664,6 @@ class woo_interface extends table_interface
 				$this->properties_array[] = trim( $row['name'] );
 		}
 
-	}
-	function build_foreign_objects_array()
-	{
-		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
-		//Extending class needs to override!!
-		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
-		//return;
-	}
-	function array2var( $data_array )
-	{
-		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
-		foreach( $this->properties_array as $property )
-		{
-			if( isset( $data_array[$property] ) )
-			{
-				$this->$property = $data_array[$property];
-			}
-		}
-		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
-		//return;
-	}
-	function build_data_array()
-	{
-		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
-
-		/***20180917 KSF Clean up old data arrays so we quit sending sales data, bad images, etc*/
-		if( isset( $this->data_array ) )
-		{
-			unset( $this->data_array );
-			$this->data_array = array();
-		}
-		/*!20180917 KSF Clean */
-		foreach( $this->write_properties_array as $property )
-		{
-			if( isset( $this->$property ) )
-			{
-				$this->data_array[$property] = $this->$property;
-			}
-		}
-		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
-		//return;
 	}
 	/*******************************************************************//**
 	 *
@@ -1005,216 +687,9 @@ class woo_interface extends table_interface
 			var_dump( $this );
 		}
 	}
-
-	/***************************************************************
-	 *
-	 * Extract Data Objects
-	 *
-	 * Recursively extracts the data object
-	 * Builds a double linked list in the process.
-	***************************************************************/
-	function extract_data_objects( $srvobj_array )
-	{
-		//Woo sends an array of the objects
-		$nextptr = $this;
-		$objectcount = 0;
-		foreach( $srvobj_array as $obj )
-		{
-			$newobj = new $this->iam($this->serverURL, $this->key, $this->secret, $this->options, $this );
-			//Do the recursive extract.
-			$newobj->extract_data_obj( $obj );
-			//Add into Linked List
-			$nextptr->next_ptr = $newobj;
-			$newobj->prev_ptr = $nextptr;
-			$nextptr = $newobj;
-			$objectcount++;
-			//The next time through the loop does another...
-			//Not unsetting the object because it is part of the dbl linked list
-		}
-		return $objectcount;
-	}
-	/*int count of properties extracted*/
-	/*@int@*/function extract_data_array( $assoc_array )
-	{
-		$extract_count = 0;
-		foreach( $this->properties_array as $property )
-		{
-			if( isset( $assoc_array[$property] ) )
-			{
-				$this->$property = $assoc_array[$property];
-				$extract_count++;
-			}
-		}
-		//Should also handle FK indexes, but for now...
-		return $extract_count;
-	}
-
-	/*int count of properties extracted*/
-	/*@int@*/function extract_data_obj( $srvobj )
-	{
-		if( $this->debug >= 3 )
-		{
-			echo "<br />" . __FILE__ . ":" . __LINE__ . "<br /><br />";
-			var_dump( $srvobj );
-		}
-		$extract_count = 0;
-		foreach( $this->properties_array as $property )
-		{
-			if( isset( $srvobj->$property ) )
-			{
-				$this->$property = $srvobj->$property;
-				$extract_count++;
-			}
-		}
-		if( $this->debug >= 3 )
-		{
-			echo __FILE__ . ":" . __LINE__ . "<br />Extracted " . $extract_count . " properties<br />";
-		}
-		//
-		//echo __FILE__ . ":" . __LINE__ . "<br /><br />";
-		//var_dump( $this->foreign_objects_array );
-		foreach( $this->foreign_objects_array as $foa )
-		{
-			echo __FILE__ . ":" . __LINE__ . "<br />Foreign Object " . $foa . "<br />";
-			if( isset( $srvobj->$foa ) )
-			{
-				if( $this->debug > 0 )
-				{
-					echo "<br /><br />" . __FILE__ . ":" . __LINE__ . "<br />Extract for class " . $foa . "<br />";
-					var_dump( $srvobj->$foa );
-				}
-				require_once( 'class.woo_' . $foa . '.php' );
-				if( is_array( $srvobj->$foa ) )
-				{
-					foreach( $srvobj->$foa as $obj )
-					{
-						$newclassname = "woo_" . $foa;
-						$newobj = new $newclassname($this->serverURL, $this->key, $this->secret, $this->options, $this);
-						$ret = $newobj->extract_data_obj( $obj );
-						if( $ret > 0 )
-						{
-							$newobj->insert_table();
-							$this->$foa = $this->$foa + 1;	//Count of the numbers of foreign rows.
-							if( $this->debug > 0 )
-							{
-								echo "<br />" . __FILE__ . ":" . __LINE__ . "<br /><br />";
-								var_dump( $newobj );
-							}
-						}
-						unset( $newobj );	//Free the memory
-					}
-				}
-				else
-				if( is_object( $srvobj->$foa ) )
-				{
-					$newclassname = "woo_" . $foa;
-					$newobj = new $newclassname($this->serverURL, $this->key, $this->secret, $this->options, $this);
-					$ret = $newobj->extract_data_obj( $srvobj->$foa );
-					if( $ret > 0 )
-					{
-						$newobj->insert_table();
-						$this->$foa = $this->$foa + 1;	//Count of the numbers of foreign rows.
-						if( $this->debug > 0 )
-						{
-							echo "<br />" . __FILE__ . ":" . __LINE__ . "<br /><br />";
-							var_dump( $newobj );
-						}
-					}
-					unset( $newobj );	//Free the memory
-				}
-			}
-		}
-		return $extract_count;
-	}
-	function build_json_data()
-	{
-		$this->json_data = json_encode( $this->data_array );
-		//echo $this->json_data;
-	}
-	/*@bool@*/function prep_json_for_send( $func = NULL )
-	{
-		$this->build_data_array();
-		$this->build_json_data();
-		if( $this->json_data == FALSE )
-		{
-			$this->notify( __LINE__ . " " . $func . " Failed to build JSON data", "ERROR" );
-			return FALSE;
-		}
-		else
-			return TRUE;
-	}
-	function ll_walk_insert_fa()
-	{
-		$this->notify( __METHOD__ . "::"  . __LINE__, "WARN" );
-		$nextptr = $this->next_ptr;
-		while( $nextptr != NULL )
-		{
-			//if "id" not in the table, insert else update
-			if( $this->check_table_for_id() )
-				$nextptr->update_table();
-			else
-				$nextptr->insert_table();
-			$nextptr = $nextptr->next_ptr;
-		}
-	}
-	function ll_walk_update_fa()
-	{
-		$this->notify( __METHOD__ . "::"  . __LINE__, "WARN" );
-		$nextptr = $this->next_ptr;
-		while( $nextptr != NULL )
-		{
-			$nextptr->update_table();
-			$nextptr = $nextptr->next_ptr;
-		}
-	}
-	function reset_endpoint()
-	{
-		throw new Exception( "Inheriting class " . get_class( $this ) . " must override " . __METHOD__ . "!", KSF_FCN_NOT_OVERRIDDEN );
-	}
 	function error_handler( /*@Exception@*/ $e )
 	{
 		throw new Exception( "Inheriting class must override " . __METHOD__ . "!", KSF_FCN_NOT_OVERRIDDEN );
-	}
-	function retrieve_woo( $search_array = null )
-	{
-  		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
-                try
-                {
-			if( !isset( $this->endpoint ) )
-				throw new Exception( "Endpoint not set so can't query Woocommerce", KSF_VALUE_NOT_SET );
-                        if( isset( $this->woo_rest ) )
-                                $response = $this->woo_rest->get( $this->endpoint, $search );
-                        else
-                                throw new InvalidArgumentException( "WOO_REST not set", KSF_FIELD_NOT_SET );
-                        if( $this->debug >= 2 )
-                        {
-                                echo "<br />" . __FILE__ . ":" . __LINE__ . "<br />";
-                                print_r( $response );
-                        }
-                        $this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
-                        return $response;
-                }
-                catch( Exception $e )
-                {
-                        $this->error_handler( $e );
-                }
-	}
-	function log_exception( $e, $client )
-	{
-		echo "<br />" . __FILE__ . ":" . __LINE__ . " Exception CODE:<br />";	
-		var_dump( $e->getCode() );
-		echo "<br />" . __FILE__ . ":" . __LINE__ . " Exception MESSAGE:<br />";	
-		var_dump( $e->getMessage() );
-		if( $e instanceof HttpClientException )
-		{
-			echo "<br />" . __FILE__ . ":" . __LINE__ . " Exception REQUEST:<br />";	
-			var_dump( $e->getRequest );
-			echo "<br />" . __FILE__ . ":" . __LINE__ . " Exception RESPONSE:<br />";	
-			var_dump( $e->getResponse );
-		}
-		else
-			var_dump( $e );
-		$this->notify( get_class( $client ) . " has raised exception: " . $e->getCode() . "::" . $e->getMessage(), "WARN" );
 	}
 }
 

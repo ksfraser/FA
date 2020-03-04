@@ -25,26 +25,20 @@ require_once( 'class.woo_interface.php' );
 
 
 /******************************************
-* A product attribute has the following characteristic:
-*	attribute abbreviation (aka slug)(e.g. XXL)
+* A product attribute TYPE has the following characteristic:
 *	attribute NAME			(e.g. Extra Extra Large)
 *	attribute Description
-*	attribute TYPE  (i.e. not just SIZE but SHIRT-SIZE 
-*		for when the range isn't the same for every product)
 *	attribute sort-order	What order does this value sort in...
 *
 *********************************************/
 
-class model_woo_product_attributes extends woo_interface
+class model_woo_product_attributes_types extends woo_interface
 {
 	//var $id_woo_prod_variation_attributes;
 	var $updated_ts;
 	var $id;		//!< Integer. If a Global Attribute
-	var $slug;		//!< String.  Abbreviation.
 	var $name;		//!< String. Non Global Attribute.  	xref prod_variables_values::variablename
-	//var $option;		//!< String.				xref prod_variables_values::human readable
 	var $description;	//!< string
-	var $type;		//!< class
 	var $sortorder;		//!< Integer
 
 	function reset_endpoint()
@@ -57,14 +51,12 @@ class model_woo_product_attributes extends woo_interface
 						//declares updates_ts  and id_ prikey
 		$sidl = 'varchar(' . STOCK_ID_LENGTH . ')';
 		$this->fields_array[] = array('name' => 'id', 'type' => 'int(11)', 'null' => 'NOT NULL',  'readwrite' => 'readwrite' );
-		$this->fields_array[] = array('name' => 'slug', 'type' => $sidl, 'null' => 'NOT NULL',  'readwrite' => 'readwrite' );
 		$this->fields_array[] = array('name' => 'name', 'type' => $sidl, 'null' => 'NOT NULL',  'readwrite' => 'readwrite' );
 		$this->fields_array[] = array('name' => 'description', 'type' => $sidl, 'null' => 'NOT NULL',  'readwrite' => 'readwrite', 'comment' => 'Description of this Attribute' );
-		$this->fields_array[] = array('name' => 'type', 'type' => int(11), 'null' => 'NOT NULL',  'readwrite' => 'readwrite', 'comment' => 'FK to attributes_type table' );
-		$this->fields_array[] = array('name' => 'sortorder', 'type' => int(11), 'null' => 'NOT NULL',  'readwrite' => 'readwrite', 'comment' => 'Sort Order for this attribute' );
+		$this->fields_array[] = array('name' => 'sortorder', 'type' => 'int(11)', 'null' => 'NOT NULL',  'readwrite' => 'readwrite', 'comment' => 'Sort Order for this attribute' );
 		$this->table_details['index'][0]['type'] = 'unique';
-		$this->table_details['index'][0]['columns'] = "`type`, `slug`";
-		$this->table_details['index'][0]['keyname'] = "type-slug";
+		$this->table_details['index'][0]['columns'] = "`name`";
+		$this->table_details['index'][0]['keyname'] = "name";
 	}
 	/**********************************************************************************//**
 	 *Return the list of attributes for a given name
