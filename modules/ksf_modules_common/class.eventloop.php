@@ -37,6 +37,8 @@ $configArray = array();
  * 
  *
  * ********************************************************************************************/
+$configArray = array();	//Module configs use this
+
 class eventloop extends kfLog implements splSubject
 {
 	var $config_values = array();   //What fields to be put on config screen
@@ -45,36 +47,44 @@ class eventloop extends kfLog implements splSubject
 	var $tb_pref;
 	private $observers = [];
 	private $storage;	//From php.net example
+	protected $caller;
+	protected $tabs;
 
-	function __construct( $moduledir )
+	function __construct( $moduledir = null, $caller = null )
 	{
+		global $configArray();
 		parent::__construct();
+		$this->caller = $caller;
 		$this->storage = new SplObjectStorage();	//php.net
 		$this->initEventGroup( '*' );
 		$this->initEventGroup( '**' );
  		/* 
 		 * locate Module class files to open 
 		 */
+		if( ! isset( $moduledir ) )
+			$moduledir = dirname( __FILE__ ) . '/modules';
 	        foreach (glob("{$moduledir}/config.*.php") as $filename)
 	        {
-			//echo "opening module config file " . $filename . "<br />\n";
+			$this->log( " opening module config file " . $filename, DEBUG );
 	                include_once( $filename );
 	        }
 		/*
 		 * Loop through the $configArray to set loading modules in right order
 		 */
-		//var_dump( $configArray );
+		$modarray = array();
+		$tabarray = array();	//For menu options out of our modules (FA WOO interface driven)
 		if( isset( $configArray ) AND  count( $configArray ) > 0 )
 		{
 			foreach( $configArray as $carray )
 			{
-				//var_dump( $carray );
 				$modarray[$carray['loadpriority']][] = $carray;
+				//Add to tabs...
+                                $tabarray[$carray['taborder']][] = $carray;
+
 			}
 		}
 		if( isset( $modarray ) AND count( $modarray ) > 0 )
 		{
-			//var_dump( $modarray );
 			foreach( $modarray as $priarray )
 			{
 				foreach( $priarray as $marray )
@@ -83,7 +93,8 @@ class eventloop extends kfLog implements splSubject
 					if( TRUE == $res )
 					{
 						$this->ObserverNotify( $this, 'NOTIFY_LOG_INFO', "Module " . $marray['ModuleName'] . " being added" );
-						//echo "Module " . $marray['ModuleName'] . " being added <br />";
+
+						//Passing this to the called class, they set us as the event dispatcher
 						$marray['objectName'] = new $marray['className'];
 						if( isset( $marray['objectName']->observers ) )
 						{
@@ -96,9 +107,23 @@ class eventloop extends kfLog implements splSubject
 					else
 					{
 						echo "Attempt to open " . $moduledir . "/" . $marray['loadFile'] . " FAILED!<br />";
+						$this->ObserverNotify( $this, 'NOTIFY_LOG_INFO', "Unable to add module" . $moduledir );
 					}
 				}
 			}
+		}
+		$tabs = array();
+		if( isset( $tabarray ) AND count( $tabarray ) > 0 )
+		{
+			foreach( $tabarray as $priarray )
+			{
+				foreach( $priarray as $tabinc )
+				{
+					 $tabs[] = array( 'title' => $tabinc['tabdata']['tabtitle'], 'action' => $tabinc['tabdata']['action'], 'form' => $tabinc['tabdata']['form'], 'hidden' => $tabinc['tabdata']['hidden'], 'class' => $tabinc['tabdata']['class'] );
+				}
+			}
+			$this->tabs = $tabs;
+			$this->ObserverNotify( $this, 'NOTIFY_TABS_LOADED', $tabs );
 		}
 		$this->ObserverNotify( $this, 'NOTIFY_LOG_INFO', "Completed Adding Modules" );
 		$this->ObserverNotify( $this, 'NOTIFY_INIT_CONTROLLER_COMPLETE', "Completed Adding Modules" );
@@ -119,6 +144,14 @@ class eventloop extends kfLog implements splSubject
 */
 		}
 	}
+	 /*****************************************************************************//**
+         *ObserverRegister is the fcn that registers a class against an event
+         *
+         * @param class object to be registered
+         * @param string event to register for
+         * @param string value not used
+         *
+         * ******************************************************************************/
 	function ObserverRegister( /*Class Instance*/$observer, $event )
         {
 		//return FALSE;
@@ -157,9 +190,15 @@ class eventloop extends kfLog implements splSubject
 	        	$this->observers[$event] = [];
 	     	}
  	}
+        /*****************************************************************************//**
+         *ObserverNotify loops throug observers and tells interested ones about the event
+         *
+         * @param string event to match against
+         * @data mixed ideally is the object that triggered the event
+         *
+         * *******************************************************************************/
         function ObserverNotify( $trigger_class, $event, $msg )
         {
-	//	return;
 		if( is_string( $msg ) )
 			$this->Log( get_class( $trigger_class ) . " had event " . $event . " with message " . $msg, 1 );
 		else

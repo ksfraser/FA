@@ -45,6 +45,8 @@ class origin
 	protected $application;		//!< string which application is the child object holding data for
 	protected $module;		//!< string which module is the child object holding data for
 	protected $container_arr;	//__get/__isset uses this
+	protected $eventloop;		//!< object
+	protected $client;		//!< object what object instantiated this object
 
 	/************************************************************************//**
 	 *constructor
@@ -52,8 +54,10 @@ class origin
 	 *@param $loglevel int PEAR log levels
 	 *
 	 * ***************************************************************************/
-	function __construct( $loglevel = PEAR_LOG_DEBUG )
+	function __construct( $loglevel = PEAR_LOG_DEBUG, $client = null )
 	{
+		if( isset( $client ) )
+			$this->client = $client;
 		global $db_connections;
 		if( isset( $_SESSION['wa_current_user'] ) )
 		{
@@ -263,6 +267,133 @@ class origin
 			$this->log[] = $message;
 		return;
 	}
+	/******SPL EventLoop Funcs ********************************************/
+	/****************//**
+	*	Ensure we are attached to an eventloop object
+	*
+	********************/
+	function attach_eventloop()
+	{
+		if( ! isset( $this->eventloop ) )
+		{
+			global $eventloop;
+			if( isset( $eventloop ) )
+			{
+				$this->eventloop = $eventloop;
+				return TRUE;
+			}
+			else
+			{
+				if( isset( $this->client ) )
+				{
+					if( isset( $this->client->eventloop ) )
+					{
+						$this->eventloop = $this->client->eventloop;
+						return TRUE;
+					}
+					else
+					{
+						return FALSE;
+					}
+				}
+				else
+				{
+					return FALSE;
+				}
+			}
+		}
+		else
+		{
+			return TRUE;
+		}
+	}
+ 	/************************************************************//**
+         *
+         *      tell.  Function to tell the using routine that we took
+         *      an action.  That will let the client pass that data to
+         *      any other plugin routines that are interested in that
+         *      fact.
+         *
+         *      @param msg what event message to pass
+         *      @param method Who triggered that event so that we don't pass back to them into an endless loop
+         *
+         * **************************************************************/
+        function tell( $msg, $method )
+        {
+		if( ! isset( $msg ) )
+			throw new Exception( "MSG to tell not set", KSF_VAR_NOT_SET );
+
+                if( isset( $this->client ) )    //if not set nobody to tell
+                        if( is_callable( $this->client->eventloop( $msg, $method ) ) )
+                                $this->client->eventloop( $msg, $method );
+                else
+                {
+                        $this->tell_eventloop( $this, $msg, $method );
+                }
+        }
+        function tell_eventloop( $caller, $event, $msg )
+        {
+		if( $this->attach_eventloop() )
+                        $this->eventloop->ObserverNotify( $caller, $event, $msg );
+
+        }
+        /***************************************************************//**
+         *dummy
+         *
+         *      Dummy function so that build_interestedin has something to
+         *      put in as an example.
+         *
+         *      @returns FALSE
+         * ******************************************************************/
+        function dummy( $obj, $msg )
+        {
+                $this->tell_eventloop( $this, NOTIFY_LOG_DEBUG, __METHOD__ . ":" . __LINE__ . " Entering " );
+                $this->tell_eventloop( $this, NOTIFY_LOG_DEBUG, __METHOD__ . ":" . __LINE__ . " Exiting " );
+                return FALSE;
+        }
+   	function register_with_eventloop()
+        {
+		if( $this->attach_eventloop() )
+                {
+                        foreach( $this->interestedin as $key => $val )
+                        {
+                                if( $key <> KSF_DUMMY_EVENT )
+                                        $this->eventloop->ObserverRegister( $this, $key );
+                        }
+                }
+        }
+        /***************************************************************//**
+         *build_interestedin
+         *
+         *      DEMO function that needs to be overridden
+         *      This function builds the table of events that we
+         *      want to react to and what handlers we are passing the
+         *      data to so we can react.
+         * ******************************************************************/
+        function build_interestedin()
+        {
+                //This NEEDS to be overridden
+                $this->interestedin[KSF_DUMMY_EVENT]['function'] = "dummy";
+	//	throw new Exception( "You MUST override this function, even if it is empty!", KSF_FCN_NOT_OVERRIDDEN );
+        }
+        /***************************************************************//**
+         *notified
+         *
+         *      When we are notified that an event happened, check to see
+         *      what we want to do about it
+         *
+         * @param $obj Object of who triggered the event
+         * @param $event what event was triggered
+         * @param $msg what message (data) was passed to us because of the event
+         * ******************************************************************/
+        function notified( $obj, $event, $msg )
+        {
+                if( isset( $this->interestedin[$event] ) )
+                {
+                        $tocall = $this->interested[$event]['function'];
+                        $this->$tocall( $obj, $msg );
+                }
+        }
 }
 
 /***************DYNAMIC create setter and getter**********************

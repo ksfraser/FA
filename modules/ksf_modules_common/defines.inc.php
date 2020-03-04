@@ -60,6 +60,7 @@ define( 'SUPP_ACCOUNT_NO_LENGTH', 40 );
 
 //EVENTLOOP Events
 $eventcount = 5730;
+define( 'KSF_DUMMY_EVENT', $eventcount ); $eventcount++;	//Used by woo_interface:build_interestedin as example
 define( 'WOO_DUMMY_EVENT', $eventcount ); $eventcount++;	//Used by woo_interface:build_interestedin as example
 define( 'WOO_PRODUCT_INSERT', $eventcount ); $eventcount++;
 define( 'WOO_PRODUCT_UPDATE', $eventcount ); $eventcount++;

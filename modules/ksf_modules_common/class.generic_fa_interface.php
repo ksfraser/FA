@@ -67,6 +67,7 @@ if( ! class_exists( 'generic_fa_interface' ) )
 		var $edit;			//!< int ID of row to edit
 		var $delete;			//!< int ID of row to delete
 		var $selected_id;		//!< int ID of row to edit/delete
+		var $eventloop;			//!< object eventloop
 		/*********************************************************************
 		 *
 		 *	This function must be overridden to work correctly
@@ -143,6 +144,10 @@ if( ! class_exists( 'generic_fa_interface' ) )
 		 * ********************************************************************************/
 		function add_submodules()
 		{
+			//assumption this is an inherited class calling, and not from within ksf_modules_common but on an equivalent depth
+			require_once( dirname( __FILE__ ) . '/../ksf_modules_common/class.eventloop.php' );
+			$this->eventloop = new eventloop(  dirname( __FILE__ ) . '/modules', $this );
+
 			//display_notification( __FILE__ . "::" . __CLASS__ . "::"  . __METHOD__ . ":" . __LINE__, "WARN" );
 			//global $configArray = array();
 			$addondir = "./";
