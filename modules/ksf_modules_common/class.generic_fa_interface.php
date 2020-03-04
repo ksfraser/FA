@@ -142,18 +142,18 @@ if( ! class_exists( 'generic_fa_interface' ) )
 		 *
 		 *
 		 * ********************************************************************************/
-		function add_submodules()
+		function add_submodules( $moduledir = null )
 		{
 			//assumption this is an inherited class calling, and not from within ksf_modules_common but on an equivalent depth
 			require_once( dirname( __FILE__ ) . '/../ksf_modules_common/class.eventloop.php' );
-			$this->eventloop = new eventloop(  dirname( __FILE__ ) . '/modules', $this );
+			if( ! isset( $moduledir ) ) 
+				$moduledir = dirname( __FILE__ ) . '/modules';
+			$this->eventloop = new eventloop(  $moduledir, $this );
 
-			//display_notification( __FILE__ . "::" . __CLASS__ . "::"  . __METHOD__ . ":" . __LINE__, "WARN" );
 			//global $configArray = array();
 			$addondir = "./";
 			foreach (glob("{$addondir}config.*.php") as $filename)
 	                {
-	                        //echo "opening module config file " . $filename . "<br />\n";
 	                        include_once( $filename );
 	                }
 	                /*
@@ -415,8 +415,17 @@ if( ! class_exists( 'generic_fa_interface' ) )
 			 */
 			foreach( $this->tabs as $tab )
 			{
+				//We have a tab w/o action/form
+				//print_r( "TAB missing action/form <br />" );
+				//var_dump( $tab );
 				if( $action == $tab['action'] )
 				{
+					if( isset( $tab['class'] ) )
+					{
+						$objname = $tab['class'];
+						//action/form added by module.  Will be external to 
+						//controller...
+					}
 					//Call appropriate form
 					$form = $tab['form'];
 					if( $this->debug > 2 )
@@ -429,10 +438,24 @@ if( ! class_exists( 'generic_fa_interface' ) )
 					}
 					else 
 	 */ 
-					if( method_exists( $this, $form) AND is_callable( $this->$form() ) )
+					if( ! isset( $obj ) )
 					{
-						echo "<br />" . __FILE__ . ":" . __LINE__ . " Calling non-UI class " .$form . "<br />";
-						$this->$form();
+						if( method_exists( $this, $form) AND is_callable( $this->$form() ) )
+						{
+							echo "<br />" . __FILE__ . ":" . __LINE__ . " Calling non-UI class " .$form . "<br />";
+							$this->$form();
+						}
+					}
+					else
+					{
+						//create and call the module.
+						//Odds it already exists?  As this is a web based app and not continous,
+						// slim unless it was serialized.  Since we aren't doing that currenty...
+						$obj = new $objname();
+						if( method_exists( $obj, $form) AND is_callable( $obj->$form() ) )
+						{
+							$obj->$form();
+						}
 					}
 				}
 			}
@@ -494,10 +517,11 @@ if( ! class_exists( 'generic_fa_interface' ) )
 					//action not set, so we passed in a Button
 					foreach( $this->tabs as $row )
 					{
-						if( isset( $_POST[$row['action']] ) )
+						if( isset( $row['action'] ) AND isset( $_POST ) AND isset( $_POST[$row['action']] ) )
 						{
 							$this->set_var( 'action', $row['action'] );
 							//echo "Set action to " . $row['action'] . " <br />";
+							$this->eventloop->ObserverNotify( $this, 'NOTIFY_LOG_INFO',  "Set action to " . $row['action'] );
 							continue;
 						}
 					}

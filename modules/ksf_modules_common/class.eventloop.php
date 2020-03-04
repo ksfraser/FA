@@ -48,11 +48,10 @@ class eventloop extends kfLog implements splSubject
 	private $observers = [];
 	private $storage;	//From php.net example
 	protected $caller;
-	protected $tabs;
 
 	function __construct( $moduledir = null, $caller = null )
 	{
-		global $configArray();
+		global $configArray;
 		parent::__construct();
 		$this->caller = $caller;
 		$this->storage = new SplObjectStorage();	//php.net
@@ -65,7 +64,7 @@ class eventloop extends kfLog implements splSubject
 			$moduledir = dirname( __FILE__ ) . '/modules';
 	        foreach (glob("{$moduledir}/config.*.php") as $filename)
 	        {
-			$this->log( " opening module config file " . $filename, DEBUG );
+			$this->log( " opening module config file " . $filename, PEAR_LOG_DEBUG );
 	                include_once( $filename );
 	        }
 		/*
@@ -112,14 +111,17 @@ class eventloop extends kfLog implements splSubject
 				}
 			}
 		}
+		$this->ObserverNotify( $this, 'NOTIFY_LOG_INFO', "Adding Module TABS" . $moduledir );
 		$tabs = array();
 		if( isset( $tabarray ) AND count( $tabarray ) > 0 )
 		{
+			var_dump( $tabarray );
 			foreach( $tabarray as $priarray )
 			{
 				foreach( $priarray as $tabinc )
 				{
 					 $tabs[] = array( 'title' => $tabinc['tabdata']['tabtitle'], 'action' => $tabinc['tabdata']['action'], 'form' => $tabinc['tabdata']['form'], 'hidden' => $tabinc['tabdata']['hidden'], 'class' => $tabinc['tabdata']['class'] );
+					$this->ObserverNotify( $this, 'NOTIFY_LOG_INFO', print_r( $tabinc, true ) );
 				}
 			}
 			$this->tabs = $tabs;
