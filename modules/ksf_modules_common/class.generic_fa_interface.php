@@ -425,6 +425,7 @@ if( ! class_exists( 'generic_fa_interface' ) )
 						$objname = $tab['class'];
 						//action/form added by module.  Will be external to 
 						//controller...
+						$this->eventloop->ObserverNotify( $this, 'NOTIFY_LOG_DEBUG', "Class nane set for tab " . $objname  );
 					}
 					//Call appropriate form
 					$form = $tab['form'];
@@ -454,10 +455,21 @@ if( ! class_exists( 'generic_fa_interface' ) )
 						$obj = new $objname();
 						if( method_exists( $obj, $form) AND is_callable( $obj->$form() ) )
 						{
+							$this->eventloop->ObserverNotify( $this, 'NOTIFY_LOG_DEBUG', "Calling " . $objname . "::" . $form );
 							$obj->$form();
+						}
+						else
+						{
+							$this->notify( "Object Class set for action but not callable", "WARN" );
+							$this->eventloop->ObserverNotify( $this, 'NOTIFY_OBJECT_NOT_CALLABLE', $objname . "::" . $form  );
 						}
 					}
 				}
+				else
+				{	
+							$this->eventloop->ObserverNotify( $this, 'NOTIFY_LOG_DEBUG', "No Match between " . $action . "::" . $tab['action']  );
+				}
+	
 			}
 		}
 		function base_page()

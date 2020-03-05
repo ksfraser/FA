@@ -48,10 +48,10 @@ class eventloop extends kfLog implements splSubject
 	private $observers = [];
 	private $storage;	//From php.net example
 	protected $caller;
+	protected $moduledir;
 
 	function __construct( $moduledir = null, $caller = null )
 	{
-		global $configArray;
 		parent::__construct();
 		$this->caller = $caller;
 		$this->storage = new SplObjectStorage();	//php.net
@@ -62,73 +62,14 @@ class eventloop extends kfLog implements splSubject
 		 */
 		if( ! isset( $moduledir ) )
 			$moduledir = dirname( __FILE__ ) . '/modules';
-	        foreach (glob("{$moduledir}/config.*.php") as $filename)
-	        {
-			$this->log( " opening module config file " . $filename, PEAR_LOG_DEBUG );
-	                include_once( $filename );
-	        }
-		/*
-		 * Loop through the $configArray to set loading modules in right order
-		 */
-		$modarray = array();
-		$tabarray = array();	//For menu options out of our modules (FA WOO interface driven)
-		if( isset( $configArray ) AND  count( $configArray ) > 0 )
-		{
-			foreach( $configArray as $carray )
-			{
-				$modarray[$carray['loadpriority']][] = $carray;
-				//Add to tabs...
-                                $tabarray[$carray['taborder']][] = $carray;
-
-			}
-		}
-		if( isset( $modarray ) AND count( $modarray ) > 0 )
-		{
-			foreach( $modarray as $priarray )
-			{
-				foreach( $priarray as $marray )
-				{
-					$res = include_once( $moduledir . "/" . $marray['loadFile'] );
-					if( TRUE == $res )
-					{
-						$this->ObserverNotify( $this, 'NOTIFY_LOG_INFO', "Module " . $marray['ModuleName'] . " being added" );
-
-						//Passing this to the called class, they set us as the event dispatcher
-						$marray['objectName'] = new $marray['className'];
-						if( isset( $marray['objectName']->observers ) )
-						{
-							foreach( $marray['objectName']->observers as $obs )
-							{
-								$this->observers[] = $obs;
-							}
-						}
-					}
-					else
-					{
-						echo "Attempt to open " . $moduledir . "/" . $marray['loadFile'] . " FAILED!<br />";
-						$this->ObserverNotify( $this, 'NOTIFY_LOG_INFO', "Unable to add module" . $moduledir );
-					}
-				}
-			}
-		}
-		$this->ObserverNotify( $this, 'NOTIFY_LOG_INFO', "Adding Module TABS" . $moduledir );
-		$tabs = array();
-		if( isset( $tabarray ) AND count( $tabarray ) > 0 )
-		{
-			var_dump( $tabarray );
-			foreach( $tabarray as $priarray )
-			{
-				foreach( $priarray as $tabinc )
-				{
-					 $tabs[] = array( 'title' => $tabinc['tabdata']['tabtitle'], 'action' => $tabinc['tabdata']['action'], 'form' => $tabinc['tabdata']['form'], 'hidden' => $tabinc['tabdata']['hidden'], 'class' => $tabinc['tabdata']['class'] );
-					$this->ObserverNotify( $this, 'NOTIFY_LOG_INFO', print_r( $tabinc, true ) );
-				}
-			}
-			$this->tabs = $tabs;
-			$this->ObserverNotify( $this, 'NOTIFY_TABS_LOADED', $tabs );
-		}
+		$this->moduledir = $moduledir;
+		$this->load_modules();
 		$this->ObserverNotify( $this, 'NOTIFY_LOG_INFO', "Completed Adding Modules" );
 		$this->ObserverNotify( $this, 'NOTIFY_INIT_CONTROLLER_COMPLETE', "Completed Adding Modules" );
+	}
+	function set_moduledir( $dir )
+	{
+		$this->moduledir = $dir;
 	}
 	function dumpObservers()
 	{
@@ -231,6 +172,75 @@ class eventloop extends kfLog implements splSubject
         	$all = $this->observers["*"];
         	return array_merge($group, $all);
     	}
+	function load_modules()
+	{
+		global $configArray;
+	        foreach (glob("{$this->moduledir}/config.*.php") as $filename)
+	        {
+			$this->log( " opening module config file " . $filename, PEAR_LOG_DEBUG );
+	                include_once( $filename );
+	        }
+		/*
+		 * Loop through the $configArray to set loading modules in right order
+		 */
+		$modarray = array();
+		$tabarray = array();	//For menu options out of our modules (FA WOO interface driven)
+		if( isset( $configArray ) AND  count( $configArray ) > 0 )
+		{
+			foreach( $configArray as $carray )
+			{
+				$modarray[$carray['loadpriority']][] = $carray;
+				//Add to tabs...
+                                $tabarray[$carray['taborder']][] = $carray;
+
+			}
+		}
+		if( isset( $modarray ) AND count( $modarray ) > 0 )
+		{
+			foreach( $modarray as $priarray )
+			{
+				foreach( $priarray as $marray )
+				{
+					$res = include_once( $this->moduledir . "/" . $marray['loadFile'] );
+					if( TRUE == $res )
+					{
+						$this->ObserverNotify( $this, 'NOTIFY_LOG_INFO', "Module " . $marray['ModuleName'] . " being added" );
+
+						//Passing this to the called class, they set us as the event dispatcher
+						$marray['objectName'] = new $marray['className'];
+						if( isset( $marray['objectName']->observers ) )
+						{
+							foreach( $marray['objectName']->observers as $obs )
+							{
+								$this->observers[] = $obs;
+							}
+						}
+					}
+					else
+					{
+						echo "Attempt to open " . $this->moduledir . "/" . $marray['loadFile'] . " FAILED!<br />";
+						$this->ObserverNotify( $this, 'NOTIFY_LOG_INFO', "Unable to add module" . $this->moduledir );
+					}
+				}
+			}
+		}
+		$this->ObserverNotify( $this, 'NOTIFY_LOG_INFO', "Adding Module TABS" );
+		$tabs = array();
+		if( isset( $tabarray ) AND count( $tabarray ) > 0 )
+		{
+			//var_dump( $tabarray );
+			foreach( $tabarray as $priarray )
+			{
+				foreach( $priarray as $tabinc )
+				{
+					 $tabs[] = array( 'title' => $tabinc['tabdata']['tabtitle'], 'action' => $tabinc['tabdata']['action'], 'form' => $tabinc['tabdata']['form'], 'hidden' => $tabinc['tabdata']['hidden'], 'class' => $tabinc['tabdata']['class'] );
+					$this->ObserverNotify( $this, 'NOTIFY_LOG_INFO', print_r( $tabinc, true ) );
+				}
+			}
+			$this->tabs = $tabs;
+			$this->ObserverNotify( $this, 'NOTIFY_TABS_LOADED', $tabs );
+		}
+	}
 /****************************splSubject************************************************/
 	public function attach(\SplObserver $observer, $event = "*")
     	{
