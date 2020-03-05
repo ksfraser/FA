@@ -81,6 +81,9 @@ if( ! class_exists( 'generic_fa_interface' ) )
 			//		echo "Generic constructor pref_tablename: $pref_tablename";
 			if( !isset( $this->debug ) )
 				$this->debug = 0;
+			require_once( dirname( __FILE__ ) . '/../ksf_modules_common/class.eventloop.php' );
+			$this->eventloop = new eventloop(  null, $this );
+
 			if(isset( $pref_tablename ) )
 			{
 				parent::__construct( $host, $user, $pass, $database, $pref_tablename );
@@ -130,9 +133,6 @@ if( ! class_exists( 'generic_fa_interface' ) )
 	
 	        }
 
-		function eventloop( $event, $method )
-		{
-		}
 		function eventregister( $event, $method )
 		{
 		}
@@ -145,10 +145,11 @@ if( ! class_exists( 'generic_fa_interface' ) )
 		function add_submodules( $moduledir = null )
 		{
 			//assumption this is an inherited class calling, and not from within ksf_modules_common but on an equivalent depth
-			require_once( dirname( __FILE__ ) . '/../ksf_modules_common/class.eventloop.php' );
 			if( ! isset( $moduledir ) ) 
 				$moduledir = dirname( __FILE__ ) . '/modules';
-			$this->eventloop = new eventloop(  $moduledir, $this );
+			$this->eventloop->set_moduledir(  $moduledir );
+			$this->eventloop->load_modules();
+			
 
 			//global $configArray = array();
 			$addondir = "./";
@@ -425,26 +426,24 @@ if( ! class_exists( 'generic_fa_interface' ) )
 						$objname = $tab['class'];
 						//action/form added by module.  Will be external to 
 						//controller...
-						$this->eventloop->ObserverNotify( $this, 'NOTIFY_LOG_DEBUG', "Class nane set for tab " . $objname  );
+						$this->eventloop->ObserverNotify( $this, 'NOTIFY_LOG_DEBUG', "Class name set for tab " . $objname  );
 					}
 					//Call appropriate form
 					$form = $tab['form'];
+					$this->eventloop->ObserverNotify( $this, 'NOTIFY_LOG_DEBUG', "Should be calling form " . $form  );
 					if( $this->debug > 2 )
 						echo "<br />" . __FILE__ . ":" . __LINE__ . " " .$form . "<br />";
-					/*
-					if( isset( $this->ui_class ) AND method_exists( $this->ui_class, $form) AND is_callable($this->ui_class->$form() ) )
+					if( ! isset( $objname ) )
 					{
-						echo "<br />" . __FILE__ . ":" . __LINE__ . " Calling UI class " .$form . "<br />";
-						$this->ui_class->$form();
-					}
-					else 
-	 */ 
-					if( ! isset( $obj ) )
-					{
+						$this->eventloop->ObserverNotify( $this, 'NOTIFY_LOG_DEBUG', "No external object set, so try calling internal form: " . $form  );
 						if( method_exists( $this, $form) AND is_callable( $this->$form() ) )
 						{
 							echo "<br />" . __FILE__ . ":" . __LINE__ . " Calling non-UI class " .$form . "<br />";
 							$this->$form();
+						}
+						else
+						{
+							$this->eventloop->ObserverNotify( $this, 'NOTIFY_LOG_ERROR', "FORM not callable!! We shouldn't be here unless during development and the form hasn't been coded!"  );
 						}
 					}
 					else

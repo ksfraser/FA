@@ -1,7 +1,9 @@
- opening module config file C:\xampp\htdocs\devel\fhs\frontaccounting\modules\EXPORT_WOO/modules/config.products.php
-eventloop had event NOTIFY_LOG_INFO with message Module controller.woo_product_attributes.php being added
-eventloop had event NOTIFY_LOG_INFO with message Module controller.woo_product_attributes_types.php being added
-eventloop had event NOTIFY_LOG_INFO with message Adding Module TABSC:\xampp\htdocs\devel\fhs\frontaccounting\modules\EXPORT_WOO/modules
+eventloop had event NOTIFY_LOG_INFO with message Adding Module TABS
+eventloop had event NOTIFY_LOG_INFO with message Completed Adding Modules
+eventloop had event NOTIFY_INIT_CONTROLLER_COMPLETE with message Completed Adding Modules
+model_woo_product_attributes had event NOTIFY_LOG_WARN with message woo_interface::__construct:185 Entering woo_interface::__construct
+model_woo_product_attributes had event NOTIFY_LOG_WARN with message woo_interface::registeventloop had event NOTIFY_LOG_INFO with message Module controller.woo_product_attributes_types.php being added
+eventloop had event NOTIFY_LOG_INFO with message Adding Module TABS
 eventloop had event NOTIFY_LOG_INFO with message Array
 (
     [ModuleName] => controller.woo_product_attributes.php
@@ -34,7 +36,7 @@ eventloop had event NOTIFY_LOG_INFO with message Array
         (
             [tabtitle] => Product Attribute Types
             [action] => p_attr_type
-            [form] => prod_attribute_types_form
+            [form] => prod_attributes_types_form
             [hidden] => 
             [class] => controller_woo_product_attributes_types
         )
@@ -43,10 +45,22 @@ eventloop had event NOTIFY_LOG_INFO with message Array
 )
 
 eventloop had event NOTIFY_TABS_LOADED
-eventloop had event NOTIFY_LOG_INFO with message Completed Adding Modules
-eventloop had event NOTIFY_INIT_CONTROLLER_COMPLETE with message Completed Adding Modules
-erface::__construct:219 Leaving woo_interface::__construct
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between p_attr_type::default
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between p_attr_type::create
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between p_attr_type::reset_store
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between p_attr_type::update
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between p_attr_type::config
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between p_attr_type::init_tables_form
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between p_attr_type::init_tables_complete_form
+EXPORT_WOO had model_woo_product_attributes_types had event NOTIFY_LOG_WARN with message woo_interface::__construct:185 Entering woo_interface::__construct
+model_woo_product_attributes_types had event NOTIFY_LOG_WARN with message woo_interface::register_with_eventloop::454 Entering woo_interface::register_with_eventloop
+model_woo_product_attributes_types had event NOTIFY_LOG_WARN with message woo_interface::register_with_eventloop::464 Exiting woo_interface::register_with_eventloop
+model_woo_product_attributes_types had event NOTIFY_LOG_WARN with message woo_interface::__construct:219 Leaving woo_interface::__construct
 model_woo_product_attributes_types had event NOTIFY_LOG_WARN with message woo_interface::__construct:185 Entering woo_interface::__construct
 model_woo_product_attributes_types had event NOTIFY_LOG_WARN with message woo_interface::register_with_eventloop::454 Entering woo_interface::register_with_eventloop
 model_woo_product_attributes_types had event NOTIFY_LOG_WARN with message woo_interface::register_with_eventloop::464 Exiting woo_interface::register_with_eventloop
 model_woo_product_attributes_types had event NOTIFY_LOG_WARN with message woo_interface::__construct:219 Leaving woo_interface::__construct
+model_woo_product_attributes_types had event NOTIFY_LOG_WARN with message woo_interface::master_form::596
+model_woo_product_attributes_types had event NOTIFY_LOG_WARN with message woo_interface::master_form:627:SELECT id_model_woo_product_attributes_types, updated_ts, id, name, description, sortorder from 1_model_woo_product_attributes_types
+model_woo_product_attributes_types had event NOTIFY_LOG_WARN with message woo_interface::master_form:628: Display data
+model_woo_product_attributes_types had event NOTIFY_LOG_DEBUG with message woo_interface::display_table_with_edit::698

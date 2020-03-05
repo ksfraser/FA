@@ -12,6 +12,11 @@ class view_woo_product_attributes_types
 	{
 		$this->model->master_form();
 	}
+        function prod_attributes_types_form()
+        {
+                $this->master_form();
+        }
+
 }
 
 ?>

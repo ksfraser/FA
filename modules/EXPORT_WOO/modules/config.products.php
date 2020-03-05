@@ -24,7 +24,7 @@ $configArray[] = array( 'ModuleName' => 'controller.woo_product_attributes_types
 			'tabdata' => array (
 				'tabtitle' => 'Product Attribute Types',
 				'action' => 'p_attr_type',
-				'form' => 'prod_attribute_types_form',
+				'form' => 'prod_attributes_types_form',
 				'hidden' => false,
 				'class' => 'controller_woo_product_attributes_types'
 				),
