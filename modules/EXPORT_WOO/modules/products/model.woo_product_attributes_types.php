@@ -34,9 +34,9 @@ require_once( 'class.woo_interface.php' );
 
 class model_woo_product_attributes_types extends woo_interface
 {
-	//var $id_woo_prod_variation_attributes;
+	var $id_woo_product_attributes_type;	//created by parent
 	var $updated_ts;
-	var $id;		//!< Integer. If a Global Attribute
+	//var $id;		//!< Integer. If a Global Attribute
 	var $name;		//!< String. Non Global Attribute.  	xref prod_variables_values::variablename
 	var $description;	//!< string
 	var $sortorder;		//!< Integer
@@ -50,7 +50,7 @@ class model_woo_product_attributes_types extends woo_interface
 		woo_interface::define_table();	//defines tablename and prikey!
 						//declares updates_ts  and id_ prikey
 		$sidl = 'varchar(' . STOCK_ID_LENGTH . ')';
-		$this->fields_array[] = array('name' => 'id', 'type' => 'int(11)', 'null' => 'NOT NULL',  'readwrite' => 'readwrite' );
+	//	$this->fields_array[] = array('name' => 'id', 'type' => 'int(11)', 'null' => 'NOT NULL',  'readwrite' => 'readwrite' );	//parent class creates id_tablename
 		$this->fields_array[] = array('name' => 'name', 'type' => $sidl, 'null' => 'NOT NULL',  'readwrite' => 'readwrite' );
 		$this->fields_array[] = array('name' => 'description', 'type' => $sidl, 'null' => 'NOT NULL',  'readwrite' => 'readwrite', 'comment' => 'Description of this Attribute' );
 		$this->fields_array[] = array('name' => 'sortorder', 'type' => 'int(11)', 'null' => 'NOT NULL',  'readwrite' => 'readwrite', 'comment' => 'Sort Order for this attribute' );

@@ -37,14 +37,14 @@ require_once( 'class.woo_interface.php' );
 
 class model_woo_product_attributes extends woo_interface
 {
-	//var $id_woo_prod_variation_attributes;
+	var $id_woo_product_attributes;	//parent defines in define_table
 	var $updated_ts;
-	var $id;		//!< Integer. If a Global Attribute
+	//var $id;		//!< Integer. If a Global Attribute
 	var $slug;		//!< String.  Abbreviation.
 	var $name;		//!< String. Non Global Attribute.  	xref prod_variables_values::variablename
 	//var $option;		//!< String.				xref prod_variables_values::human readable
 	var $description;	//!< string
-	var $type;		//!< class
+	var $type;		//!< id pointing to _attributes_type
 	var $sortorder;		//!< Integer
 
 	function reset_endpoint()
@@ -56,7 +56,7 @@ class model_woo_product_attributes extends woo_interface
 		woo_interface::define_table();	//defines tablename and prikey!
 						//declares updates_ts  and id_ prikey
 		$sidl = 'varchar(' . STOCK_ID_LENGTH . ')';
-		$this->fields_array[] = array('name' => 'id', 'type' => 'int(11)', 'null' => 'NOT NULL',  'readwrite' => 'readwrite' );
+		//$this->fields_array[] = array('name' => 'id', 'type' => 'int(11)', 'null' => 'NOT NULL',  'readwrite' => 'readwrite' );
 		$this->fields_array[] = array('name' => 'slug', 'type' => $sidl, 'null' => 'NOT NULL',  'readwrite' => 'readwrite' );
 		$this->fields_array[] = array('name' => 'name', 'type' => $sidl, 'null' => 'NOT NULL',  'readwrite' => 'readwrite' );
 		$this->fields_array[] = array('name' => 'description', 'type' => $sidl, 'null' => 'NOT NULL',  'readwrite' => 'readwrite', 'comment' => 'Description of this Attribute' );
@@ -65,6 +65,9 @@ class model_woo_product_attributes extends woo_interface
 		$this->table_details['index'][0]['type'] = 'unique';
 		$this->table_details['index'][0]['columns'] = "`type`, `slug`";
 		$this->table_details['index'][0]['keyname'] = "type-slug";
+		$this->table_details['index'][1]['type'] = 'unique';
+		$this->table_details['index'][1]['columns'] = "`slug`";
+		$this->table_details['index'][1]['keyname'] = "slug";
 	}
 	/**********************************************************************************//**
 	 *Return the list of attributes for a given name
