@@ -24,13 +24,15 @@ require_once( 'defines.inc.php' );
 class kfLog extends origin
 {
 	var $logobject;
-	var $objWriteFile;
+	var $objWriteFile;	//MERGER - Unused?
 
-	function __construct( $filename = __FILE__, $level = PEAR_LOG_DEBUG )
+	function __construct( $filename = null, $level = PEAR_LOG_DEBUG )
 	{
+		if( null == $filename )
+			$filename = __FILE__;
+		$filename = basename( realpath( $filename ) );
 		parent::__construct();
 		$conf = array();
-		$filename = basename( realpath( $filename ) );
 		$this->logobject = new Log_file( $filename . "_debug_log.txt", "", $conf, $level );
 		$this->objWriteFile = new write_file( ".", $filename . "_debug_log.txt" );
 		return;	
@@ -39,7 +41,7 @@ class kfLog extends origin
 	{
 		$this->objWriteFile->__destruct();
 	}
-	function Log( $msg, $level )
+	function Log( $msg, $level )//:bool
 	{
 		if( strcmp( $level, "WARN" ) == 0 )
 		{
@@ -47,6 +49,8 @@ class kfLog extends origin
 			//$level = PEAR_LOG_WARN;
 		//	$this->logobject->log( $msg, PEAR_LOG_WARN );
 		}
+		//MERGER - newer version has logobject but not objWriteFile...Migration?
+		$this->logobject->log( $msg, $level );
 		$this->objWriteFile->write_line( $msg );
 		return;	
 	}

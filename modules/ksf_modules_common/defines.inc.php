@@ -4,6 +4,20 @@ $path_to_faroot= dirname ( realpath ( __FILE__ ) ) . "/../..";
 //$path_to_faroot = __DIR__ . "/../../";
 $path_to_ksfcommon = __DIR__ . "/";
 
+/**************
+ * Defines for running from CLI
+ * **********/
+/*
+if( ! function_exists( 'user_company' ) ) { function user_company() { return 1; } }
+if( ! function_exists( 'simple_page_mode' ) ) { function simple_page_mode() { return 1; } }
+if( ! function_exists( 'find_submit' ) ) { function find_submit() { return 1; } }
+if( ! function_exists( 'page' ) ) { function page() { return 1; } }
+if( ! function_exists( 'hyperlink_params' ) ) { function hyperlink_params() { return 1; } }
+if( ! function_exists( 'end_page' ) ) { function end_page() { return 1; } }
+if( ! defined( $_SESSION ) ) { global $_SESSION;  $SESSION['cur_con'] = null; }
+*/
+
+
 //require_once( $path_to_faroot . '/includes/db/connect_db.inc' ); //db_query, ...
 //require_once( $path_to_faroot . '/includes/errors.inc' ); //check_db_error, ...
 if( !$log_included = @include_once( 'Log.php' ))	//PEAR Logging
@@ -151,6 +165,7 @@ define( 'KSF_INVALID_DATA_VALUE', $eventcount ); $eventcount++;
 define( 'KSF_UNKNOWN_DATA_TYPE', $eventcount ); $eventcount++;
 define( 'KSF_FCN_NOT_OVERRIDDEN', $eventcount ); $eventcount++;
 define( 'KSF_FCN_PATH_OVERRIDE', $eventcount ); $eventcount++;
+define( 'KSF_VAR_NOT_SET', $eventcount ); $eventcount++;
 /************************************************************************//**
  * Data Access levels
  *  Think filesystem RWX values R = 0/1, W = 0/2 and X = 0/4

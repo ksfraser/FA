@@ -1,19 +1,24 @@
 <?php
 
-require_once( 'class.table_interface.php' );
+//MERGER - newer version doesn't extend table_interface.  Moving to MVC?
+//require_once( 'class.table_interface.php' );
 
 $path_to_root = "../..";
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/banking.inc");
 include_once($path_to_root."/sales/inquiry/customer_inquiry.php");
 
+/* MERGER - newer version doesn't extend table_interface.  Moving to MVC?
 require_once( $path_to_root . '/sales/includes/db/customers_db.inc' ); //add_customer
 require_once( $path_to_root . '/sales/includes/db/branches_db.inc' ); //add_branch
 require_once( $path_to_root . '/includes/db/crm_contacts_db.inc' ); //add_crm_*
 require_once( $path_to_root . '/includes/db/connect_db.inc' ); //db_query, ...
 require_once( $path_to_root . '/includes/errors.inc' ); //check_db_error, ...
+*/
 
-class fa_crm_persons extends table_interface
+//MERGER - newer version doesn't extend table_interface.  Moving to MVC?
+//class fa_crm_persons extends table_interface
+class fa_crm_persons
 {
 	/************************************************
 	 * This is the FA crm persons table
@@ -26,10 +31,10 @@ class fa_crm_persons extends table_interface
 	protected $name2;
 	protected $address; 	//<@ Also in debtors_master
 				//address 1&2, city, state, postal, country in 1
-	protected $phone;
+	protected $phone;	//<@ Phone - NA Shipping Address
 	protected $phone2;
 	protected $fax;
-	protected $email;
+	protected $email;	//<@ email - NA Shipping Address
 	protected $lang;
 	protected $notes;	//<@ Also in debtors_master, cust_branch
 	protected $inactive;	//<@ Also in debtors_master
@@ -60,7 +65,9 @@ class fa_crm_persons extends table_interface
 
 }
 
-class fa_crm_contacts extends table_interface
+//MERGER - newer version doesn't extend table_interface.  Moving to MVC?
+//class fa_crm_contacts extends table_interface
+class fa_crm_contacts
 {
 	/************************************************
 	 * This is the FA crm contacts table
@@ -87,7 +94,9 @@ class fa_crm_contacts extends table_interface
 	}
 }
 
-class fa_debtors_master extends table_interface
+//MERGER - newer version doesn't extend table_interface.  Moving to MVC?
+//class fa_debtors_master extends table_interface
+class fa_debtors_master
 {
 	/************************************************
 	 * This is the FA debtors table
@@ -243,7 +252,9 @@ class fa_cust_branch extends table_interface
  *		get_customer
  *
  * **************************************************************************************************/
-class fa_customer extends table_interface
+//MERGER - newer version doesn't extend table_interface.  Moving to MVC?
+//class fa_customer extends table_interface
+class fa_customer 
 {
 	/*
 	protected $branch;	//fa_cust_branch
@@ -257,7 +268,7 @@ class fa_customer extends table_interface
 	protected $branch_id;
 	protected $CustName = "";	
 	protected $cust_ref = "";	//Customer Short Name
-	protected $tax_id = "";	//GST No					//fa_cust
+	protected $tax_id = "";		//GST No				//fa_cust
 	protected $phone = "";							//fa_cust
 	protected $phone2 = "";							//fa_cust
 	protected $fax = "";							//fa_cust
@@ -265,19 +276,19 @@ class fa_customer extends table_interface
 	protected $discount;							//fa_cust
 	protected $pymt_discount = "";						//fa_cust
 	protected $credit_limit = "1000";					//fa_cust
-	protected $curr_code = "CAD";		//Customer Currency //fa_cust
+	protected $curr_code = "CAD";		//Customer Currency 		//fa_cust
 	protected $sales_type = "1";		//3-Band.  1-Retail, 4-wholesale	//PRICE LIST	//fa_cust
 	protected $salesman = "2";		//Kevin
-	protected $payment_terms = "4";	//Cash					//fa_cust
-	protected $credit_status = "1";	//Good					//fa_cust
-	protected $dimension_id = "20";	//General Interest			//fa_cust
-	protected $dimension2_id = "4";	//Individual				//fa_cust
+	protected $payment_terms = "4";		//Cash				//fa_cust
+	protected $credit_status = "1";		//Good				//fa_cust
+	protected $dimension_id = "20";		//General Interest		//fa_cust
+	protected $dimension2_id = "4";		//Individual			//fa_cust
 	protected $location = "KSF";
 	protected $default_ship_via = "2";	//Canada Post.  1 - Instore.	//fa_cust
-	protected $area = "2";		//CANADA				//fa_cust
-	protected $sales_area;		//country name
+	protected $area = "2";			//CANADA			//fa_cust
+	protected $sales_area;			//country name
 	protected $tax_group = "GST";		//GST
-	protected $tax_group_id = "1";	//GST
+	protected $tax_group_id = "1";		//GST
 	protected $country_code;
 	protected $sales_account;						//fa_cust
 	protected $sales_discount_account;					//fa_cust
@@ -285,6 +296,8 @@ class fa_customer extends table_interface
 	protected $payment_discount_account;					//fa_cust
 	protected $inactive = 0;						//fa_cust
 
+	//MERGER - Newer version has ship_via instead of default_ship_via
+	//	Future unit test should catch this!!
 	var $fieldlist = array(
 		'popup', '_focus', '_modified', '_token', 'customer_id', 'CustName',
 		'cust_ref', 'tax_id', 'phone', 'phone2', 'fax', 'email',
