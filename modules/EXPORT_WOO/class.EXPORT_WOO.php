@@ -100,44 +100,8 @@ class EXPORT_WOO extends generic_fa_interface
 
 		$this->tabs[] = array( 'title' => 'Products REST Export', 'action' => 'export_rest_products', 'form' => 'export_rest_products_form', 'hidden' => FALSE );
 		$this->tabs[] = array( 'title' => 'Products REST Exported', 'action' => 'exported_rest_products', 'form' => 'exported_rest_products_form', 'hidden' => TRUE );
-		//$this->tabs[] = array( 'title' => 'Export File', 'action' => 'exportfile', 'form' => 'export_file_form', 'hidden' => FALSE );
 
 
-		//$this->tabs[] = array( 'title' => 'Purchase Order Export', 'action' => 'cexport', 'form' => 'form_export', 'hidden' => FALSE );
-		//$this->tabs[] = array( 'title' => 'Purchase Order Exported', 'action' => 'c_export', 'form' => 'export_orders', 'hidden' => TRUE );
-	
-		//
-		//$this->tabs[] = array( 'title' => 'Orders Export', 'action' => 'export_orders_form', 'form' => 'export_orders_form', 'hidden' => FALSE );
-		//$this->tabs[] = array( 'title' => 'Orders Exported', 'action' => 'exported_orders_form', 'form' => 'exported_orders_form', 'hidden' => TRUE );
-//		$this->tabs[] = array( 'title' => 'Orders Import', 'action' => 'import_orders_form', 'form' => 'import_orders_form', 'hidden' => FALSE );
-//		$this->tabs[] = array( 'title' => 'Orders Imported', 'action' => 'imported_orders_form', 'form' => 'imported_orders_form', 'hidden' => TRUE );
-
-		//$this->tabs[] = array( 'title' => 'Customer Export', 'action' => 'export_customer_form', 'form' => 'export_customer_form', 'hidden' => FALSE );
-		//$this->tabs[] = array( 'title' => 'Customer Exported', 'action' => 'exported_customer_form', 'form' => 'exported_customer_form', 'hidden' => TRUE );
-		//$this->tabs[] = array( 'title' => 'Customer Import', 'action' => 'import_customer_form', 'form' => 'import_customer_form', 'hidden' => FALSE );
-		//$this->tabs[] = array( 'title' => 'Customer Imported', 'action' => 'imported_customer_form', 'form' => 'imported_customer_form', 'hidden' => TRUE );
-
-/*
-		$this->tabs[] = array( 'title' => 'Variable Products Master SKUs', 'action' => 'create_woo_prod_variable_master_form', 'form' => 'create_woo_product_variable_master_form', 'hidden' => FALSE );
-		$this->tabs[] = array( 'title' => 'Variable Products Variables', 'action' => 'create_woo_prod_variable_variables_form', 'form' => 'create_woo_product_variable_variables_form', 'hidden' => FALSE );
-		$this->tabs[] = array( 'title' => 'Variable Products Variables Values', 'action' => 'create_woo_prod_variables_values_form', 'form' => 'create_woo_product_variables_values_form', 'hidden' => FALSE );
-		$this->tabs[] = array( 'title' => 'Variable Products SKU Combos', 'action' => 'create_woo_prod_variable_sku_combos_form', 'form' => 'create_woo_product_variable_sku_combos_form', 'hidden' => FALSE );
-		$this->tabs[] = array( 'title' => 'Variable Products ALL SKU Combos', 'action' => 'create_woo_prod_variable_sku_full_form', 'form' => 'create_woo_product_variable_sku_full_form', 'hidden' => FALSE );
-*/
-
-		//$this->tabs[] = array( 'title' => 'Coupons create', 'action' => 'create_coupons_form', 'form' => 'create_coupons_form', 'hidden' => FALSE );
-		//$this->tabs[] = array( 'title' => 'Coupons created', 'action' => 'created_coupons_form', 'form' => 'created_coupons_form', 'hidden' => TRUE );
-/*
-		$this->tabs[] = array( 'title' => 'Coupons REST Export', 'action' => 'export_rest_coupon', 'form' => 'export_rest_coupon_form', 'hidden' => FALSE );
-		$this->tabs[] = array( 'title' => 'Coupons REST Exported', 'action' => 'exported_rest_coupon', 'form' => 'exported_rest_coupon_form', 'hidden' => TRUE );
-		$this->tabs[] = array( 'title' => 'Customers REST Export', 'action' => 'export_rest_customer', 'form' => 'export_rest_customer_form', 'hidden' => FALSE );
-		$this->tabs[] = array( 'title' => 'Customers REST Exported', 'action' => 'exported_rest_customer', 'form' => 'exported_rest_customer_form', 'hidden' => TRUE );
-
-		$this->tabs[] = array( 'title' => 'Refunds REST Export', 'action' => 'export_rest_refunds', 'form' => 'export_rest_refunds_form', 'hidden' => FALSE );
-		$this->tabs[] = array( 'title' => 'Refunds REST Exported', 'action' => 'exported_rest_refunds', 'form' => 'exported_rest_refunds_form', 'hidden' => TRUE );
-		$this->tabs[] = array( 'title' => 'Taxes REST Export', 'action' => 'export_rest_taxes', 'form' => 'export_rest_taxes_form', 'hidden' => FALSE );
-		$this->tabs[] = array( 'title' => 'Taxes REST Exported', 'action' => 'exported_rest_taxes', 'form' => 'exported_rest_taxes_form', 'hidden' => TRUE );
- */
 		//We could be looking for plugins here, adding menu's to the items.
 		$moduledir = dirname( __FILE__ ) . '/modules';
 		$this->add_submodules( $moduledir );	//This calls eventloop, loads modules.
@@ -198,6 +162,17 @@ class EXPORT_WOO extends generic_fa_interface
 		if( $orders->create_table() )
 			$createdcount++;
 
+		$this->create_table_woo_prod_variable_master();
+		$this->create_table_woo_prod_variable_sku_combos();
+		$this->create_table_woo_prod_variable_sku_full();
+		$this->create_table_woo_prod_variable_child();
+		$this->create_table_woo_prod_variable_variables();
+		$this->create_table_woo_prod_variables_values();
+		require_once( 'class.woo_orders.php' );
+		$orders = new woo_orders($this->woo_server, $this->woo_ck, $this->woo_cs, null, $this );
+		if( $orders->create_table() )
+			$createdcount++;
+
 		require_once( 'class.woo.php' );
 		$woo = new woo($this->woo_server, $this->woo_ck, $this->woo_cs, null, $this );
 		if( $woo->create_table() )
@@ -209,6 +184,50 @@ class EXPORT_WOO extends generic_fa_interface
 			//Independant module.  This module is where all
 			//future development for QOH will happen.
 			include_once($path_to_root . "/modules/ksf_qoh/ksf_qoh.inc.php"); //KSF_QOH_PREFS
+/*
+		require_once( 'class.woo_line_items.php' );
+		$line_items = new woo_line_items($this->woo_server, $this->woo_ck, $this->woo_cs, null, $this );
+		if( $line_items->create_table() )
+			$createdcount++;
+		require_once( 'class.woo_tax_lines.php' );
+		$tax_lines = new woo_tax_lines($this->woo_server, $this->woo_ck, $this->woo_cs, null, $this );
+		if( $tax_lines->create_table() )
+			$createdcount++;
+		require_once( 'class.woo_shipping_lines.php' );
+		$shipping_lines = new woo_shipping_lines($this->woo_server, $this->woo_ck, $this->woo_cs, null, $this );
+		if( $shipping_lines->create_table() )
+			$createdcount++;
+		require_once( 'class.woo_billing.php' );
+		$billing_address = new woo_billing($this->woo_server, $this->woo_ck, $this->woo_cs, null, $this );
+		if( $billing_address->create_table() )
+			$createdcount++;
+		require_once( 'class.woo_fee_lines.php' );
+		$fee_lines = new woo_fee_lines($this->woo_server, $this->woo_ck, $this->woo_cs, null, $this );
+		if( $fee_lines->create_table() )
+			$createdcount++;
+		require_once( 'class.woo_coupon_lines.php' );
+		$coupon_lines = new woo_coupon_lines($this->woo_server, $this->woo_ck, $this->woo_cs, null, $this );
+		if( $coupon_lines->create_table() )
+			$createdcount++;
+       		require_once( 'class.woo_shipping.php' );
+		$shipping_address = new woo_shipping($this->woo_server, $this->woo_ck, $this->woo_cs, null, $this );
+		if( $shipping_address->create_table() )
+			$createdcount++;
+
+		require_once( 'class.woo_customer.php' );
+		$customer = new woo_customer($this->woo_server, $this->woo_ck, $this->woo_cs, null, $this );
+		if( $customer->create_table() )
+			$createdcount++;
+		require_once( 'class.woo_shipping_address.php' );
+		$shipping_address = new woo_shipping_address($this->woo_server, $this->woo_ck, $this->woo_cs, null, $this );
+		if(  $shipping_address->create_table() )
+			$createdcount++;
+		require_once( 'class.woo_billing_address.php' );
+		$billing_address_address = new woo_billing_address($this->woo_server, $this->woo_ck, $this->woo_cs, null, $this );
+		if( $billing_address_address->create_table() )
+			$createdcount++;
+*/
+
 			$qoh = new ksf_qoh( KSF_QOH_PREFS );
 			$qoh->install();
 				$createdcount++;
@@ -589,18 +608,6 @@ class EXPORT_WOO extends generic_fa_interface
             	display_notification("$rowcount rows of items exist.");
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
-/*
- */
-	/***********************************************************************
-	*
-	*	Function export_rest_products_form()	
-	*	
-	*	To present the user with a button to launch the sending of 
-	*	ALL Products to WOO.
-	*
-	************************************************************************/
-	function export_rest_products_form()
-	{
 		$this->call_table( 'exported_rest_products', "Send Products via REST to WOO" );
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}

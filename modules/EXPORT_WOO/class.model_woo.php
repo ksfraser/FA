@@ -120,7 +120,8 @@ class model_woo extends woo_interface {
 		var $stock_id;
 		var $updated_ts;
 		var $woo_last_update;
-		var $woo_id;
+		var $woo_id;		//WC Product ID
+		var $variation_id;	//If this is a Variation record.
 		var $category_id;
 		var $category;
 		var $woo_category_id;
@@ -145,7 +146,7 @@ class model_woo extends woo_interface {
 		var $parent_id;
 		var $attributes;
 		var $default_attributes;
-		var $variations;
+		var $variations;	//List of variation IDs in master product record.
 		var $filter_new_only;
 		var $force_update; //!< bool grabbed from client
 
@@ -208,6 +209,7 @@ class model_woo extends woo_interface {
 		$this->fields_array[] = array('name' => 'updated_ts', 'type' => 'timestamp', 'null' => 'NOT NULL', 'default' => 'CURRENT_TIMESTAMP');
 		$this->fields_array[] = array('name' => 'woo_last_update', 'type' => 'timestamp', 'null' => 'NOT NULL',);
 		$this->fields_array[] = array('name' => 'woo_id', 'type' => 'varchar(32)' );
+		$this->fields_array[] = array('name' => 'variation_id', 'type' => 'varchar(32)' );
 		$this->fields_array[] = array('name' => 'category_id', 'type' => 'int(11)' );
 		$this->fields_array[] = array('name' => 'category', 'type' => 'varchar(64)' );
 		$this->fields_array[] = array('name' => 'woo_category_id', 'type' => 'int(11)' );
@@ -237,6 +239,10 @@ class model_woo extends woo_interface {
 		//$this->table_details['tablename'] = TB_PREF . "woo_categories_xref";
 		$this->table_details['tablename'] = $this->company_prefix . "woo";
 		$this->table_details['primarykey'] = "stock_id";
+		$this->table_details['schema_version'] = "1.1";
+		$this->table_details['index'][0]['type'] = 'unique';
+		$this->table_details['index'][0]['columns'] = "variation_id";
+		$this->table_details['index'][0]['keyname'] = "variation_id";
 
 		/*
 		$this->table_details['index'][0]['type'] = 'unique';
@@ -446,6 +452,27 @@ class model_woo extends woo_interface {
 		}
 		$updateprod_sql = "update " . $this->table_details['tablename'] . " set
 					woo_id = '" . $this->woo_id . "'";		
+		$updateprod_sql .= ", woo_last_update=now()";
+		$updateprod_sql .= " where stock_id = '" . $this->stock_id . "'";
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Updating stock_id:  " . $this->stock_id  . " with " . $this->woo_id, "WARN" );
+		$res = db_query( $updateprod_sql, "Couldn't update woo_id after export" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Query: " . $updateprod_sql, "DEBUG" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+	}
+	/***********************************************************//**
+	*
+	* @param UNUSED compatibility with woo_interface
+	**************************************************************/
+	function update_variation_id( /*unused*/ $id )
+	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
+		if( !isset( $this->stock_id ) )
+		{
+			$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "ERROR" );
+			throw new InvalidArgumentException( "stock_id" );
+		}
+		$updateprod_sql = "update " . $this->table_details['tablename'] . " set
+					variation_id = '" . $this->variation_id . "'";		
 		$updateprod_sql .= ", woo_last_update=now()";
 		$updateprod_sql .= " where stock_id = '" . $this->stock_id . "'";
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Updating stock_id:  " . $this->stock_id  . " with " . $this->woo_id, "WARN" );

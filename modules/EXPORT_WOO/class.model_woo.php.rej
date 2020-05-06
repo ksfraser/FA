@@ -1,0 +1,48 @@
+*** /dev/null
+--- /dev/null
+***************
+*** 123,124
+- 		var $woo_id;		//WC Product ID
+- 		var $variation_id;	//If this is a Variation record.
+--- 123 -----
++ 		var $woo_id;
+***************
+*** 149
+- 		var $variations;	//List of variation IDs in master product record.
+--- 148 -----
++ 		var $variations;
+***************
+*** 212
+- 		$this->fields_array[] = array('name' => 'variation_id', 'type' => 'varchar(32)' );
+--- 0 -----
+***************
+*** 242,245
+- 		$this->table_details['schema_version'] = "1.1";
+- 		$this->table_details['index'][0]['type'] = 'unique';
+- 		$this->table_details['index'][0]['columns'] = "variation_id";
+- 		$this->table_details['index'][0]['keyname'] = "variation_id";
+--- 0 -----
+***************
+*** 455,475
+- 		$updateprod_sql .= ", woo_last_update=now()";
+- 		$updateprod_sql .= " where stock_id = '" . $this->stock_id . "'";
+- 		$this->notify( __METHOD__ . ":" . __LINE__ . " Updating stock_id:  " . $this->stock_id  . " with " . $this->woo_id, "WARN" );
+- 		$res = db_query( $updateprod_sql, "Couldn't update woo_id after export" );
+- 		$this->notify( __METHOD__ . ":" . __LINE__ . " Query: " . $updateprod_sql, "DEBUG" );
+- 		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+- 	}
+- 	/***********************************************************//**
+- 	*
+- 	* @param UNUSED compatibility with woo_interface
+- 	**************************************************************/
+- 	function update_variation_id( /*unused*/ $id )
+- 	{
+- 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
+- 		if( !isset( $this->stock_id ) )
+- 		{
+- 			$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "ERROR" );
+- 			throw new InvalidArgumentException( "stock_id" );
+- 		}
+- 		$updateprod_sql = "update " . $this->table_details['tablename'] . " set
+- 					variation_id = '" . $this->variation_id . "'";		
+--- 0 -----

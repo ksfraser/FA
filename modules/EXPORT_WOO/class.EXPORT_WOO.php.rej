@@ -1,0 +1,16 @@
+*** /dev/null
+--- /dev/null
+***************
+*** 147
+- 		$this->eventloop->ObserverNotify( $this, "NOTIFY_INIT_TABLES", null );
+--- 0 -----
+***************
+*** 235,236
+- 
+- /*		require_once( 'class.woo_categories_xref.php' );
+--- 290 -----
++ 		require_once( 'class.woo_categories_xref.php' );
+***************
+*** 388
+- 	//Copied into VIEW
+--- 0 -----
