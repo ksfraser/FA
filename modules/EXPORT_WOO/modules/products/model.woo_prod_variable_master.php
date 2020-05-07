@@ -44,16 +44,16 @@ require_once( 'class.woo_interface.php' );
  * ***************************************************************************/
 
 
-class model_woo_prod_variable_master extends woo_interface {
+class model_woo_prod_variable_master extends MODEL {
 	var $id_woo_prod_variable_master;
 	var $stock_id;
 	var $updated_ts;
 	var $description;	//!< Base description onto which the attributes will add their human readable parts
 	var $stock_master;	//!< obj  Our master product needs to become viable products in stock_master.  This
 				//	  means we need all of those fields too!
-	function __construct( $v1, $v2, $v3, $v4, $v5 )
+	function __construct( $v1 )
 	{
-		parent::__construct( $v1, $v2, $v3, $v4, $v5 );
+		parent::__construct( $v1 );
 		require_once( '../ksf_modules_common/class.fa_stock_master.php' );
 		$this->stock_master = new fa_stock_master( null );
 		$this->import_fields_array( $this->stock_master );
@@ -102,6 +102,14 @@ class model_woo_prod_variable_master extends woo_interface {
 		$this->display_edit_form( $this->entry_array, $this->selected_id, "create_" . $this->iam . "_form" );
 	}
 	 */
+	/***********************************************
+	 * Woo Interface requires that we override reset_endpoint
+	 * However, the controller is really the object that should
+	 * be setting/resetting the endpoint, not the MODEL!!
+	 * *********************************************/
+	function reset_endpoint()
+	{
+	}
 
 }
 

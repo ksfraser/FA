@@ -29,10 +29,11 @@ require_once( 'class.woo_interface.php' );
 *	attribute NAME			(e.g. Extra Extra Large)
 *	attribute Description
 *	attribute sort-order	What order does this value sort in...
+* https://woocommerce.github.io/woocommerce-rest-api-docs/#product-attribute-terms 
 *
 *********************************************/
 
-class model_woo_product_attributes_terms extends woo_interface
+class model_woo_product_attributes_terms extends MODEL
 {
 	var $id_woo_product_attributes_terms;	//created by parent
 	var $updated_ts;			//created by parent
@@ -43,11 +44,34 @@ class model_woo_product_attributes_terms extends woo_interface
 	var $id_woo_product_attributes;	//!< id pointing to _attributes_type
 	var $menu_order;	//!< Integer
 	var $count;		//!< int RO number of published products for resource
+	var $attribute_id;	//!< int Attr ID from WC that this term is to be applied against.
 
+	function __construct( $client )
+	{
+		parent::__construct( $client );
+		unset( $this->attribute_id );
+	}
+	/***********************************************
+	 * Woo Interface requires that we override reset_endpoint
+	 * However, the controller is really the object that should
+	 * be setting/resetting the endpoint, not the MODEL!!
+	 * *********************************************/
 	function reset_endpoint()
 	{
-		$this->endpoint = "";
+		//if( !isset( $this->attribute_id ) )
+		//	throw new Exception( "Attribute ID must be set to use the endpoint!", KSF_FIELD_NOT_SET );
+		$this->endpoint = "products/attributes/" . $this->attribute_id . "/terms";
 	}
+	//CREATE a TERM:
+	// $data = [ 'name' => 'XXS' ];
+	// print_r($woocommerce->post('products/attributes/<attribute_id>/terms', $data));
+	//  
+	//RETRIEVE a term:
+	//  print_r($woocommerce->get('products/attributes/<attribute_id>/terms/<wc_id>'));
+	//
+	//LIST all terms of an attribute:
+	// print_r($woocommerce->get('products/attributes/<attribute_id>/terms'));
+	//
 	function define_table()
 	{
 		woo_interface::define_table();	//defines tablename and prikey!

@@ -24,74 +24,85 @@
  *
  *	Note there is logging going on in every routine.
  * ***********************************************************************************************/
+require_once( dirname( __FILE__) . '/../../class.woo_rest.php' );
+require_once( dirname( __FILE__) . '/../../class.woo_interface.php' );
+require_once( dirname( __FILE__) . '/../../EXPORT_WOO.inc' );
 
-require_once( '../class.woo_rest.php' );
-require_once( '../class.woo_interface.php' );
-require_once( '../EXPORT_WOO.inc' );
+/************************************************
+ * A variation requires a product id to put attributes against.
+ * Vartiation has an ID of its own products/<product_id>/variations/<id>
+ * **********************************************/
 
-class woo_product extends woo_interface {
-	var $id;	//integer 	Unique identifier for the resource.  read-only
-	var $name;	//string 	Product name.
-	var $slug;	//string 	Product slug.
-	var $permalink;	//string 	Product URL.  read-only
-	var $created_at;	//date-time 	The date the product was created, in the site’s timezone.  read-only
-	var $updated_at;	//date-time 	The date the product was last modified, in the site’s timezone.  read-only
-	var $type;	//string 	Product type. Default is simple. Options (plugins may add new options): simple, grouped, external, variable.
-	var $status;	//string 	Product status (post status). Default is publish. Options (plugins may add new options): draft, pending, private and publish.
-	var $featured;	//boolean 	Featured product. Default is false.
-	var $catalog_visibility;	//string 	Catalog visibility. Default is visible. Options: visible (Catalog and search), catalog (Only in catalog), search (Only in search) and hidden (Hidden from all).
-	var $description;	//string 	Product description.
-	var $short_description;	//string 	Product short description.
-	var $sku;	//string 	Unique identifier.
-	var $price;	//string 	Current product price. This is set from regular_price and sale_price.  read-only
-	var $regular_price;	//string 	Product regular price.
-	var $sale_price;	//string 	Product sale price.
-	var $date_on_sale_from;	//string 	Start date of sale price. Date in the YYYY-MM-DD format.
-	var $date_on_sale_to;	//string 	Sets the sale end date. Date in the YYYY-MM-DD format.
-	var $price_html;	//string 	Price formatted in HTML, e.g. <del><span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&#36;&nbsp;3.00</span></span></del> <ins><span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&#36;&nbsp;2.00</span></span></ins> read-only
-	var $on_sale;	//boolean 	Shows if the product is on sale.  read-only
-	var $purchasable;	//boolean 	Shows if the product can be bought.  read-only
-	var $total_sales;	//integer 	Amount of sales.  read-only
-	var $virtual;	//boolean 	If the product is virtual. Virtual products are intangible and aren’t shipped. Default is false.
-	var $downloadable;	//boolean 	If the product is downloadable. Downloadable products give access to a file upon purchase. Default is false.
-	var $downloads;	//array 	List of downloadable files. See Downloads properties.
-	var $download_limit;	//integer 	Amount of times the product can be downloaded, the -1 values means unlimited re-downloads. Default is -1.
-	var $download_expiry;	//integer 	Number of days that the customer has up to be able to download the product, the -1 means that downloads never expires. Default is -1.
-	var $download_type;	//string 	Download type, this controls the schema on the front-end. Default is standard. Options: 'standard' (Standard Product), application (Application/Software) and music (Music).
-	var $external_url;	//string 	Product external URL. Only for external products.
-	var $button_text;	//string 	Product external button text. Only for external products.
-	var $tax_status;	//string 	Tax status. Default is taxable. Options: taxable, shipping (Shipping only) and none.
-	var $tax_class;	//string 	Tax class.
-	var $manage_stock;	//boolean 	Stock management at product level. Default is false.
-	var $managing_stock;	//boolean 	Stock management at product level. Default is false.
-	var $stock_quantity;	//integer 	Stock quantity. If is a variable product this value will be used to control stock for all variations, unless you define stock at variation level.
-	var $in_stock;	//boolean 	Controls whether or not the product is listed as “in stock” or “out of stock” on the frontend. Default is true.
-	var $backorders;	//string 	If managing stock, this controls if backorders are allowed. If enabled, stock quantity can go below 0. Default is no. Options are: no (Do not allow), notify (Allow, but notify customer), and yes (Allow).
-	var $backorders_allowed;	//boolean 	Shows if backorders are allowed.  read-only
-	var $backordered;	//boolean 	Shows if a product is on backorder (if the product have the stock_quantity negative).  read-only
-	var $sold_individually;	//boolean 	Allow one item to be bought in a single order. Default is false.
-	var $weight;	//string 	Product weight in decimal format.
-	var $dimensions;	//array 	Product dimensions. See Dimensions properties.
-	var $shipping_required;	//boolean 	Shows if the product need to be shipped.  read-only
-	var $shipping_taxable;	//boolean 	Shows whether or not the product shipping is taxable.  read-only
-	var $shipping_class;	//string 	Shipping class slug. Shipping classes are used by certain shipping methods to group similar products.
-	var $shipping_class_id;	//integer 	Shipping class ID.  read-only
-	var $reviews_allowed;	//boolean 	Allow reviews. Default is true.
-	var $average_rating;	//string 	Reviews average rating.  read-only
-	var $rating_count;	//integer 	Amount of reviews that the product have.  read-only
-	var $related_ids;	//array 	List of related products IDs (integer).  read-only
-	var $upsell_ids;	//array 	List of up-sell products IDs (integer). Up-sells are products which you recommend instead of the currently viewed product, for example, products that are more profitable or better quality or more expensive.
-	var $cross_sell_ids;	//array 	List of cross-sell products IDs. Cross-sells are products which you promote in the cart, based on the current product.
-	var $parent_id;	//integer 	Product parent ID (post_parent).
-	var $purchase_note;	//string 	Optional note to send the customer after purchase.
-	var $categories;	//array 	List of categories. See Categories properties.		id => 9, ...
-	var $tags;	//array 	List of tags. See Tags properties.
-	var $images;	//array 	List of images. See Images properties
-	var $attributes;	//array 	List of attributes. See Attributes properties.   USED for variations
-	var $default_attributes;	//array 	Defaults variation attributes, used only for variations and pre-selected attributes on the frontend. See Default Attributes properties.
-	var $variations;	//array 	List of variations. See Variations properties
-	var $grouped_products;	//string 	List of grouped products ID, only for group type products.  read-only
-	var $menu_order;		//integer 	Menu order, used to custom sort products.
+class woo_product_base extends woo_interface {
+	var $id;		//!<integer S/V		Unique identifier for the resource.  read-only
+	//var $variation_id;	//!<integer V		ID returned for the variation.
+	var $name;		//!<string S	Product name.
+	var $slug;		//!<string S	Product slug.
+	var $permalink;		//!<string S/V		variation URL.  read-only
+	var $created_at;	//!<date-time S/V 	(date_created)	The date the product was created, in the siteâ€™s timezone.  read-only
+	var $updated_at;	//!<date-time S/V 	(date_modified)	The date the product was last modified, in the siteâ€™s timezone.  read-only
+	var $type;		//!<string S 		Product type. Default is simple. Options (plugins may add new options): simple, grouped, external, variable.
+	var $status;		//!<string S/V 		Product status (post status). Default is publish. Options (plugins may add new options): draft, pending, private and publish.
+	var $featured;		//!<boolean S		Featured product. Default is false.
+	var $catalog_visibility;//!<string S 	Catalog visibility. Default is visible. Options: visible (Catalog and search), catalog (Only in catalog), search (Only in search) and hidden (Hidden from all).
+	var $description;	//!<string S/V 		Product description.
+	var $short_description;	//!<string S		Product short description.
+	var $sku;		//!<string S/V		Unique identifier.
+	var $price;		//!<string S/V 		Current product price. This is set from regular_price and sale_price.  read-only
+	var $regular_price;	//!<string S/V		Product/Variation regular price.
+	var $sale_price;	//!<string S/V		Product/Variation sale price.
+	var $date_on_sale_from;	//!<date-time S/V  	Start date of sale price. Date in the YYYY-MM-DD format.
+	var $date_on_sale_to;	//!<date-time S/V 	Sets the sale end date. Date in the YYYY-MM-DD format.
+	var $price_html;	//string S/V		Price formatted in HTML, e.g. <del><span class=\"woocommerce-Price-amount amount\">
+							//<span class=\"woocommerce-Price-currencySymbol\">&#36;&nbsp;3.00</span></span></del> 
+	//						  <ins><span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&#36;&nbsp;2.00
+	//						  </span></span></ins> read-only
+	var $on_sale;		//!<boolean S/V 	Shows if the product is on sale.  read-only
+	var $purchasable;	//!<boolean S/V 	Shows if the product can be bought.  read-only
+	var $total_sales;	//integer S	 	Amount of sales.  read-only
+	var $virtual;		//!<boolean S/V 	If the product is virtual. Virtual products are intangible and arenâ€™t shipped. Default is false.
+	var $downloadable;	//!<boolean S/V 	If the product is downloadable. Downloadable products give access to a file upon purchase. Default is false.
+	var $downloads;		//!<array S/V		List of downloadable files. See Downloads properties.
+	var $download_limit;	//!<integer S/V 	Amount of times the product can be downloaded, the -1 values means unlimited re-downloads. Default is -1.
+	var $download_expiry;	//!<integer S/V 	Number of days that the customer has up to be able to download the product, the -1 means that downloads never expires. Default is -1.
+	var $download_type;	//string ??	Download type, this controls the schema on the front-end. Default is standard. Options: 'standard' (Standard Product), application (Application/Software) and music (Music).
+	var $external_url;	//!<string S	Product external URL. Only for external products.
+	var $button_text;	//!<string S	Product external button text. Only for external products.
+	var $tax_status;	//!<string S/V 		Tax status. Default is taxable. Options: taxable, shipping (Shipping only) and none.
+	var $tax_class;		//!<string S/V 		Tax class.
+	var $manage_stock;	//!<boolean S/V 	Stock management at product/variation level. Default is false.
+	var $stock_quantity;	//!<integer S/V 	Stock quantity. If is a variable product this value will be used to control stock for all variations, unless you define stock at variation level.
+	var $stock_status;	//!<string S/V		Controls the stock status of the product. Options: instock, outofstock, onbackorder. Default is instock.
+	var $in_stock;	//boolean 	Controls whether or not the product is listed as â€œin stockâ€ or â€œout of stockâ€ on the frontend. Default is true.
+	var $backorders;	//!<string S/V		If managing stock, this controls if backorders are allowed. If enabled, stock quantity can go below 0. 
+							//Default is no. Options are: no (Do not allow), notify (Allow, but notify customer), and yes (Allow).
+	var $backorders_allowed;//!<boolean S/V 	Shows if backorders are allowed.  read-only
+	var $backordered;	//!<boolean S/V 	Shows if a product is on backorder (if the product have the stock_quantity negative).  read-only
+	var $sold_individually;	//!<boolean S		Allow one item to be bought in a single order. Default is false.
+	var $weight;		//!<string S/V 		Product weight in decimal format.
+	var $dimensions;	//!<array S/V 		Product dimensions. See Dimensions properties.
+	var $shipping_required;	//!<boolean S		Shows if the product need to be shipped.  read-only
+	var $shipping_taxable;	//!<boolean S		Shows whether or not the product shipping is taxable.  read-only
+	var $shipping_class;	//!<string S/V 		Shipping class slug. Shipping classes are used by certain shipping methods to group similar products.
+	var $shipping_class_id;	//!<string S/V 		Shipping class ID.  read-only
+	var $reviews_allowed;	//!<boolean S		Allow reviews. Default is true.
+	var $average_rating;	//!<string S		Reviews average rating.  read-only
+	var $rating_count;	//!<integer S 		Amount of reviews that the product have.  read-only
+	var $related_ids;	//!<array S		List of related products IDs (integer).  read-only
+	var $upsell_ids;	//!<array S		List of up-sell products IDs (integer). Up-sells are products which you recommend instead of the currently viewed product, for example, products that are more profitable or better quality or more expensive.
+	var $cross_sell_ids;	//!<array S 		List of cross-sell products IDs. Cross-sells are products which you promote in the cart, based on the current product.
+	var $parent_id;		//!<integer S 		Product parent ID (post_parent).
+	var $purchase_note;	//!<string S		Optional note to send the customer after purchase.
+	var $categories;	//!<array S		List of categories. See Categories properties.		id => 9, ...
+	var $tags;		//!<array S 		List of tags. See Tags properties.
+	var $images;		//!<array S		List of images. See Images properties
+	//var $image;		//!<array V		Variation Image Data.  See Image Properties
+	var $attributes;	//!<array S/V		List of attributes. See Attributes properties.   USED for variations
+	var $default_attributes;//!<array S		Defaults variation attributes, used only for variations and pre-selected attributes on the frontend. See Default Attributes properties.
+	var $variations;	//!<array S 		List of variations. See Variations properties
+	var $grouped_products;	//!<array S		List of grouped products ID, only for group type products.  read-only
+	var $menu_order;	//!<integer S/V 	Menu order, used to custom sort products.
+	var $meta_data;		//!<array S/V		Meta Data.  See Product Variation - Meta Data properties
 		/*******/
 	var $woo_products_list;	//!< Array of products returned by woo through get_products for match_product
 	var $wc_client;	//!< WC_API_Client to be migrated into the woo_rest class
@@ -184,7 +195,6 @@ class woo_product extends woo_interface {
 			'tax_status',
 			'tax_class',
 			'manage_stock',
-			'managing_stock',
 			'stock_quantity',
 			'in_stock',
 			'backorders',
@@ -246,7 +256,6 @@ class woo_product extends woo_interface {
 			'tax_status',
 			'tax_class',
 			'manage_stock',
-			'managing_stock',
 			'stock_quantity',
 			'in_stock',
 			'backorders',
@@ -269,24 +278,26 @@ class woo_product extends woo_interface {
 			'name'
 		);
 	}
+	function build_interestedin()
+	{
+		$this->interestedin['WOO_PRODUCTS_SENT_COUNT']['function'] = "update_sent";
+		$this->interestedin['WOO_PRODUCTS_UPDATED_COUNT']['function'] = "update_updated";
+	}
+	function update_sent( $obj, $val )
+	{
+		$this->set_var( 'products_sent', $this->get( 'products_sent' ) + $val );
+	}
+	}
+	function update_updated( $obj, $val )
+	{
+		$this->set_var( 'products_updated', $this->get( 'products_updated' ) + $val );
+	}
 	/*@int@*/function send_products()
 	{
-		$this->products_sent = $this->products_updated = 0;
-		try
-		{
-			$count = $this->send_simple_products();	//sets products_sent
-			if( $this->debug < 2 )
-				$count += $this->update_simple_products(); //sets products_updated
-			//Not worrying about the variable products for the moment...
-			//$count = $this->send_variable_products();	//sets products_sent
-			//$count += $this->update_variable_products(); //sets products_updated
-			return $count;
-		}
-		catch( Exception $e )
-		{
-			$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $e->getCode() . ":" . $e->getMessage(), "ERROR" );
-			throw $e;
-		}
+		$this->set_var( 'products_sent', 0 );
+		$this->set_var( 'products_updated', 0 );
+		//$this->products_sent = $this->products_updated = 0;
+		$this->eventloop->ObserverNotify( 'WOO_SEND_PRODUCTS' );	//This will trigger -simple and -variable send_products functions
 	}
 	/*******************************************************************************************//**
 	 * Updates the internal woo table with data from WooCommerce that we ARENT the source of record 
@@ -513,14 +524,13 @@ class woo_product extends woo_interface {
 	/*******************************************************************************//**
 	 * Grab data out of the WOO table using the woo class and populate our fields.
 	 *
-	 * Sets type to "simple".  This needs to be overridden in variable products
-	 *
 	 * @param string stock_id optional if this->stock_id set
 	 * @returns bool were we able to process a stock_id
 	 * *******************************************************************************/
 	/*@bool@*/function woo2wooproduct( $stock_id = null, $caller )
 	{
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
+		$this->eventloop->ObserverNotify( 'NOTIFY_LOG_DEBUG', __METHOD__  . ":" . __LINE__ . " Entering" );
 		if( isset( $stock_id )  )
 			$this->stock_id = $stock_id;
 		if( !isset( $this->stock_id ) )
@@ -589,7 +599,6 @@ class woo_product extends woo_interface {
 		$this->set_download_info();
 
 		$this->manage_stock = true;
-		//$this->managing_stock = true;
 		$this->backorders = "notify";
 		$this->sold_individually = false;	//true only allows 1 of this product per order
 		$this->in_stock = true;	//Need to extend so that categories that are Special Order do not show IN STOCK in WOO.
@@ -613,20 +622,20 @@ class woo_product extends woo_interface {
 											//We can also add a XREF table
 		else
 			$this->categories = null;
-			
-
 		//$this->tags = array( "id" => XXX, "name" => YYY, "slug" => ZZZ );
 		$this->tags = $this->product_tags( $stock_id );
 //->send_images( $stock_id, $this );
 		$this->attributes = $this->product_attributes( $stock_id );
 		$this->default_attributes = $this->product_default_attributes( $stock_id );
-		$this->variations = $this->product_variations( $stock_id );
+		$this->variations = null;	//READONLY
+		//$this->variations = $this->product_variations( $stock_id );
 		$this->menu_order = "1";
 		$this->notify( __METHOD__  . ":" . __LINE__ . " SETTING Sku to Stock_ID: " . $this->stock_id, "WARN");
 		$this->sku = $this->stock_id;
 		$this->notify( __METHOD__  . ":" . __LINE__ . " Sku: " . $this->sku, "WARN");
 
 		$this->notify( __METHOD__  . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN");
+		$this->eventloop->ObserverNotify( 'NOTIFY_LOG_DEBUG', __METHOD__  . ":" . __LINE__ . " Exiting " );
 		return TRUE;
 	}
 	function is_inactive()
@@ -644,59 +653,10 @@ class woo_product extends woo_interface {
 	}
 	/**************************************************************************************************************
 	 *
-	 * 	function send_simple_products
-	 *
-	 * 	Send a list of simple (no variation like size or color) products
-	 * 	to WOO.  This is sending items we HAVE NOT yet sent (those need
-	 * 	to be updated, not created)
-	 *
-	 * 	IN:
-	 * 	OUT: number of products sent
-	 * 	Sets products_sent by adding the count (vice setting) in case we are called multiple times.
-	 * 	@return int count of products sent.  -1 if no new products to send
+	 * 	function send_simple_products MOVED to class woo_product-simple
 	 **************************************************************************************************************/
-	/*@int@*/function send_simple_products()
-	{		
-		$this->notify( __METHOD__  . ":" . __LINE__ . " Entering " . __METHOD__, "WARN");
-		//Check for how many we are expecting to send...
-		$woo = $this->model_woo();
-		$woo->debug = $this->debug;
-		$woo->filter_new_only = TRUE;
-		$tosend = $woo->count_new_products();
-		if( $tosend <= 0 )
-			return -1;
-		$this->notify( __METHOD__  . ":" . __LINE__ . " About to send " . $tosend . " rows (all, not simple) to Woo", "WARN" );
-		$test_max_send = 0;
-		if( isset( $this->client->environment ) AND ( $this->client->environment == "devel" ) )
-		{
-			if( isset( $this->client->test_max_send ) )
-				$test_max_send = $this->client->test_max_send;
-		}
-		$res = $woo->new_simple_product_ids( $test_max_send );
-		$sendcount = 0;
-		foreach( $res as $stock_id )
-		{
-			$this->notify( __METHOD__  . ":" . __LINE__ . " ********************************************************************************************************", "NOTICE");
-			$this->woo2wooproduct( $stock_id, __METHOD__ );	//Sets the object variables with data from query
-			$this->type = "simple";
-			try
-			{
-				if( $this->create_product_wc() )
-				{
-					$sendcount++;
-					//create_product_wc already calls send_images (as does update...)
-					//$this->send_images( null, $this );
-				}
-			}
-			catch( Exception $e )
-			{
-				$this->notify(  __METHOD__  . ":" . __LINE__ . " " .  $e->getMessage(), "WARN" );
-			}
-		}
-		$this->products_sent += $sendcount;
-		$this->notify( __METHOD__  . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN");
-		return $sendcount;
-	}
+	/*@int@*//*function send_simple_products()*/
+
 	function model_woo()
 	{
 		if( ! isset( $this->pz_model_woo ) OR ( null == $this->pz_model_woo ) )
@@ -709,92 +669,14 @@ class woo_product extends woo_interface {
 		{
 			$this->pz_model_woo->reset_values();
 		}
+		$woo->debug = $this->debug;
 		return $this->pz_model_woo;
 	}
-	/*****************************************************************************//**
+	/**************************************************************************************************************
 	 *
-	 *	Adds to products_updated
-	 *
-	 * ******************************************************************************/
-	function update_simple_products()
-	{			
-		$this->notify(  __METHOD__  . ":" . __LINE__ . " Entering " . __METHOD__, "WARN");
-		$woo = $this->model_woo();
-
-		$woo->debug = $this->debug;
-		$updatecount = 0;
-		$res = $woo->select_simple_products_for_update();
-
-		while( $prod_data = db_fetch_assoc( $res ) )
-		{
-			$this->notify(  __METHOD__  . ":" . __LINE__ . " WHILE LOOP " . __FUNCTION__, "WARN");
-			$this->notify( __METHOD__  . ":" . __LINE__ . " ********************************************************************************************************", "NOTICE");
-			if( $this->debug > 1 AND $updatecount > 0 )
-			{
-				$this->notify(  __METHOD__  . ":" . __LINE__ . " **Leaving " . __METHOD__ . " due to DEBUG limits **", "WARN");
-				return $updatecount;	//Only action 1 item
-			}
-			$this->notify(  __METHOD__  . ":" . __LINE__ . " Calling woo2wooproduct", "WARN");
-			$this->woo2wooproduct( $prod_data['stock_id'], __FUNCTION__);
-			$this->notify( __METHOD__ . ":" . __LINE__ . " TRACE ***ID=woo_id::" . $this->id, "DEBUG" );
-			$this->notify( __METHOD__ . ":" . __LINE__ . " TRACE ***SKU: " . $this->sku, "DEBUG" );
-			$this->type = "simple";
-			if( isset( $this->id ) AND ( $this->id > 0 ) )
-			{
-				$this->notify(  __METHOD__  . ":" . __LINE__ . " Calling update PRODUCT for " . $this->stock_id, "WARN");
-				try {
-					if( $this->update_product() )
-						$updatecount++;
-					else
-						display_notification( __METHOD__  . ":" . __LINE__ . " Product not updated.  DEBUG level: " . $this->debug );
-				}
-				catch( Exception $e )
-				{
-					if( $e->getCode() == KSF_FCN_PATH_OVERRIDE )
-					{
-						//Do Nothing
-					}
-					else
-					{
-						throw $e;
-					}
-				}
-			}
-			else
-			{
-				if( isset( $this->id ) )
-					$this->notify(  __METHOD__  . ":" . __LINE__ . " ID set but reading less than 1: " . $this->id . ";  UNSETTING", "WARN");
-				unset( $this->id );
-				$this->notify(  __METHOD__  . ":" . __LINE__ . " Calling create PRODUCT", "WARN");
-				try
-				{
-					if( $this->create_product_wc() )
-						$this->notify(  __METHOD__  . ":" . __LINE__ . " INSERT SUCCESS", "WARN");
-					else
-						$this->notify(  __METHOD__  . ":" . __LINE__ . " Insert FAILED", "WARN");
-				}
-				catch( Exception $e )
-				{
-					if( WC_CLIENT_NOT_SET == $e->getCode() )
-					{
-						//no wc_client
-						throw $e;
-					}
-					$this->notify(  __METHOD__  . ":" . __LINE__ . " " .  $e->getMessage(), "WARN" );
-					
-				}
-			}
-			//}
-			//catch( Exception $e )
-			//{
-			//	display_notification( __METHOD__  . ":" . __LINE__ . "caught error code " . $e->getCode() . " and msg " . $e->getMessage() . " from " . $e->getFile() . ":" . $e->getLine() );
-			//}
-			$this->notify(  __METHOD__  . ":" . __LINE__ . " End WHILE LOOP lap", "WARN");
-		}
-		$this->notify(  __METHOD__  . ":" . __LINE__ . " Leaving update_simple_products", "WARN");
-		$this->products_updated += $updatecount;
-		return $updatecount;
-	}
+	 * 	function update_simple_products MOVED to class woo_product-simple
+	 **************************************************************************************************************/
+	//function update_simple_products()
 	function product_tags( $stock_id )
 	{
 		return null;
@@ -1008,9 +890,7 @@ class woo_product extends woo_interface {
 							else
 								$this->notify( __METHOD__ . ":" . __LINE__ . " Recovery Attempt failed ", "ERROR" );
 						}
-						else
-						{
-						}
+						else { }
 					}
 				default:
 					$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $code . ":" . $msg, "WARN" );
@@ -1198,6 +1078,6 @@ class woo_product extends woo_interface {
 		}
 	}
 
-}
+//}
 
 ?>
