@@ -196,7 +196,8 @@ class eventloop extends kfLog implements splSubject
 		//Needs to be extended by the inheriting class
                	return SUCCESS;
          }
-	private function getEventObservers($event = "*")
+	//private function getEventObservers($event = "*")
+	function getEventObservers($event = "*")
     	{
         	$this->initEventGroup($event);
         	$group = $this->observers[$event];
@@ -303,13 +304,15 @@ class eventloop extends kfLog implements splSubject
 		}
 	}
 /****************************splSubject************************************************/
-	public function attach(\SplObserver $observer, $event = "*")
+	//public function attach(\SplObserver $observer, $event = "*")
+	 function attach(\SplObserver $observer, $event = "*")
     	{
         	$this->initEventGroup($event);
         	$this->observers[$event][] = $observer;
 		$this->storage->attach($observer);	//php.net
     	}
-    	public function detach(\SplObserver $observer, $event = "*")
+    	//public function detach(\SplObserver $observer, $event = "*")
+    	 function detach(\SplObserver $observer, $event = "*")
     	{
 		$this->storage->detach($observer);	//php.net
         	foreach ($this->getEventObservers($event) as $key => $s) {
@@ -325,7 +328,8 @@ class eventloop extends kfLog implements splSubject
 		/********!php.net user comments************************/
     	}
     	//public function notify(string $event = "*", $data = null)
-    	public function notify( $event = "*", $data = null)
+    	//public function notify( $event = "*", $data = null)
+    	 function notify( $event = "*", $data = null)
     	{
         	foreach ($this->getEventObservers($event) as $observer) {
             		$observer->update($this, $event, $data);
@@ -342,6 +346,7 @@ class eventloop extends kfLog implements splSubject
 
 /****************************splObserver************************************************/
 /****************************php.net****************************************************/
+/*
 abstract class Observer implements SplObserver
 {
     private $observable;
@@ -369,6 +374,7 @@ class ConcreteObserver extends Observer
         //...
     }
 }
+*/
 /****************************!php.net****************************************************/
 /****************************!splObserver************************************************/
 ?>
