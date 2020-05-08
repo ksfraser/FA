@@ -187,6 +187,7 @@ class eventloop extends kfLog implements splSubject
 				else
 				{
 					$this->Log( $tgt . " has already been told by event_code  " . $event . " rather than ALL", PEAR_LOG_DEBUG );
+				}
                       	}
                	return SUCCESS;
          }
