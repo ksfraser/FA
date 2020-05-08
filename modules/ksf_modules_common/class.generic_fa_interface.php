@@ -81,8 +81,26 @@ if( ! class_exists( 'generic_fa_interface' ) )
 			//		echo "Generic constructor pref_tablename: $pref_tablename";
 			if( !isset( $this->debug ) )
 				$this->debug = 0;
-			require_once( dirname( __FILE__ ) . '/../ksf_modules_common/class.eventloop.php' );
-			$this->eventloop = new eventloop(  null, $this );
+			//Don't try creating an eventloop a second time in a given app.  I should probably make it a Singleton
+			//though that didn't work well in the past - became involatile so couldn't change its arrays of Observers etc.
+			global $eventloop;
+			if( ! isset( $this->eventloop ) )
+			{
+				if( isset( $eventloop ) AND null !== $eventloop )
+				{
+					$this->eventloop = $eventloop;
+				}
+				else
+				{
+					require_once( dirname( __FILE__ ) . '/../ksf_modules_common/class.eventloop.php' );
+					$eventloop = $this->eventloop = new eventloop(  null, $this );
+				}
+			}
+			else
+			{
+				//Already set, do nothing.
+			}
+	
 
 			if(isset( $pref_tablename ) )
 			{
@@ -431,14 +449,11 @@ if( ! class_exists( 'generic_fa_interface' ) )
 					//Call appropriate form
 					$form = $tab['form'];
 					$this->eventloop->ObserverNotify( $this, 'NOTIFY_LOG_DEBUG', "Should be calling form " . $form  );
-					if( $this->debug > 2 )
-						echo "<br />" . __FILE__ . ":" . __LINE__ . " " .$form . "<br />";
 					if( ! isset( $objname ) )
 					{
 						$this->eventloop->ObserverNotify( $this, 'NOTIFY_LOG_DEBUG', "No external object set, so try calling internal form: " . $form  );
 						if( method_exists( $this, $form) AND is_callable( $this->$form() ) )
 						{
-							echo "<br />" . __FILE__ . ":" . __LINE__ . " Calling non-UI class " .$form . "<br />";
 							$this->$form();
 						}
 						else
@@ -451,7 +466,16 @@ if( ! class_exists( 'generic_fa_interface' ) )
 						//create and call the module.
 						//Odds it already exists?  As this is a web based app and not continous,
 						// slim unless it was serialized.  Since we aren't doing that currenty...
-						$obj = new $objname();
+						// However, eventloop is making all new objects global...
+						global $$objname;
+						if( ! isset( $$objname ) )
+						{
+							$obj = new $objname( $this );
+						}
+						else
+						{
+							$obj = $$objname;
+						}
 						if( method_exists( $obj, $form) AND is_callable( $obj->$form() ) )
 						{
 							$this->eventloop->ObserverNotify( $this, 'NOTIFY_LOG_DEBUG', "Calling " . $objname . "::" . $form );
@@ -459,7 +483,6 @@ if( ! class_exists( 'generic_fa_interface' ) )
 						}
 						else
 						{
-							$this->notify( "Object Class set for action but not callable", "WARN" );
 							$this->eventloop->ObserverNotify( $this, 'NOTIFY_OBJECT_NOT_CALLABLE', $objname . "::" . $form  );
 						}
 					}

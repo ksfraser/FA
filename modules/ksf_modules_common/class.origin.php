@@ -3,7 +3,6 @@
 //!< WARNING this class has some FrontAccounting specific code
 
 require_once( 'defines.inc.php' );
-//include_once( 'Log.php' );	//PEAR Logging - included in defines.inc
 
 /*
 	# 0 PEAR_LOG_EMERG emerg() System is unusable
@@ -38,15 +37,21 @@ class origin
 	var $loglevel;			//!< PEAR_LOG level that must be specified to be added to log/errors
 	var $errors;			//!< array of error messages
 	var $log;			//!< array of log messages
-	var $fields;			//!< array of fields in the class
 	var $data;			//!< array of data from the fields
-	private $testvar;
+	private $unittestvar;
+	public $pub_unittestvar;	//!< string for unit testing of get/set
 	var $object_fields;		//!< array of the variables in this object, under '___SOURCE_KEYS_'
 	protected $application;		//!< string which application is the child object holding data for
 	protected $module;		//!< string which module is the child object holding data for
 	protected $container_arr;	//__get/__isset uses this
 	protected $eventloop;		//!< object
 	protected $client;		//!< object what object instantiated this object
+	protected $iam;
+	protected $debug;
+	protected $interestedin;
+	//We deleted the following fields from a working version and now things don't; so...
+	var $fields;
+	private $testvar;
 
 	/************************************************************************//**
 	 *constructor
@@ -73,11 +78,28 @@ class origin
 			$this->tb_pref = $db_connections[$compnum]['tbpref'];	//FrontAccounting specific
 		else
 			$this->set( 'tb_pref', $compnum . "_", false );	//FrontAccounting specific
+		if( null == $loglevel )
+			$loglevel = PEAR_LOG_DEBUG;
 		$this->loglevel = $loglevel;
-		$this->error = array();
+		if( isset( $this->client->debug ) AND is_int( $this->client->debug ) )
+			$this->debug = $this->client->debug;	//should check for valid/reasonable values!!
+		else
+			$this->debug = 0;
+
+		$this->errors = array();
+		$this->error = array();	//Typo that was removed
 		$this->log = array();
 		//Set, with end of constructor values noted
 		$this->object_var_names();
+		$this->iam = get_class( $this );
+		/***Eventloop***/
+		$this->build_interestedin();
+		$this->register_with_eventloop();
+	}
+	function __destruct()
+	{
+		$this->tell_eventloop( $this, 'NOTIFY_LOG_INFO', print_r( $this->log, true ) );
+		$this->tell_eventloop( $this, 'NOTIFY_LOG_ERROR', print_r( $this->errors, true ) );
 	}
 	/*********************************************************//**
 	 * Magic call method example from http://php.net/manual/en/language.types.object.php
@@ -176,11 +198,12 @@ class origin
 	 * @param field string Variable to be set
 	 * @param value ... value for variable to be set
 	 * @param native... bool enforce only the variables of the class itself.  default TRUE, which will break code.
-	 *
+	 * @return bool
 	 * **********************************************/
-	function set( $field, $value = null, $enforce_only_native_vars = true )
+	function set( $field, $value = null, $enforce_only_native_vars = true )//:bool
 	{
-		if( !isset( $field )  )
+			$this->unenforced = false;
+		if( !isset( $field )  )	//will we get here due to runtime errors?
 			throw new Exception( "Fields not set", KSF_FIELD_NOT_SET );
 		try{
 			$this->user_access( KSF_DATA_ACCESS_WRITE );
@@ -189,18 +212,31 @@ class origin
 		{
 			throw new Exception( $e->getMessage, $e->getCode );
 		}
-
-		if( $enforce_only_native_vars )
+		if( true == $enforce_only_native_vars )
 		{
 			if( ! isset( $this->object_fields ) )
 			{
-				//debug_print_backtrace();
+				return false;
 			}
-			else if( ! in_array( $field, $this->object_fields ) )
+			//else if( false == in_array( $field, $this->object_fields, true ) )
+			//else if( true == in_array( $field, $this->object_fields ) )
+			else if( false == array_key_exists( $field, $this->object_fields ) )
 				throw new Exception( "Variable to set is not a member of the class", KSF_FIELD_NOT_CLASS_VAR );
+			else
+			{
+				print_r( $this->object_fields, true );
+				//OK to continue - field is in our properties
+			}
 		}
-		if( isset( $value ) )
+		else
+		{
+			$this->unenforced = true;
+		}
+		if( isset( $value ) )	//does runtime fcn variable checking make this a moot test?
+		{
 			$this->$field = $value;
+			return true;
+		}
 		else
 			throw new Exception( "Value to be set not passed in", KSF_VALUE_NOT_SET );
 	}
@@ -208,14 +244,17 @@ class origin
 	 * Most of our existing code does not use TRY/CATCH so we will trap here
 	 *
 	 * Eat any exceptions thrown by ->set
-	 *
+	 * @param string
+	 * @param mixed	value to set
+	 * @return bool did ->set succeed?
 	 * *****************************************************/
-	/*@NULL@*/function set_var( $var, $value )
+	function set_var( $var, $value )//:bool
 	{
 		try {
-			$this->set( $var, $value );
+			return $this->set( $var, $value );
 		} catch( Exception $e )
 		{
+			return false;
 		}
 /*
 		if(!empty($value) && is_string($value)) {
@@ -226,7 +265,7 @@ class origin
 			$this->$var = $value ;
 		}
  */
-		return;
+		return false;
 	}
 	function get( $field )
 	{
@@ -241,9 +280,25 @@ class origin
 	}
 	/*@array@*/function var2data()
 	{
-		foreach( $this->fields as $f )
+		foreach( array_keys($this->object_fields) as $f )
 		{
-			$this->data[$f] = $this->get_var( $f );
+			if( $f !== '___SOURCE_KEYS_' )
+			{
+				try {
+					$this->data[$f] = $this->get_var( $f );
+				}
+				catch( Exception $e )
+				{
+					$code = $e->getCode();
+					switch( $code )
+					{
+						case KSF_FIELD_NOT_SET:
+							break;
+						default:
+							throw $e;
+					}
+				}
+			}
 		}
 	}
 	/*@array@*/function fields2data( $fieldlist )
@@ -254,31 +309,124 @@ class origin
                 }
                 return $this->data;
 	}
-	
-	/*@NULL@*/function LogError( $message, $level = PEAR_LOG_ERR )
+	/************************************************
+	 * Copy fields from another object through the GET method
+	 *
+	 * Only copy the fields that are in the list
+	 * Because we are using set, we will only copy
+	 * fields that are in our declaration
+	 *
+	 * @param object to copy from
+	 * @param array List of fields to try to copy
+	 * **********************************************/
+	function copy_obj_fieldlist2me( $obj, $fieldlist )
 	{
-		if( $level <= $this->loglevel )
-			$this->errors[] = $message;
-		return;
+		foreach( $fieldlist as $fd )
+		{
+			try {
+				$val = $obj->get( $fd );
+				$this->set( $fd, $val, true );
+			} 
+			catch( Exception $e )
+			{
+				$code = $e->getCode();
+				switch ($code )
+				{
+					case KSF_FIELD_NOT_SET:
+						break;
+					case KSF_FIELD_NOT_CLASS_VAR:
+						break;
+					default:
+						throw $e;
+				}
+			}
+		}
 	}
-	/*@NULL@*/function LogMsg( $message, $level = PEAR_LOG_INFO )
+
+	
+	function LogError( $message, $level = PEAR_LOG_ERR )//:bool
 	{
 		if( $level <= $this->loglevel )
+		{
+			$this->errors[] = $message;
+			return true;
+		}
+		return false;
+	}
+	function LogMsg( $message, $level = PEAR_LOG_INFO )//:bool
+	{
+		if( $level <= $this->loglevel )
+		{
 			$this->log[] = $message;
-		return;
+			return true;
+		}
+		return false;
+	}
+	function convertLogLevel( $level )
+	{
+		switch( $level )
+		{
+			case 'PEAR_LOG_EMERG':
+			case PEAR_LOG_EMERG:
+				$loglevel = 'NOTIFY_LOG_EMERGENCY';
+				break;
+			case 'PEAR_LOG_ALERT':
+			case PEAR_LOG_ALERT:
+			case 'ALERT':
+				$loglevel = 'NOTIFY_LOG_ALERT';
+				break;
+			case 'PEAR_LOG_CRIT':
+			case PEAR_LOG_CRIT:
+				$loglevel = 'NOTIFY_LOG_CRIT';
+				break;
+			case PEAR_LOG_ERR:
+			case 'PEAR_LOG_ERR':
+			case 'PEAR_LOG_ERROR':
+			case 'ERROR':
+				$loglevel = 'NOTIFY_LOG_ERR';
+				break;
+			case 'PEAR_LOG_WARNING':
+			case 'WARN':
+				$loglevel = 'NOTIFY_LOG_WARNING';
+				break;
+			case PEAR_LOG_NOTICE:
+			case 'PEAR_LOG_NOTICE':
+			case 'NOTICE':
+				$loglevel = 'NOTIFY_LOG_NOTICE';
+				break;
+			case PEAR_LOG_INFO:
+			case 'PEAR_LOG_INFO':
+			case 'INFO':
+				$loglevel = 'NOTIFY_LOG_INFO';
+				break;
+			case PEAR_LOG_DEBUG:
+			case 'PEAR_LOG_DEBUG':
+			case 'DEBUG':
+			default:
+				$loglevel = 'NOTIFY_LOG_DEBUG';
+				break;
+		}
+		return $loglevel;
+	}
+	function Log( $msg, $level = PEAR_LOG_DEBUG )//:bool
+	{
+		$loglevel = $this->convertLogLevel( $level );
+		return $this->tell_eventloop( $this, $loglevel, $msg );
 	}
 	/******SPL EventLoop Funcs ********************************************/
 	/****************//**
 	*	Ensure we are attached to an eventloop object
 	*
 	********************/
-	function attach_eventloop()
+	function attach_eventloop()//:bool
 	{
 		if( ! isset( $this->eventloop ) )
 		{
 			global $eventloop;
 			if( isset( $eventloop ) )
 			{
+				if( null == $eventloop )
+					return false;
 				$this->eventloop = $eventloop;
 				return TRUE;
 			}
@@ -330,11 +478,24 @@ class origin
                 {
                         $this->tell_eventloop( $this, $msg, $method );
                 }
-        }
-        function tell_eventloop( $caller, $event, $msg )
+	}
+	/********************************************************//**
+	 * Pass a message onto Eventloop
+	 *
+	 * @param object calling objec
+	 * @param string event being called
+	 * @param mixed string or array or object to be acted upon
+	 * @return bool were we able to pass the message on.
+	 * *********************************************************/
+        function tell_eventloop( $caller, $event, $msg )//:bool
         {
 		if( $this->attach_eventloop() )
-                        $this->eventloop->ObserverNotify( $caller, $event, $msg );
+		{
+			$this->eventloop->ObserverNotify( $caller, $event, $msg );
+			return true;
+		}
+		else
+			return false;
 
         }
         /***************************************************************//**
@@ -350,17 +511,25 @@ class origin
                 $this->tell_eventloop( $this, NOTIFY_LOG_DEBUG, __METHOD__ . ":" . __LINE__ . " Entering " );
                 $this->tell_eventloop( $this, NOTIFY_LOG_DEBUG, __METHOD__ . ":" . __LINE__ . " Exiting " );
                 return FALSE;
-        }
-   	function register_with_eventloop()
+	}
+	/*****************************************************************//**
+	 * Register our interests with eventloop
+	 *
+	 * @param none
+	 * @returns bool was there an eventloop to register with
+	 * *******************************************************************/
+   	function register_with_eventloop()//:bool
         {
 		if( $this->attach_eventloop() )
                 {
                         foreach( $this->interestedin as $key => $val )
                         {
-                                if( $key <> KSF_DUMMY_EVENT )
+                                //if( $key <> KSF_DUMMY_EVENT )
                                         $this->eventloop->ObserverRegister( $this, $key );
-                        }
-                }
+			}
+			return true;
+		}
+		return false;
         }
         /***************************************************************//**
          *build_interestedin
@@ -373,6 +542,8 @@ class origin
         function build_interestedin()
         {
                 //This NEEDS to be overridden
+                $this->interestedin = array();
+                $this->interestedin['KSF_DUMMY_EVENT']['function'] = "dummy";
                 $this->interestedin[KSF_DUMMY_EVENT]['function'] = "dummy";
 	//	throw new Exception( "You MUST override this function, even if it is empty!", KSF_FCN_NOT_OVERRIDDEN );
         }
@@ -384,16 +555,39 @@ class origin
          *
          * @param $obj Object of who triggered the event
          * @param $event what event was triggered
-         * @param $msg what message (data) was passed to us because of the event
+	 * @param $msg what message (data) was passed to us because of the event
+	 * @return mixed returns anything a called function returns
          * ******************************************************************/
         function notified( $obj, $event, $msg )
         {
                 if( isset( $this->interestedin[$event] ) )
                 {
-                        $tocall = $this->interested[$event]['function'];
-                        $this->$tocall( $obj, $msg );
-                }
-        }
+			$tocall = $this->interested[$event]['function'];
+			return $this->$tocall( $obj, $msg ); //Remove coded added for unit tests
+/*
+
+			if( method_exists( $this, $tocall ) AND is_callable( $this->$tocall( $obj, $msg ) ) )
+				return $this->$tocall( $obj, $msg );
+			else
+			{
+				//throw new Exception( "Method name doesn't exist or isn't callable.  " . print_r( $tocall, true ), KSF_INVALID_DATA_VALUE );
+				return -1;
+			}
+		}
+		else
+		{
+			//We aren't interested in the event
+			return false;
+ */
+		}
+	}
+	/**************************************//**
+	 * Meant for unit testing.
+	 * ***************************************/
+	function unset_eventloop()
+	{
+		unset( $this->eventloop );
+	}
 }
 
 /***************DYNAMIC create setter and getter**********************

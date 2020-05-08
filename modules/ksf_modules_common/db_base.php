@@ -1,6 +1,8 @@
 <?php
 
 //20170608 There is something in here screwing with FAs display_notification Exception handler
+//20200506 MERGER this version had much more sanity checks.
+
 
 require_once( 'defines.inc.php' );	//defines path_to_faroot
 //global $path_to_faroot;
