@@ -41,14 +41,20 @@ class kfLog extends origin
 	{
 		$this->objWriteFile->__destruct();
 	}
-	function Log( $msg, $level = PEAR_LOG_DEBUG )//:bool
+	function Log($msg, $level = PEAR_LOG_DEBUG)//:bool
 	{
+/*	
 		if( strcmp( $level, "WARN" ) == 0 )
 		{
 			unset( $level );
 			//$level = PEAR_LOG_WARN;
 		//	$this->logobject->log( $msg, PEAR_LOG_WARN );
 		}
+*/
+		$notifylevel = $this->convertLogLevel( $level );
+		$level = $this->Level2Pearlevel( $level );
+		if( ! is_int( $level ) )
+			$level = PEAR_LOG_WARN;
 		//MERGER - newer version has logobject but not objWriteFile...Migration?
 		$this->logobject->log( $msg, $level );
 		$this->objWriteFile->write_line( $msg );

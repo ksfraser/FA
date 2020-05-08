@@ -362,7 +362,68 @@ class origin
 		}
 		return false;
 	}
-	function convertLogLevel( $level )
+	/***************************************//**
+	* Ensure we have an INT Logging level
+	*
+	* @param INT
+	* @return INT
+	*******************************************/
+	/*@int@*/function Level2PearLevel( $level )
+	{
+		switch( $level )
+		{
+			case 'PEAR_LOG_EMERG':
+			case PEAR_LOG_EMERG:
+			case 'NOTIFY_LOG_EMERGENCY':
+				$loglevel = PEAR_LOG_EMERG;
+				break;
+			case 'PEAR_LOG_ALERT':
+			case PEAR_LOG_ALERT:
+			case 'ALERT':
+			case 'NOTIFY_LOG_ALERT':
+				$loglevel = PEAR_LOG_ALERT;
+				break;
+			case 'PEAR_LOG_CRIT':
+			case PEAR_LOG_CRIT:
+			case 'NOTIFY_LOG_CRIT':
+				$loglevel = PEAR_LOG_CRIT;
+				break;
+			case PEAR_LOG_ERR:
+			case 'PEAR_LOG_ERR':
+			case 'PEAR_LOG_ERROR':
+			case 'ERROR':
+			case 'NOTIFY_LOG_ERR':
+				$loglevel = PEAR_LOG_ERR;
+				break;
+			case 'PEAR_LOG_WARNING':
+			case 'WARN':
+			case 'NOTIFY_LOG_WARNING':
+				$loglevel = PEAR_LOG_WARNING;
+				break;
+			case PEAR_LOG_NOTICE:
+			case 'PEAR_LOG_NOTICE':
+			case 'NOTICE':
+			case 'NOTIFY_LOG_NOTICE':
+				$loglevel = PEAR_LOG_NOTICE;
+				break;
+			case PEAR_LOG_INFO:
+			case 'PEAR_LOG_INFO':
+			case 'INFO':
+			case 'NOTIFY_LOG_INFO':
+				$loglevel = PEAR_LOG_INFO;
+				break;
+			case PEAR_LOG_DEBUG:
+			case 'PEAR_LOG_DEBUG':
+			case 'DEBUG':
+			case 'NOTIFY_LOG_DEBUG':
+			default:
+				$loglevel = PEAR_LOG_DEBUG;
+				break;
+		}
+		return $loglevel;
+	}
+
+	/*@string@*/function convertLogLevel( $level )
 	{
 		switch( $level )
 		{
