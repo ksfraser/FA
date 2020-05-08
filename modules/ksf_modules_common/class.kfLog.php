@@ -41,7 +41,7 @@ class kfLog extends origin
 	{
 		$this->objWriteFile->__destruct();
 	}
-	function Log( $msg, $level )//:bool
+	function Log( $msg, $level = PEAR_LOG_DEBUG )//:bool
 	{
 		if( strcmp( $level, "WARN" ) == 0 )
 		{

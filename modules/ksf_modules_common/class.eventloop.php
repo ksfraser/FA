@@ -81,7 +81,7 @@ class eventloop extends kfLog implements splSubject
 		if( ! isset( $moduledir ) )
 			$moduledir = dirname( __FILE__ ) . '/modules';
 		else
-			$this->Log( "Moduledir is " . $moduledir );
+			$this->Log( "Moduledir is " . $moduledir, PEAR_LOG_DEBUG );
 		$this->moduledir = $moduledir;
 		$this->load_modules();
 		$this->ObserverNotify( $this, 'NOTIFY_LOG_INFO', "Completed Adding Modules" );
