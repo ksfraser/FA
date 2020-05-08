@@ -30,6 +30,8 @@ require_once( 'class.woo_product-base.php' );
 class woo_product_variable extends woo_product_base {
 	var $variation_id;	//!<integer V		ID returned for the variation.
 	var $image;	//array 	List of images. See Images properties
+	var $b_endpoint_reset;	//!<bool	Has the endpoint been reset.  _interface->constructor tries 
+				//		but we haven't set required variables by then
 	
 	/***************************************************************************************//**
 	 *
@@ -47,11 +49,22 @@ class woo_product_variable extends woo_product_base {
 	//function notify (inherited from woo_interface)
 	function reset_endpoint()	//Required by _interface
 	{
+/* Great in theory but code flow makes it not work!
 		if( !isset( $this->id ) )
 			throw new Exception( "Master Product ID required for resetting endpoint", KSF_FIELD_NOT_SET );
 		if( !isset( $this->variation_id ) )
 			throw new Exception( "Variation ID required for resetting endpoint", KSF_FIELD_NOT_SET );
-		$this->endpoint = "products/" . $this->id . "/variations/" . $this->variation_id;
+*/
+		if( isset( $this->id ) AND isset( $this->variation_id ) )
+		{
+			$this->endpoint = "products/" . $this->id . "/variations/" . $this->variation_id;
+			$this->b_endpoint_reset = true;
+		}
+		else
+		{
+			$this->b_endpoint_reset = false;
+			$this->endpoint = "products/";
+		}
 	}
 	/*********************************************************************************************//**
 	 * Woo_Interface now builds the properties_array and write_properties_array from the defined table!
@@ -92,6 +105,7 @@ class woo_product_variable extends woo_product_base {
                 $woo->stock_id = $this->stock_id;
                 $woo->variation_id = $id;
 		$woo->update_variation_id( $id );
+		$this->reset_endpoint();
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
 	}
 

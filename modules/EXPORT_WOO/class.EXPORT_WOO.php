@@ -607,7 +607,7 @@ class EXPORT_WOO extends generic_fa_interface
 		$rowcount = $mwoo->populate_woo_table();
             	display_notification("$rowcount rows of items exist.");
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
-	}
+	//}
 		$this->call_table( 'exported_rest_products', "Send Products via REST to WOO" );
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}

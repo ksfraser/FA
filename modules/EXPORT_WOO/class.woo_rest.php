@@ -225,6 +225,9 @@ class woo_rest
                                             }
 						throw $e;
                                              	break;
+				case KSF_LOST_CONNECTION:
+					throw $e;
+					break;
                                 default:
 					$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $e->getCode() . ":" . $e->getMessage(), "ERROR" );
 					throw $e;
@@ -342,6 +345,8 @@ class woo_rest
 						return $response;
 					*/
 					}
+				case KSF_LOST_CONNECTION:
+					throw $e;
 				default:
 					$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $code . ":" . $msg, "ERROR" );
 					throw $e;
@@ -381,6 +386,12 @@ class woo_rest
 						$this->client->update_woo_id( "" );
 						//return false;	//This isn't a fatal error.
 						return array();
+					}
+				case '0':
+					if( false !== stristr( $msg, "cURL Error: Operation timed out" ) )
+					{
+						$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $code . ":" . $msg, "WARN" );
+						throw new Exception( "CURL packed it in on " . $this->client->id, KSF_LOST_CONNECTION, $e );
 					}
 				default:
 					$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $code . ":" . $msg, "NOTIFY" );

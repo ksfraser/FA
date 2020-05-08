@@ -470,6 +470,9 @@ class woo_product extends woo_interface {
 							$this->recursive_call--;
 						}
 						break;
+				case KSF_LOST_CONNECTION:
+					throw $e;
+					break;
 				default:
 					$this->notify( __METHOD__ . ":" . __LINE__ . " Error " . $code . "::" . $msg, "ERROR" );
 					break;
@@ -775,12 +778,18 @@ class woo_product extends woo_interface {
 				}
 				catch( Exception $e )
 				{
-					if( WC_CLIENT_NOT_SET == $e->getCode() )
+					$code = $e->getCode();
+					switch( $code )
 					{
-						//no wc_client
-						throw $e;
+						case WC_CLIENT_NOT_SET:
+						case KSF_LOST_CONNECTION:
+							//no wc_client
+							throw $e;
+							break;
+						default:
+							$this->notify(  __METHOD__  . ":" . __LINE__ . " " .  $e->getMessage(), "WARN" );
+							break;
 					}
-					$this->notify(  __METHOD__  . ":" . __LINE__ . " " .  $e->getMessage(), "WARN" );
 					
 				}
 			}
