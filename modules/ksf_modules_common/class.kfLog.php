@@ -34,12 +34,13 @@ class kfLog extends origin
 		parent::__construct();
 		$conf = array();
 		$this->logobject = new Log_file( $filename . "_debug_log.txt", "", $conf, $level );
-		$this->objWriteFile = new write_file( ".", $filename . "_debug_log.txt" );
+		$this->objWriteFile = new write_file( ".", $filename . "_o_debug_log.txt" );
 		return;	
 	}
 	function __destruct()
 	{
 		$this->objWriteFile->__destruct();
+		unset( $this->objWriteFile );
 	}
 	function Log($msg, $level = PEAR_LOG_DEBUG)//:bool
 	{
@@ -56,8 +57,21 @@ class kfLog extends origin
 		if( ! is_int( $level ) )
 			$level = PEAR_LOG_WARN;
 		//MERGER - newer version has logobject but not objWriteFile...Migration?
-		$this->logobject->log( $msg, $level );
-		$this->objWriteFile->write_line( $msg );
+		try {
+			if( isset( $this->logobject ) )
+				$this->logobject->log( $msg, $level );
+			else
+				throw new Exception( "Trying to use Object logobject that isn't set (anymore)", KSF_FIELD_NOT_SET );
+			if( isset( $this->objWriteFile ) )
+				$this->objWriteFile->write_line( $msg );	//Getting exceptions about FP not set
+										//Is it because we have destructed the object and then tried to write?
+			else
+				throw new Exception( "Trying to use Object objWriteFile that isn't set (anymore)", KSF_FIELD_NOT_SET );
+		}
+		catch( Exception $e )
+		{
+			throw $e;
+		}
 		return;	
 	}
 }

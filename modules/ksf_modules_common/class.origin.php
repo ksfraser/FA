@@ -98,8 +98,10 @@ class origin
 	}
 	function __destruct()
 	{
+		/*  TRYING TO LOG AFTER THE LOGGING CLASSES NUKED
 		$this->tell_eventloop( $this, 'NOTIFY_LOG_INFO', print_r( $this->log, true ) );
 		$this->tell_eventloop( $this, 'NOTIFY_LOG_ERROR', print_r( $this->errors, true ) );
+ 		*/
 	}
 	/*********************************************************//**
 	 * Magic call method example from http://php.net/manual/en/language.types.object.php

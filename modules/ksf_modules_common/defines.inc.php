@@ -165,6 +165,8 @@ define( 'KSF_INVALID_DATA_VALUE', $eventcount ); $eventcount++;
 define( 'KSF_UNKNOWN_DATA_TYPE', $eventcount ); $eventcount++;
 define( 'KSF_FCN_NOT_OVERRIDDEN', $eventcount ); $eventcount++;
 define( 'KSF_FCN_PATH_OVERRIDE', $eventcount ); $eventcount++;
+define( 'KSF_OBJ_FCN_UNAVAILABLE', $eventcount ); $eventcount++;
+define( 'KSF_OBJ_NOT_SET', $eventcount ); $eventcount++;
 define( 'KSF_VAR_NOT_SET', $eventcount ); $eventcount++;
 define( 'KSF_LOST_CONNECTION', $eventcount ); $eventcount++;
 /************************************************************************//**
