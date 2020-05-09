@@ -45,6 +45,14 @@ class model_woo_category extends woo_interface{
 	var $loadcount;
 	function __construct( $serverURL, $woo_rest_path, $key, $secret,  $options, $client, $enviro = "devel" )
 	{
+		if( is_array( $options ) )
+			$options['need_rest_interface'] = true;
+		else
+		{
+			$tmp = $options;
+			$options['need_rest_interface'] = true;
+			$options[] = $tmp;
+		}
 		parent::__construct($serverURL, $key, $secret, $options, $client);
 /*
 		$subpath = "products/categories";
@@ -479,38 +487,39 @@ class model_woo_category extends woo_interface{
 		$extractcount = 0;
 		try {
 			$this->build_data_array();
-/*
-			if( ! is_callable( $this->woo_rest->send( $this->endpoint, $this->data_array, $this ) ) )
+			if( isset( $this->woo_rest ) )
 			{
-				echo "<br /><br />" . __METHOD__ . ":" . __LINE__ . " ERROR----<br /> ";
-				var_dump( $this->woo_rest );
-				echo "<br /><br />" . __METHOD__ . ":" . __LINE__ . " ----ERROR<br /> ";
-			//	$this->log_exception( $this->woo_rest, $client );
+				if( is_callable( $this->woo_rest->send( $this->endpoint, $this->data_array, $this ) ) )
+				{
+					$response = $this->woo_rest->send( $this->endpoint, $this->data_array, $this );
+					if( $this->debug > 1 )
+					{
+						echo "<br /><br />" . __METHOD__ . ":" . __LINE__ . " SEND RESPONSE----<br /> ";
+						var_dump( $response );
+						echo "<br /><br />" . __METHOD__ . ":" . __LINE__ . " ----SEND RESPONSE<br /> ";
+					}
+					$this->id = $response->id;
+					$this->update_woo_categories_xref();
+					$this->insert_table();
+					//There should be a response, we need to update our xref table so we know what the cat WOO ID is
+					//$this->extract_data_obj( $response->product );
+					//$this->update_wootable_woodata();	
+					$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
+					return TRUE;	//Should we return false until the category is updated?
+				}
+				else
+				{
+					throw new Exception( "Can't send categories because SEND not callable", KSF_OBJ_FCN_UNAVAILABLE );
+				}
 			}
-*/
-			$response = $this->woo_rest->send( $this->endpoint, $this->data_array, $this );
-			if( $this->debug > 1 )
+			else
 			{
-				echo "<br /><br />" . __METHOD__ . ":" . __LINE__ . " SEND RESPONSE----<br /> ";
-				var_dump( $response );
-				echo "<br /><br />" . __METHOD__ . ":" . __LINE__ . " ----SEND RESPONSE<br /> ";
+				throw new Exception( "Can't send categories because WOO_REST not set", KSF_OBJ_NOT_SET );
 			}
-			$this->id = $response->id;
-			$this->update_woo_categories_xref();
-			$this->insert_table();
-			//There should be a response, we need to update our xref table so we know what the cat WOO ID is
-			//$this->extract_data_obj( $response->product );
-			//$this->update_wootable_woodata();	
-			$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
-			return TRUE;	//Should we return false until the category is updated?
-
 		} catch ( WC_API_Client_Exception $e ) {
 				$this->log_exception( $e, $client );
 			if ( $e instanceof WC_API_Client_HTTP_Exception ) 
 			{
-				//echo __METHOD__ . ":" . __LINE__ . " We hit an error.  Here is the data we sent! <br />";
-				//var_dump( $this->data_array );
-				//echo "<br />";
 				$this->code = $e->getCode();
 				$this->msg = $e->getMessage();
 				//Moved into fcn rest_error_handler in other classes...
@@ -566,11 +575,17 @@ class model_woo_category extends woo_interface{
 		return FALSE;
 		} catch( Exception $e )
 		{
-			$this->notify( __METHOD__ . ":" . __LINE__ . " EXCEPTION " . __METHOD__, "WARN" );
-			echo "<br /><br />" . __METHOD__ . ":" . __LINE__ . " EXCEPTION----<br /> ";
-				$this->log_exception( $e, $this->client );
-			var_dump( $e );
-			echo "<br /><br />" . __METHOD__ . ":" . __LINE__ . " ----EXCEPTION<br /> ";
+			$code = $e->getCode();
+			switch( $code )
+			{
+				case KSF_OBJ_FCN_UNAVAILABLE:
+				case KSF_OBJ_NOT_SET:
+				default:
+					$this->notify( __METHOD__ . ":" . __LINE__ . " EXCEPTION " . $e->getMessage(), "WARN" );
+					$this->log_exception( $e, $this->client );
+					throw $e;
+					break;
+			}
 
 		}
 		

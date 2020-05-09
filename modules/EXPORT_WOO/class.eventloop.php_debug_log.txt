@@ -62,93 +62,24 @@ eventloop had event NOTIFY_LOG_DEBUG with message Load Array
 )
 
 eventloop had event NOTIFY_TABS_LOADED
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported_rest_products::default
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported_rest_products::create
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported_rest_products::reset_store
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported_rest_products::update
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported_rest_products::config
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported_rest_products::init_tables_form
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported_rest_products::init_tables_complete_form
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported_rest_products::productsexport
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported_rest_products::pexed
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported_rest_products::qoh
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported_rest_products::woo
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported_rest_products::missingwoo
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported_rest_products::add_woo_id_to_sku
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported_rest_products::send_categories_form
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported_rest_products::sent_categories_form
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported_rest_products::export_rest_products
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message Should be calling form exported_rest_products_form
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No external object set, so try calling internal form: exported_rest_products_form
-woo_product had event NOTIFY_LOG_WARN with message woo_interface::__construct:185 Entering woo_interface::__construct
-woo_product had event NOTIFY_LOG_WARN with message woo_interface::build_rest_interface:243 Entering woo_interface::build_rest_interface
-woo_product had event NOTIFY_LOG_WARN with message woo_interface::build_rest_interface:298  Build REST interfaces 
-woo_product had event NOTIFY_LOG_WARN with message woo_interface::build_rest_interface:309 Exiting woo_interface::build_rest_interface
-woo_product had event NOTIFY_LOG_WARN with message woo_interface::register_with_eventloop::454 Entering woo_interface::register_with_eventloop
-woo_product had event NOTIFY_LOG_WARN with message woo_interface::register_with_eventloop::464 Exiting woo_interface::register_with_eventloop
-woo_product had event NOTIFY_LOG_WARN with message woo_interface::__construct:219 Leaving woo_interface::__construct
-woo_product had event NOTIFY_LOG_WARN with message woo_product::send_simple_products:663 Entering woo_product::send_simple_products
-model_woo had event NOTIFY_LOG_WARN with message woo_interface::__construct:185 Entering woo_interface::__construct
-model_woo had event NOTIFY_LOG_WARN with message model_woo::define_table:206 Entering model_woo::define_table
-model_woo had event NOTIFY_LOG_WARN with message woo_interface::register_with_eventloop::454 Entering woo_interface::register_with_eventloop
-model_woo had event NOTIFY_LOG_WARN with message woo_interface::register_with_eventloop::464 Exiting woo_interface::register_with_eventloop
-model_woo had event NOTIFY_LOG_WARN with message model_woo::reset_endpoint:258 Entering model_woo::reset_endpoint
-model_woo had event NOTIFY_LOG_WARN with message model_woo::reset_endpoint:260 Exiting model_woo::reset_endpoint
-model_woo had event NOTIFY_LOG_WARN with message woo_interface::__construct:219 Leaving woo_interface::__construct
-model_woo had event NOTIFY_LOG_WARN with message model_woo::count_new_products:665 Entering model_woo::count_new_products
-model_woo had event NOTIFY_LOG_WARN with message table_interface::count_filtered:659 Entering table_interface::count_filtered
-model_woo had event NOTIFY_LOG_WARN with message table_interface::count_filtered:664 Exiting table_interface::count_filtered
-model_woo had event NOTIFY_LOG_WARN with message model_woo::count_new_products:667 Exiting model_woo::count_new_products
-woo_product had event NOTIFY_LOG_WARN with message woo_product::update_simple_products:724 Entering woo_product::update_simple_products
-model_woo had event NOTIFY_LOG_WARN with message model_woo::select_simple_products_for_update:775 Entering model_woo::select_simple_products_for_update
-model_woo had event NOTIFY_LOG_WARN with message model_woo::select_simple_products_for_update:785 Exiting model_woo::select_simple_products_for_update
-woo_product had event NOTIFY_LOG_WARN with message woo_product::update_simple_products:733 WHILE LOOP update_simple_products
-woo_product had event NOTIFY_LOG_INFO with message woo_product::update_simple_products:734 ********************************************************************************************************
-woo_product had event NOTIFY_LOG_WARN with message woo_product::update_simple_products:740 Calling woo2wooproduct
-woo_product had event NOTIFY_LOG_WARN with message woo_product::woo2wooproduct:526 Entering woo_product::woo2wooproduct
-model_woo had event NOTIFY_LOG_WARN with message model_woo::select_product:307 Entering model_woo::select_product
-woo_product had event NOTIFY_LOG_WARN with message woo_product::woo2wooproduct:543 Setting ID=woo_id::277
-woo_product had event NOTIFY_LOG_DEBUG with message woo_product::woo2wooproduct:556 Setting stock_id to 810784020220
-woo_product had event NOTIFY_LOG_DEBUG with message woo_product::woo2wooproduct:556 Setting woo_id to 277
-woo_product had event NOTIFY_LOG_DEBUG with message woo_product::woo2wooproduct:556 Setting woo_category_id to 57
-woo_product had event NOTIFY_LOG_DEBUG with message woo_product::woo2wooproduct:556 Setting description to Hardcase Snare Drum Case
-woo_product had event NOTIFY_LOG_DEBUG with message woo_product::woo2wooproduct:556 Setting long_description to Molded Snare Drum Case by Hardcase
-woo_product had event NOTIFY_LOG_DEBUG with message woo_product::woo2wooproduct:556 Setting price to 160
-woo_product had event NOTIFY_LOG_DEBUG with message woo_product::woo2wooproduct:556 Setting instock to 6
-woo_product had event NOTIFY_LOG_DEBUG with message woo_product::woo2wooproduct:556 Setting date_on_sale_from to 0000-00-00
-woo_product had event NOTIFY_LOG_DEBUG with message woo_product::woo2wooproduct:556 Setting date_on_sale_to to 2015-01-01
-woo_product had event NOTIFY_LOG_DEBUG with message woo_product::woo2wooproduct:556 Setting tax_status to taxable
-woo_product had event NOTIFY_LOG_DEBUG with message woo_product::woo2wooproduct:556 Setting tax_class to GST
-woo_product had event NOTIFY_LOG_DEBUG with message woo_product::woo2wooproduct:556 Setting shipping_class to 
-woo_product had event NOTIFY_LOG_WARN with message woo_product::is_inactive:637 Entering woo_product::is_inactive
-woo_product had event NOTIFY_LOG_WARN with message woo_product::is_inactive:645 Exiting woo_product::is_inactive
-woo_product had event NOTIFY_LOG_WARN with message woo_product::set_download_info:1134 Entering woo_product::set_download_info
-woo_product had event NOTIFY_LOG_WARN with message woo_product::set_download_info:1149 Exiting woo_product::set_download_info
-woo_product had event NOTIFY_LOG_WARN with message woo_product::product_attributes:827 Entering woo_product::product_attributes
-woo_product had event NOTIFY_LOG_WARN with message woo_product::product_attributes:828 Exiting woo_product::product_attributes
-woo_product had event NOTIFY_LOG_WARN with message woo_product::product_default_attributes:889 Entering woo_product::product_default_attributes
-woo_product had event NOTIFY_LOG_WARN with message woo_product::woo_prod_variation_attributes:876 Entering woo_product::woo_prod_variation_attributes
-woo_product had event NOTIFY_LOG_INFO with message woo_product::woo_prod_variation_attributes:879 Setting new class ohject.  Should only happen once per instance 
-woo_prod_variation_attributes had event NOTIFY_LOG_WARN with message woo_interface::__construct:185 Entering woo_interface::__construct
-woo_prod_variation_attributes had event NOTIFY_LOG_WARN with message woo_interface::register_with_eventloop::454 Entering woo_interface::register_with_eventloop
-woo_prod_variation_attributes had event NOTIFY_LOG_WARN with message woo_interface::register_with_eventloop::464 Exiting woo_interface::register_with_eventloop
-woo_prod_variation_attributes had event NOTIFY_LOG_WARN with message woo_interface::__construct:219 Leaving woo_interface::__construct
-woo_product had event NOTIFY_LOG_WARN with message woo_product::woo_prod_variation_attributes:883 Exiting woo_product::woo_prod_variation_attributes
-woo_product had event NOTIFY_LOG_WARN with message woo_product::product_default_attributes:898 Exiting woo_product::product_default_attributes
-woo_product had event NOTIFY_LOG_WARN with message woo_product::product_variations:903 Entering woo_product::product_variations
-woo_product had event NOTIFY_LOG_WARN with message woo_product::product_variations:904 Exiting woo_product::product_variations
-woo_product had event NOTIFY_LOG_WARN with message woo_product::woo2wooproduct:628 SETTING Sku to Stock_ID: 810784020220
-woo_product had event NOTIFY_LOG_WARN with message woo_product::woo2wooproduct:630 Sku: 810784020220
-woo_product had event NOTIFY_LOG_WARN with message woo_product::woo2wooproduct:632 Exiting woo_product::woo2wooproduct
-woo_product had event NOTIFY_LOG_DEBUG with message woo_product::update_simple_products:742 TRACE ***ID=woo_id::277
-woo_product had event NOTIFY_LOG_DEBUG with message woo_product::update_simple_products:743 TRACE ***SKU: 810784020220
-woo_product had event NOTIFY_LOG_WARN with message woo_product::update_simple_products:747 Calling update PRODUCT for 810784020220
-woo_product had event NOTIFY_LOG_WARN with message woo_product::update_product:417 Entering woo_product::update_product
-woo_product had event NOTIFY_LOG_WARN with message woo_interface::build_data_array:967 Entering woo_interface::build_data_array
-woo_product had event NOTIFY_LOG_WARN with message woo_interface::build_data_array:983 Exiting woo_interface::build_data_array
-woo_product had event NOTIFY_LOG_WARN with message woo_rest::send_update:196 Entering woo_rest::send_update
-woo_product had event NOTIFY_LOG_WARN with message woo_rest::get:364 Entering woo_rest::get
-woo_product had event NOTIFY_LOG_DEBUG with message woo_rest::get:373 USING endpoint: products/277
-woo_product had event NOTIFY_LOG_WARN with message woo_rest::get:393 ERROR 0:cURL Error: Operation timed out after 15000 milliseconds with 0 bytes received
-woo_product had event NOTIFY_LOG_ERROR with message woo_rest::send:75 ERROR 573013:CURL packed it in on 277
-woo_product had event NOTIFY_LOG_ERROR with message woo_product::send_products:287 ERROR 573013:CURL packed it in on 277
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between reset_store::default
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between reset_store::create
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message Should be calling form form_reset_store
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No external object set, so try calling internal form: form_reset_store
+EXPORT_WOO had event NOTIFY_LOG_ERROR with message FORM not callable!! We shouldn't be here unless during development and the form hasn't been coded!
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between reset_store::update
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between reset_store::config
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between reset_store::init_tables_form
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between reset_store::init_tables_complete_form
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between reset_store::productsexport
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between reset_store::pexed
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between reset_store::qoh
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between reset_store::woo
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between reset_store::missingwoo
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between reset_store::add_woo_id_to_sku
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between reset_store::send_categories_form
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between reset_store::sent_categories_form
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between reset_store::export_rest_products
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between reset_store::exported_rest_products
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between reset_store::export-products-rest
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between reset_store::exported-products-rest

@@ -188,7 +188,8 @@ class woo_interface extends table_interface
 			$this->debug = $this->client->debug;
 		else
 			$this->debug = 0;
-		if( $this->need_rest_interface === true )
+		//if( $this->need_rest_interface === true )
+		if( isset( $options['need_rest_interface'] ) AND $options['need_rest_interface'] === true )
 			$this->build_rest_interface($serverURL, $key, $secret, $options, $client);
 
 		global $db_connections;
@@ -1201,19 +1202,16 @@ class woo_interface extends table_interface
 	}
 	function log_exception( $e, $client )
 	{
-		echo "<br />" . __FILE__ . ":" . __LINE__ . " Exception CODE:<br />";	
-		var_dump( $e->getCode() );
-		echo "<br />" . __FILE__ . ":" . __LINE__ . " Exception MESSAGE:<br />";	
-		var_dump( $e->getMessage() );
-		if( $e instanceof HttpClientException )
+	  	global $eventloop;
+		if( isset( $eventloop ) )
 		{
-			echo "<br />" . __FILE__ . ":" . __LINE__ . " Exception REQUEST:<br />";	
-			var_dump( $e->getRequest );
-			echo "<br />" . __FILE__ . ":" . __LINE__ . " Exception RESPONSE:<br />";	
-			var_dump( $e->getResponse );
+               		$eventloop->ObserverNotify( $client, 'NOTIFY_LOG_ERROR', $e->getCode() . "::" . $e->getMessage() );
+			if( $e instanceof HttpClientException )
+			{
+               			$eventloop->ObserverNotify( $client, 'NOTIFY_LOG_ERROR', $e->getCode() . "::" . $e->getRequest() );
+               			$eventloop->ObserverNotify( $client, 'NOTIFY_LOG_ERROR', $e->getCode() . "::" . $e->getRespone() );
+			}
 		}
-		else
-			var_dump( $e );
 		$this->notify( get_class( $client ) . " has raised exception: " . $e->getCode() . "::" . $e->getMessage(), "WARN" );
 	}
 }

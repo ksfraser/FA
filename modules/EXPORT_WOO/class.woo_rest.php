@@ -28,6 +28,8 @@ class woo_rest
         			'wp_api' => true, // Enable the WP REST API integration
         			'version' => 'wc/v3', // WooCommerce WP REST API version
 				'ssl_verify' => 'false',
+				'timeout' => '400',
+				'connection_timeout' => '40',
         			//'query_string_auth' => true // Force Basic Authentication as query string true and using under HTTPS
 			);
 		}
@@ -391,7 +393,8 @@ class woo_rest
 					if( false !== stristr( $msg, "cURL Error: Operation timed out" ) )
 					{
 						$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $code . ":" . $msg, "WARN" );
-						throw new Exception( "CURL packed it in on " . $this->client->id, KSF_LOST_CONNECTION, $e );
+						$req = $this->wc->http->getRequest();
+						throw new Exception( "CURL packed it in on WC_id " . $this->client->id . ":: URL " . print_r( $req->getUrl(), true), KSF_LOST_CONNECTION, $e );
 					}
 				default:
 					$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $code . ":" . $msg, "NOTIFY" );
