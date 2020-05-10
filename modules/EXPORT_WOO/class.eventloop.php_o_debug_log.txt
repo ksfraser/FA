@@ -58,44 +58,26 @@ eventloop had event NOTIFY_LOG_DEBUG with message Load Array
 )
 
 eventloop had event NOTIFY_TABS_LOADED
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between sent_categories_form::default
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between sent_categories_form::create
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between sent_categories_form::reset_store
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between sent_categories_form::update
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between sent_categories_form::config
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between sent_categories_form::init_tables_form
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between sent_categories_form::init_tables_complete_form
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between sent_categories_form::productsexport
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between sent_categories_form::pexed
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between sent_categories_form::qoh
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between sent_categories_form::woo
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between sent_categories_form::missingwoo
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between sent_categories_form::add_woo_id_to_sku
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between sent_categories_form::send_categories_form
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message Should be calling form sent_categories_form
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No external object set, so try calling internal form: sent_categories_form
-woo_category had event NOTIFY_LOG_WARN with message woo_interface::__construct:185 Entering woo_interface::__construct
-woo_category had event NOTIFY_LOG_WARN with message woo_interface::register_with_eventloop::455 Entering woo_interface::register_with_eventloop
-woo_category had event NOTIFY_LOG_WARN with message woo_interface::register_with_eventloop::465 Exiting woo_interface::register_with_eventloop
-woo_category had event NOTIFY_LOG_WARN with message woo_interface::__construct:220 Leaving woo_interface::__construct
-model_woo_category had event NOTIFY_LOG_WARN with message woo_interface::__construct:185 Entering woo_interface::__construct
-model_woo_category had event NOTIFY_LOG_WARN with message woo_interface::build_rest_interface:244 Entering woo_interface::build_rest_interface
-model_woo_category had event NOTIFY_LOG_WARN with message woo_interface::build_rest_interface:299  Build REST interfaces 
-model_woo_category had event NOTIFY_LOG_WARN with message woo_interface::build_rest_interface:310 Exiting woo_interface::build_rest_interface
-model_woo_category had event NOTIFY_LOG_WARN with message woo_interface::register_with_eventloop::455 Entering woo_interface::register_with_eventloop
-model_woo_category had event NOTIFY_LOG_WARN with message woo_interface::register_with_eventloop::465 Exiting woo_interface::register_with_eventloop
-model_woo_category had event NOTIFY_LOG_WARN with message woo_interface::__construct:220 Leaving woo_interface::__construct
-woo_category had event NOTIFY_LOG_WARN with message woo_category::send_categories_to_woo:335 Entering woo_category::send_categories_to_woo
-model_woo_category had event NOTIFY_LOG_WARN with message model_woo_category::send_categories_to_woo:639 Entering model_woo_category::send_categories_to_woo
-model_woo_category had event NOTIFY_LOG_NOTIFY with message model_woo_category::send_categories_to_woo:664 Sending  Drums::ID 6
-model_woo_category had event NOTIFY_LOG_WARN with message model_woo_category::create_category:486 Entering model_woo_category::create_category
-model_woo_category had event NOTIFY_LOG_WARN with message woo_interface::build_data_array:968 Entering woo_interface::build_data_array
-model_woo_category had event NOTIFY_LOG_WARN with message woo_interface::build_data_array:984 Exiting woo_interface::build_data_array
-model_woo_category had event NOTIFY_LOG_WARN with message woo_rest::send_new:135 Entering woo_rest::send_new
-model_woo_category had event NOTIFY_LOG_WARN with message woo_rest::post:291 Entering woo_rest::post
-model_woo_category had event NOTIFY_LOG_ERROR with message woo_rest::post:298 ERROR 0:cURL Error: Operation timed out after 15000 milliseconds with 0 bytes received
-model_woo_category had event NOTIFY_LOG_ERROR with message woo_rest::send:77 ERROR 0:cURL Error: Operation timed out after 15000 milliseconds with 0 bytes received
-model_woo_category had event NOTIFY_LOG_WARN with message model_woo_category::create_category:584 EXCEPTION cURL Error: Operation timed out after 15000 milliseconds with 0 bytes received
-EXPORT_WOO had event NOTIFY_LOG_ERROR with message 0::cURL Error: Operation timed out after 15000 milliseconds with 0 bytes received
-model_woo_category had event NOTIFY_LOG_WARN with message EXPORT_WOO has raised exception: 0::cURL Error: Operation timed out after 15000 milliseconds with 0 bytes received
-model_woo_category had event NOTIFY_LOG_ERROR with message model_woo_category::send_categories_to_woo:680:model_woo_category::send_categories_to_woo Exception 0::cURL Error: Operation timed out after 15000 milliseconds with 0 bytes received
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported-products-rest::default
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported-products-rest::create
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported-products-rest::reset_store
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported-products-rest::update
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported-products-rest::config
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported-products-rest::init_tables_form
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported-products-rest::init_tables_complete_form
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported-products-rest::productsexport
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported-products-rest::pexed
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported-products-rest::qoh
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported-products-rest::woo
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported-products-rest::missingwoo
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported-products-rest::add_woo_id_to_sku
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported-products-rest::send_categories_form
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported-products-rest::sent_categories_form
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported-products-rest::export_rest_products
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported-products-rest::exported_rest_products
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported-products-rest::export-products-rest
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message Class name set for tab controller_woo_product
+EXPORT_WOO had event NOTIFY_LOG_DEBUG with message Should be calling form exported_rest_products_form
+controller_woo_product had event WOO_SEND_PRODUCTS
+We told woo_product_simple event_code  WOO_SEND_PRODUCTS
+woo_product_simple had event NOTIFY_LOG_WARN with message woo_product_simple::send_simple_products:107 Entering woo_product_simple::send_simple_products

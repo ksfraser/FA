@@ -491,7 +491,7 @@ class woo_interface extends table_interface
 	{
 		if( isset( $this->interestedin[$event] ) )
 		{
-			$tocall = $this->interested[$event]['function'];
+			$tocall = $this->interestedin[$event]['function'];
 			$this->$tocall( $obj, $msg );
 		}
 	}
