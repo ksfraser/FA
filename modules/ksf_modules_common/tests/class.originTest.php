@@ -258,7 +258,7 @@ class originTest extends TestCase
 	 * @ depends testTellEventloop
 	 * @depends testAttachEventloop
 	 */
-	public function testLogError()
+	public function testLogError( $o )
 	{
 		$msg = 'boohoo';
 		$ret = $o->LogError( $msg, PEAR_LOG_ERR );
@@ -268,7 +268,7 @@ class originTest extends TestCase
 	 * @ depends testTellEventloop
 	 * @depends testAttachEventloop
 	 */
-	public function testLogMsg()
+	public function testLogMsg( $o )
 	{
 		$msg = 'boohoo';
 		$ret = $o->LogMsg( $msg, PEAR_LOG_EMERG );
@@ -290,10 +290,33 @@ class originTest extends TestCase
 	 */
 	public function testAttachEventloop()
 	{
+		$this->eventloop = new stdClass();
 		$o = new origin( null, $this );	//NO eventloop
-		$ret = $o->attach_eventloop();
-		$this->assertSame( false, $ret );
+		$this->assertNotEmpty( $o->get( 'client' ) );		//Client is reporting NULL :(
+		$o->unset_eventloop();	//Making sure!
+		$ret = $o->attach_eventloop();			
+		$this->assertSame( true, $ret );		//503
+
 		global $eventloop;
+		$this->assertNotEmpty( $eventloop );				//493...
+		$this->assertSame( true, $o->attach_eventloop() );			
+
+		unset( $eventloop );
+		$o->unset_eventloop();	//Making sure!
+		//if CLIENT is set, checks for it's eventloop setting.
+		$c = $o->get( 'client' );
+		$this->assertNotEmpty( $c );				//493...
+		$e = $c->eventloop;
+		$this->assertNotEmpty( $e );				//493...
+		$this->assertSame( true, $o->attach_eventloop() );			
+
+		
+		unset( $o->client->eventloop );
+		$this->assertSame( false, $o->attach_eventloop() );			
+
+		unset( $o->client );
+		$this->assertSame( false, $o->attach_eventloop() );			
+
 		require_once( dirname( __FILE__ ) . "/../class.eventloop.php" );
 		$eventloop = new eventloop();
 		$p = new origin( null, $this );
@@ -355,7 +378,7 @@ class originTest extends TestCase
 		$o = new origin( null, null );	//NO eventloop from client
 		//TEST NOT INTERESTED
 		$ret = $o->notified( $this, 'NOTIFY_LOG_INFO', "dummy" );
-		$this->assertSame( false, $ret );	//Not Interested returns FALSE.
+		$this->assertSame( null, $ret );	//Not Interested returns FALSE.
 		//$o->interestedin['METHOD']['function'] = 'noexist';
 		$ret = $o->notified( $this, 'KSF_DUMMY_EVENT', "dummy" );
 		$this->assertSame( false, $ret );	//DUMMY returns false.

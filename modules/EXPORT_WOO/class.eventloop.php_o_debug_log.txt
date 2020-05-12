@@ -1,4 +1,4 @@
-Moduledir is .
+Caller set!
 eventloop had event NOTIFY_LOG_INFO with message Adding Module TABS
 eventloop had event NOTIFY_LOG_INFO with message Completed Adding Modules
 eventloop had event NOTIFY_INIT_CONTROLLER_COMPLETE with message Completed Adding Modules
@@ -6,78 +6,3 @@ eventloop had event NOTIFY_INIT_CONTROLLER_COMPLETE with message Completed Addin
  opening module config file /var/www/html/devel/fhs/frontaccounting/modules/EXPORT_WOO/modules/config.products.php
 eventloop had event NOTIFY_LOG_INFO with message Module controller_woo_product being added
 woo_product_simple had event NOTIFY_LOG_WARN with message woo_interface::__construct:185 Entering woo_interface::__construct
-woo_product_simple had event NOTIFY_LOG_WARN with message woo_interface::register_with_eventloop::455 Entering woo_interface::register_with_eventloop
-woo_product_simple had event NOTIFY_LOG_WARN with message woo_interface::register_with_eventloop::465 Exiting woo_interface::register_with_eventloop
-woo_product_simple had event NOTIFY_LOG_WARN with message woo_interface::__construct:220 Leaving woo_interface::__construct
-woo_product_variable had event NOTIFY_LOG_WARN with message woo_interface::__construct:185 Entering woo_interface::__construct
-woo_product_variable had event NOTIFY_LOG_WARN with message woo_interface::register_with_eventloop::455 Entering woo_interface::register_with_eventloop
-woo_product_variable had event NOTIFY_LOG_WARN with message woo_interface::register_with_eventloop::465 Exiting woo_interface::register_with_eventloop
-woo_product_variable had event NOTIFY_LOG_WARN with message woo_interface::__construct:220 Leaving woo_interface::__construct
-eventloop had event NOTIFY_LOG_INFO with message Adding Module TABS
-eventloop had event NOTIFY_LOG_INFO with message Array
-(
-    [ModuleName] => controller_woo_product
-    [loadFile] => products/controller.woo_product.php
-    [loadpriority] => 2
-    [className] => controller_woo_product
-    [objectName] => controller_woo_product
-    [tablename] => 
-    [tabdata] => Array
-        (
-            [tabtitle] => Export Products (REST)
-            [action] => export-products-rest
-            [form] => export_rest_products_form
-            [hidden] => 
-            [class] => controller_woo_product
-            [additional_menus] => Array
-                (
-                    [0] => Array
-                        (
-                            [title] => Products Exported (REST)
-                            [action] => exported-products-rest
-                            [form] => exported_rest_products_form
-                            [hidden] => 1
-                            [class] => controller_woo_product
-                        )
-
-                )
-
-        )
-
-    [taborder] => 6
-)
-
-eventloop had event NOTIFY_LOG_INFO with message Loading Additional Menus
-eventloop had event NOTIFY_LOG_DEBUG with message Load Array
-(
-    [title] => Products Exported (REST)
-    [action] => exported-products-rest
-    [form] => exported_rest_products_form
-    [hidden] => 1
-    [class] => controller_woo_product
-)
-
-eventloop had event NOTIFY_TABS_LOADED
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported-products-rest::default
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported-products-rest::create
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported-products-rest::reset_store
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported-products-rest::update
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported-products-rest::config
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported-products-rest::init_tables_form
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported-products-rest::init_tables_complete_form
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported-products-rest::productsexport
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported-products-rest::pexed
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported-products-rest::qoh
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported-products-rest::woo
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported-products-rest::missingwoo
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported-products-rest::add_woo_id_to_sku
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported-products-rest::send_categories_form
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported-products-rest::sent_categories_form
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported-products-rest::export_rest_products
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported-products-rest::exported_rest_products
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message No Match between exported-products-rest::export-products-rest
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message Class name set for tab controller_woo_product
-EXPORT_WOO had event NOTIFY_LOG_DEBUG with message Should be calling form exported_rest_products_form
-controller_woo_product had event WOO_SEND_PRODUCTS
-We told woo_product_simple event_code  WOO_SEND_PRODUCTS
-woo_product_simple had event NOTIFY_LOG_WARN with message woo_product_simple::send_simple_products:107 Entering woo_product_simple::send_simple_products

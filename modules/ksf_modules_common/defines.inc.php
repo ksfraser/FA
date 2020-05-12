@@ -7,15 +7,21 @@ $path_to_ksfcommon = __DIR__ . "/";
 /**************
  * Defines for running from CLI
  * **********/
-/*
+
 if( ! function_exists( 'user_company' ) ) { function user_company() { return 1; } }
 if( ! function_exists( 'simple_page_mode' ) ) { function simple_page_mode() { return 1; } }
 if( ! function_exists( 'find_submit' ) ) { function find_submit() { return 1; } }
 if( ! function_exists( 'page' ) ) { function page() { return 1; } }
 if( ! function_exists( 'hyperlink_params' ) ) { function hyperlink_params() { return 1; } }
 if( ! function_exists( 'end_page' ) ) { function end_page() { return 1; } }
-if( ! defined( $_SESSION ) ) { global $_SESSION;  $SESSION['cur_con'] = null; }
-*/
+if( ! defined( $_SESSION ) ) 
+{ 
+	global $_SESSION;  
+	if( ! defined( $_SESSION ) ) 
+		$_SESSION = array();
+	$SESSION['cur_con'] = null; 
+}
+
 
 
 //require_once( $path_to_faroot . '/includes/db/connect_db.inc' ); //db_query, ...
@@ -165,6 +171,7 @@ define( 'KSF_INVALID_DATA_VALUE', $eventcount ); $eventcount++;
 define( 'KSF_UNKNOWN_DATA_TYPE', $eventcount ); $eventcount++;
 define( 'KSF_FCN_NOT_OVERRIDDEN', $eventcount ); $eventcount++;
 define( 'KSF_FCN_PATH_OVERRIDE', $eventcount ); $eventcount++;
+define( 'KSF_FCN_DEPRECIATE', $eventcount ); $eventcount++;
 define( 'KSF_OBJ_FCN_UNAVAILABLE', $eventcount ); $eventcount++;
 define( 'KSF_OBJ_NOT_SET', $eventcount ); $eventcount++;
 define( 'KSF_VAR_NOT_SET', $eventcount ); $eventcount++;

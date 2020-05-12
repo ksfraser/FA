@@ -626,6 +626,7 @@ class origin
                 if( isset( $this->interestedin[$event] ) )
                 {
 			$tocall = $this->interested[$event]['function'];
+			echo $tocall;
 			return $this->$tocall( $obj, $msg ); //Remove coded added for unit tests
 /*
 
@@ -643,6 +644,8 @@ class origin
 			return false;
  */
 		}
+		else 
+			return null;
 	}
 	/**************************************//**
 	 * Meant for unit testing.

@@ -147,7 +147,7 @@ class db_base extends origin
 	    	db_query($sql, "Error creating table");
 		$this->set_pref('lastcid', 0);
 		$this->set_pref('lastoid', 0);
-		
+		return TRUE;	//Allow for unit testing
 	}
 	function mysql_query( $sql = null, $errmsg = NULL )
 	{
