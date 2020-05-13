@@ -1,7 +1,6 @@
 <?php
 
-//global $path_to_root;
-$path_to_root = dirname( __FILE__ ) . "/../../";
+global $path_to_root;
 require_once( $path_to_root . '/modules/ksf_modules_common/db_base.php' );	//Needed the ksf_modules_common otherwise a module directory local file was included.
 require_once( $path_to_root . '/modules/ksf_modules_common/defines.inc.php' );
 
@@ -82,26 +81,8 @@ if( ! class_exists( 'generic_fa_interface' ) )
 			//		echo "Generic constructor pref_tablename: $pref_tablename";
 			if( !isset( $this->debug ) )
 				$this->debug = 0;
-			//Don't try creating an eventloop a second time in a given app.  I should probably make it a Singleton
-			//though that didn't work well in the past - became involatile so couldn't change its arrays of Observers etc.
-			global $eventloop;
-			if( ! isset( $this->eventloop ) )
-			{
-				if( isset( $eventloop ) AND null !== $eventloop )
-				{
-					$this->eventloop = $eventloop;
-				}
-				else
-				{
-					require_once( dirname( __FILE__ ) . '/../ksf_modules_common/class.eventloop.php' );
-					$eventloop = $this->eventloop = new eventloop(  null, $this );
-				}
-			}
-			else
-			{
-				//Already set, do nothing.
-			}
-	
+			require_once( dirname( __FILE__ ) . '/../ksf_modules_common/class.eventloop.php' );
+			$this->eventloop = new eventloop(  null, $this );
 
 			if(isset( $pref_tablename ) )
 			{
@@ -125,37 +106,29 @@ if( ! class_exists( 'generic_fa_interface' ) )
 	         *      WARN (debug level 1)
 	         *      NOTIFY (debug level 2)
 	         *      DEBUG (debug level 3)
-		 *
-		 * @param string
-		 * @param string
-		 * @returns int
+	         *
 	         * ***********************************************************/
-		/*@int@*/function notify( $msg, $level = "ERROR" ) //:int
+	        function notify( $msg, $level = "ERROR" )
 	        {
 	                if( "ERROR" == $level )
 	                {
-				display_error( $msg );
-				return 0;
+	                        display_error( $msg );
 	                }
 	                else if( "WARN" == $level AND $this->debug >= 1)
 	                {
 	                        display_notification( $msg );
-				return 1;
 	                }
 	                else if( "NOTIFY" == $level AND $this->debug >= 2)
 	                {
 	                        display_notification( $msg );
-				return 2;
 	                }
 	                else if( "DEBUG" == $level AND $this->debug >= 3)
 	                {
 	                        display_notification( $msg );
-				return 3;
 	                }
 	                else
 	                {
 	                        display_notification( $msg );
-				return 4;
 	                }
 	
 	        }
@@ -235,36 +208,28 @@ if( ! class_exists( 'generic_fa_interface' ) )
 				}
 			}
 		}
-		/*@bool@*/function module_install()
+		function module_install()
 		{
 			//display_notification( __FILE__ . "::" . __CLASS__ . "::"  . __METHOD__ . ":" . __LINE__, "WARN" );
 			if( isset( $this->preftable ) )
-				return $this->create_prefs_tablename();
-			else
-				throw new Exception( "Prefs Table not set!", KSF_FIELD_NOT_SET );
+				$this->create_prefs_tablename();
 		}
-		/*@bool@*/function install()
+		function install()
 		{
 			//echo __FILE__ . ":" . __LINE__ . "<br />\n";	
 			if( !isset( $this->preftable ) )
-				throw new Exception( "Prefs Table not set!", KSF_FIELD_NOT_SET );
-			if ( $this->create_prefs_tablename() )
-			{
-	        		$this->loadprefs();
-				$this->checkprefs();
-			}
-			else
-				return FALSE;
+				return;
+			$this->create_prefs_tablename();
+	        	$this->loadprefs();
+	        	$this->checkprefs();
 			if( isset( $this->redirect_to ) )
 			{
 	        		header("Location: " . $this->redirect_to );
 			}
-			return TRUE;
 		}
 		function checkprefs()
 		{
 			$this->updateprefs();
-			throw new Exception( "This function just calls updateprefs().  Depreciating!" );
 		}
 		function call_table( $action, $msg )
 		{
@@ -276,12 +241,11 @@ if( ! class_exists( 'generic_fa_interface' ) )
 	                submit_center( $action, $msg );
 	                end_form();
 		}
-		/*@EXCEPTION@*/function action_show_form()
+		function action_show_form()
 		{
 			$this->show_config_form();
-			throw new Exception( "This function just calls updateprefs().  Depreciating!" );
 		}
-		/*@bool@*/function show_config_form()
+		function show_config_form()
 		{
 			start_form(true);
 		 	start_table(TABLESTYLE2, "width=40%");
@@ -359,9 +323,9 @@ if( ! class_exists( 'generic_fa_interface' ) )
 			    submit_center('update', 'Update Configuration');
 			}
 			end_form();
-			return TRUE;	
+			
 		}
-		/*@bool@*/function form_export()
+		function form_export()
 		{
 			$selected_id = 1;
 			$none_option = "";
@@ -409,12 +373,10 @@ if( ! class_exists( 'generic_fa_interface' ) )
 			 submit_center('cexport', "Export  " . $this->vendor . " Purchase Orders");
 	
 			 end_form();
-			 return TRUE;
 		}
 		function related_tabs()
 		{
 			$action = $this->action;
-			$count = 0;
 			/*
 			if( isset( $this->ui_class ) )
 				$this->tabs = $this->ui_class->tabs;
@@ -437,17 +399,16 @@ if( ! class_exists( 'generic_fa_interface' ) )
 						echo '&nbsp;|&nbsp;';
 					}
 				}
-				$count++;
 			}
-			return $count;
 		}
-		/*@ ?int? @*/function show_form()
+		function show_form()
 		{
 			$action = $this->action;
 			if( isset( $this->view ) )
 			{
 				$this->view->action = $this->action;
-				return $this->view->show_form();
+				$this->view->show_form();
+				return;
 			}
 			/*
 			if( isset( $this->ui_class ) )
@@ -470,58 +431,47 @@ if( ! class_exists( 'generic_fa_interface' ) )
 					//Call appropriate form
 					$form = $tab['form'];
 					$this->eventloop->ObserverNotify( $this, 'NOTIFY_LOG_DEBUG', "Should be calling form " . $form  );
+					if( $this->debug > 2 )
+						echo "<br />" . __FILE__ . ":" . __LINE__ . " " .$form . "<br />";
 					if( ! isset( $objname ) )
 					{
 						$this->eventloop->ObserverNotify( $this, 'NOTIFY_LOG_DEBUG', "No external object set, so try calling internal form: " . $form  );
 						if( method_exists( $this, $form) AND is_callable( $this->$form() ) )
 						{
-							return $this->$form();
+							echo "<br />" . __FILE__ . ":" . __LINE__ . " Calling non-UI class " .$form . "<br />";
+							$this->$form();
 						}
 						else
 						{
 							$this->eventloop->ObserverNotify( $this, 'NOTIFY_LOG_ERROR', "FORM not callable!! We shouldn't be here unless during development and the form hasn't been coded!"  );
-							throw new Exception( "FORM not callable!! We shouldn't be here unless during development and the form hasn't been coded!", KSF_OBJ_FCN_UNAVAILABLE );
 						}
-					}	//473
+					}
 					else
 					{
 						//create and call the module.
 						//Odds it already exists?  As this is a web based app and not continous,
 						// slim unless it was serialized.  Since we aren't doing that currenty...
-						// However, eventloop is making all new objects global...
-						global $$objname;
-						if( ! isset( $$objname ) )
-						{
-							$obj = new $objname( $this );
-						}
-						else
-						{
-							$obj = $$objname;
-						}
+						$obj = new $objname();
 						if( method_exists( $obj, $form) AND is_callable( $obj->$form() ) )
 						{
 							$this->eventloop->ObserverNotify( $this, 'NOTIFY_LOG_DEBUG', "Calling " . $objname . "::" . $form );
-							return $obj->$form();
+							$obj->$form();
 						}
 						else
 						{
+							$this->notify( "Object Class set for action but not callable", "WARN" );
 							$this->eventloop->ObserverNotify( $this, 'NOTIFY_OBJECT_NOT_CALLABLE', $objname . "::" . $form  );
 						}
 					}
-				}	//461
+				}
 				else
 				{	
-					$this->eventloop->ObserverNotify( $this, 'NOTIFY_LOG_DEBUG', "No Match between " . $action . "::" . $tab['action']  );
-					return KSF_OBJ_FCN_UNAVAILABLE;
+							$this->eventloop->ObserverNotify( $this, 'NOTIFY_LOG_DEBUG', "No Match between " . $action . "::" . $tab['action']  );
 				}
 	
 			}
 		}
-		/*@bool@*/function form_unittest()
-		{
-			return TRUE;
-		}
-		/*@bool@*/function base_page()
+		function base_page()
 		{
 			/*
 			if( isset( $this->ui_class ) )
@@ -543,16 +493,14 @@ if( ! class_exists( 'generic_fa_interface' ) )
 			page(_($this->help_context), false, false, "", $js);
 			//page(_($this->help_context));
 			$this->related_tabs();
-			return TRUE;
 		}
-		/*@bool@*/function display()
+		function display()
 		{
 			$this->base_page();
 			$this->show_form();
 			end_page();
-			return TRUE;
 		}
-		/*@bool@*/function run()
+		function run()
 		{
 			if ($this->found) {
 			  	$this->loadprefs();
@@ -573,7 +521,6 @@ if( ! class_exists( 'generic_fa_interface' ) )
 			}
 			else
 			{
-				//ASSUMPTION view Also checks POST/GET
 				if( isset( $this->view ) )
 					$this->view->run();
 				else
@@ -602,7 +549,7 @@ if( ! class_exists( 'generic_fa_interface' ) )
 			}
 			 */
 			//echo __FILE__ . ":" . __LINE__ . "<br />\n"; 
-			return $this->display();
+			$this->display();
 		}
 		/**********************************************************************************************//**
 		 *
@@ -619,9 +566,8 @@ if( ! class_exists( 'generic_fa_interface' ) )
 		 * 	comment		(optional)
 		 *
 		 * *********************************************************************************************/
-		/*@int@*/function modify_table_column( $tables_array )
+		function modify_table_column( $tables_array )
 		{
-			$count = 0;
 			foreach( $tables_array as $row )
 			{
 					//ALTER TABLE t1 MODIFY b BIGINT NOT NULL;
@@ -641,49 +587,40 @@ if( ! class_exists( 'generic_fa_interface' ) )
 				{
 					//$this->notify( "Altered " . $row['table'] . " Column " . $row['column'], "WARN" );
 					//display_notification( __FILE__ . " Altered " . $row['table'] . ", Column " . $row['column'] . "::Statement: " . $sql );
-					$count++;
 				}
 			}
-			return $count;
 		}
 		/*@fp@*/function append_file( $filename )
 		{
-			throw new Exception( "Check out FILE classes...DEPRECIATED", KSF_FCN_DEPRECIATE );
 			return fopen( $filename, 'a' );
 		}
 		/*@fp@*/function overwrite_file( $filename )
 		{
-			throw new Exception( "Check out FILE classes...DEPRECIATED", KSF_FCN_DEPRECIATE );
 			return $this->open_write_file( $filename );
 		}
 		/*@fp@*/function open_write_file( $filename )
 		{
-			throw new Exception( "Check out FILE classes...DEPRECIATED", KSF_FCN_DEPRECIATE );
 			return fopen( $filename, 'w' );
 		}
 		/*@int or FALSE@*/function write_line( $fp, $line )
 		{
-			throw new Exception( "Check out FILE classes...DEPRECIATED", KSF_FCN_DEPRECIATE );
 			return fwrite( $fp, $line . "\n" );
 		}
 		/*@nada@*/function close_file( $fp )
 		{
-			throw new Exception( "Check out FILE classes...DEPRECIATED", KSF_FCN_DEPRECIATE );
 			$this->file_finish( $fp );
 			$fp = null;	//Does this do anything?  Pass by value or reference?
 		}
 		/*@nada@*/function file_finish( $fp )
 		{
-			throw new Exception( "Check out FILE classes...DEPRECIATED", KSF_FCN_DEPRECIATE );
 			fflush( $fp );
 			fclose( $fp );
 			$fp = null;	//Does this do anything?  Pass by value or reference?
 		}
-		/*@bool@*/function backtrace()
+		function backtrace()
 		{
 			echo "<br />";
 			array_walk(debug_backtrace(),create_function('$a,$b','print "{$a[\'function\']}()(".basename($a[\'file\']).":{$a[\'line\']});<br /> ";'));
-			return TRUE;
 		}
 		/******************************************************************************//**
 		* Generate a line in a CSV to be used to print labels

@@ -3,10 +3,6 @@
 $path_to_root="../..";
 
 require_once( 'class.kfLog.php' );	//Extends origin
-//MERGER 0506
-require_once( 'class.controller_origin.php' );
-require_once( 'class.MODEL.php' );
-require_once( 'class.VIEW.php' );
 
 $configArray = array();
 
@@ -53,25 +49,11 @@ class eventloop extends kfLog implements splSubject
 	private $storage;	//From php.net example
 	protected $caller;
 	protected $moduledir;
-	private $module_objects; //MERGER
 
 	function __construct( $moduledir = null, $caller = null )
 	{
-	//MERGER
-		if( isset( $caller ) && isset( $caller->debug ) )
-			$debug = $caller->debug;
-		else
-			$debug = PEAR_LOG_CRIT;
-		parent::__construct( __FILE__, $debug );
-		if( isset( $caller ) )
-		{
-			$this->caller = $caller;
-			$this->Log( "Caller set!" );
-		}
-
-		//parent::__construct();
-		//$this->caller = $caller;
-	//!MERGER
+		parent::__construct();
+		$this->caller = $caller;
 		$this->storage = new SplObjectStorage();	//php.net
 		$this->initEventGroup( '*' );
 		$this->initEventGroup( '**' );
@@ -80,8 +62,6 @@ class eventloop extends kfLog implements splSubject
 		 */
 		if( ! isset( $moduledir ) )
 			$moduledir = dirname( __FILE__ ) . '/modules';
-		else
-			$this->Log( "Moduledir is " . $moduledir, PEAR_LOG_DEBUG );
 		$this->moduledir = $moduledir;
 		$this->load_modules();
 		$this->ObserverNotify( $this, 'NOTIFY_LOG_INFO', "Completed Adding Modules" );
@@ -154,7 +134,7 @@ class eventloop extends kfLog implements splSubject
 	     	}
  	}
         /*****************************************************************************//**
-         *ObserverNotify loops through observers and tells interested ones about the event
+         *ObserverNotify loops throug observers and tells interested ones about the event
          *
          * @param string event to match against
          * @data mixed ideally is the object that triggered the event
@@ -163,31 +143,19 @@ class eventloop extends kfLog implements splSubject
         function ObserverNotify( $trigger_class, $event, $msg )
         {
 		if( is_string( $msg ) )
-			$this->Log( get_class( $trigger_class ) . " had event " . $event . " with message " . $msg, PEAR_LOG_DEBUG );
+			$this->Log( get_class( $trigger_class ) . " had event " . $event . " with message " . $msg, 1 );
 		else
-			$this->Log( get_class( $trigger_class ) . " had event " . $event, PEAR_LOG_DEBUG );
+			$this->Log( get_class( $trigger_class ) . " had event " . $event, 1 );
                	if ( isset( $this->observers[$event] ) )
                       foreach ( $this->observers[$event] as $obs )
                       {
-				$tgt = get_class( $obs );
-			      	$told[] = $tgt;
-			      	$this->Log( "We told " . $tgt . " event_code  " . $event , PEAR_LOG_DEBUG );
                               $obs->notified( $trigger_class, $event, $msg );
                       }
                	/* '**' being used as 'ALL' */
                	if ( isset( $this->observers['**'] ) )
                       	foreach ( $this->observers['**'] as $obs )
                       	{
-				$tgt = get_class( $obs );
-				if( ! in_array( $tgt, $told  ) )
-				{
-					$obs->notified( $trigger_class, $event, $msg );
-			      		$this->Log( "We told " . $tgt . " event_code **::" . $event, PEAR_LOG_DEBUG );
-				}
-				else
-				{
-					$this->Log( $tgt . " has already been told by event_code  " . $event . " rather than ALL", PEAR_LOG_DEBUG );
-				}
+                              	$obs->notified( $trigger_class, $event, $msg );
                       	}
                	return SUCCESS;
          }
@@ -197,8 +165,7 @@ class eventloop extends kfLog implements splSubject
 		//Needs to be extended by the inheriting class
                	return SUCCESS;
          }
-	//private function getEventObservers($event = "*")
-	function getEventObservers($event = "*")
+	private function getEventObservers($event = "*")
     	{
         	$this->initEventGroup($event);
         	$group = $this->observers[$event];
@@ -222,17 +189,10 @@ class eventloop extends kfLog implements splSubject
 		{
 			foreach( $configArray as $carray )
 			{
-				//MREGER.  Adding a default value incase loadpriority isn't specified
-				if( isset( $carray['loadpriority'] ) )	
-					$modarray[ $carray['loadpriority'] ][] = $carray;
-				else
-					$modarray[ 99 ][] = $carray;
+				$modarray[$carray['loadpriority']][] = $carray;
 				//Add to tabs...
-				if( isset( $carray['taborder'] ) )
-				{
-					//Only if we have tabs to add!
-					$tabarray[ $carray['taborder'] ][] = $carray;
-				}
+                                $tabarray[$carray['taborder']][] = $carray;
+
 			}
 		}
 		if( isset( $modarray ) AND count( $modarray ) > 0 )
@@ -241,37 +201,25 @@ class eventloop extends kfLog implements splSubject
 			{
 				foreach( $priarray as $marray )
 				{
-					//MERGER
-					//If we want to have multiple load entries without loading the class multiple times, leave loadfile blank. 
-					if( isset( $marray['loadFile'] ) )
+					$res = include_once( $this->moduledir . "/" . $marray['loadFile'] );
+					if( TRUE == $res )
 					{
-	
-						$res = include_once( $this->moduledir . "/" . $marray['loadFile'] );
-						if( TRUE == $res )
-						{
-							$this->ObserverNotify( $this, 'NOTIFY_LOG_INFO', "Module " . $marray['ModuleName'] . " being added" );
-	
-							//Passing this to the called class, they set us as the event dispatcher
-							$g_obj = $marray['objectName'];
-							global $$g_obj;
-							$$g_obj = $this->module_objects[ $g_obj ] = new $g_obj( $this ); //Generates a lot of recursion!
-							//$this->ObserverNotify( $this, 'NOTIFY_LOG_DEBUG', "Created Module Object " . $g_obj . " with object: " .  print_r( $this->module_objects[ $g_obj ], true ) );
-							//$this->ObserverNotify( $this, 'NOTIFY_LOG_DEBUG', "Also Created global Object " . $g_obj . " with object: " .  print_r( $$g_obj , true ) );
-							//$marray['objectName'] = new $marray['className']( $this );
+						$this->ObserverNotify( $this, 'NOTIFY_LOG_INFO', "Module " . $marray['ModuleName'] . " being added" );
 
-							if( isset( $marray['objectName']->observers ) )
+						//Passing this to the called class, they set us as the event dispatcher
+						$marray['objectName'] = new $marray['className'];
+						if( isset( $marray['objectName']->observers ) )
+						{
+							foreach( $marray['objectName']->observers as $obs )
 							{
-								foreach( $marray['objectName']->observers as $obs )
-								{
-									$this->observers[] = $obs;
-								}
+								$this->observers[] = $obs;
 							}
 						}
-						else
-						{
-							echo "Attempt to open " . $this->moduledir . "/" . $marray['loadFile'] . " FAILED!<br />";
-							$this->ObserverNotify( $this, 'NOTIFY_LOG_INFO', "Unable to add module" . $this->moduledir );
-						}
+					}
+					else
+					{
+						echo "Attempt to open " . $this->moduledir . "/" . $marray['loadFile'] . " FAILED!<br />";
+						$this->ObserverNotify( $this, 'NOTIFY_LOG_INFO', "Unable to add module" . $this->moduledir );
 					}
 				}
 			}
@@ -286,18 +234,7 @@ class eventloop extends kfLog implements splSubject
 				foreach( $priarray as $tabinc )
 				{
 					 $tabs[] = array( 'title' => $tabinc['tabdata']['tabtitle'], 'action' => $tabinc['tabdata']['action'], 'form' => $tabinc['tabdata']['form'], 'hidden' => $tabinc['tabdata']['hidden'], 'class' => $tabinc['tabdata']['class'] );
-					 $this->ObserverNotify( $this, 'NOTIFY_LOG_INFO', print_r( $tabinc, true ) );
-					//MERGER
-					//Add the ability to add extra menu items
-					 if( isset( $tabinc['tabdata']['additional_menus'] ) )
-					 {
-						 $this->ObserverNotify( $this, 'NOTIFY_LOG_INFO', "Loading Additional Menus" );
-						 foreach( $tabinc['tabdata']['additional_menus'] as $row )
-						 {
-						 	$this->ObserverNotify( $this, 'NOTIFY_LOG_DEBUG', "Load " . print_r( $row, true ) );
-							$tabs[] = $row;
-						 }
-					 }
+					$this->ObserverNotify( $this, 'NOTIFY_LOG_INFO', print_r( $tabinc, true ) );
 				}
 			}
 			$this->tabs = $tabs;
@@ -305,15 +242,13 @@ class eventloop extends kfLog implements splSubject
 		}
 	}
 /****************************splSubject************************************************/
-	//public function attach(\SplObserver $observer, $event = "*")
-	 function attach(\SplObserver $observer, $event = "*")
+	public function attach(\SplObserver $observer, $event = "*")
     	{
         	$this->initEventGroup($event);
         	$this->observers[$event][] = $observer;
 		$this->storage->attach($observer);	//php.net
     	}
-    	//public function detach(\SplObserver $observer, $event = "*")
-    	 function detach(\SplObserver $observer, $event = "*")
+    	public function detach(\SplObserver $observer, $event = "*")
     	{
 		$this->storage->detach($observer);	//php.net
         	foreach ($this->getEventObservers($event) as $key => $s) {
@@ -329,8 +264,7 @@ class eventloop extends kfLog implements splSubject
 		/********!php.net user comments************************/
     	}
     	//public function notify(string $event = "*", $data = null)
-    	//public function notify( $event = "*", $data = null)
-    	 function notify( $event = "*", $data = null)
+    	public function notify( $event = "*", $data = null)
     	{
         	foreach ($this->getEventObservers($event) as $observer) {
             		$observer->update($this, $event, $data);
@@ -347,7 +281,6 @@ class eventloop extends kfLog implements splSubject
 
 /****************************splObserver************************************************/
 /****************************php.net****************************************************/
-/*
 abstract class Observer implements SplObserver
 {
     private $observable;
@@ -375,7 +308,6 @@ class ConcreteObserver extends Observer
         //...
     }
 }
-*/
 /****************************!php.net****************************************************/
 /****************************!splObserver************************************************/
 ?>

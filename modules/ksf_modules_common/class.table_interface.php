@@ -1,13 +1,5 @@
 <?php
 
-/******!!!!!!!!!!!!!!DEPRECIATING!!!!!!!!!!!!!!******/
-/******!!!!!!!!!!!!!!DEPRECIATING!!!!!!!!!!!!!!******/
-/*
- * Use class.MODEL.php instead.  20200310
- *
-/******!!!!!!!!!!!!!!DEPRECIATING!!!!!!!!!!!!!!******/
-/******!!!!!!!!!!!!!!DEPRECIATING!!!!!!!!!!!!!!******/
-
 //TODO
 //	
 //20180531 Added basic code that I had in my GENERICTABLE class from my own framework.
@@ -89,6 +81,8 @@ class table_interface
 		$this->objLog = new kfLog();
 		if( !isset( $this->fields_array ) )
                        $this->fields_array = array();
+
+
 	}
         /**********************************************************//**
          * Log 
@@ -501,14 +495,8 @@ class table_interface
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		if( ! isset( $this->table_details['tablename'] ) )
 		{
-			if( method_exists( $this, 'define_table' ) )
-			{
+			if( method_exists( $this->define_table() ) )
 				$this->define_table();
-				if( ! isset( $this->table_details['tablename'] ) )
-				{
-					throw new Exception( "Table Definition could not be defined", KSF_VALUE_NOT_SET );
-				}
-			}
 			else
 				throw new Exception( "Table Definition not defined so can't create table", KSF_TABLE_NOT_DEFINED );
 		}

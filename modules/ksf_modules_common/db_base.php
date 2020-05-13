@@ -1,8 +1,6 @@
 <?php
 
 //20170608 There is something in here screwing with FAs display_notification Exception handler
-//20200506 MERGER this version had much more sanity checks.
-
 
 require_once( 'defines.inc.php' );	//defines path_to_faroot
 //global $path_to_faroot;
@@ -147,7 +145,7 @@ class db_base extends origin
 	    	db_query($sql, "Error creating table");
 		$this->set_pref('lastcid', 0);
 		$this->set_pref('lastoid', 0);
-		return TRUE;	//Allow for unit testing
+		
 	}
 	function mysql_query( $sql = null, $errmsg = NULL )
 	{

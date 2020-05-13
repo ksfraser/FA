@@ -27,14 +27,14 @@ class write_file
 	function write_chunk( $line )
 	{
 		if( !isset( $this->fp ) )
-			throw new Exception( "Filepointer not set" );
+			throw new Exception( "Fileponter not set" );
 		fwrite( $this->fp, $line );
 		fflush( $this->fp );
 	}
 	function write_line( $line )
 	{
 		if( !isset( $this->fp ) )
-			throw new Exception( "Filepointer not set" );
+			throw new Exception( "Fileponter not set" );
 		fwrite( $this->fp, $line . "\r\n" );
 		fflush( $this->fp );
 	}

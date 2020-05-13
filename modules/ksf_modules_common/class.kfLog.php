@@ -24,54 +24,30 @@ require_once( 'defines.inc.php' );
 class kfLog extends origin
 {
 	var $logobject;
-	var $objWriteFile;	//MERGER - Unused?
+	var $objWriteFile;
 
-	function __construct( $filename = null, $level = PEAR_LOG_DEBUG )
+	function __construct( $filename = __FILE__, $level = PEAR_LOG_DEBUG )
 	{
-		if( null == $filename )
-			$filename = __FILE__;
-		$filename = basename( realpath( $filename ) );
 		parent::__construct();
 		$conf = array();
+		$filename = basename( realpath( $filename ) );
 		$this->logobject = new Log_file( $filename . "_debug_log.txt", "", $conf, $level );
-		$this->objWriteFile = new write_file( ".", $filename . "_o_debug_log.txt" );
+		$this->objWriteFile = new write_file( ".", $filename . "_debug_log.txt" );
 		return;	
 	}
 	function __destruct()
 	{
 		$this->objWriteFile->__destruct();
-		unset( $this->objWriteFile );
 	}
-	function Log($msg, $level = PEAR_LOG_DEBUG)//:bool
+	function Log( $msg, $level )
 	{
-/*	
 		if( strcmp( $level, "WARN" ) == 0 )
 		{
 			unset( $level );
 			//$level = PEAR_LOG_WARN;
 		//	$this->logobject->log( $msg, PEAR_LOG_WARN );
 		}
-*/
-		$notifylevel = $this->convertLogLevel( $level );
-		$level = $this->Level2Pearlevel( $level );
-		if( ! is_int( $level ) )
-			$level = PEAR_LOG_WARN;
-		//MERGER - newer version has logobject but not objWriteFile...Migration?
-		try {
-			if( isset( $this->logobject ) )
-				$this->logobject->log( $msg, $level );
-			else
-				throw new Exception( "Trying to use Object logobject that isn't set (anymore)", KSF_FIELD_NOT_SET );
-			if( isset( $this->objWriteFile ) )
-				$this->objWriteFile->write_line( $msg );	//Getting exceptions about FP not set
-										//Is it because we have destructed the object and then tried to write?
-			else
-				throw new Exception( "Trying to use Object objWriteFile that isn't set (anymore)", KSF_FIELD_NOT_SET );
-		}
-		catch( Exception $e )
-		{
-			throw $e;
-		}
+		$this->objWriteFile->write_line( $msg );
 		return;	
 	}
 }
