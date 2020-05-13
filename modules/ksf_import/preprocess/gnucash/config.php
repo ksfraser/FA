@@ -213,6 +213,9 @@ $conf["Springs Cres Insurance"]["dim2"] = "013/2018";
 $conf["1061 CIBC Savings Account"]["account"] = "1061";  	
 $conf["1061 CIBC Savings Account"]["dim1"] = "002/2018";  
 $conf["1061 CIBC Savings Account"]["dim2"] = "";  
+$conf["8810.1 Office Expenses KSFP"]["account"] = "8810.1";  	
+$conf["8810.1 Office Expenses KSFP"]["dim1"] = "002/2018";  
+$conf["8810.1 Office Expenses KSFP"]["dim2"] = "005/2018";  
 $conf["Office Expenses Piping"]["account"] = "8810.1";  	
 $conf["Office Expenses Piping"]["dim1"] = "002/2018";  
 $conf["Office Expenses Piping"]["dim2"] = "005/2018";  
@@ -443,5 +446,10 @@ $conf["Home Depot"]["dim2"] = "013/2018";
 $conf["HELOC"]["account"] = "2101";  
 $conf["HELOC"]["dim1"] = "003/2018";  
 $conf["HELOC"]["dim2"] = "001/2019";  
+
+
+$conf["Savings Interest"]["account"] = "4440";  
+$conf["Savings Interest"]["dim1"] = "002/2018";  
+$conf["Savings Interest"]["dim2"] = "008/2019";  
 
 ?>
