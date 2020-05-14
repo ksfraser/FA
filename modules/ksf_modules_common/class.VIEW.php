@@ -164,7 +164,10 @@ class VIEW extends origin
 		if ($this->use_date_picker)
         		$this->js .= get_js_date_picker();
 
-		page(_($help_context = "FA-CRM"), false, false, "", $this->js);
+		/*Mantis 212?  PAGE can't redeclare help_url
+		 * Obviously Page has already been called
+		//page(_($help_context = "FA-CRM"), false, false, "", $this->js);
+		 */
 
 
 	}
