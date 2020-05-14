@@ -436,14 +436,21 @@ if( ! class_exists( 'generic_fa_interface' ) )
 					if( ! isset( $objname ) )
 					{
 						$this->eventloop->ObserverNotify( $this, 'NOTIFY_LOG_DEBUG', "No external object set, so try calling internal form: " . $form  );
-						if( method_exists( $this, $form) AND is_callable( $this->$form() ) )
+						if( method_exists( $this, $form) )
 						{
-							echo "<br />" . __FILE__ . ":" . __LINE__ . " Calling non-UI class " .$form . "<br />";
-							$this->$form();
+							if( is_callable( array( $this, $form ) ) )
+							{
+								echo "<br />" . __FILE__ . ":" . __LINE__ . " Calling non-UI class " .$form . "<br />";
+								$this->$form();
+							}
+							else
+							{
+								$this->eventloop->ObserverNotify( $this, 'NOTIFY_LOG_ERROR', "FORM not callable!! " . $form . ":: We shouldn't be here unless during development and the form hasn't been coded!"  );
+							}
 						}
 						else
 						{
-							$this->eventloop->ObserverNotify( $this, 'NOTIFY_LOG_ERROR', "FORM not callable!! We shouldn't be here unless during development and the form hasn't been coded!"  );
+							$this->eventloop->ObserverNotify( $this, 'NOTIFY_LOG_ERROR', "FORM doesn't exist!! " . $form . ":: We shouldn't be here unless during development and the form hasn't been coded!"  );
 						}
 					}
 					else
@@ -452,15 +459,23 @@ if( ! class_exists( 'generic_fa_interface' ) )
 						//Odds it already exists?  As this is a web based app and not continous,
 						// slim unless it was serialized.  Since we aren't doing that currenty...
 						$obj = new $objname();
-						if( method_exists( $obj, $form) AND is_callable( $obj->$form() ) )
+						if( method_exists( $obj, $form) )
 						{
-							$this->eventloop->ObserverNotify( $this, 'NOTIFY_LOG_DEBUG', "Calling " . $objname . "::" . $form );
-							$obj->$form();
+							if( is_callable( array( $obj, $form ) ) )
+							{
+								$this->eventloop->ObserverNotify( $this, 'NOTIFY_LOG_DEBUG', "Calling " . $objname . "::" . $form );
+								$obj->$form();
+							}
+							else
+							{
+								$this->notify( "Object Class set for action but not callable: " . $objname . "::" . $form, "WARN" );
+								$this->eventloop->ObserverNotify( $this, 'NOTIFY_OBJECT_NOT_CALLABLE', $objname . "::" . $form  );
+							}
 						}
 						else
 						{
-							$this->notify( "Object Class set for action but not callable", "WARN" );
-							$this->eventloop->ObserverNotify( $this, 'NOTIFY_OBJECT_NOT_CALLABLE', $objname . "::" . $form  );
+								$this->notify( "Method doesn't exist: " . $objname . "::" . $form, "WARN" );
+								$this->eventloop->ObserverNotify( $this, 'NOTIFY_OBJECT_NOT_CALLABLE', $objname . "::" . $form  );
 						}
 					}
 				}
@@ -490,7 +505,10 @@ if( ! class_exists( 'generic_fa_interface' ) )
 			}
 
 			//page(_($help_context), false, false, "", $js);
-			page(_($this->help_context), false, false, "", $js);
+			/* Mantis 210 
+			 * Cannot redeclare help_url() (previously declared in /var/www/html/devel/fhs/frontaccounting/includes/page/header.inc:15) in /var/www/html/devel/fhs/frontaccounting/includes/page/header.inc on line 15
+				page(_($this->help_context), false, false, "", $js);
+			*/
 			//page(_($this->help_context));
 			$this->related_tabs();
 		}
