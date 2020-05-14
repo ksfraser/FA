@@ -418,9 +418,29 @@ class woo_interface extends table_interface
 	{
 		//$this->notify( __METHOD__ . "::"  . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		if( isset( $this->client ) )	//if not set nobody to tell
+		{
 			if( isset( $msg ) )	//If not set nothing to pass along...
-				if( is_callable( $this->client->eventloop( $msg, $method ) ) )
-					$this->client->eventloop( $msg, $method );
+			{
+				$client = $this->client;
+				if( method_exists( $client, "eventloop" ) )
+				{
+					if( is_callable( array( $client, eventloop( $msg, $method ) ) ) )
+					{
+						$this->client->eventloop( $msg, $method );
+					}
+					else
+					{
+						$this->tell_eventloop( $this, 'NOTIFY_LOG_DEBUG', 'eventloop not callable for ' . get_class($client) );
+						$this->tell_eventloop( $this, $msg, $method );
+					}
+				}
+				else
+				{
+					$this->tell_eventloop( $this, 'NOTIFY_LOG_DEBUG', 'eventloop not defined for ' . get_class($client) );
+					$this->tell_eventloop( $this, $msg, $method );
+				}
+			}
+		}
 		else
 		{
 			$this->tell_eventloop( $this, $msg, $method );
