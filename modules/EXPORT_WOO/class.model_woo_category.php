@@ -677,8 +677,22 @@ class model_woo_category extends woo_interface{
 				}
 				catch( Exception $e )
 				{
-					$this->notify( __METHOD__ . ":" . __LINE__ . ":" . __METHOD__ . " Exception " . $e->getCode() . "::" . $e->getMessage(), "ERROR" );
-					throw $e;
+					//Mantis 213 triggered a refactor
+					$code = $e->getCode();
+					$msg = $e->getMessage();
+					switch( $code )
+					{
+						case '400':
+							if( strstr( $msg, "term_exists" ) )
+							{
+								$this->notify( __METHOD__ . ":" . __LINE__ . ":" . " TERM (Category) EXISTS for " . $this->name, "WARN" );
+								//update xref so we don't try to resend.
+								break;
+							}
+						default:
+							$this->notify( __METHOD__ . ":" . __LINE__ . ":" . __METHOD__ . " Exception " . $code . "::" . $msg, "ERROR" );
+							throw $e;
+					}
 				}
 			}
 			else

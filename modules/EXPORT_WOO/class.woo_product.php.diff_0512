@@ -1,0 +1,1746 @@
+diff --git a/modules/EXPORT_WOO/class.woo_product.php b/modules/EXPORT_WOO/class.woo_product.php
+index e9f4b737..0ec2ba47 100644
+--- a/modules/EXPORT_WOO/class.woo_product.php
++++ b/modules/EXPORT_WOO/class.woo_product.php
+@@ -5,6 +5,14 @@
+  * build_write_properties_array appropriately
+  * */
+ 
++/*******************************************************************************************
++* TODO
++*
++*	Refactor the woo=pz_model_woo code to use just the pz
++*	Maybe move the build/reset pz_model_woo into a function
++*
++********************************************************************************************/
++
+ /*******************************************************************************************//**
+  * This module is for handling frontaccounting to WooCommerce products.
+  *
+@@ -12,40 +20,9 @@
+  * some fcns here that need to be migrated)
+  *
+  * Any activites connecting to an outside web service will be (eventually) done through the
+- * woo_rest class (May be some fcns here that need to be migrated).  Currently use wc-api
+- *
++ * woo_rest class (May be some fcns here that need to be migrated).
+  *
+- * TODO:
+- *	Add variable product sending
+- *	FIx Get By SKU so that we can match up product numbers for existing products
+- *		so that we can send updates for attributes
+- *	Migrate to own REST library once it is rewritten
+- *	Be able to request products and do something with them
+- *		What if anything do we want to update in FA since it is the source of record.
+- *	Extend so that IN STOCK shows OUT for categories that we don't keep on hand
+- *	Extend so we can have backorders on some categories/products and not others.
+- *	Related Modules waiting to be written:
+- *		Related IDs
+- *		Cross Sell IDs
+- *		Upsell IDs
+- *		Parent Posts
+- *		(post) Purchase Notes
+- *		featured (sale?)
+- *		downloadable product details etc
+- *		backorders
+- *		sell individually
+- *		reviews and ratings
+- *		tags
+- *		multiple categories
+- *		grouped products
+- *
+- *	This routine AS IS is pushing about 13 products a minute from FA to WooCommerce
+  *	Note there is logging going on in every routine.
+- *	Note that the connection is same machine to same machine
+- *		Apache involved on both
+- *		MySQL involved on both
+- *		Sockets and task queues
+- *
+  * ***********************************************************************************************/
+ 
+ require_once( 'class.woo_rest.php' );
+@@ -55,7 +32,6 @@ require_once( 'EXPORT_WOO.inc' );
+ class woo_product extends woo_interface {
+ 	var $id;	//integer 	Unique identifier for the resource.  read-only
+ 	var $name;	//string 	Product name.
+-	var $title;
+ 	var $slug;	//string 	Product slug.
+ 	var $permalink;	//string 	Product URL.  read-only
+ 	var $created_at;	//date-time 	The date the product was created, in the site’s timezone.  read-only
+@@ -108,7 +84,7 @@ class woo_product extends woo_interface {
+ 	var $cross_sell_ids;	//array 	List of cross-sell products IDs. Cross-sells are products which you promote in the cart, based on the current product.
+ 	var $parent_id;	//integer 	Product parent ID (post_parent).
+ 	var $purchase_note;	//string 	Optional note to send the customer after purchase.
+-	var $categories;	//array 	List of categories. See Categories properties.
++	var $categories;	//array 	List of categories. See Categories properties.		id => 9, ...
+ 	var $tags;	//array 	List of tags. See Tags properties.
+ 	var $images;	//array 	List of images. See Images properties
+ 	var $attributes;	//array 	List of attributes. See Attributes properties.   USED for variations
+@@ -117,11 +93,6 @@ class woo_product extends woo_interface {
+ 	var $grouped_products;	//string 	List of grouped products ID, only for group type products.  read-only
+ 	var $menu_order;		//integer 	Menu order, used to custom sort products.
+ 		/*******/
+-	var $woo_rest;
+-	var $header_array;
+-	var $woo_rest_path_base;
+-	var $woo_rest_path;
+-	var $subpath;
+ 	var $woo_products_list;	//!< Array of products returned by woo through get_products for match_product
+ 	var $wc_client;	//!< WC_API_Client to be migrated into the woo_rest class
+ 	var $caller; //!< Class which class instantiated this one
+@@ -130,41 +101,47 @@ class woo_product extends woo_interface {
+ 	var $get_product_by_sku_count; //every time we go in there we can get 10 items back from woo_commerce.  Can use to change which page...
+ 
+ 	var $force_update; //!< grabbing from client (i.e. EXPORT_WOO)
+-	var $send_images;
++	var $b_send_images;	//!< bool whether we should send images.  Func of name too
++	var $pz_model_woo;	//!< place to store model_woo object
++	var $woo_prod_variation_attributes;	//!< object
+ 
+ 	/***************************************************************************************//**
+ 	 *
+ 	 *
+ 	 * ****************************************************************************************/
+-	function __construct( $serverURL, $woo_rest_path,
+-				$key, $secret, $enviro = "devel", $client = null )
++	function __construct( $serverURL, /*unused*/ $woo_rest_path,
++				$key, $secret, /*unused*/$enviro = "devel", $client = null )
+ 	{
+-		$this->serverURL = $serverURL;
+-		$this->enviro = $enviro;
+-		$this->subpath = "products";
+-		$this->conn_type = "POST" ;
+-		$this->woo_rest_path_base = $woo_rest_path;
+-		$this->woo_rest_path = $woo_rest_path;
+ 		$this->caller = $client;
+ 		$options = array();
+-	
+-		set_time_limit( 300 );
++		set_time_limit( 30 );
++		$this->need_rest_interface = TRUE;
+ 		parent::__construct($serverURL, $key, $secret, $options, $client);
++
++	//	$this->provides[] = array( 'title' => 'Configuration', 'action' => 'config', 'form' => 'action_show_form', 'hidden' => FALSE );
++         //       $this->provides[] = array( 'title' => 'Init Tables', 'action' => 'init_tables_form', 'form' => 'init_tables_form', 'hidden' => FALSE );
++
+ 		$this->products_sent = $this->products_updated = 0;
+ 		if( isset( $client ) )
+ 			if( isset( $client->force_update ) )
+ 				$this->force_update = $client->force_update;
+ 			if( isset( $client->send_images ) )
+-				$this->send_images = $client->send_images;
++				$this->b_send_images = $client->send_images;
+ 			else
+-				$this->send_images = FALSE;	//testing is failing but that could be a local machine problem
++				$this->b_send_images = FALSE;	//testing is failing but that could be a local machine problem
++		$this->to_match_array = array( "sku", "slug", "description", "short_description" );
++		$this->match_worth['sku'] = 2;
++		$this->match_worth['slug'] = 2;
++		$this->match_worth['description'] = 1;
++		$this->match_worth['short_description'] = 1;
++		$this->match_need = 2;
++		$this->search_array = array( "woo_id", "name", "slug", "sku", "description", "short_description" );
+ 		return;
+ 	}
+ 	//function notify (inherited from woo_interface)
+-	function new_woo_rest()
++	function reset_endpoint()	//Required by _interface
+ 	{
+-		$this->build_data_array();
+-		$this->woo_rest = new woo_rest( $this->serverURL, $this->subpath, $this->data_array, $this->key, $this->secret, $this->conn_type, $this->woo_rest_path, null, $this->enviro, $this->debug );
++		$this->endpoint = "products";
+ 	}
+ 	/*********************************************************************************************//**
+ 	 * Woo_Interface now builds the properties_array and write_properties_array from the defined table!
+@@ -289,7 +266,7 @@ class woo_product extends woo_interface {
+ 			'default_attributes',
+ 			'variations',
+ 			'menu_order',
+-			'name', 'title'
++			'name'
+ 		);
+ 	}
+ 	/*@int@*/function send_products()
+@@ -301,10 +278,13 @@ class woo_product extends woo_interface {
+ 			if( $this->debug < 2 )
+ 				$count += $this->update_simple_products(); //sets products_updated
+ 			//Not worrying about the variable products for the moment...
++			//$count = $this->send_variable_products();	//sets products_sent
++			//$count += $this->update_variable_products(); //sets products_updated
+ 			return $count;
+ 		}
+ 		catch( Exception $e )
+ 		{
++			$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $e->getCode() . ":" . $e->getMessage(), "ERROR" );
+ 			throw $e;
+ 		}
+ 	}
+@@ -320,27 +300,25 @@ class woo_product extends woo_interface {
+ 	{
+ 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entered " . __METHOD__, "WARN" );
+ 		echo __METHOD__ . ":" . __LINE__ . " Entered " . __METHOD__;
+-		if( ! isset( $this->updated_at ) )
+-		{
+-			$this->updated_at = date("Y-m-d");
+-		}
+ 		if( ! isset( $this->id ) )
+ 		{
+ 			throw new InvalidArgumentException( __METHOD__ . ":" . __LINE__ . "ID from woo not set" );
+ 			$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
+ 			echo __METHOD__ . ":" . __LINE__ . " Bad Arg Leaving " . __METHOD__;
+-			return;
++			return FALSE;
+ 		}
+ 		if( ! isset( $this->sku ) )
+ 		{
+ 			throw new InvalidArgumentException( __METHOD__ . ":" . __LINE__ . " SKU from woo not set" );
+ 			$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
+ 			echo __METHOD__ . ":" . __LINE__ . " Bad Arg Leaving " . __METHOD__;
+-			return;
++			return FALSE;
+ 		}
+-		require_once( 'class.woo.php' );
+-		//standard constructor args...	$this->serverURL, $this->key, $this->secret, $this->options, $this
+-		$woo = new woo( $this->serverURL, $this->key, $this->secret, $this->options, $this );
++		if( ! isset( $this->updated_at ) )
++		{
++			$this->updated_at = date("Y-m-d");
++		}
++		$woo = $this->model_woo();
+ 		$woo->woo_last_update = $this->updated_at;
+ 		$woo->updated_ts = $this->updated_at;
+ 		$woo->woo_id = $this->id;
+@@ -350,9 +328,9 @@ class woo_product extends woo_interface {
+ 		$woo->stock_id = $this->sku;
+ 		try
+ 		{
+-			echo __METHOD__ . ":" . __LINE__ . " Update WOO ";
++			$this->notify( __METHOD__ . ":" . __LINE__ . " Try " . __METHOD__, "WARN" );
+ 			$woo->update_on_sale_data();
+-			$woo->update_woo_id();
++			$woo->update_woo_id( $woo->id );
+ 			$woo->update_woo_last_update();
+ 		}
+ 		catch( InvalidArgumentException $e )
+@@ -373,534 +351,167 @@ class woo_product extends woo_interface {
+ 		//}
+ 		return TRUE;
+ 	}
+-	function delete_by_sku( $sku )
+-	{
+-		return null;
+-		//This code hasn't been designed nor tested so any existing code is unreliable...
+-		require_once( 'class.woo.php' );
+-		$woo = new woo( $this->serverURL, $this->key, $this->secret, $this->options, $this );
+-		$woo->delete_by_sku( $sku );
+-	}
+-	/*********************************************************************************//**
+-	 *
+-	 * Handle the response codes from the server.
+-	 *
+-	 * @return bool 
+-	 *
+-	 * ********************************************************************************/
+-	/*@bool@*/function rest_error_handler( $caller, $exception = null )
++	function update_woo_id( $id )
+ 	{
+-		$result = false;
+-		if( isset( $exception ) )
+-		{
+-			if( !isset( $this->code ) )
+-			{
+-				$this->code = $exception->getCode();
+-				$this->message = $exception->getMessage();
+-			}
+-		}
+-		if( isset(  $this->code ) )
+-		{
+-			$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ . " CODE " . $this->code . " and msg " . $this->message, "NOTIFY");
+-			switch( $this->code ){
+-			case "woocommerce_rest_product_sku_already_exists":
+-				//WOO does NOT return the ID like for categories :(
+-				if ($this->get_product_by_sku( $this->sku ) )
+-				{
+-					$this->update_wootable_woodata();	
+-					return $this->update_product();
+-				}
+-				return FALSE;
+-			break;
+-			case "woocommerce_api_invalid_remote_product_image":
+-				//Does WooCommerce insert the product even though the image fails?
+-				$this->notify("<br />" . __METHOD__ . ":" . __LINE__ . "<Br />", "WARN");
+-				if( $this->debug > 0 ) //debug!
+-				{
+-					echo "<br />" . __METHOD__ . ":" . __LINE__ . "<Br />";
+-					var_dump( $this->data_array );
+-				}
+-				//Just because the image is bad doesn't mean the insert doesn't happen
+-				//need to update FA so we don't try to send (vice update) every time!
+-				$response = $exception->get_response();
+-				var_dump( $response );
+-				echo "<br /><br />";
+-				var_dump( $exception->get_request() );
+-				echo "<br /><br />";
+-				var_dump( $this->data_array );
+-				exit();
+-				/*
+-				echo "<br /><br />" . __METHOD__ . ":" . __LINE__ . "<Br />";
+-				var_dump( $response->body );
+-				echo "<br />Body decoded: " . json_decode( $response->body );
+-				echo "<br /><br />";
+-				 */
+-				/*
+-				$this->id = $response->product->id;
+-				$this->update_wootable_woodata();	
+-				$this->products_sent++;
+-				 */
+-				
+-			break;
+-			case "woocommerce_api_product_sku_already_exists":
+-				if( "create_product" == $caller )
+-				{
+-					$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ , "NOTIFY");
+-
+-					if ($this->get_product_by_sku( $this->sku ) )
+-					{
+-						$this->notify( __METHOD__  . ":" . __LINE__ , "NOTIFY");
+-						$this->update_wootable_woodata();	
+-						//$this->woo2wooproduct( $this->sku );
+-						$result = $this->update_product();
+-						$this->notify( __METHOD__  . ":" . __LINE__ , "NOTIFY");
+-					}
+-					else
+-					{
+-						//assumption match_product goes through list from WOO and finds right one?
+-						//match runs get_product_by_sku so could simplify...
+-						$this->id = -1;
+-						$this->match_product();
+-						$result = $this->update_wootable_woodata();
+-					}
+-
+-				}
+-				$this->notify( __METHOD__  . ":" . __LINE__, "WARN" );
+-				return $result;
+-			break;
+-			case 400:	//"woocommerce_api_product_sku_already_exists"
+-				$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ . " UNHANDLED CODE " . $this->code . " and msg " . $this->message, "ERROR");
+-				if( $this->client->remote_img_srv )
+-					$this->notify( __METHOD__  . ":" . __LINE__ . " If remote server, could be the file doesn't exist for images 1-10", "WARN" );
+-				var_dump( $exception );
+-				if( $this->debug > 2 )
+-					exit();
+-				return FALSE;
+-			break;
+-			case "Invalid SKU":
+-				$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__, "WARN" );
+-				return FALSE;
+-			break;
+-			case "woocommerce_api_no_route":
+-				$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__. "WARN no route for URL and Req Method in caller " . $caller . ".  Could be because of SSL Cert issues. wc_client: " . var_dump( $this->wc_client ) . "<br /><br />", "WARN" );
+-				return FALSE;
+-			case "woocommerce_api_authentication_error":
+-				$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ . " WARN Auth Error in caller " . $caller . ". Check SSL (https).  wc_client: " . var_dump( $this->wc_client ) . "<br /><br />", "WARN" );
+-				return FALSE;
+-			case 302:
+-				case "Setup_CONFIG":
+-					$this->notify( __METHOD__  . ":" . __LINE__ . " CODE " . $this->code . ".  Appears to be a Setup Config issue.<br /><br />", "WARN");
+-					return FALSE;
+-			break;
+-			default:
+-				$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ . " UNHANDLED CODE " . $this->code . " and msg " . $this->message. "<br /><br />", "WARN");
+-				var_dump( $exception );
+-				if( $this->debug > 2 )
+-					exit();
+-				return FALSE;
+-			break;
+-			}
+-		}
+-	}	
+-	/************************************************************************************************//**
+-	 * Get a list of products from WooCommerce.
+-	 *
+-	 * WooCommerce by default sends 10 products.
+-	 *
+-	 * Sets woo_products_list with the array of product data.
+-	 *
+-	 * @param string stock_id/sku
+-	 * @param int page number
+-	 * @returns null
+-	 * ************************************************************************************************/
+-	/*@null@*/function get_products( $id = null, $page = 1 )
+-	{
+-		$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__, "WARN" );
+-		//Get the master list of categories as WOO knows it.
+-		$args = array();	//array of fields.
+-		//Woo only sends 10 items back at a time :(/  per_page is supposed to change that...
+-		//$args['posts_per_page'] = 500;	//No EFFECT
+-		//$args['per_page'] = 500;	//No apparant EFFECT
+-		//We can cycle through the 10 at a time using page... tested via example.php and works
+-		$args['page'] = $page;	//Works in example.php
+-		$args['filter'] = array( 'category' => 'Kilt', 'limit' => '100' );
+-		//In web gui product_cat is a filter.  filter_action=Filter is also set though.  Doesn't work in example.php :(
+-		$response = $this->wc_client->products->get( $id, $args );
+-		$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__, "WARN" );
+-		if( $this->debug >= 3 )
+-		{
+-			print_r( $response );
+-		}
+-		$this->woo_products_list = $response->products;
+-		return;
+-		
+-	}
+-	/************************************************************************************//**
+-	 * Match returned products against the sku we have set.
+-	 *
+-	 * We can get 10 items to update the woo_id of by not having sku set!
+-	 *
+-	 * @param bool should we send the woo_id if requesting a list of products
+-	 * **************************************************************************************/
+-	/*@bool@*/function match_product( $sendid = FALSE )
+-	{
+-		$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__, "WARN" );
+-		$count = count( $this->woo_products_list );
+-		if(  $count < 1 )
+-		{
+-			//This will return an array of ALL products.  
+-			if( $sendid and isset( $this->id ) )
+-				$this->get_products( $this->id );	//can't send id if not set!
+-			else
+-				$this->get_products();
+-		}
+-		else
+-		{
+-			//$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__, "WARN" );
+-		}
+-		//Need to cycle through them to find the one we are looking for :(
+-		//
+-		//	array of stdClass which we should be able to cast to woo_categories...
+-		foreach( $this->woo_products_list as $pobj )
+-		{
+-			if( $this->sku == $pobj->sku )
+-			{
+-				if( $this->sku != ' ' AND $this->sku != '')
+-				{
+-					$this->id = $pobj->id;
+-					return TRUE;
+-				}
+-				else
+-				{
+-					$this->notify( __METHOD__ . " Blank SKU: " . $this->sku . " Desc: " . $this->description, "ERROR" );
+-				}
+-			}
+-			else
+-			{
+-				//update SKUs with IDs?  Check if they are already set?
+-				$this->notify( __METHOD__ . ":" . __LINE__  , "NOTIFY" );
+-				$upd_obj = new woo_product( $this->serverURL, $this->woo_rest_path,
+-							$this->key, $this->secret, $this->enviro, $this->client);
+-				$upd_obj->sku = $pobj->sku;
+-				$upd_obj->id = $pobj->id;
+-				$upd_obj->update_wootable_woodata();
+-				if( $this->debug >= 3 )
+-				{
+-					echo "<br /><br />" . __METHOD__  . ":" . __LINE__ . " var dump<br />";
+-					var_dump( $pobj );
+-				}
+-			}
+-		}
+-		return FALSE;
++		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
++		$woo = $this->model_woo();
++                $woo->stock_id = $this->stock_id;
++                $woo->woo_id = $this->id = $id;
++		$woo->update_woo_id( $id );
++		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
+ 	}
+-
+ 	/****************************************************************************//**
+ 	 * This function should send a new product to WooCommerce, "creating" it.
+ 	 *
+ 	 * Assumption is that this object has all of the data set appropriately
+-	 * for us to conver the variables into an array, and pass it along.
++	 * for us to convert the variables into an array, and pass it along.
+ 	 *
+ 	 * ******************************************************************************/
+-	/*@bool@*/function create_product()
++	/*@bool@*/function create_product_wc()
+ 	{
+-		
+-		$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__, "WARN" );
+-		//This should reset the time limit so every time we come in here
+-		//with a new product it should have 20 seconds to round-trip
+-		//there may be other time limits that come into play but at
+-		//least from the php interpreter this should reset for each
+-		//one
++		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
++	
+ 		set_time_limit( 60 );
+ 	
+-		if( isset( $this->wc_client ) )
+-		{
+-			try 
+-			{	$this->build_data_array();
+-				//if( $this->wc_client->products->create( array( $this ) ) )
+-				if( $response = $this->wc_client->products->create( $this->data_array ) )
+-				{
+-					//echo "<br /><br />" . __METHOD__  . ":" . __LINE__ . " var dump<br />";
+-					//var_dump( $response );
+-					$this->id = $response->product->id;
+-					$this->update_wootable_woodata();	
+-					$this->products_sent++;
+-				}
+-				//$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ . " Leaving Create Product", "WARN");
+-				return TRUE;
+-			} 
+-			catch ( WC_API_Client_Exception $e ) 
++		try {
++			if( ! isset( $this->id ) )
++				$response = $this->send2woo( "new" );
++			else
++				$response = $this->send2woo( "update" );
++			if( $response )
+ 			{
+-				if ( $e instanceof WC_API_Client_HTTP_Exception ) 
+-				{
+-					/*
+-					$this->code = $e->getCode();
+-					return $this->rest_error_handler( __FUNCTION__, $e );
+-					 */
+-					$rep_object = $e->get_response();
+-					$err = json_decode( $rep_object->body, FALSE );	//err is an object
+-					if( isset(  $err->errors[0]->code ) )
+-					{
+-						$this->code = $err->errors[0]->code;
+-						return $this->rest_error_handler( __FUNCTION__, $e );	
+-					}
+- 
+-					
+-					$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ . " Leaving Create Product WC..HTTP Exception", "WARN");
+-					return FALSE;
+-				}
+-				else 
+-					throw( $e );	//Pass the expection back along else it disappears
++				$this->products_sent++;
++				//Need to update the woo_id in _woo
++				$woo = $this->model_woo();
++                		$woo->stock_id = $this->stock_id;
++                		$woo->woo_id = $this->id;
++                		$woo->update_woo_id( $this->id );
++				//Need to send the images for this product
++				$this->send_images( null, $this );
++				$this->send_sku( null, $this );
+ 			}
++			$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
++			return TRUE;
+ 		}
+-		else
++		catch( Exception $e )
+ 		{
+-			$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ . " Leaving Create Product WC_Client not set", "WARN");
+-			throw new Exception( "WC Client not set", WC_CLIENT_NOT_SET);
++			$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $e->getCode() . ":" . $e->getMessage(), "ERROR" );
++			switch( $e->getCode() )
++			{
++				case 400:
++					$this->notify( __METHOD__ . ":" . __LINE__ . " Data sent: " . print_r( $this->data_array, true), "ERROR" );
++				break;
++			}
+ 		}
+-		$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ . " Leaving Create Product", "WARN");
++		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+ 		return FALSE;
+ 	}
+-	function retrieve_product()
+-	{
+-		$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__, "WARN");
+-		/*
+-		curl https://example.com/wp-json/wc/v1/products/162 -u consumer_key:consumer_secret
+-		 * 
+-		 * */
+-	}
+ 	/*************************************************************************************************//**
+ 	 * Send product details to WooCommerce of an item they already have.
+-	 *   ERROR missing callback param
++	*
++	* This is the same code as create_product.  ->send uses insert or update depending on a match
+ 	 *
+ 	 * ****************************************************************************************************/
+ 	/*@bool@*/function update_product()
+ 	{
+-		$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ . " Entering update_product", "WARN");
+-		/*
+-		curl -X PUT https://example.com/wp-json/wc/v1/products/162  -u consumer_key:consumer_secret  -H "Content-Type: application/json"  -d '{ "regular_price": "24.54" }'
+-		 * 
+-		 * */
+-		if( isset( $this->wc_client ) )
++		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
++		set_time_limit( 60 );
++		if( $this->recursive_call > 1 )
+ 		{
+-			try 
+-			{
+-				if( isset( $this->id ) AND $this->id > 0 )
+-				{
+-					$this->notify( __METHOD__  . ":" . __LINE__ . " Calling ->update", "WARN" );
+-					$this->build_data_array();
+-					if( $this->debug > 2 )
+-					{
+-						echo "<br /><br />" . __METHOD__  . ":" . __LINE__ . " data_array<br />";
+-						var_dump( $this->data_array );
+-					}
+-					//$client->products->update( 724, array( 'title' => 'Yo  another test product' ) ) ); works in example.php
+-					//$data_r = $this->wc_client->products->update( $this->id,  array( 'products' => $this->data_array ) ); //data_r not even set on exception
+-					$data_r = $this->wc_client->products->update( $this->id,  $this->data_array ); 
+-					//$data_r = $this->wc_client->products->update( $this->id, array( 'products' => array( $this ) ) );
+-					
+-					if( $this->debug > 2 )
+-					{
+-						echo "<br /><br />" . __METHOD__  . ":" . __LINE__ . " var dump time! (2x)<br />";
+-						var_dump( $this->wc_client->products );
+-						echo "<br /><br />";
+-						var_dump( $data_r );
+-						echo "<br /><br />" . __METHOD__  . ":" . __LINE__ . " !var dump time! (2x)<br />";
+-					}
+-					//Array or Object of newly updated product...
+-					$this->extract_data_obj( $data_r->product );
+-					$this->update_wootable_woodata();	
+-					$this->products_updated++;
+-					return TRUE;
+-				}
+-				else
+-				{
+-					throw new InvalidArgumentException( "Woo ID not set so can't update" );
+-				}
+-			} 
+-			catch ( WC_API_Client_Exception $e ) 
++			throw new Exception( "LOOP!", KSF_FCN_PATH_OVERRIDE );
++		}
++	
++		try {
++			$endpoint = "products";
++			$this->build_data_array();
++			$response_arr = $this->woo_rest->send( $endpoint, $this->data_array, $this );
++			if( is_array( $response_arr ) AND isset( $response_arr[0] ) )
+ 			{
+-				if( $this->debug > 2 )
+-				{	
+-					echo "<br /><br />" . __METHOD__  . ":" . __LINE__ . " var dump time! (2x)<br />";
+-					var_dump( $this->wc_client->products );
+-					echo "<br /><br />";
+-				}
+-				if( isset( $data_r ) )
+-				{
+-					echo "<br /><br />" . __METHOD__  . ":" . __LINE__ . " var dump<br />";
+-					var_dump( $data_r );
+-				}
+-				else
+-				{
+-					echo "<br /><br />" . __METHOD__  . ":" . __LINE__ . " var dump<br />";
+-					print_r( $e->getMessage() );
+-						//Missing parameter data [woocommerce_api_missing_callback_param]
+-				}
+-				echo "<br /><br />";
+-				if ( $e instanceof WC_API_Client_HTTP_Exception ) 
++				$response = $response_arr[0];
++				if( is_object( $response ) AND isset( $response->id ) )
+ 				{
+-					$rep_object = $e->get_response();
+-					//print_r( $rep_object );	//Object has code, body, headers
+-					$err = json_decode( $rep_object->body, FALSE );	//err is an object
+-					if( isset(  $err->errors[0]->code ) )
+-					{
+-						$this->code = $err->errors[0]->code;
+-						return $this->rest_error_handler( __FUNCTION__, $e );
+-					}
+-					return FALSE;
++					$this->id = $response->id;
+ 				}
+-				/*
+-				else 
+-					throw( $e );	//Pass the expection back along else it disappears
+-				 */
+ 			}
+-			catch ( InvalidArgumentException $e )
++			else if( is_object( $response_arr ) AND isset( $response_arr->id ) )
+ 			{
+-				$this->notify( __METHOD__  . ":" . __LINE__ . $e->getMessage(), "WARN" );
+-				$this->notify( __METHOD__  . ":" . __LINE__ . " Leaving update_product", "WARN" );
+-				return FALSE;
+-
++				$this->id = $response_arr->id;
+ 			}
+-			/*
+-			 * catch ( Exception $e )
+-			 * {
+-			 * 	$e->getMessage();
+-			 *	$e->getCode();
+-			 *	$e->getFile();
+-			 *	$e->getLine();
+-			 * }
+-			/*
+-			 * php5 Finally runs whether catches are run or not.  Usually used for cleanup and logging
+-			finally
++			if( isset( $this->id ) )
+ 			{
++				$this->send_images( null, $this );
++				$this->send_sku( null, $this );
+ 			}
+-			 */
+-		} //! Not wc_client
+-		else
++			$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
++			return TRUE;
++		}
++		catch( Exception $e )
+ 		{
++			$msg =  $e->getMessage();
++			$code = $e->getCode();
++			switch( $code )
++			{
++				case '404': if( false !== strstr( $msg, "woocommerce_rest_product_invalid_id" ) )
++						{
++							$this->notify( __METHOD__ . ":" . __LINE__ . " Error " . $code . "::" . $msg . " ::: Woo_ID: " . $this->woo_id, "ERROR" );
++							//Woo doesn't know about this woo_id.  Rebuild case?  Should send it NEW!!
++							$this->notify( __METHOD__ . ":" . __LINE__ . " Resubmit with nulled woo_id " . __METHOD__, "WARN" );
++							$old_woo_id = $this->woo_id;
++							$this->woo_id = null;
++							$this->recursive_call++;
++							try {
++								$this->update_product();
++							}
++							catch( Exception $e )
++							{
++								$this->recursive_call--;
++								throw $e;
++							}
++							$this->recursive_call--;
++						}
++						break;
++				case KSF_LOST_CONNECTION:
++					throw $e;
++					break;
++				default:
++					$this->notify( __METHOD__ . ":" . __LINE__ . " Error " . $code . "::" . $msg, "ERROR" );
++					break;
++			}
++			if( strpos( $msg, "product_invalid_sku" ) !== FALSE )
++			{
++				//Invalid or Duplicate SKU
++				$this->notify( __METHOD__ . ":" . __LINE__ . " stock_id/SKU/Woo ID :: " . $this->stock_id . "::" . $this->sku . "::" . $this->woo_id, "ERROR" );
++			}
++					
+ 		}
++		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+ 		return FALSE;
+ 	}
+ 	function recode_sku( $callback = null )
+ 	{
++		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
+ 		//skus with '/' in them will fail GET if not POST
+ 		$this->sku = str_replace( '/', '_', $this->sku );
+ 		if( null != $callback )
+ 			$this->$callback();
++		$this->notify( __METHOD__  . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN");
+ 		return;
+ 	}
+-	/*************************************************************************//**
+-	 * Get the product info from WOO and set our variables
+-	 *
+-	 * ERROR_HANDLER assumes we are setting the variables as it then calls update_wootable
+-	 *
+-	 * @param string the stock_id (SKU) to search for
+-	 * @return bool did we find 1 item?
+-	 * **************************************************************************/
+-	/*@bool@*/function get_product_by_sku( $sku )
++	function seek( $search_array = "", $callback = null )
+ 	{
+-		$this->get_product_by_sku_count++;
+-		$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__, "WARN");
+-		//from example.php
+-		//  This is an exact match only (at least for sku)
+-			//print_r( $client->products->get( null, array( 'filter[sku]' => 'DISC1'  ) ) );
++		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
++		$this->notify( __METHOD__ . ":" . __LINE__ . " " . print_r( $search_array, true ), "DEBUG" );
+ 
+-		//$args = array( 'page' => $this->get_product_by_sku_count );
+-		//We MAY be able to use a "exclude" filter on list products to get the one we want...
+-		//
+-			try {
+-				if( isset( $sku ) )
+-					$args = array(  'filter[sku]' => $sku );
+-				else if( isset( $this->sku ) )
+-					$args = array(  'filter[sku]' => $this->sku );
+-				else
+-					throw new InvalidArgumentException( "SKU not set in get_products_by_sku" );
+-				$data_r = $this->wc_client->products->get( null, $args );
+-			} catch ( WC_API_Client_Exception $e ) {
+-				if ( $e instanceof WC_API_Client_HTTP_Exception ) {
+-					$this->request = $e->get_request();
+-					$this->response = $e->get_response();
+-					if( $this->debug > 1 )
+-					{
+-						echo "<br />" . __METHOD__  . ":" . __LINE__ . " Request<br />";
+-						print_r( $e->get_request() );
+-						echo "<br />" . __METHOD__  . ":" . __LINE__ . " Response<br />";
+-						print_r( $e->get_response() );
+-					}
+-				}
+-				$this->rest_error_handler( __FUNCTION__, $e );
+-			}
+-			catch( Exception $e )
+-			{
+-				throw( $e );
+-			}
+-			//finally
+-			//{
+-				if( $this->debug > 2 )
+-				{
+-					echo __METHOD__  . ":" . __LINE__ . " data_r<br />";
+-					var_dump( $data_r );
+-				}
+-				//Returns a stdClass with ->products (array of stdClasses)
+-				foreach( $data_r->products as $product )
+-				{
+-					echo __METHOD__  . ":" . __LINE__ . " foreach<br />";
+-					$this->notify( __METHOD__  . ":" . __LINE__ . " Setting data for SKU " . $this->sku, "WARN");
+-					if( $this->debug > 1 )
+-					{
+-						echo __METHOD__  . ":" . __LINE__ . " Setting data for SKU " . $this->sku . "<br /><br />";
+-						var_dump( $product );
+-					}
+-					/*********************************************
+-					 * As there is only 1 exact match we don't need to do a separate class
+-					$wp = new woo_product( $this->serverURL, $this->woo_rest_path, $this->key, $this->secret, $this->enviro, $this);
+-					foreach( $this->properties_array as $var )
+-					{
+-						if( isset( $product->$var ) )
+-						{
+-							if( $this->debug > 1 )
+-								echo __METHOD__  . ":" . __LINE__ . " Setting data for " . $var . "<br /><br />";
+-							$wp->$var = $product->$var;
+-						}
+-					}
+-					if( ! $wp->update_wootable_woodata() )
+-					{
+-						if( $this->debug > 1 )
+-						{
+-							echo "<br /><br />" . __METHOD__ . ":" . __LINE__ . " Something went wrong :( <br />";
+-							exit();
+-						}
+-						return FALSE;
+-					}
+-					else
+-						return TRUE;
+-					 *
+-					 *
+-					 *
+-			 		* Exact match, so can update self 
+-			 		*/
+-					foreach( $this->properties_array as $var )
+-					{
+-						if( isset( $product->$var ) )
+-						{
+-							if( $this->debug > 1 )
+-								echo __METHOD__  . ":" . __LINE__ . " Setting data for " . $var . "<br /><br />";
+-							$this->$var = $product->$var;
+-						}
+-					}
+-					$this->notify( __METHOD__  . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN");
+-					return TRUE;
+-				}
+-			//}
+-			
+-		return FALSE;
+-	}
+-	function list_products()
+-	{
+-		/*
+-		 * 	GET
+-		 *	curl https://example.com/wp-json/wc/v1/products -u consumer_key:consumer_secret
+-		*/
++		if( ! is_array( $search_array ) )
++			throw new Exception( "Search Param is invalid", KSF_VALUE_NOT_SET );
++		$endpoint = "products";
++		$response = $this->woo_rest->get( $endpoint, $search_array, $this );
++		$this->notify( __METHOD__ . ":" . __LINE__ . " " . print_r( $response, true ), "DEBUG" );
++		if( isset( $callback ) )
++			$callback( $response );
++
++		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
++		return $response;
+ 	}
+ 	/*******************************************************************************//**
+ 	 * Grab data out of the WOO table using the woo class and populate our fields.
+@@ -912,86 +523,76 @@ class woo_product extends woo_interface {
+ 	 * *******************************************************************************/
+ 	/*@bool@*/function woo2wooproduct( $stock_id = null, $caller )
+ 	{
+-		if( $this->debug >= 1 )
+-		{
+-			display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ . " Entering woo2wooproduct with stock_id " . $stock_id . " from caller " . $caller);
+-		}
++		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
+ 		if( isset( $stock_id )  )
+ 			$this->stock_id = $stock_id;
+ 		if( !isset( $this->stock_id ) )
+ 		{
+-			display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ . " Stock_id not set. Leaving woo2wooproduct");
+-			return FALSE;
++			throw new Exception( "Stock ID not available so can't process", KSF_VALUE_NOT_SET );
+ 		}
+ 			
+ 		$remove_desc_array = array(  "**Use Custom Form**,", "**Use Custom Order Form**,", );
+ 		$removed_desc_array = array( "",                     "",                           );
+-		
+-		require_once( 'class.woo.php' );
+-		$woo = new woo( $this->serverURL, $this->key, $this->secret, $this->options, $this );
++		$woo = $this->model_woo();
+ 		$woo->stock_id = $this->stock_id;
+ 		$woo->select_product();
+ 		//Need to reset values between each product.
+ 		$this->reset_values();
++		if( isset( $woo->woo_id ) AND $woo->woo_id > 0 )
++		{
++			$this->notify( __METHOD__ . ":" . __LINE__ . " Setting ID=woo_id::" . $woo->woo_id , "WARN" );
++			$this->id = $woo->woo_id;
++		}
++		else
++		{
++			$this->notify( __METHOD__ . ":" . __LINE__ . " woo_id Not Set" , "WARN" );
++			$this->id = null;
++		}
+ 		foreach( $woo->fields_array as $fieldrow )
+ 		{
+ 			//Set OUR value == to woo's
+ 			if( isset( $woo->$fieldrow['name'] ) )
+ 			{
+-				$this->notify( __FILE__ . ":" .  __METHOD__ . ":" . __LINE__ . " Setting " . $fieldrow['name'] . " to " . $woo->$fieldrow['name'], "DEBUG" );
++				$this->notify( __METHOD__ . ":" . __LINE__ . " Setting " . $fieldrow['name'] . " to " . $woo->$fieldrow['name'], "DEBUG" );
+ 				$this->$fieldrow['name'] = utf8_encode( $woo->$fieldrow['name'] );
+ 			}
+ 		}
+-		//$this->name = utf8_encode( str_replace( $remove_desc_array, $removed_desc_array, $this->name ) );
+-		//		$this->name = utf8_encode( str_replace( $remove_desc_array , $removed_desc_array , $prod_data['description'] ) );
++		$this->slug = $this->name = $this->short_description = utf8_encode( str_replace( $remove_desc_array, $removed_desc_array, $this->description ) );
++
++		$this->featured = false;
++		/**************************
++		* These are variation properties too
++		*************************/
++		$this->description = utf8_encode( str_replace( $remove_desc_array , $removed_desc_array , $this->long_description ) );
+ 		if( ! isset( $this->description ) )
+ 		{
+-			display_notification( __METHOD__  . ":" . __LINE__ . " Leaving woo2wooproduct ERROR no data");
+-			throw new Exception( __METHOD__ . ":" . __LINE__ . " Description not set" );
++			$this->notify( __METHOD__ . ":" . __LINE__ . " woo2wooproduct Description not set", "WARN" );
+ 		}
+-		$this->slug = $this->stock_id;
+-		$this->title = utf8_encode( str_replace( $remove_desc_array, $removed_desc_array, $this->description ) );
+-		//$this->title = utf8_encode( str_replace( $remove_desc_array , $removed_desc_array , $prod_data['description'] ) );
+ 		$this->permalink = null;
+-		$this->type = "simple";	//OVERRIDE in calling routine as appropriate.
+-		$this->status = "publish";
+-		$this->featured = false;
+-		$this->catalog_visibility = "visible";
+-		$this->short_description = utf8_encode( str_replace( $remove_desc_array , $removed_desc_array , $this->description ) );
+-		$this->description = utf8_encode( str_replace( $remove_desc_array , $removed_desc_array , $this->long_description ) );
+-		//$this->description = utf8_encode( str_replace( $remove_desc_array , $removed_desc_array , $prod_data['long_description'] ) );
+-		//$this->short_description = utf8_encode( str_replace( $remove_desc_array , $removed_desc_array , $prod_data['description'] ) );
+ 		if( isset( $this->price ) )
+ 			$this->regular_price = $this->price;
+ 		$this->sale_price = null;
+-		if( $this->tax_class == "GST" )
+-			$this->tax_class = "Standard";	//Woo provides Standard, Reduced Rate, Zero
+ 		$this->date_on_sale_from = null;
+ 		$this->date_on_sale_to = null;
++		if( $this->is_inactive() )
++		{
++			$this->status = "private";
++		}
++		else
++		{
++			$this->status = "publish";
++			$this->catalog_visibility = "visible";
++		}
++		if( $this->tax_class == "GST" )
++			$this->tax_class = "Standard";	//Woo provides Standard, Reduced Rate, Zero
++		else
++			$this->tax_class = "Reduced Rate";	//Woo provides Standard, Reduced Rate, Zero
+ 		$this->price_html = null;
+-		//$this->id = $prod_data['woo_id'];
+-		//$this->sku = $prod_data['stock_id'];
+-		//$this->regular_price = $prod_data['price'];
+-
+-		//var_dump( $prod_data );
+ 		$this->virtual = false;
+-		/*****************************************************************//**
+-		 *Downloads
+-		 *
+-		 * 	id, name, file(url) are properties within an array
+-		 *
+-		 * ********************************************************************/
+-		/*
+-		 *	$this->download = array( "id" => XXX, "name" => YYY, "file" => ZZZ );
+-		 * */
+-		$this->downloadable = false;
+-		$this->downloads = null;
+-		$this->download_limit = null;
+-		$this->download_expiry = null;
+-		$this->download_type = null;
++		$this->set_download_info();
+ 
+ 		$this->manage_stock = true;
+-		$this->managing_stock = true;
++		//$this->managing_stock = true;
+ 		$this->backorders = "notify";
+ 		$this->sold_individually = false;	//true only allows 1 of this product per order
+ 		$this->in_stock = true;	//Need to extend so that categories that are Special Order do not show IN STOCK in WOO.
+@@ -999,102 +600,51 @@ class woo_product extends woo_interface {
+ 			$this->stock_quantity = $this->instock;
+ 		else
+ 			$this->stock_quantity = 0;
+-
+-		/*Shipping*/
+-		//TODO:
+-		//	Extend to check to see if we have the dimension module installed
+-		//	Use a different class to set these including units and translations
+-		//$this->shipping_class = 'parcel';
+-		//$this->weight = '';	//Should be set by foreach woo above
+-		$dim_var_array = array( 'width', 'length', 'height');
+-		foreach($dim_var_array as $var )
+-		{
+-			if( isset( $this->$var ) && strlen( $this->$var ) > 1 )
+-			{
+-				$this->dimensions[$var] = utf8_encode( $this->$var );
+-			}
+-			$this->dimensions['unit'] = "cm";	
+-		}
+-
+-
+-		/* made obselete above by foreach woo...
+-		$var_array = array( 'sale_price', 
+-					'date_on_sale_from', 
+-					'date_on_sale_to', 
+-					'external_url', 
+-					'button_text',
+-					'tax_status', 
+-					'tax_class', 
+-					'shipping_class',
+-					'upsell_ids',
+-					'cross_sell_ids',
+-					'weight'
+-			);
+-		foreach($var_array as $var )
+-		{
+-			if( isset( $prod_data[$var] ) && strlen( $prod_data[$var] ) > 1 )
+-			{
+-				$this->$var = utf8_encode( $prod_data[$var] );
+-			}
+-		}
+-
+-		$dim_var_array = array( 'width', 
+-					'length', 
+-					'height'
+-			);
+-		foreach($dim_var_array as $var )
+-		{
+-			if( isset( $prod_data[$var] ) && strlen( $prod_data[$var] ) > 1 )
+-			{
+-				$this->dimensions[$var] = utf8_encode( $prod_data[$var] );
+-			}
+-		}
+-		 !obsolete */
++		$this->set_stock_status();
++		$this->set_shipping_info();
++		/*************************
++		* !variation
++		*************************/
+ 
+ 		$this->reviews_allowed = TRUE;
+ 		$this->parent_id = null;
+ 		$this->purchase_note = null;
+ 
+ 		if( isset( $this->woo_category_id ) )
+-			$this->categories = array( "id" => $this->woo_category_id );	//Should also have name and slug?
+-		//$this->categories = array( "id" => $prod_data['woo_category_id'] );	//Should also have name and slug?
++			$this->categories = array(  array( "id" => $this->woo_category_id ) );	//Woo API is expecting id=>NUM.  
+ 											//Can we add extra categories in FA through foreign_codes?
+-		//Here we could look at foreign codes for additional categories.
++											//We can also add a XREF table
++		else
++			$this->categories = null;
++			
+ 
+ 		//$this->tags = array( "id" => XXX, "name" => YYY, "slug" => ZZZ );
+ 		$this->tags = $this->product_tags( $stock_id );
+-		if( ! $this->send_images )
+-			$this->images = null;	//Requires an array of arrays
+-					//images in position 0 are the featured image
+-					//1.. are in a gallery
+-					//$image2 = array( 'src' => 'http://demo.woothemes.com/woocommerce/wp-content/uploads/sites/56/2013/06/T_2_front.jpg', 'position' => 2 );
+-					//$images = array( $image1, $image2 );
+-
+-		else
+-		{
+-			$this->images = $this->product_images( $stock_id );
+-			//var_dump( $this->images );
+-		}
++//->send_images( $stock_id, $this );
+ 		$this->attributes = $this->product_attributes( $stock_id );
+ 		$this->default_attributes = $this->product_default_attributes( $stock_id );
+ 		$this->variations = $this->product_variations( $stock_id );
+ 		$this->menu_order = "1";
+-		//$this->attributes = array("");
+-		//	id, name, position, visible(bool), variation(bool), options
+-		//$this->default_attributes = "";
+-		if( isset( $this->woo_id ) AND $this->woo_id > 0 )
+-			$this->id = $this->woo_id;
+-		else
+-			$this->id = null;
+-		if( isset( $this->stock_id ) )
+-			$this->sku = $this->stock_id;
+-		if( $this->debug >= 1 )
+-		{
+-			display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ . " Leaving woo2wooproduct");
+-		}
++		$this->notify( __METHOD__  . ":" . __LINE__ . " SETTING Sku to Stock_ID: " . $this->stock_id, "WARN");
++		$this->sku = $this->stock_id;
++		$this->notify( __METHOD__  . ":" . __LINE__ . " Sku: " . $this->sku, "WARN");
+ 
++		$this->notify( __METHOD__  . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN");
+ 		return TRUE;
+ 	}
++	function is_inactive()
++	{
++		$this->notify( __METHOD__  . ":" . __LINE__ . " Entering " . __METHOD__, "WARN");
++		require_once( '../ksf_modules_common/class.fa_stock_master.php' );
++		if( !isset( $this->stock_master ) )
++			$this->stock_master = new fa_stock_master( null );
++		if( ! isset( $this->stock_id ) )
++			throw new Exception( "Need stock_id to be set :(", KSF_VALUE_NOT_SET );
++		$this->stock_master->set( 'stock_id', $this->stock_id );
++		$this->stock_master->getById();	
++		$this->notify( __METHOD__  . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN");
++		return $this->stock_master->get( 'inactive' );
++	}
+ 	/**************************************************************************************************************
+ 	 *
+ 	 * 	function send_simple_products
+@@ -1110,54 +660,60 @@ class woo_product extends woo_interface {
+ 	 **************************************************************************************************************/
+ 	/*@int@*/function send_simple_products()
+ 	{		
+-		$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ . " Entering send_simple_products", "WARN");
++		$this->notify( __METHOD__  . ":" . __LINE__ . " Entering " . __METHOD__, "WARN");
+ 		//Check for how many we are expecting to send...
+-		require_once( 'class.woo.php' );
+-		$woo = new woo( $this->serverURL, $this->key, $this->secret, $this->options, $this);
++		$woo = $this->model_woo();
+ 		$woo->debug = $this->debug;
+ 		$woo->filter_new_only = TRUE;
+ 		$tosend = $woo->count_new_products();
+ 		if( $tosend <= 0 )
+ 			return -1;
+ 		$this->notify( __METHOD__  . ":" . __LINE__ . " About to send " . $tosend . " rows (all, not simple) to Woo", "WARN" );
+-		$res = $woo->new_simple_product_ids();
++		$test_max_send = 0;
++		if( isset( $this->client->environment ) AND ( $this->client->environment == "devel" ) )
++		{
++			if( isset( $this->client->test_max_send ) )
++				$test_max_send = $this->client->test_max_send;
++		}
++		$res = $woo->new_simple_product_ids( $test_max_send );
+ 		$sendcount = 0;
+-		$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__, "DEBUG");
+ 		foreach( $res as $stock_id )
+ 		{
+-			if( $this->debug > 1 AND $sendcount > 0 )
+-			{
+-				$this->notify( __METHOD__  . ":" . __LINE__ . " Leaving send_simple_products", "WARN");
+-				return $sendcount;	//Only action 1 item
+-			}
+-			$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ . " Calling woo2wooproduct", "NOTIFY");
++			$this->notify( __METHOD__  . ":" . __LINE__ . " ********************************************************************************************************", "NOTICE");
+ 			$this->woo2wooproduct( $stock_id, __METHOD__ );	//Sets the object variables with data from query
+ 			$this->type = "simple";
+ 			try
+ 			{
+-				if( $this->create_product() )
+-					$sendcount++;
+-			}
+-			catch( Exception $e )
+-			{
+-				$this->notify( $e->getMessage(), "WARN" );
+-				if( WC_CLIENT_NOT_SET == $e->getCode() )
++				if( $this->create_product_wc() )
+ 				{
+-					//WC-Client not set
+-					$this->notify( __METHOD__  . ":" . __LINE__ . " Leaving send_simple_products wc_client not set", "WARN" );
+-					throw $e;
++					$sendcount++;
++					//create_product_wc already calls send_images (as does update...)
++					//$this->send_images( null, $this );
+ 				}
+ 			}
+-			/*finally
++			catch( Exception $e )
+ 			{
+-				return $sendcount;
++				$this->notify(  __METHOD__  . ":" . __LINE__ . " " .  $e->getMessage(), "WARN" );
+ 			}
+-			*/
+ 		}
+-		$this->notify( __METHOD__  . ":" . __LINE__ . " Leaving send_simple_products", "WARN" );
+ 		$this->products_sent += $sendcount;
++		$this->notify( __METHOD__  . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN");
+ 		return $sendcount;
+ 	}
++	function model_woo()
++	{
++		if( ! isset( $this->pz_model_woo ) OR ( null == $this->pz_model_woo ) )
++		{
++			require_once( 'class.model_woo.php' );
++			//standard constructor args...	$this->serverURL, $this->key, $this->secret, $this->options, $this
++			$this->pz_model_woo = new model_woo( $this->serverURL, $this->key, $this->secret, $this->options, $this );
++		}
++		else
++		{
++			$this->pz_model_woo->reset_values();
++		}
++		return $this->pz_model_woo;
++	}
+ 	/*****************************************************************************//**
+ 	 *
+ 	 *	Adds to products_updated
+@@ -1165,53 +721,76 @@ class woo_product extends woo_interface {
+ 	 * ******************************************************************************/
+ 	function update_simple_products()
+ 	{			
+-		$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ . " Entering update_simple_products", "WARN");
++		$this->notify(  __METHOD__  . ":" . __LINE__ . " Entering " . __METHOD__, "WARN");
++		$woo = $this->model_woo();
+ 
+-		require_once( 'class.woo.php' );
+-		$woo = new woo( $this->serverURL, $this->key, $this->secret, $this->options, $this);
+ 		$woo->debug = $this->debug;
+ 		$updatecount = 0;
+ 		$res = $woo->select_simple_products_for_update();
+ 
+ 		while( $prod_data = db_fetch_assoc( $res ) )
+ 		{
+-			$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ . " WHILE LOOP update_simple_products", "WARN");
++			$this->notify(  __METHOD__  . ":" . __LINE__ . " WHILE LOOP " . __FUNCTION__, "WARN");
++			$this->notify( __METHOD__  . ":" . __LINE__ . " ********************************************************************************************************", "NOTICE");
+ 			if( $this->debug > 1 AND $updatecount > 0 )
+ 			{
+-				$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ . " Leaving update_simple_products", "WARN");
++				$this->notify(  __METHOD__  . ":" . __LINE__ . " **Leaving " . __METHOD__ . " due to DEBUG limits **", "WARN");
+ 				return $updatecount;	//Only action 1 item
+ 			}
+-			$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ . " Calling woo2wooproduct", "WARN");
++			$this->notify(  __METHOD__  . ":" . __LINE__ . " Calling woo2wooproduct", "WARN");
+ 			$this->woo2wooproduct( $prod_data['stock_id'], __FUNCTION__);
++			$this->notify( __METHOD__ . ":" . __LINE__ . " TRACE ***ID=woo_id::" . $this->id, "DEBUG" );
++			$this->notify( __METHOD__ . ":" . __LINE__ . " TRACE ***SKU: " . $this->sku, "DEBUG" );
+ 			$this->type = "simple";
+-			if( isset( $this->id ) AND $this->id > 0 )
++			if( isset( $this->id ) AND ( $this->id > 0 ) )
+ 			{
+-				$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ . " Calling update PRODUCT", "WARN");
+-			//try
+-			//{
+-				if( $this->update_product() )
+-					$updatecount++;
+-				else
+-					display_notification( __METHOD__  . ":" . __LINE__ . " Product not updated.  DEBUG level: " . $this->debug );
++				$this->notify(  __METHOD__  . ":" . __LINE__ . " Calling update PRODUCT for " . $this->stock_id, "WARN");
++				try {
++					if( $this->update_product() )
++						$updatecount++;
++					else
++						display_notification( __METHOD__  . ":" . __LINE__ . " Product not updated.  DEBUG level: " . $this->debug );
++				}
++				catch( Exception $e )
++				{
++					if( $e->getCode() == KSF_FCN_PATH_OVERRIDE )
++					{
++						//Do Nothing
++					}
++					else
++					{
++						throw $e;
++					}
++				}
+ 			}
+ 			else
+ 			{
++				if( isset( $this->id ) )
++					$this->notify(  __METHOD__  . ":" . __LINE__ . " ID set but reading less than 1: " . $this->id . ";  UNSETTING", "WARN");
+ 				unset( $this->id );
+-				$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ . " Calling create PRODUCT", "WARN");
++				$this->notify(  __METHOD__  . ":" . __LINE__ . " Calling create PRODUCT", "WARN");
+ 				try
+ 				{
+-				if( $this->create_product() )
+-					$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ . " Insert Successful", "WARN");
+-				else
+-					$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ . " Insert Failed", "WARN");
++					if( $this->create_product_wc() )
++						$this->notify(  __METHOD__  . ":" . __LINE__ . " INSERT SUCCESS", "WARN");
++					else
++						$this->notify(  __METHOD__  . ":" . __LINE__ . " Insert FAILED", "WARN");
+ 				}
+ 				catch( Exception $e )
+ 				{
+-					if( WC_CLIENT_NOT_SET == $e->getCode() )
++					$code = $e->getCode();
++					switch( $code )
+ 					{
+-						//no wc_client
+-						throw $e;
++						case WC_CLIENT_NOT_SET:
++						case KSF_LOST_CONNECTION:
++							//no wc_client
++							throw $e;
++							break;
++						default:
++							$this->notify(  __METHOD__  . ":" . __LINE__ . " " .  $e->getMessage(), "WARN" );
++							break;
+ 					}
++					
+ 				}
+ 			}
+ 			//}
+@@ -1219,9 +798,9 @@ class woo_product extends woo_interface {
+ 			//{
+ 			//	display_notification( __METHOD__  . ":" . __LINE__ . "caught error code " . $e->getCode() . " and msg " . $e->getMessage() . " from " . $e->getFile() . ":" . $e->getLine() );
+ 			//}
+-			$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ . " End WHILE LOOP lap", "WARN");
++			$this->notify(  __METHOD__  . ":" . __LINE__ . " End WHILE LOOP lap", "WARN");
+ 		}
+-		$this->notify( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__ . " Leaving update_simple_products", "WARN");
++		$this->notify(  __METHOD__  . ":" . __LINE__ . " Leaving update_simple_products", "WARN");
+ 		$this->products_updated += $updatecount;
+ 		return $updatecount;
+ 	}
+@@ -1243,26 +822,10 @@ class woo_product extends woo_interface {
+ 		return $w_imgs->run();
+ 		*/
+ 	}
+-	function product_downloads( $stock_id )
+-	{
+-		return null;
+-		/*
+-		require_once( 'class.woo_downloads.php' );
+-		$w_imgs = new woo_downloads( null, null, null, $stock_id, $this->client );
+-		return $w_imgs->run();
+-		*/
+-	}
+-	function product_dimensions( $stock_id )
+-	{
+-		return null;
+-		/*
+-		require_once( 'class.woo_dimensions.php' );
+-		$w_imgs = new woo_dimensions( null, null, null, $stock_id, $this->client );
+-		return $w_imgs->run();
+-		*/
+-	}
+ 	function product_attributes( $stock_id )
+ 	{
++		$this->notify( __METHOD__  . ":" . __LINE__ . " Entering " . __METHOD__, "WARN");
++		$this->notify( __METHOD__  . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN");
+ 		return null;
+ 		/*
+ 		 *	For a Variable Product, the ATTRIBUTES is just a list
+@@ -1308,20 +871,37 @@ class woo_product extends woo_interface {
+ 				'options' => $values );
+ 		return $retarr;
+ 	}
++	function  woo_prod_variation_attributes()
++	{
++		$this->notify( __METHOD__  . ":" . __LINE__ . " Entering " . __METHOD__, "WARN");
++		if( ! isset( $this->woo_prod_variation_attributes ) )
++		{
++			$this->notify( __METHOD__  . ":" . __LINE__ . " Setting new class ohject.  Should only happen once per instance ", "NOTICE");
++			require_once( 'class.woo_prod_variation_attributes.php' );
++			$this->woo_prod_variation_attributes = new woo_prod_variation_attributes( $this->serverURL, $this->key, $this->secret, $this->stock_id, $this->client );
++		}
++		$this->notify( __METHOD__  . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN");
++		return $this->woo_prod_variation_attributes;
++		
++	}
+ 	function product_default_attributes( $stock_id )
+ 	{
+-		require_once( 'class.woo_prod_variation_attributes.php' );
+-		$w_attr = new woo_prod_variation_attributes( $this->serverURL, $this->key, $this->secret, $stock_id, $this->client );
++		$this->notify( __METHOD__  . ":" . __LINE__ . " Entering " . __METHOD__, "WARN");
++		$w_attr = $this->woo_prod_variation_attributes();
+ 		$arr = $w_attr->get_by_sku( $stock_id );
+ 		$retarr = array();
+ 		foreach( $arr as $sku => $val )
+ 		{
++			$this->notify( __METHOD__  . ":" . __LINE__ . " Add attribute to list: " . $val, "NOTICE");
+ 			$retarr[] = $val;
+ 		}
++		$this->notify( __METHOD__  . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN");
+ 		return $retarr;
+ 	}
+ 	function product_variations( $stock_id )
+ 	{
++		$this->notify( __METHOD__  . ":" . __LINE__ . " Entering " . __METHOD__, "WARN");
++		$this->notify( __METHOD__  . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN");
+ 		return null;
+ 		/*
+ 		require_once( 'class.woo_variations.php' );
+@@ -1329,75 +909,304 @@ class woo_product extends woo_interface {
+ 		return $w_imgs->run();
+ 		*/
+ 	}
+-	function product_images( $stock_id )
++	/*******************************************************************************//**
++	* Called by send_images to build the image array
++	* @param none but uses internal vars
++	* @return none but sets internal vars
++	**********************************************************************************/
++	function product_images()
+ 	{
++		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
++		if( ! isset( $this->stock_id ) )
++			throw new Exception( "stock_id requried.", KSF_VALUE_NOT_SET );
+ 		require_once( 'class.woo_images.php' );
+-		//standard constructor args...	$this->serverURL, $this->key, $this->secret, $this->options, $this
+-
+-		//echo "<br /><br />" . __METHOD__ . ":" . __LINE__;
+-		//var_dump( $this->client->remote_img_srv );
+ 		if( isset( $this->client->remote_img_srv ) )
+ 			$remote_img_srv = $this->client->remote_img_srv;
+ 		else
+ 			$remote_img_srv = FALSE;
+-		//echo "<br /><br />" . __METHOD__ . ":" . __LINE__;
+-		//var_dump( $remote_img_srv );
+-		$w_imgs = new woo_images( $stock_id, $this->client, $this->debug, $remote_img_srv );
++		$w_imgs = new woo_images( $this->stock_id, $this->client, $this->debug, $remote_img_srv );
++		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+ 		return $w_imgs->run();
+ 	}
+ 
+-	function product_images_old( $stock_id )
++	/*******************************************************************************//**
++	 * Send Image Properties as an update
++	 *
++	 * @param string stock_id optional if this->stock_id set
++	 * @returns bool were we able to process a stock_id
++	 * *******************************************************************************/
++	/*@bool@*/function send_images( $stock_id = null, $caller )
+ 	{
+-		//IMAGES
+-		//If we use local URL we need to build it and send it
+-		//If we need to use WOOCOMMERCE image gallery, we need the filename
+-		//With the module to allow extra images, we need to check for that too
+-		////SHould also check for the existance of the filename in the local company
+-		//	Default location is (/company/0/images
+-		$image_array = array();
+-		$imagecount = 0;
+-		//if( isset( $this->image_serverurl ) AND isset( $this->image_baseurl ) AND $this->use_img_baseurl == "true" )
+-		if( isset( $this->client->image_serverurl ) AND isset( $this->client->image_baseurl ) )
++		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
++		if( ! $this->b_send_images )
+ 		{
+-			//Assumption running on same machine for image check
+-			$image_name = $this->image_exists( $stock_id );
+-			if( null != $image_name )
+-				/*
+-			$filename = company_path().'/images/' . item_img_name($stock_id) . ".jpg";
+-			if( file_exists( $filename ) === TRUE )
+-				 */
++			$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
++			return FALSE;
++		}
++		if( isset( $stock_id )  )
++			$this->stock_id = $stock_id;
++		if( !isset( $this->stock_id ) )
++		{
++			throw new Exception( "Stock ID not available so can't process", KSF_VALUE_NOT_SET );
++		}
++		$woo = $this->woo_select_product();
++		//Need to reset values between each product.
++		$this->reset_values();
++		if( isset( $woo->woo_id ) AND $woo->woo_id > 0 )
++			$this->id = $woo->woo_id;
++		else
++		{
++			//can't send sku to a non existant product
++			throw new Exception( "Non existant Woo ID so can't send updates", KSF_VALUE_NOT_SET );
++		}
++
++		//images in position 0 are the featured image
++		//1.. are in a gallery
++		//$image2 = array( 'src' => 'http://demo.woothemes.com/woocommerce/wp-content/uploads/sites/56/2013/06/T_2_front.jpg', 'position' => 2 );
++		//$images = array( $image1, $image2 );
++		$this->images = $this->product_images();
++		$response = $this->send2woo( "update" );
++		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
++		return $response;
++	}
++	/**********************************************************************//**
++	* Send product details to WooCommerce.  Insert or Update as appropriate
++	*
++	* @param string is this a new product AFAIK or an update
++	* @return bool did we send?  
++	**************************************************************************/
++	/*@bool@*/function send2woo( /*@string@*/$new_or_update = "new" )
++	{
++		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
++		$this->reset_endpoint();
++		try {
++			$this->build_data_array();
++			if( ! strcasecmp( $new_or_update , "new" ) )
+ 			{
+-				$image_array[$imagecount]['src']  = $this->client->image_serverurl . '/' . $this->client->image_baseurl . '/' . $image_name;
+-				$image_array[$imagecount]['position'] = $imagecount;
+-				$imagecount++;
++				$response = $this->woo_rest->send( $this->endpoint, $this->data_array, $this );
++				$this->id = $response->id;
+ 			}
+-			if( isset( $this->client->maxpics ) )
++			else
++			if( ! strcasecmp( $new_or_update , "update" ) )
+ 			{
+-				for ( $j = 1; $j <= $this->client->maxpics; $j++ )
+-				{
+-					$image_name = $this->image_exists( $stock_id . $j );
+-					if( null != $image_name )
+-					/*
+-					$filename = item_img_name($stock_id) . $j . ".jpg";
+-					$fullfilename = company_path().'/images/' . $filename;
+-					if( file_exists( $fullfilename ) === TRUE )
+-					 */
++				$response = $this->woo_rest->put( $this->endpoint, $this->data_array, $this );
++			}
++			else
++			{
++				throw new Exception( "Invalid variable passed in: " . $new_or_update, KSF_INVALID_DATA_VALUE );
++			}
++			$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
++			return TRUE;
++		}
++		catch( Exception $e )
++		{
++			$msg = $e->getMessage();
++			$code = $e->getCode();
++			switch( $code )
++			{
++				case 400:
++					$this->notify( __METHOD__ . ":" . __LINE__ . " Data sent: " . print_r( $this->data_array, true), "WARN" );
++					if( strpos( $msg, "product_invalid_sku" ) !== FALSE )
+ 					{
+-						$image_array[$imagecount]['src']  = $this->client->image_serverurl . '/'  . $this->client->image_baseurl . '/' . $image_name;
+-						$image_array[$imagecount]['position'] = $imagecount;
+-						$imagecount++;
++						//we need to Update our woo table as well as then resend an update to WC
++						$response = $this->seek( array( 'search' => $this->sku ) );
++						if( $this->fuzzy_match( $response ) )
++						{
++							if( $this->update_wootable_woodata() )
++								$this->send2woo( "update" );
++							else
++								$this->notify( __METHOD__ . ":" . __LINE__ . " Recovery Attempt failed ", "ERROR" );
++						}
++						else
++						{
++						}
+ 					}
+-				}
++				default:
++					$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $code . ":" . $msg, "WARN" );
++					break;
+ 			}
+ 		}
++		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
++		return FALSE;
++	}
++	/*******************************************************************************//**
++	 * Send Prices as an update
++	 *
++	 * @param string stock_id optional if this->stock_id set
++	 * @returns bool were we able to process a stock_id
++	 * *******************************************************************************/
++	/*@bool@*/function send_prices( $stock_id = null, $caller )
++	{
++		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
++		if( isset( $stock_id )  )
++			$this->stock_id = $stock_id;
++		if( !isset( $this->stock_id ) )
++		{
++			throw new Exception( "Stock ID not available so can't process", KSF_VALUE_NOT_SET );
++		}
++		$woo = $this->woo_select_product();
++		//Need to reset values between each product.
++		$this->reset_values();
++		if( isset( $woo->woo_id ) AND $woo->woo_id > 0 )
++			$this->id = $woo->woo_id;
+ 		else
+ 		{
+-			$image_array[$imagecount]['src'] = $stock_id . '.jpg"';
+-			$image_array[$imagecount]['position'] = $imagecount;
+-			$imagecount++;
++			//can't send sku to a non existant product
++			throw new Exception( "Non existant Woo ID so can't send updates", KSF_VALUE_NOT_SET );
+ 		}
+-		return $image_array;
++
++		//For EVERY update routine we want to check this!
++		if( $this->is_inactive() )
++			$this->status = "private";
++		else
++			$this->status = "publish";
++		if( isset( $woo->price ) )
++			$this->regular_price = $woo->price;
++		//INTERFACE - sales pricing/dates to replace this!!!
++		$this->sale_price = null;
++		$this->date_on_sale_from = null;
++		$this->date_on_sale_to = null;
++
++		$response = $this->send2woo( "update" );
++		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
++		return $response;
+ 	}
++	/*******************************************************************//**
++	* Select a row matching the set stock_id
++	*
++	*	Called by send_prices
++	*	Called by send_sku
++	*	Called by send_images
++	*
++	* @param none but uses stock_id
++	* @return object model_woo
++	***********************************************************************/
++	function woo_select_product()
++	{
++		if( !isset( $this->stock_id ) )
++			throw new Exception( "Stock_id not set.  Needed!", KSF_VALUE_NOT_SET );
++		$woo = $this->model_woo();
++		$woo->stock_id = $this->stock_id;
++		$woo->select_product();
++		return $woo;
++	}
++	/*******************************************************************************//**
++	 * Send SKU as an update
++	 *
++	 * @param string stock_id optional if this->stock_id set
++	 * @returns bool were we able to process a stock_id
++	 * *******************************************************************************/
++	/*@bool@*/function send_sku( $stock_id = null, $caller )
++	{
++		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
++		if( isset( $stock_id )  )
++			$this->stock_id = $stock_id;
++		if( !isset( $this->stock_id ) )
++		{
++			throw new Exception( "Stock ID not available so can't process", KSF_VALUE_NOT_SET );
++		}
++		$woo = $this->woo_select_product();
++		//Need to reset values between each product.
++		$this->reset_values();
++		if( isset( $woo->woo_id ) AND $woo->woo_id > 0 )
++			$this->id = $woo->woo_id;
++		else
++		{
++			//can't send sku to a non existant product
++			throw new Exception( "Non existant Woo ID so can't send updates", KSF_VALUE_NOT_SET );
++		}
++
++		//For EVERY update routine we want to check this!
++		if( $this->is_inactive() )
++			$this->status = "private";
++		else
++			$this->status = "publish";
++		if( isset( $woo->price ) )
++			$this->regular_price = $woo->price;
++		$this->sku = $woo->stock_id;
++
++		$response = $this->send2woo( "update" );
++		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
++		return $response;
++	}
++	function set_download_info()
++	{
++		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
++		/*****************************************************************//**
++		 *Downloads
++		 *
++		 * 	id, name, file(url) are properties within an array
++		 *
++		 * ********************************************************************/
++		/*
++		 *	$this->download = array( "id" => XXX, "name" => YYY, "file" => ZZZ );
++		 * */
++		$this->downloadable = false;
++		$this->downloads = null;
++		$this->download_limit = null;
++		$this->download_expiry = null;
++		$this->download_type = null;
++		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
++		return;
++	}
++	function product_downloads( $stock_id )
++	{
++		return null;
++		/*
++		require_once( 'class.woo_downloads.php' );
++		$w_imgs = new woo_downloads( null, null, null, $stock_id, $this->client );
++		return $w_imgs->run();
++		*/
++	}
++	function product_dimensions( $stock_id )
++	{
++		return null;
++		/*
++		require_once( 'class.woo_dimensions.php' );
++		$w_imgs = new woo_dimensions( null, null, null, $stock_id, $this->client );
++		return $w_imgs->run();
++		*/
++	}
++	function set_shipping_info()
++	{
++		/*Shipping*/
++/*
++			'weight',
++			'dimensions',
++			'shipping_required',
++			'shipping_taxable',
++			'shipping_class',
++			'shipping_class_id',
++*/
++		//TODO:
++		//	Extend to check to see if we have the dimension module installed
++		//	Use a different class to set these including units and translations
++		//$this->shipping_class = 'parcel';
++		//$this->weight = '';	//Should be set by foreach woo above
++		$dim_var_array = array( 'width', 'length', 'height');
++		foreach($dim_var_array as $var )
++		{
++			if( isset( $this->$var ) && strlen( $this->$var ) > 1 )
++			{
++				$this->dimensions[$var] = utf8_encode( $this->$var );
++			}
++			$this->dimensions['unit'] = "cm";	
++		}
++	}
++	function set_stock_status()
++	{
++		if( $this->stock_quantity < 1 )
++		{
++			$this->in_stock = false;
++			$this->stock_status = "outofstock";
++			//EXTEND so that if the on_order count in FA is >0 then set backordered (bool) status
++		}
++		else
++		{
++			$this->stock_status = "instock";
++		}
++	}
++
+ }
+ 
+ ?>

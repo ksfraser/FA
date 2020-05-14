@@ -188,8 +188,9 @@ class woo_interface extends table_interface
 			$this->debug = $this->client->debug;
 		else
 			$this->debug = 0;
-		//if( $this->need_rest_interface === true )
-		if( isset( $options['need_rest_interface'] ) AND $options['need_rest_interface'] === true )
+		if( $this->need_rest_interface === true )
+			$this->build_rest_interface($serverURL, $key, $secret, $options, $client);
+		else if( isset( $options['need_rest_interface'] ) AND $options['need_rest_interface'] === true )
 			$this->build_rest_interface($serverURL, $key, $secret, $options, $client);
 
 		global $db_connections;

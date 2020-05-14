@@ -116,6 +116,7 @@ class woo_product extends woo_interface {
 		$options = array();
 		set_time_limit( 30 );
 		$this->need_rest_interface = TRUE;
+		$options['need_rest_interface'] = TRUE;
 		parent::__construct($serverURL, $key, $secret, $options, $client);
 
 	//	$this->provides[] = array( 'title' => 'Configuration', 'action' => 'config', 'form' => 'action_show_form', 'hidden' => FALSE );

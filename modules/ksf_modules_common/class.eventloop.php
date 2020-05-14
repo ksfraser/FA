@@ -175,6 +175,8 @@ class eventloop extends kfLog implements splSubject
 	function load_modules()
 	{
 		global $configArray;
+		//We should probably check for the existance of the moduledir.
+		//See Mantis 214 for what triggered this...
 	        foreach (glob("{$this->moduledir}/config.*.php") as $filename)
 	        {
 			$this->log( " opening module config file " . $filename, PEAR_LOG_DEBUG );
@@ -201,7 +203,7 @@ class eventloop extends kfLog implements splSubject
 			{
 				foreach( $priarray as $marray )
 				{
-					$res = include_once( $this->moduledir . "/" . $marray['loadFile'] );
+					$res = @include_once( $this->moduledir . "/" . $marray['loadFile'] );
 					if( TRUE == $res )
 					{
 						$this->ObserverNotify( $this, 'NOTIFY_LOG_INFO', "Module " . $marray['ModuleName'] . " being added" );
@@ -218,7 +220,7 @@ class eventloop extends kfLog implements splSubject
 					}
 					else
 					{
-						echo "Attempt to open " . $this->moduledir . "/" . $marray['loadFile'] . " FAILED!<br />";
+						//echo "Attempt to open " . $this->moduledir . "/" . $marray['loadFile'] . " FAILED!<br />";
 						$this->ObserverNotify( $this, 'NOTIFY_LOG_INFO', "Unable to add module" . $this->moduledir );
 					}
 				}

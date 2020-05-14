@@ -82,7 +82,11 @@ if( ! class_exists( 'generic_fa_interface' ) )
 			if( !isset( $this->debug ) )
 				$this->debug = 0;
 			require_once( dirname( __FILE__ ) . '/../ksf_modules_common/class.eventloop.php' );
-			$this->eventloop = new eventloop(  null, $this );
+			/* Mantis 214 bad moduledir on eventloop constructor leading to failed loading.
+							//moduledir, caller
+			//$this->eventloop = new eventloop(  null, $this );
+			*/
+			$this->eventloop = new eventloop( dirname( __FILE__ ), $this );
 
 			if(isset( $pref_tablename ) )
 			{
@@ -440,7 +444,7 @@ if( ! class_exists( 'generic_fa_interface' ) )
 						{
 							if( is_callable( array( $this, $form ) ) )
 							{
-								echo "<br />" . __FILE__ . ":" . __LINE__ . " Calling non-UI class " .$form . "<br />";
+								$this->eventloop->ObserverNotify( $this, 'NOTIFY_LOG_DEBUG', __FILE__ . ":" . __LINE__ . " Calling non-UI class " .$form );
 								$this->$form();
 							}
 							else
