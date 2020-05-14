@@ -196,8 +196,9 @@ class origin
 			{
 				//debug_print_backtrace();
 			}
-			else if( ! in_array( $field, $this->object_fields ) )
-				throw new Exception( "Variable to set is not a member of the class", KSF_FIELD_NOT_CLASS_VAR );
+			else if( ! in_array( $field, $this->object_fields ) AND ! array_key_exists( $field, $this->object_fields ) )
+                               throw new Exception( "Variable to set ::" . $field . ":: is not a member of the class \n" . print_r( $this->object_fields, true ), KSF_FIELD_NOT_CLASS_VAR );
+
 		}
 		if( isset( $value ) )
 			$this->$field = $value;

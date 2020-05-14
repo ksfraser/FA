@@ -46,7 +46,7 @@ class EXPORT_WOO extends generic_fa_interface
 		$this->config_values[] = array( 'pref_name' => 'image_serverurl', 'label' => 'Server URL for images (http[s]://servername/FA_base)' );
 		$this->config_values[] = array( 'pref_name' => 'image_baseurl', 'label' => 'Base URL for images (/company/0/images)' );
 		$this->config_values[] = array( 'pref_name' => 'use_img_baseurl', 'label' => 'Use Base URL or remote (true/false)' );
-		$this->config_values[] = array( 'pref_name' => 'woo_server', 'label' => 'Base URL for WOO server (...wordpress)' );
+		$this->config_values[] = array( 'pref_name' => 'woo_server', 'label' => 'Base URL (exact match wp_siteurl) for WOO server (...wordpress)' );	//Mantis 212
 		$this->config_values[] = array( 'pref_name' => 'woo_rest_path', 'label' => 'Path for REST API ("/wp-json/wc/v1/)' );
 		$this->config_values[] = array( 'pref_name' => 'environment', 'label' => 'Environment (devel/accept/prod)' );
 		$this->config_values[] = array( 'pref_name' => 'maxpics', 'label' => 'Maximum number of pics to upload', 'integration_module' => '' );
