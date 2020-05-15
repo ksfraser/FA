@@ -452,7 +452,10 @@ class woo_product extends woo_interface {
 			$code = $e->getCode();
 			switch( $code )
 			{
-				case '404': if( false !== strstr( $msg, "woocommerce_rest_product_invalid_id" ) )
+				case '400':
+				case '404': if( 
+						false !== strstr( $msg, "woocommerce_rest_product_invalid_id" ) 
+						OR false !== strstr( $msg, "product_invalid_sku" ) )
 						{
 							$this->notify( __METHOD__ . ":" . __LINE__ . " Error " . $code . "::" . $msg . " ::: Woo_ID: " . $this->woo_id, "ERROR" );
 							//Woo doesn't know about this woo_id.  Rebuild case?  Should send it NEW!!

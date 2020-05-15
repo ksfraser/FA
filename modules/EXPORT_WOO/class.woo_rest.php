@@ -43,21 +43,39 @@ class woo_rest
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
 	}
 	/***********************************//***
-	* Use our client to log messages
+	 * Use our client to log messages
+	 *
+	 * @param string Message
+	 * @param string Debug Level
+	 * @return BOOL do we have a client or not.
 	*************************************/
 	function notify( $msg, $level )
 	{
 		if( isset( $this->client ) )
+		{
 			$this->client->notify( $msg, $level );
-		//We don't inherit, so can't log ourselves
+			return TRUE;
+		}
+		else
+		{
+			//We don't inherit, so can't log ourselves
+			return FALSE;
+		}
 	}
-
+	/***********************************//***
+	 * Use our client to log messages
+	 *
+	 * @param string REST Endpoint
+	 * @param array data to send
+	 * @param object Client
+	 * @return array response from send update/new
+	*************************************/
 	/*@array@*/ function send( $endpoint, $data = [], $client )
 	{
 		$exists = 0;
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		if( null == $client )
-			throw new Exception( "These functions depend on CLIENT being set and it isn't.", KSF_FIELD_NOT_SET );
+			throw new Exception( "These functions depend on CLIENT being set and it isn't.", KSF_VAR_NOT_SET );
 		else
 			$this->client = $client;
 		//check to see if record exists
@@ -92,9 +110,10 @@ class woo_rest
 		{
 			foreach( $client->search_array as $search_field )
 			{
+				//If the client doesn't have the field set that we are to search, then we can't match against it's value...
 				if( isset( $client->$search_field ) AND strlen( $client->$search_field ) > 1 )
 				{
-					$this->notify( __METHOD__ . ":" . __LINE__ . " Searching for match on " . $client->$search_field, "DEBUG" );
+					$this->notify( __METHOD__ . ":" . __LINE__ . " Searching for match on field: " . $search_field . ":: Value: " . $client->$search_field, "DEBUG" );
 					$q = array( 'search' => $client->$search_field );
 					$response = $this->get( $endpoint, $q, $client );
 					if( $client->fuzzy_match( $response ) )
@@ -103,6 +122,7 @@ class woo_rest
 						return $response;
 					}
 				}
+				//Can you have a zero length field in the middle of an array?  I suppose you could have a NULL
 			}
 			//THIS ISN"T AN EXCEPTION for new - there shouldn't be a match!!
 			//$this->notify( __METHOD__ . ":" . __LINE__ . " Throwing Exception " . __METHOD__, "WARN" );
@@ -112,8 +132,10 @@ class woo_rest
 		else
 		{
 			$this->notify( __METHOD__ . ":" . __LINE__ . " Throwing Exception " . __METHOD__, "WARN" );
-			throw new Exception( "Saerch Array not set", KSF_FIELD_NOT_SET );
+			throw new Exception( "Search Array not set", KSF_FIELD_NOT_SET );
 		}
+		//Should be impossible to get here!
+		throw new Exception( "We should not be able to reach this point so there is a CODING error" );
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
 		return array();
 	}
@@ -137,9 +159,9 @@ class woo_rest
 			$client = $this->client;
 			try {
 				$response_arr = $this->send_search( $endpoint, $client );
-							//This takes care of the case where we are rebuilding a store that has become
-							//disconnected (i.e. items created in the store separate from FA)
-/************************************************/
+				//This takes care of the case where we are rebuilding a store that has become
+				//disconnected (i.e. items created in the store separate from FA)
+		/************************************************/
 				if( isset( $response_arr[0] ) )
 				{
 					$response = $response_arr[0];
@@ -160,8 +182,6 @@ class woo_rest
 			}
 			catch( Exception $e )
 			{
-			//throw new Exception( "No Match Found", KSF_NO_MATCH_FOUND );
-			//throw new Exception( "Saerch Array not set", KSF_FIELD_NOT_SET );
 				$this->notify( __METHOD__ . ":" . __LINE__ . " Throwing " . __METHOD__, "WARN" );
 				throw $e;
 			}
@@ -169,7 +189,6 @@ class woo_rest
 		catch (Exception $e)
 		{
 			$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $e->getCode() . ":" . $e->getMessage(), "ERROR" );
-		$this->notify( __METHOD__ . ":" . __LINE__ . " Throwing " . __METHOD__, "WARN" );
 			throw $e;
 		}
 		if( $exists > 0 )
@@ -272,6 +291,12 @@ class woo_rest
 		{
 			switch( $e->getCode() )
 			{
+				case '400':
+					if( stristr( $e->getMessage(), "product_invalid_sku" ) )
+					{
+						$this->notify( __METHOD__ . ":" . __LINE__ . " Invalid or Dupe SKU: " . $this->sku, "ERROR" );
+					}
+
 				case KSF_NO_MATCH_FOUND:
 					$response = $this->post( $endpoint, $data, $client );
 					$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
@@ -394,7 +419,7 @@ class woo_rest
 					{
 						$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $code . ":" . $msg, "WARN" );
 						$req = $this->wc->http->getRequest();
-						throw new Exception( "CURL packed it in on WC_id " . $this->client->id . ":: URL " . print_r( $req->getUrl(), true), KSF_LOST_CONNECTION, $e );
+						throw new Exception( "CURL packed it in on WC_id " . $this->client->id . ":: URL " . print_r( $req->getUrl(), true), KSF_LOST_CONNECTION );
 					}
 				default:
 					$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $code . ":" . $msg, "NOTIFY" );
