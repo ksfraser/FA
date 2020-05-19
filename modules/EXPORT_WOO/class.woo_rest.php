@@ -1,8 +1,6 @@
 <?php
 
 
-require_once( __DIR__ . '/../ksf_modules_common/class.rest_client.php' ); 
-
 //WC official client
 require_once __DIR__ . '/vendor/autoload.php';
 use Automattic\WooCommerce\Client;
@@ -16,6 +14,34 @@ class woo_rest
 {
 	private $wc;
 	private $client;
+	/******************************************************************************//**
+	 * Create REST client including connection to  WC server.
+	 *
+	 * \msc
+	 * 	Sender,A,B,C,D,Receiver;
+	 * 	Receiver<-Sender [label="Command()", URL="\ref Command()"];
+	 *    	Receiver->Sender [label="Ack()", URL="\ref Sender::Ack()", ID="1"];
+	 *    	A abox B [label="abox", textbgcolour="#ff7f7f"];   
+	 *    	B rbox C [label="rbox", textbgcolour="#7fff7f"];   
+	 *    	C note D [label="note", textbgcolour="#7f7fff"];
+	 *    	
+	 * \endmsc
+	 *	
+	 * [Business Requirement 188](http://mickey.ksfraser.com/infra/software-devel/mantis/view.php?id=188)
+	 *
+	 * @startuml
+	 * [Proto Design] lasts 10 days
+	 * [Write Tests] lasts 5 days
+	 * [Write Tests] starts at [Proto Design]'s end
+	 * @enduml
+	 *
+	 * @param string Server URL
+	 * @param string OAuth Key
+	 * @param string OAuth Secret
+	 * @param array Options for CURL connection
+	 * @param object Calling client
+	 * @return none
+	 * *******************************************************************************/
 	function __construct( $serverURL, $key, $secret, $options = null, $client = null )
 	{
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
@@ -295,6 +321,9 @@ class woo_rest
 					if( stristr( $e->getMessage(), "product_invalid_sku" ) )
 					{
 						$this->notify( __METHOD__ . ":" . __LINE__ . " Invalid or Dupe SKU: " . $this->sku, "ERROR" );
+						//Try again without SKU set for update.
+						unset( $data['sku'] );
+						return $this->send_update( $endpoint, $data );
 					}
 
 				case KSF_NO_MATCH_FOUND:
@@ -332,13 +361,6 @@ class woo_rest
 	*****************************************************************/ 
 	function put( $endpoint, $data = [], $client = null )
 	{
-/*
-		if( $this->recursive_call > 1 )
-		{
-			$this->recursive_call--;
-			throw new Exception(  __METHOD__ . ":" . __LINE__ . ":: LOOP", KSF_FCN_PATH_OVERRIDE );
-		}
-*/
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		if( !isset( $this->client ) AND ( ! is_null( $client ) ) )
 			$this->client = $client;
@@ -348,6 +370,7 @@ class woo_rest
 			$end = $endpoint . "/" . $this->client->id;
 			$this->notify( __METHOD__ . ":" . __LINE__ . " Using endpoint: " . $end, "DEBUG" );
 			$response = $this->wc->put( $end, $data );
+			$this->notify( __METHOD__ . ":" . __LINE__ . " Response from PUT: " . print_r( $response, true ), "DEBUG" );
 		} catch( Exception $e )
 		{
 			$code = $e->getCode();
@@ -358,9 +381,25 @@ class woo_rest
 					if( false !== stristr( $msg, "woocommerce_product_image_upload_error" ) )
 					{
 						$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $code . ":" . $msg, "WARN" );
+						//complaining about invalid URL. GOOGLE suggests it could be a plugin interfering. 
+						// Removing plugins and changing to IP address also didn't make a difference.
+						// changing to v2 vice v3 didn't help neither.
 						//Remote image doesn't exist?
 						return false;	//This isn't a fatal error.
 					}
+					
+					if( stristr( $e->getMessage(), "product_invalid_sku" ) )
+					{
+						$this->notify( __METHOD__ . ":" . __LINE__ . " Invalid or Dupe SKU: " . $this->sku, "ERROR" );
+						//Try again without SKU set for update.
+						unset( $data['sku'] );	//DATA is JSON encoded.  Does this do what we intend?
+						$response = $this->put( $endpoint, $data, $client );
+						return $response;
+					}
+					 
+					$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $code . ":" . $msg, "ERROR" );
+					throw $e;
+					break;
 				case '503':	//503:Error: Briefly unavailable for scheduled maintenance. Check back in a minute. [wp_die]
 					if( false !== stristr( $msg, "scheduled maintenance" ) )
 					{
@@ -372,11 +411,16 @@ class woo_rest
 						return $response;
 					*/
 					}
+					$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $code . ":" . $msg, "ERROR" );
+					throw $e;
+					break;
 				case KSF_LOST_CONNECTION:
 					throw $e;
+					break;
 				default:
 					$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $code . ":" . $msg, "ERROR" );
 					throw $e;
+					break;
 			}
 		}
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
@@ -552,252 +596,5 @@ class woo_rest
 	/***************************************************************
 	*	END COMPAT
 	************************************************************/
-}
-
-//class EXPORT_WOO
-class woo_rest_old extends rest_client
-{
-	var $loggedin;
-	var $login_url;
-	var $home_url;
-	var $environment;
-	var $grant_type;
-	var $paypal_user;
-	//var $URL;	//In base class
-	var $server_url;
-	var $transactionID;
-	var $refundID;
-	var $invoiceID;
-	var $payment_path = "/v1/payments/payment";
-	var $sale_path;		// /v1/payments/sale/<Transaction-Id>;
-	var $refund_path;	// /v1/payments/sale/<Transaction-Id>/refund/;
-	var $invoice_path = "/v1/invoicing/invoices";
-	var $invoice_send;	// /v1/invoicing/invoices/<Invoice-Id>/send;
-	var $invoice_remind;	// /v1/invoicing/invoices/<Invoice-Id>/remind;
-	var $include_header;
-	var $maxrowsallowed;
-	var $lastoid;
-	var $mailto;
-	var $db;
-	var $woo_rest_path;
-	var $serverURL;
-	var $URL;
-	var $subpath;		//!< rest API endpoint
-	var $data;
-	var $authdata;
-	var $conn_type;
-	var $content_type;
-	var $header_array;	//no longer has effect but can't change interface without breaking all callers.
-	var $json_data;
-	var $args;	//!< array for the constructor of the parent
-
-	function __construct( $serverURL = "http://fhsws001.ksfraser.com/devel/fhs/wordpress", $subpath = "products", $data_array, $key = "ck_39bb90d3194c955e3ff2f8a0673d5735e3834785", $secret = "cs_c60df3106af131d3698bc6c91392c6ef65e17a53", $conn_type = "POST", $woo_rest_path =  "/wp-json/wc/v1/", /*deprec*/$header_array = null, $environment = "devel", $debug = 0 )
-	{
-		if( $this->debug == 1 )
-		{
-			display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__);
-		}
-		//$this->set_var( 'vendor', "EXPORT_WOO" );
-		$this->username = $key;
-		$this->password = $secret;
-		$this->woo_rest_path = $woo_rest_path;	//AFTER server-woocommerce path
-		$this->serverURL = $serverURL;
-		$this->subpath = $subpath;
-		$this->data_array = $data_array;
-		$this->conn_type = $conn_type;
-		$this->header_array = $header_array;
-		$this->environment = $environment;
-
-		$this->loggedin = FALSE;
-		$this->environment = $environment;
-		$this->grant_type="client_credentials";
-		$this->debug = $debug;
-		$this->buildURL();	//makes $this->URL
-
-		$args = array();
-		$args['URL'] = $this->URL;
-		$args['consumer_key'] = $key;
-		$args['consumer_secret'] = $secret;
-		$args['data'] = $data_array;
-		$args['method'] = $conn_type;
-		$args['CURLOPT_COOKIEJAR'][CURLOPT_COOKIEJAR] = "my_cookies.txt";
-		$args['CURLOPT_COOKIEFILE'][CURLOPT_COOKIEFILE] = "my_cookies.txt";
-		if( strncasecmp( $this->environment, "PROD", 4 ) == 0 )
-		{
-			$args['CURLOPT_VERBOSE'] = 0;
-		}
-		else
-		{
-			$args['CURLOPT_VERBOSE'][CURLOPT_VERBOSE] = 1;
-			$args['CURLOPT_SSL_VERIFYPEER'][CURLOPT_SSL_VERIFYPEER] = FALSE;
-			$args['CURLOPT_SSL_VERIFYHOST'][CURLOPT_SSL_VERIFYHOST] = FALSE;
-		}
-		$this->args = $args;
-		parent::__construct( $args );
-		//$this->curl_setAuth();	//parent::__construct
-	
-		if( $this->debug == 1 )
-		{
-			display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__);
-		}
-	}
-	/* NOT CALLED internally
-	function set_content_type( $type )
-	{
-		$this->content_type = $type;
-	}
-	 */
-	function buildURL()
-	{
-		if( $this->debug == 1 )
-		{
-			display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__);
-		}
-		$this->URL = $this->serverURL . $this->woo_rest_path . $this->subpath;
-		//When we are called a second time within the same instance of an object
-		//we will need to update the URL of the request.  That is why we would
-		//be in this routine again...
-		if( isset( $this->request->URL ) )
-		{
-			if( $this->debug == 1 )
-			{
-				display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__);
-			}
-			$this->request->URL = $this->URL;
-		}
-		if( $this->debug == 1 )
-		{
-			display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__);
-		}
-	}
-	/******************************************************************************
-	 * 
-	 * Inspired by httpclient from woocommerce api client
-	 * Should be able to call the following with
-	 *   ($endpoint, http_build_query($this), $this)
-	 *
-	 * **************************************************************************/
-	function post( $endpoint, $data = [], $client )
-	{
-		if( $this->debug == 1 )
-		{
-			display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__);
-		}
-		$this->subpath = $endpoint;
-		$this->buildURL();
-		//ASSUMING not JSON
-		$this->request->data = $data;
-		$this->write2woo( "POST", $client );
-		if( $this->debug == 1 )
-		{
-			display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__);
-		}
-	}
-	function put($endpoint, $data = [], $client )
-	{
-		if( $this->debug == 1 )
-		{
-			display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__);
-		}
-		$this->subpath = $endpoint;
-		$this->buildURL();
-		//ASSUMING not JSON
-		$this->request->data = $data;
-		$this->write2woo( "PUT", $client );
-		if( $this->debug == 1 )
-		{
-			display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__);
-		}
-	}
-	function get($endpoint, $data = [], $client )
-	{
-		if( $this->debug == 1 )
-		{
-			display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__);
-		}
-		$this->subpath = $endpoint;
-		$this->buildURL();
-		$this->request->params = $data;
-		$this->write2woo( "GET", $client );
-		if( $this->debug == 1 )
-		{
-			display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__);
-		}
-	}
-	function delete($endpoint, $data = [], $client )
-	{
-		if( $this->debug == 1 )
-		{
-			display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__);
-		}
-		$this->subpath = $endpoint;
-		$this->buildURL();
-		$this->request->params = $data;
-		$this->write2woo( "DELETE", $client );
-		if( $this->debug == 1 )
-		{
-			display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__);
-		}
-	}
-	/*********************************************************************************
-	 *  !should be able to call...
-	 * ******************************************************************************/
-	function write2woo_json( $json_data, $c_type, $client = null )
-	{
-		if( $this->debug == 1 )
-		{
-			display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__);
-		}
-		$this->request->json_data = $json_data;
-		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
-		return $this->write2woo( $c_type, $client );
-	}
-	function write2woo_object( $c_obj, $c_type, $client = null )
-	{
-		$this->request->data = http_build_query($c_obj);	//http_build_query would take an object and 
-									//build an array of the public variables
-		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
-		return $this->write2woo( $c_type, $client );
-	}
-	/*@string@*/function write2woo( $c_type = "POST", $client = null )
-	{
-		if( $this->debug == 1 )
-		{
-			display_notification( date('H:i:s', time()) . ":" . __METHOD__  . ":" . __LINE__);
-		}
-		$this->request->method = $c_type;
-
-		if( $this->debug >= 2 )
-		{
-			echo "<br />" . __FILE__ . ":" . __LINE__ . "<br />";
-			var_dump( $this->request );
-		}
-		if( $this->curl_exec() )	//parent (rest_client)
-		{
-			if( null != $client )
-			{
-				$client->request = $this->request;
-				if( isset( $this->response->body->code ) )
-					$client->code = $this->response->body->code;
-				//else
-				//	$client->code = $this->response->curlinfoarray->code;
-				$client->response = $this->response;
-				if( isset(  $this->response->body->message ) )
-				{
-					$client->message = $this->response->body->message;
-				}
-			}
-			$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
-			return $this->response->body;
-		}
-		else
-		{
-			display_error( "Curl Exec failed::" . $this->errmsg );
-			//return FALSE;
-			$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
-			return "Curl Exec failed";
-		}
-	}
-
 }
 ?>
