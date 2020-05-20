@@ -168,10 +168,33 @@ class woo_interface extends table_interface
 
 	/******************************************************************************************//**
 	 *
-	 * @param string WooCommerce Store URL
-	 * @param string the OAuth Key
-	 * @param string the OAuth secret
-	 * @param array options
+	 *
+	 * @startuml
+	 * title "woo_interface Constructor"
+	 * (*) --> initialize variables
+	 * --> "notify"
+	 * if "Client needs a rest interface to WC" then
+	 * 	->[yes]"build_rest_interface()"
+	 * 	--> "Set DB variables"
+	 * else
+	 * 	-->[no] "Set DB variables"
+	 * endif
+	 * --> "Set More Variables"
+	 * --> "define_table()"
+	 * --> "build_write_properties_array()"
+	 * --> "build_properties_array()"
+	 * --> "fields_array2entry()"
+	 * --> "build_interestedin()"
+	 * --> "register_with_eventloop()"
+	 * --> "reset_endpoint()"
+	 * -->(*)
+	 * @enduml
+	 *
+	 * @param serverURL string WooCommerce Store URL
+	 * @param key string the OAuth Key
+	 * @param secret string the OAuth secret
+	 * @param options array
+	 * @param client object
 	 * @return null
 	 * *******************************************************************************************/
 	/*@void@*/function __construct($serverURL = " ", $key, $secret, $options, $client = null)
@@ -221,6 +244,12 @@ class woo_interface extends table_interface
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
 		return;
 	}
+	/*************************************//**
+	 * This function needs to be overridden by all calling objects
+	 *
+	 * @param id int
+	 * @throws Exception
+	 * **************************************/
 	function update_woo_id( /*int*/ $id )
 	{
 		//This function MUST be overridden or woo_rest will fail!!
@@ -232,12 +261,23 @@ class woo_interface extends table_interface
 	*
 	* If we pass in NULL for all var's to constructor we won't setup the interface
 	*
-	* @param string URL
-	* @param string Key
-	* @param string Secret
-	* @param array Options
-	* @param object Caller
+	* @startuml
+	* title "build_rest_interface"
+	* (*) --> "notify()"
+	* if "Server/key/secret not set" then
+	* 	->[not set]"throw Exception"
+	* 	->(*)
+	* else
+	* 	-->[set] "Set REST related variables"
+	* 	-->(*)
+	* endif
+	* @enduml
 	*
+	* @param serverURL string 
+	* @param key string 
+	* @param secret string 
+	* @param options array 
+	* @param client object calling client
 	* @return bool Did we setup the interface
 	******************************************************************************/
 	/*@bool@*/private function build_rest_interface($serverURL = " ", $key, $secret, $options, $client = null)
@@ -246,6 +286,7 @@ class woo_interface extends table_interface
 		if( $serverURL == null AND null == $key AND null == $secret )
 		{
 			//Particular child class doesn't want a REST interface
+			throw new Exception( "We shouldn't be here.  Necessary fields not set!", KSF_VAR_NOT_SET );
 			$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 			return FALSE;
 		}
@@ -317,8 +358,8 @@ class woo_interface extends table_interface
         *If we find a match, we return the product.  Exits on first match
         * Will search against an array to_match_array
         *
-        * @param array array of stdObj holding data from WC
-        * @return did we find a match
+        * @param data array of stdObj holding data from WC
+        * @return true|false did we find a match
         ***************************************************************************************************/
         /*@bool@*/ function fuzzy_match( $data )
         {

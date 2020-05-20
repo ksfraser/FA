@@ -29,11 +29,94 @@ class woo_rest
 	 *	
 	 * [Business Requirement 188](http://mickey.ksfraser.com/infra/software-devel/mantis/view.php?id=188)
 	 *
-	 * @startuml
+	 * \startuml
 	 * [Proto Design] lasts 10 days
 	 * [Write Tests] lasts 5 days
 	 * [Write Tests] starts at [Proto Design]'s end
-	 * @enduml
+	 * \enduml
+	 *
+	 *  @startuml{myimage.png} "Image Caption" width=5cm
+	 *  Alice -> Bob : Hello
+	 *  @enduml
+	 *
+	 * \startuml
+	 * Receiver<-Sender  : Command()
+	 * Receiver-->Sender : Ack()
+	 * \enduml
+	 *
+	 * @startuml
+	 * title Servlet Container
+	 *
+	 * (*) --> "ClickServlet.handleRequest()"
+	 * --> "new Page"
+	 *
+	 * if "Page.onSecurityCheck" then
+	 * 	->[true] "Page.onInit()"
+	 *
+	 * 	if "isForward?" then
+	 * 		->[no] "Process controls"
+	 *
+	 * 		if "continue processing?" then
+	 * 			-->[yes] ===RENDERING===
+	 * 		else
+	 * 			-->[no] ===REDIRECT_CHECK===
+	 * 		endif
+	 *
+	 * 	else
+	 * 		-->[yes] ===RENDERING===
+	 * 	endif
+	 * 
+	 * 	if "is Post?" then
+	 * 		-->[yes] "Page.onPost()"
+	 * 		--> "Page.onRender()" as render
+	 * 		--> ===REDIRECT_CHECK===
+	 * 	else
+	 * 		-->[no] "Page.onGet()"
+	 * 		--> render
+	 * 	endif
+	 * 
+	 * else
+	 * 	-->[false] ===REDIRECT_CHECK===
+	 * endif
+	 * 
+	 * if "Do redirect?" then
+	 * 	->[yes] "redirect request"
+	 * 	--> ==BEFORE_DESTROY===
+	 * else
+	 * 	if "Do Forward?" then
+	 * 		-left->[yes] "Forward request"
+	 * 		--> ==BEFORE_DESTROY===
+	 * 	else
+	 * 		-right->[no] "Render page template"
+	 * 		--> ==BEFORE_DESTROY===
+	 * 	endif
+	 * endif
+	 * --> "Page.onDestroy()"
+	 * -->(*)
+	 * 
+	 * partition Conductor {
+	 * 	(*) --> "Climbs on Platform"
+	 * 	--> === S1 ===
+	 * 	--> Bows
+	 * }
+	 * 
+	 * partition Audience #LightSkyBlue {
+	 * 	=== S1 === --> Applauds
+	 * }
+	 * 
+	 * partition Conductor {
+	 * 	Bows --> === S2 ===
+	 * 	--> WavesArms
+	 * 	Applauds --> === S2 ===
+	 * }
+	 * 
+	 * partition Orchestra #CCCCEE {
+	 * 	WavesArmes --> Introduction
+	 * 	--> "Play music"
+	 * }
+	 *
+	 * @enduml 
+	 *  
 	 *
 	 * @param string Server URL
 	 * @param string OAuth Key
@@ -71,6 +154,20 @@ class woo_rest
 	/***********************************//***
 	 * Use our client to log messages
 	 *
+	 * @startuml
+	 * title Notify
+	 *
+	 * (*) 
+	 *
+	 * if "this->client" then
+	 * 	->[true] "client->notify"
+	 * else
+	 *	-->[false] return FALSE
+	 * endif
+	 * -->(*)
+	 * @enduml
+
+	 *
 	 * @param string Message
 	 * @param string Debug Level
 	 * @return BOOL do we have a client or not.
@@ -90,6 +187,26 @@ class woo_rest
 	}
 	/***********************************//***
 	 * Use our client to log messages
+	 *
+	 *
+	 * * @startuml
+	 * title Servlet Container
+	 *
+	 * (*) --> "this->notify()"
+	 * if "param client"
+	 * then
+	 * 	->[null] "throw exception"
+	 * else
+	 * 	->[set] "this->client = client"
+	 * endif
+	 *
+	 * if "isset client->id"
+	 * then
+	 * 	->"send_update"
+	 * else
+	 * 	->"send_new"
+	 * -->(*)
+	 * @enduml
 	 *
 	 * @param string REST Endpoint
 	 * @param array data to send
