@@ -1,6 +1,10 @@
 <?php
 
 global $path_to_root;
+
+if( strlen( $path_to_root ) < 5 )
+	$path_to_root = dirname( __FILE__ ) . "/../../";
+
 require_once( $path_to_root . '/modules/ksf_modules_common/db_base.php' );	//Needed the ksf_modules_common otherwise a module directory local file was included.
 require_once( $path_to_root . '/modules/ksf_modules_common/defines.inc.php' );
 

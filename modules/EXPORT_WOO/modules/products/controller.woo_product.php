@@ -9,6 +9,9 @@ require_once( dirname( __FILE__ ) . '/../../../ksf_modules_common/class.controll
 /************************************************
  * PREREQ client has an eventloop defined 
  * or a global one is defined!
+ *
+ * EXPORT_WOO->generic_fa_interface->eventloop then
+ * loads this module.
  * **********************************************/
 class controller_woo_product extends controller_origin
 {

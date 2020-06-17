@@ -8,7 +8,11 @@
 //	$coastc->set_var( 'redirect_to', "woo_rest.php" );
 //	$coastc->run();
 
+
 declare(strict_types=1);
+global $path_to_root;
+if( strlen( $path_to_root ) < 5 )
+ 	$path_to_root = dirname( __FILE__ ) . "/../../../";
 use PHPUnit\Framework\TestCase;
 require_once( dirname( __FILE__ ) .  '/../class.woo_rest.php' );
 
@@ -41,25 +45,32 @@ class woo_restTest extends TestCase
 		$this->assertInstanceOf( woo_rest::class, $o );
 		return $o;
 	}
+	public function testNullInstanceOf(): woo_rest
+	{
+		$o = new woo_rest( null, null, null, null, null );
+		$this->assertInstanceOf( woo_rest::class, $o );
+		return $o;
+	}
 	/**
 	 * @depends testInstanceOf
 	 */
 	public function testConstructorValues( $o )
 	{
-		$this->assertSame( $o->vendor, "woo_rest" );	//var not protected/private
-		$this->assertIsObject( $o->get( 'wc' ) );
+		//$this->assertSame( $o->vendor, "woo_rest" );	//var not protected/private
+		$this->assertTrue( is_object( $o->get( 'wc' ) ) );
 		$this->assertSame( $o->get( 'client' ), $this );
 		//Constructor also calls add_submodules
 	}
 	/**
 	 * @depends testInstanceOf
+	 * @depends testNullInstanceOf
 	 */
-	public function testnotify( $o )
+	public function testnotify( $o, $n )
 	{
 		//->notify is inherited from generic_fa_interface.
-		$this->assertTrue( $o->notify( "test", "test" );
-		unset( $o->client );
-		$this->assertFalse( $o->notify( "test", "test" );
+		$this->assertTrue( $o->notify( "test", "test" ) );
+		//unset( $o->client );
+		$this->assertFalse( $n->notify( "test", "test" ) );
 
 	}
 	/**
@@ -68,30 +79,32 @@ class woo_restTest extends TestCase
 	public function testsend( $o )
 	{
 		//->notify is inherited from generic_fa_interface.
-		$this->expectException( $o->send( "test", "test", null );
-		$this->expectException( $o->send( "test", "test", null );	//Bad endpoint so I expect the WC library to throw an exception
-		$this->assertIsArray( $o->send( "product",array( "test" ), $this );	//Should run send_new
+		$this->expectException( $o->send( "test", "test", null ) );
+		$this->expectException( $o->send( "test", "test", null ) );	//Bad endpoint so I expect the WC library to throw an exception
+		$this->assertIsArray( $o->send( "product",array( "test" ), $this ) );	//Should run send_new
 		$o->set( 'id', 1 );
-		$this->assertIsArray( $o->send( "product",array( "test" ), $this );	//Should run send_update
+		$this->assertIsArray( $o->send( "product",array( "test" ), $this ) );	//Should run send_update
 	}
 	/**
 	 * @depends testInstanceOf
 	 */
+	/*** send_search is private function so can't be tested.
 	public function testsend_search( $o )
 	{
 		//->notify is inherited from generic_fa_interface.
-		$this->expectException( $o->send_search( "test", null );	//search_array can't be set so exception
-		$this->expectException( $o->send_search( "test", $this );	//search_array isn't set so exception
+		$this->expectException( $o->send_search( "test", null ) );	//search_array can't be set so exception
+		$this->expectException( $o->send_search( "test", $this ) );	//search_array isn't set so exception
 		$this->search_array = array();
-		$this->assertIsArray( $o->send_search( "test", $this );		//search_array is empty so returned array should also be.
+		$this->assertIsArray( $o->send_search( "test", $this ) );		//search_array is empty so returned array should also be.
 		$this->search_array = array( 'client' );
-		$this->assertIsArray( $o->send_search( "test", $this );		//search_array is not empty so there MIGHT be a return array
+		$this->assertIsArray( $o->send_search( "test", $this ) );		//search_array is not empty so there MIGHT be a return array
 
-		$this->expectException( $o->send( "test", "test", null );	//Bad endpoint so I expect the WC library to throw an exception
-		$this->assertIsArray( $o->send( "product",array( "test" ), $this );	//Should run send_new
+		$this->expectException( $o->send( "test", "test", null ) );	//Bad endpoint so I expect the WC library to throw an exception
+		$this->assertIsArray( $o->send( "product",array( "test" ), $this ) );	//Should run send_new
 		$o->set( 'id', 1 );
-		$this->assertIsArray( $o->send( "product",array( "test" ), $this );	//Should run send_update
+		$this->assertIsArray( $o->send( "product",array( "test" ), $this ) );	//Should run send_update
 	}
+	 */
 
 	/**
 	 * @depends testInstanceOf
@@ -99,17 +112,17 @@ class woo_restTest extends TestCase
 	public function testsend_new( $o )
 	{
 		//->notify is inherited from generic_fa_interface.
-		$this->expectException( $o->send_new( "test", null );	//search_array can't be set so exception
-		$this->expectException( $o->send_new( "test", $this );	//search_array isn't set so exception
+		$this->expectException( $o->send_new( "test", null ) );	//search_array can't be set so exception
+		$this->expectException( $o->send_new( "test", $this ) );	//search_array isn't set so exception
 		$this->search_array = array();
-		$this->assertIsArray( $o->send_new( "test", $this );		//search_array is empty so returned array should also be.
+		$this->assertIsArray( $o->send_new( "test", $this ) );		//search_array is empty so returned array should also be.
 		$this->search_array = array( 'client' );
-		$this->assertIsArray( $o->send_new( "test", $this );		//search_array is not empty so there MIGHT be a return array
+		$this->assertIsArray( $o->send_new( "test", $this ) );		//search_array is not empty so there MIGHT be a return array
 
-		$this->expectException( $o->send( "test", "test", null );	//Bad endpoint so I expect the WC library to throw an exception
-		$this->assertIsArray( $o->send( "product",array( "test" ), $this );	//Should run send_new
+		$this->expectException( $o->send( "test", "test", null ) );	//Bad endpoint so I expect the WC library to throw an exception
+		$this->assertIsArray( $o->send( "product",array( "test" ), $this ) );	//Should run send_new
 		$o->set( 'id', 1 );
-		$this->assertIsArray( $o->send( "product",array( "test" ), $this );	//Should run send_update
+		$this->assertIsArray( $o->send( "product",array( "test" ), $this ) );	//Should run send_update
 	}
 	
 	/**
@@ -140,7 +153,10 @@ class woo_restTest extends TestCase
 		//uses woo_coupons($this->woo_server, $this->woo_ck, $this->woo_cs, null, $this );
 	//}
 	
-
+	public function notify( $v1 = "", $v2 = "", $v3 = "" )
+	{
+		return "";
+	}
 }
 
 ?>

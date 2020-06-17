@@ -15,6 +15,10 @@
 require_once( 'class.woo_rest.php' );
 require_once( 'class.woo_interface.php' );
 
+global $path_to_root;
+if( strlen( $path_to_root ) < 5 )
+	$path_to_root = dirname( __FILE__ ) . "/../../";
+
 class woo_image {
 	var $id;
 	var $src;
@@ -92,9 +96,10 @@ class woo_image {
 	}
 	/***********************************************************************//**
 	 * Called by the constructor to set SRC and POSITION info
-	 * 
+	 *
+	 * @returns BOOL
 	 * **************************************************************************/
-	function run()
+	/*@bool@*/ function run()
 	{
 		if( isset( $this->image_serverurl ) AND isset( $this->image_baseurl ) )
 		//if( isset( $this->client->image_serverurl ) AND isset( $this->client->image_baseurl ) )
@@ -112,12 +117,14 @@ class woo_image {
 				$this->name = $this->stock_id . '.jpg"';
 				$this->alt = $this->stock_id . '.jpg"';
 			}
+			return TRUE;
 		}
 		else
 		{
 			$this->src = "";
 			//$this->src   = $this->stock_id . '.jpg"';
 			$this->position = $this->pic_num;
+			return FALSE;
 		}
 	}
 }

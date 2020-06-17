@@ -5,6 +5,8 @@
 require_once __DIR__ . '/vendor/autoload.php';
 use Automattic\WooCommerce\Client;
 
+require_once( dirname( __FILE__ ) . "/../ksf_modules_common/defines.inc.php" );
+
 /**********************************************************************************************
 *
 *	Client Library looks like it takes arrays of data instead of JSON
@@ -168,8 +170,8 @@ class woo_rest
 	 * @enduml
 
 	 *
-	 * @param string Message
-	 * @param string Debug Level
+	 * @param msg string Message
+	 * @param level string Debug Level
 	 * @return BOOL do we have a client or not.
 	*************************************/
 	function notify( $msg, $level )
@@ -208,9 +210,9 @@ class woo_rest
 	 * -->(*)
 	 * @enduml
 	 *
-	 * @param string REST Endpoint
-	 * @param array data to send
-	 * @param object Client
+	 * @param endpoint string REST Endpoint
+	 * @param data array data to send
+	 * @param client object Client
 	 * @return array response from send update/new
 	*************************************/
 	/*@array@*/ function send( $endpoint, $data = [], $client )
@@ -243,8 +245,8 @@ class woo_rest
 	}
 	/******************************************************************************************//**
 	* Search WC for a matching item
-	* @param string endpoint
-	* @param object client to search against
+	* @param endpoint string endpoint
+	* @param client object client to search against
 	* @return array of object
 	***********************************************************************************************/
 	/*@array@*/ private function send_search( $endpoint, $client )
@@ -290,8 +292,8 @@ class woo_rest
 	*
 	*	Assumption ->client is set by calling routine
 	*
-	* @param string REST endpotin
-	* @param array data to send to the endpoint
+	* @param endpoint string REST endpotin
+	* @param data array data to send to the endpoint
 	* @return EXCEPTION|array of response objects (JSON decoded from WC REST API)
 	**********************************************************************************************/
 	/*@array@*/ private function send_new( $endpoint, $data = [] )
@@ -350,8 +352,8 @@ class woo_rest
 	*
 	*	Assumption ->client is set by calling routine
 	*
-	* @param string REST endpotin
-	* @param array data to send to the endpoint
+	* @param endpoint string REST endpotin
+	* @param data array data to send to the endpoint
 	* @return EXCEPTION|array of response objects (JSON decoded from WC REST API)
 	**********************************************************************************************/
 	/*@array@*/ private function send_update( $endpoint, $data = [] )
@@ -454,7 +456,10 @@ class woo_rest
 		}
 	}
 	/************************************************************//**
-	*
+	 *
+	 * @param endpoint string
+	 * @param data array
+	 * @param client object
 	*@return array JSON Decoded response from WC API
 	*****************************************************************/ 
 	function post( $endpoint, $data = [], $client = null )
@@ -473,7 +478,10 @@ class woo_rest
 		return $response;
 	}
 	/************************************************************//**
-	*
+	 *	 
+	 * @param endpoint string
+	 * @param data array
+	 * @param client object
 	*@return array JSON Decoded response from WC API
 	*****************************************************************/ 
 	function put( $endpoint, $data = [], $client = null )
@@ -544,7 +552,10 @@ class woo_rest
 		return $response;
 	}
 	/************************************************************//**
-	*
+	 *
+ 	 * @param endpoint string
+	 * @param data array
+	 * @param client object
 	*@return array JSON Decoded response from WC API
 	*****************************************************************/ 
 	/*@array@*/ function get( $endpoint, $data = [], $client = null )
@@ -595,7 +606,10 @@ class woo_rest
 		return $response;
 	}
 	/************************************************************//**
-	*
+	 *
+	 * @param endpoint string
+	 * @param data array
+	 * @param client object
 	*@return array JSON Decoded response from WC API
 	*****************************************************************/ 
 	function list_all( $endpoint, $data = [], $client = null )
@@ -614,7 +628,10 @@ class woo_rest
 		return $response;
 	}
 	/************************************************************//**
-	*
+	 *
+	 * @param endpoint string
+	 * @param data array
+	 * @param client object
 	*@return array JSON Decoded response from WC API
 	*****************************************************************/ 
 	function retreive_one( $endpoint, $data = [], $client = null )
@@ -635,7 +652,10 @@ class woo_rest
 		return $response;
 	}
 	/************************************************************//**
-	*
+	 *
+	 * @param endpoint string
+	 * @param data array
+	 * @param client object
 	*@return array JSON Decoded response from WC API
 	*****************************************************************/ 
 	function delete( $endpoint, $data = [], $client = null )
@@ -654,6 +674,11 @@ class woo_rest
 		return $response;
 
 	}
+	/******************************************//**
+	 *
+	 * @param data 
+	 * @return data
+	 * *******************************************/
 	function data_not_json( $data )
 	{
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
@@ -671,6 +696,14 @@ class woo_rest
 			return $data;
 		}
 	}
+	/******************************************//**
+	 *
+	 * @param data JSON array
+	 * @param c_type string 
+	 * 	HTML transaction type - post/put/delete/get
+	 * @param client object
+	 * @return data
+	 * *******************************************/
 	function dispatch( $data, $c_type, $client = null )
 	{
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
@@ -705,11 +738,70 @@ class woo_rest
 	*	expect the functions
 	************************************************************/
 	
+	/******************************************//**
+	 * Dummy function for class compatibility
+	 *
+	 * @startuml
+	 * (*) --> (*)
+	 * @enduml
+	 *
+	 * @param type 
+	 * @return none
+	 * *******************************************/
  	function set_content_type( $type ){}
+	/******************************************//**
+	 * Dummy function for class compatibility
+	 *
+	 * @startuml
+	 * (*) --> (*)
+	 * @enduml
+	 *
+	 * @param none 
+	 * @return none
+	 * *******************************************/
         function buildURL(){}
+	/******************************************//**
+	 * Wrapper (decorator?) function for class compatibility
+	 *
+	 * @startuml
+	 * (*) --> "dispatch()"
+	 * -->(*)
+	 * @enduml
+	 *
+	 * @param json_data
+	 * @param c_type string
+	 * @param client object
+	 * @return none
+	 * *******************************************/
         function write2woo_json( $json_data, $c_type, $client = null ){ $this->dispatch( $json_data, $c_type, $client ); }
+	/******************************************//**
+	 * Wrapper (decorator?) function for class compatibility
+	 *
+	 * @startuml
+	 * (*) --> "dispatch()"
+	 * -->(*)
+	 * @enduml
+	 *
+	 * @param json_data
+	 * @param c_type string
+	 * @param client object
+	 * @return none
+	 * *******************************************/
         function write2woo_object( $c_obj, $c_type, $client = null ){ $this->dispatch( $c_obj, $c_type, $client ); }
-        /*@string@*/function write2woo( $c_type = "POST", $client = null ){ $this->dispatch( null, $c_type, $client ); }
+	/******************************************//**
+	 * Wrapper (decorator?) function for class compatibility
+	 *
+	 * @startuml
+	 * (*) --> "dispatch()"
+	 * -->(*)
+	 * @enduml
+	 *
+	 * @param json_data
+	 * @param c_type string
+	 * @param client object
+	 * @return none
+	 * *******************************************/
+        function write2woo( $c_type = "POST", $client = null ){ $this->dispatch( null, $c_type, $client ); }
 	/***************************************************************
 	*	END COMPAT
 	************************************************************/

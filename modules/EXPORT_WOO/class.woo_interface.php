@@ -195,9 +195,10 @@ class woo_interface extends table_interface
 	 * @param secret string the OAuth secret
 	 * @param options array
 	 * @param client object
+	 * @param bool do we need the rest interface
 	 * @return null
 	 * *******************************************************************************************/
-	/*@void@*/function __construct($serverURL = " ", $key, $secret, $options, $client = null)
+	/*@void@*/function __construct($serverURL = " ", $key, $secret, $options, $client = null, $need_rest_interface = false)
 	{
 		$this->iam = get_class( $this );
 		$this->recursive_call = 0;
@@ -207,6 +208,7 @@ class woo_interface extends table_interface
 		$this->client = $client;
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		$this->provides = array();
+		$this->need_rest_interface = $need_rest_interface;
 		if( isset( $this->client->debug ) )
 			$this->debug = $this->client->debug;
 		else

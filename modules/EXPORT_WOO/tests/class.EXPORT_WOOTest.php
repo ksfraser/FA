@@ -10,6 +10,21 @@
 
 declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
+
+if( ! function_exists( 'simple_page_mode' ) )
+{
+	function simple_page_mode( $sku ) { return $sku; }
+}
+if( ! function_exists( 'find_submit' ) )
+{
+	function find_submit() { return null; }
+}
+if( ! function_exists( 'page' ) )
+{
+	function page() { return null; }
+}
+
+
 require_once( dirname( __FILE__ ) .  '/../class.EXPORT_WOO.php' );
 global $db_connections;	//FA uses for DB stuff
 global $_SESSION;
@@ -412,6 +427,10 @@ class EXPORT_WOOTest extends TestCase
 		$this->assertNotEmpty( $this->order_no );
 		//Sends email
 		//calls		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+	}
+	public function notify( $v1 = "", $v2 = "", $v3 = "" )
+	{
+		return "";
 	}
 }
 

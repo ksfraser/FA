@@ -139,8 +139,9 @@ $stock_id_tables[] = array( 'table' => TB_PREF . 'woo', 'column' => 'stock_id', 
  *
  * ****************************************************************************/
 $eventcount = 573000;
-define( 'KSF_FIELD_NOT_SET', $eventcount ); $eventcount++;
+define( 'KSF_FIELD_NOT_SET', $eventcount ); $eventcount++;	//Class Fields
 define( 'KSF_VALUE_NOT_SET', $eventcount ); $eventcount++;
+define( 'KSF_VAR_NOT_SET', $eventcount ); $eventcount++;	//Function VARs
 define( 'KSF_FIELD_NOT_CLASS_VAR', $eventcount ); $eventcount++;
 define( 'KSF_PRIKEY_NOT_SET', $eventcount ); $eventcount++;
 define( 'KSF_PRIKEY_NOT_DEFINED', $eventcount ); $eventcount++;
