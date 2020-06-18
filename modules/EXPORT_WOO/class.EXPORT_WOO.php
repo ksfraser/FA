@@ -91,6 +91,8 @@ class EXPORT_WOO extends generic_fa_interface
 		$this->tabs[] = array( 'title' => 'Products Export Prepped', 'action' => 'pexed', 'form' => 'form_products_exported', 'hidden' => TRUE );
 		$this->tabs[] = array( 'title' => 'QOH Populated', 'action' => 'qoh', 'form' => 'populate_qoh', 'hidden' => TRUE );
 		$this->tabs[] = array( 'title' => 'WOO Populated', 'action' => 'woo', 'form' => 'populate_woo', 'hidden' => TRUE );
+		$this->tabs[] = array( 'title' => 'Send Products', 'action' => 'send_products_rest_display', 'form' => 'send_products_rest_display', 'hidden' => FALSE );
+		$this->tabs[] = array( 'title' => 'Send Pictures', 'action' => 'send_pictures_rest_display', 'form' => 'send_pictures_rest_display', 'hidden' => FALSE );
 		$this->tabs[] = array( 'title' => 'Missing Products from internal WOO table', 'action' => 'missingwoo', 'form' => 'missing_woo', 'hidden' => FALSE );
 		//$this->tabs[] = array( 'title' => 'Manually add Woo ID to a product in the internal WOO table', 'action' => 'form_add_woo_id_to_sku', 'form' => 'form_add_woo_id_to_sku', 'hidden' => FALSE );
 		$this->tabs[] = array( 'title' => 'Manually add Woo ID to a product in the internal WOO table', 'action' => 'add_woo_id_to_sku', 'form' => 'add_woo_id_to_sku', 'hidden' => TRUE  );
@@ -100,6 +102,7 @@ class EXPORT_WOO extends generic_fa_interface
 
 		$this->tabs[] = array( 'title' => 'Products REST Export', 'action' => 'export_rest_products', 'form' => 'export_rest_products_form', 'hidden' => FALSE );
 		$this->tabs[] = array( 'title' => 'Products REST Exported', 'action' => 'exported_rest_products', 'form' => 'exported_rest_products_form', 'hidden' => TRUE );
+		$this->tabs[] = array( 'title' => 'Pictures Sent', 'action' => 'exported_rest_pictures_form', 'form' => 'exported_rest_pictures_form', 'hidden' => TRUE );
 
 
 		//We could be looking for plugins here, adding menu's to the items.
@@ -611,6 +614,16 @@ class EXPORT_WOO extends generic_fa_interface
 		$this->call_table( 'exported_rest_products', "Send Products via REST to WOO" );
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
+	function send_products_rest_display()
+	{		
+		$this->call_table( 'exported_rest_products', "Send Products via REST to WOO" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+	}
+	function send_pictures_rest_display()
+	{		
+		$this->call_table( 'exported_rest_pictures_form', "Send Pictures via REST to WOO" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+	}
 	/***********************************************************************
 	*
 	*	Function send_categories_form()	
@@ -854,6 +867,30 @@ class EXPORT_WOO extends generic_fa_interface
 	*
 	************************************************************************/
 	function exported_rest_products_form()
+	{
+		require_once( 'class.woo_product.php' );
+		$woo_product = new woo_product( $this->woo_server, $this->woo_rest_path, $this->woo_ck, $this->woo_cs, $this->environment, $this );
+		$woo_product->debug = $this->debug;
+		$sentcount = $woo_product->send_products();
+		//$sentcount = $woo_product->send_simple_products();
+		//If we haven't timed out...
+		$updatecount = $woo_product->update_simple_products();
+
+            	display_notification( $sentcount . " Products sent and " . $updatecount . " updated.");
+		$this->call_table( 'export_rest_product', "Export Another" );
+		$this->call_table( 'export_rest_products', "Export ALL Another" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+	}
+	/***********************************************************************
+	*
+	*	Function exported_rest_pictures_form()
+	*
+	*	Function that sends pictures to WOO
+	*
+		
+	*
+	************************************************************************/
+	function exported_rest_pictures_form()
 	{
 		require_once( 'class.woo_product.php' );
 		$woo_product = new woo_product( $this->woo_server, $this->woo_rest_path, $this->woo_ck, $this->woo_cs, $this->environment, $this );
