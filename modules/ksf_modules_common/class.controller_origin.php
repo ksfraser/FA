@@ -52,6 +52,7 @@ if( ! class_exists( 'controller_origin' ) )
 		var $mode_callbacks = array();
 		var $view;
 		var $model;
+		var $endpoint;
 		function __construct(  $client = null )
 		{
 			parent::__construct( null, $client );

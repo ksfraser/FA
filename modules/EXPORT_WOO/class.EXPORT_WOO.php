@@ -97,7 +97,7 @@ class EXPORT_WOO extends generic_fa_interface
 		//$this->tabs[] = array( 'title' => 'Manually add Woo ID to a product in the internal WOO table', 'action' => 'form_add_woo_id_to_sku', 'form' => 'form_add_woo_id_to_sku', 'hidden' => FALSE );
 		$this->tabs[] = array( 'title' => 'Manually add Woo ID to a product in the internal WOO table', 'action' => 'add_woo_id_to_sku', 'form' => 'add_woo_id_to_sku', 'hidden' => TRUE  );
 		
-		$this->tabs[] = array( 'title' => 'Send Categories to WOO', 'action' => 'send_categories_form', 'form' => 'send_categories_form', 'hidden' => FALSE );
+		$this->tabs[] = array( 'title' => 'Sync Categories with WOO', 'action' => 'send_categories_form', 'form' => 'send_categories_form', 'hidden' => FALSE );	//Rename to align with Mantis 236
 		$this->tabs[] = array( 'title' => 'Categories Sent to WOO', 'action' => 'sent_categories_form', 'form' => 'sent_categories_form', 'hidden' => TRUE );
 
 		$this->tabs[] = array( 'title' => 'Products REST Export', 'action' => 'export_rest_products', 'form' => 'export_rest_products_form', 'hidden' => FALSE );

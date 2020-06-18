@@ -94,6 +94,12 @@ class model_woo_category extends MODEL
 	//function seek_category_by_name()
 	//function load_categories( /*array of objects*/$categories_array )
 	//		CALLS insert_wc_category
+	//
+	/********************************************//**
+	 * Insert a description (category) into WC
+	 *
+	 * Copied into the controller.
+	 * *********************************************/
 	/*@int@*/function insert_wc_category()
 	{		
 		try {
@@ -124,14 +130,16 @@ class model_woo_category extends MODEL
 	 * *************************************************************************/
 	/*@bool@*/function get_fa_id_by_category_name()
 	{
+		if( ! isset( $this->description ) )
+			throw new Exception( "Description not set", KSF_VALUE_NOT_SET );
 		try
 		{
 			$sql = "select category_id as id from " . TB_PREF . "stock_category where description=" . db_escape($this->description);
 			$res = db_query( $sql, __LINE__ . " Couldn't select from stock_category" );
 			while( $cat_data = db_fetch_assoc( $res ) )
 			{
-				if( $this->debug > 0 )
-					echo __METHOD__ . ":" . __LINE__ . " Setting fa_id to " . $cat_data['id'] . " for description " .  $this->description . "<br /><br />";
+				$this->tell_eventloop( $this, 'NOTIFY_LOG_DEBUG',  __METHOD__ . ":" . __LINE__ . " Setting fa_id to " . $cat_data['id'] . 
+												" for description " .  $this->description . "<br /><br />" );
 				$this->fa_id = $cat_data['id'];
 			}
 			return TRUE;
@@ -142,8 +150,20 @@ class model_woo_category extends MODEL
 		}
 		return FALSE;
 	}
+	/***********************************************//**
+	 * Update our xref table with FA vs WC ID/Desc etc
+	 *
+	 * @param NONE but uses internal
+	 * @return bool
+	 * ************************************************/
 	function update_woo_categories_xref()
 	{
+		if( ! isset( $this->fa_id ) )
+			throw new Exception( "FA ID not set", KSF_FIELD_NOT_SET );
+		if( ! isset( $this->id ) )
+			throw new Exception( "WC ID not set", KSF_FIELD_NOT_SET );
+		if( ! isset( $this->description ) )
+			throw new Exception( "Description not set", KSF_FIELD_NOT_SET );
 		require_once( 'class.categories_xref_model.php' );
 		$xref = new categories_xref_model( null, null, null, null, $this );
 		$xref->fa_cat = $this->fa_id;
@@ -167,7 +187,7 @@ class model_woo_category extends MODEL
 			throw $e;
 		}
 		unset( $xref );
-		return;
+		return TRUE;
 	}
 	/****************************************************************************************************//**
 	 *
@@ -277,10 +297,7 @@ class model_woo_category extends MODEL
 	}
 	function retrieve_category()
 	{
-		if( $this->debug >= 1 )
-		{
-			echo "<br />" . __METHOD__ . ":" . __LINE__ . "<br />";
-		}
+		$this->tell_eventloop( $this, 'NOTIFY_LOG_DEBUG',  __METHOD__ . ":" . __LINE__ );
 		/*
 		curl https://example.com/wp-json/wc/v1/products/categories/162 -u consumer_key:consumer_secret
 		 * 
@@ -288,10 +305,7 @@ class model_woo_category extends MODEL
 	}
 	function update_category()
 	{
-		if( $this->debug >= 1 )
-		{
-			echo "<br />" . __METHOD__ . ":" . __LINE__ . "<br />";
-		}
+		$this->tell_eventloop( $this, 'NOTIFY_LOG_DEBUG',  __METHOD__ . ":" . __LINE__ );
 		/*
 		curl -X PUT https://example.com/wp-json/wc/v1/products/categories/162  -u consumer_key:consumer_secret  -H "Content-Type: application/json"  -d '{ "regular_price": "24.54" }'
 		 * 
@@ -299,14 +313,23 @@ class model_woo_category extends MODEL
 	}
 	function list_categories()
 	{
-		if( $this->debug >= 1 )
-		{
-			echo "<br />" . __METHOD__ . ":" . __LINE__ . "<br />";
-		}
+		$this->tell_eventloop( $this, 'NOTIFY_LOG_DEBUG',  __METHOD__ . ":" . __LINE__ );
 		/*
 		 * 	GET
 		 *	curl https://example.com/wp-json/wc/v1/products/categories -u consumer_key:consumer_secret
 		*/
+	}
+	/***********************************************************************************//**
+	 * Send categories to WC that we don't have a woo_id for, so is "new"
+	 *
+	 * @params none
+	 * @returns mysql_res
+	 * *************************************************************************************/
+	function select_new_categories()
+	{
+		$category_sql = "select category_id, description from " . TB_PREF . "stock_category where category_id not in (select fa_cat from " . TB_PREF . "woo_categories_xref ) order by category_id asc";
+		$res = db_query( $category_sql, __LINE__ . " Couldn't select from stock_category" );
+		return $res;
 	}
 	/****************************************************************************************************//**
 	 * Send categories to WooCommerce
@@ -315,8 +338,9 @@ class model_woo_category extends MODEL
 	 * ****************************************************************************************************/
 	/*@int@*/function send_categories_to_woo( )
 	{
-		$category_sql = "select category_id, description from " . TB_PREF . "stock_category where category_id not in (select fa_cat from " . TB_PREF . "woo_categories_xref ) order by category_id asc";
-		$res = db_query( $category_sql, __LINE__ . " Couldn't select from stock_category" );
+		//$category_sql = "select category_id, description from " . TB_PREF . "stock_category where category_id not in (select fa_cat from " . TB_PREF . "woo_categories_xref ) order by category_id asc";
+		//$res = db_query( $category_sql, __LINE__ . " Couldn't select from stock_category" );
+		$res = $this->select_new_categories();
 		$catcount = 0;
 		$sentcount = 0;
 		while( $cat_data = db_fetch_assoc( $res ) )

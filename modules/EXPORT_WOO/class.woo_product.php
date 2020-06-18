@@ -438,7 +438,21 @@ class woo_product extends woo_interface {
 			{
 				$this->id = $response_arr->id;
 			}
-			if( isset( $this->id ) )
+			/*****************MANTIS 235 *************************************/
+			else if( $this->id < 0 )
+			{
+				//MANTIS 235 we found a logic error.
+				//We should reset the woo_id - case of rebuilding a store with no match
+				$this->notify( __METHOD__ . ":" . __LINE__ . " Resetting woo_id as there was no match" . __METHOD__, "WARN" );
+				$woo = $this->model_woo();
+				$woo->update_woo_id( '' );
+			} 
+		 	/*****************!MANTIS 235 *************************************/
+			 /*****************MANTIS 235 *************************************/
+			//if( isset( $this->id ) )	//We added a * -1 to the ID in woo_rest->send on NO MATCH
+			//No point sending images and SKUs on a bad match In fact that clobbers good data
+			if( isset( $this->id ) AND $this->id > 0 )
+		 	/*****************!MANTIS 235 *************************************/
 			{
 				$this->send_images( null, $this );
 				$this->send_sku( null, $this );

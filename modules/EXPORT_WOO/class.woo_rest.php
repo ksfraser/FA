@@ -427,6 +427,10 @@ class woo_rest
 			else
 			{
 				//No Match.  Should we be sending NEW instaed of UPDATE??
+				/*****************MANTIS 235 *************************************/
+				$client->id = $client->id * -1;
+				$client->update_woo_id( $client->id );	//This should cause an error the next time through...
+				/*****************!MANTIS 235 *************************************/
 				$this->notify( __METHOD__ . ":" . __LINE__ . " No MATCHING Response for UPDATE " . __METHOD__, "ERROR" );
 				$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
 				return array();
