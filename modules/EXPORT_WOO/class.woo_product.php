@@ -1025,6 +1025,14 @@ class woo_product extends woo_interface {
 						{
 						}
 					}
+				case 403:
+					$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $code . ":" . $msg, "WARN" );
+					$this->notify( __METHOD__ . ":" . __LINE__ . " No Route endpoint::" . print_r( $this->endpoint, true), "WARN" );
+
+				case KSF_FIELD_NOT_SET:
+					$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $code . ":" . $msg, "WARN" );
+					$this->notify( __METHOD__ . ":" . __LINE__ . "::ID that isn't set:::" .  print_r( $this->id, true) );
+					break;
 				default:
 					$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $code . ":" . $msg, "WARN" );
 					break;

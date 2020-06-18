@@ -763,6 +763,56 @@ class model_woo extends woo_interface {
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 		return $res;
 	}
+	/*****************************************************************//**
+	 * Return an array of stock_ids belonging to any product
+	 *
+	 * @returns array stock_ids
+	 * ******************************************************************/
+	/*@array@*/function all_product_ids( $max = 0 )
+	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
+		$res = $this->select_all_products( $max );
+		$resarray = array();
+
+		while( $prod_data = db_fetch_assoc( $res ) )
+		{
+			$resarray[] = $prod_data['stock_id'];
+		}
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+		return $resarray;
+	}
+	/****************************************************************//**
+	 * Runs an MySQL query returning the mysql_res of stock_ids
+	 *
+	* @params int max number of rows to return for testing to limit test run time.  Default no limit
+	 * @returns mysql_res
+	 * ******************************************************************/
+	/*@mysql_res@*/function select_all_products( $max = 0 )
+	{
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
+		if( ! defined( $this->table_details['tablename'] ) )
+			$this->define_table();
+		$prod_sql = 	"select stock_id from " . $this->table_details['tablename'];
+		$prod_sql .= " WHERE woo_id >= '0'";	//No point sending for items we don't have created yet
+		//This will ensure we send only items that haven't already been inserted.
+		if( $max > 0 )
+		{
+			$prod_sql .= " LIMIT " . $max;
+		}
+		else if( $this->debug == 1 )
+		{
+			$prod_sql .= " LIMIT 10";
+			//$prod_sql .= "ORDER BY RAND() LIMIT 10";
+		}
+		else if( $this->debug >= 2)
+		{
+			$prod_sql .= "ORDER BY RAND() LIMIT 1";
+		}
+		
+		$res = db_query( $prod_sql, __LINE__ . "Couldn't select product(s) for export" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+		return $res;
+	}
 	/****************************************************************//**
 	 * Runs an MySQL query returning the mysql_res of stock_ids
 	 *

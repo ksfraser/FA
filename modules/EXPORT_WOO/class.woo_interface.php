@@ -374,6 +374,8 @@ class woo_interface extends table_interface
                 	$this->notify( __METHOD__ . ":" . __LINE__ . " Fuzzy Match on " . $this->$f1, "NOTIFY" );
 		$from_arr = array( "<p>", "</p>" );	//SKU had / replaced with _
 		$to_arr   = array( "",    ""     ); 	//WC returns <p> and other HTML tags on some fields
+		$slug_from = array( "-" );
+		$slug_to = array( " " );
                 foreach( $data as $product )
                 {
                         $match=0;
@@ -394,7 +396,8 @@ class woo_interface extends table_interface
                                         else
 					{
 						$ret = str_replace( $from_arr, $to_arr, $product->$find );
-						if(  strcasecmp( $ret, $this->$find ) == 0 OR strcasecmp( $product->$find, $this->$find ) == 0 ) 
+						$slug = str_replace( $slug_from, $slug_to, $product->$find );
+						if( strcasecmp( $slug, $this->$find ) == 0 OR strcasecmp( $ret, $this->$find ) == 0 OR strcasecmp( $product->$find, $this->$find ) == 0 ) 
 	                                        {
 	                				$this->notify( __METHOD__ . ":" . __LINE__ . " SUCCESS Matched field " . $find . " with value "  . $this->$find, "DEBUG" );
 							if( isset( $this->match_worth[$find] ) )
@@ -411,7 +414,7 @@ class woo_interface extends table_interface
 						else
 						{
                 					//$this->notify( __METHOD__ . ":" . __LINE__ . " Match on Field :" . $find . ": FAILED: " . $product->$find . "(" . $ret .  ")::"  . $this->$find, "DEBUG" );
-                					$this->notify( __METHOD__ . ":" . __LINE__ . " Match on Field :" . $find . ": FAILED: " . $product->$find . "::"  . $this->$find, "DEBUG" );
+                					$this->notify( __METHOD__ . ":" . __LINE__ . " Match on Field :" . $find . ": FAILED: " . $product->$find . "::"  . $this->$find . "//" . $slug . "//" . $ret, "DEBUG" );
 						}
 					}
                                 }

@@ -487,13 +487,29 @@ class woo_rest
 	function put( $endpoint, $data = [], $client = null )
 	{
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
+		$id = null;
 		if( !isset( $this->client ) AND ( ! is_null( $client ) ) )
 			$this->client = $client;
+		//20200617 KSF Altered to use client and client->id if it is passed in.
+		//Why pass in client if we don't want to use the data?
+		if( ! is_null( $client ) )
+		{
+			if( isset( $client->id ) )
+				$id = $client->id;
+		}
+		else if( isset( $this->client->id ) )
+		{
+			$id = $this->client->id;
+		}
 		try {
-			if( ! isset( $this->client->id ) )
-				throw new Exception( "Client ID needed for update (put) not set", KSF_FIELD_NOT_SET );
-			$end = $endpoint . "/" . $this->client->id;
-			$this->notify( __METHOD__ . ":" . __LINE__ . " Using endpoint: " . $end, "DEBUG" );
+			/*
+			if( ! is_null( $id ) )
+			{
+				throw new Exception( "Client ID needed for update (put) not set::" . $id, KSF_FIELD_NOT_SET );
+			}
+			 */
+			$end = $endpoint . "/" . $id;
+			$this->notify( __METHOD__ . ":" . __LINE__ . " Using endpoint: " . $end, "WARN" );
 			$response = $this->wc->put( $end, $data );
 			$this->notify( __METHOD__ . ":" . __LINE__ . " Response from PUT: " . print_r( $response, true ), "DEBUG" );
 		} catch( Exception $e )
@@ -506,6 +522,14 @@ class woo_rest
 					if( false !== stristr( $msg, "woocommerce_product_image_upload_error" ) )
 					{
 						$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $code . ":" . $msg, "WARN" );
+						if( false !== stristr( $msg, "A valid URL was not provided" ) )
+						{
+							$this->notify( __METHOD__ . ":" . __LINE__ . " ACTION make sure the Wordpress filter http_request_host_is_external has been taken care of.  Prevents uploads from off host!", "WARN" );
+						}
+						else if( false !== stristr( $msg, "SSL certificate problem: self signed" ) )
+						{
+							$this->notify( __METHOD__ . ":" . __LINE__ . " ACTION Use another host.  Why is Wordpress so snobbish?", "WARN" );
+						}
 						//complaining about invalid URL. GOOGLE suggests it could be a plugin interfering. 
 						// Removing plugins and changing to IP address also didn't make a difference.
 						// changing to v2 vice v3 didn't help neither.
@@ -515,11 +539,16 @@ class woo_rest
 					
 					if( stristr( $e->getMessage(), "product_invalid_sku" ) )
 					{
-						$this->notify( __METHOD__ . ":" . __LINE__ . " Invalid or Dupe SKU: " . $this->sku, "ERROR" );
+						$this->notify( __METHOD__ . ":" . __LINE__ . " Invalid or Dupe SKU: " . $this->sku . "//" . $data['sku'], "ERROR" );
 						//Try again without SKU set for update.
 						unset( $data['sku'] );	//DATA is JSON encoded.  Does this do what we intend?
-						$response = $this->put( $endpoint, $data, $client );
-						return $response;
+						try {
+							$this->notify( __METHOD__ . ":" . __LINE__ . " Try Again with reset SKU", "WARN" );
+							$response = $this->put( $endpoint, $data, $client );
+							return $response;
+						} catch( Exception $e )	{
+							throw $e;
+						}
 					}
 					 
 					$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $code . ":" . $msg, "ERROR" );

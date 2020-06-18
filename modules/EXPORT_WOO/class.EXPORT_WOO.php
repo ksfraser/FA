@@ -895,14 +895,19 @@ class EXPORT_WOO extends generic_fa_interface
 		require_once( 'class.woo_product.php' );
 		$woo_product = new woo_product( $this->woo_server, $this->woo_rest_path, $this->woo_ck, $this->woo_cs, $this->environment, $this );
 		$woo_product->debug = $this->debug;
-		$sentcount = $woo_product->send_products();
-		//$sentcount = $woo_product->send_simple_products();
-		//If we haven't timed out...
-		$updatecount = $woo_product->update_simple_products();
 
-            	display_notification( $sentcount . " Products sent and " . $updatecount . " updated.");
-		$this->call_table( 'export_rest_product', "Export Another" );
-		$this->call_table( 'export_rest_products', "Export ALL Another" );
+		require_once( 'class.model_woo.php' );
+		$model_woo = new model_woo( $woo_product->serverURL, $woo_product->key, $woo_product->secret, $woo_product->options, $this );
+		$model_woo->debug = $this->debug;	
+
+		$sentcount = 0;
+		$res = $model_woo->all_product_ids( $this->test_max_send );	//returns only products that have a woo_id (i.e. on WC)
+		foreach( $res as $stock_id )
+		{
+			$woo_product->send_images( $stock_id, $this );
+			$sentcount++;
+		}
+            	display_notification( $sentcount . " Products sent Pictures" );
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 	}
 	/***********************************************************************
