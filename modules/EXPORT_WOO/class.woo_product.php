@@ -104,6 +104,7 @@ class woo_product extends woo_interface {
 	var $b_send_images;	//!< bool whether we should send images.  Func of name too
 	var $pz_model_woo;	//!< place to store model_woo object
 	var $woo_prod_variation_attributes;	//!< object
+	var $b_woo_has_sku;	//!<bool
 
 	/***************************************************************************************//**
 	 *
@@ -137,6 +138,7 @@ class woo_product extends woo_interface {
 		$this->match_worth['short_description'] = 1;
 		$this->match_need = 2;
 		$this->search_array = array( "woo_id", "name", "slug", "sku", "description", "short_description" );
+		$this->b_woo_has_sku = false;
 		return;
 	}
 	//function notify (inherited from woo_interface)
@@ -214,6 +216,7 @@ class woo_product extends woo_interface {
 			'variations',
 			'grouped_products',
 			'menu_order',
+			'b_woo_has_sku'
 		);
 	}
 	/*********************************************************************************************//**
@@ -382,6 +385,8 @@ class woo_product extends woo_interface {
 			if( $response )
 			{
 				$this->products_sent++;
+				if( isset( $response->sku ) AND strlen( $response->sku ) > 1 AND strcmp( $response->sku, $this->stock_id ) == 0 )
+					$this->b_woo_has_sku = true;
 				//Need to update the woo_id in _woo
 				$woo = $this->model_woo();
                 		$woo->stock_id = $this->stock_id;
@@ -531,6 +536,21 @@ class woo_product extends woo_interface {
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
 		return $response;
 	}
+	/********************************************************************************//**
+	 * Retreive and set sale data for the sku
+	 *
+	 * Currently FA does not have a "sale" function.  I will have to add a module.
+	 * Until that time, we set the values to null.  
+	 * @params none
+	 * @returns bool
+	 * *********************************************************************************/
+	function get_sale_data()
+	{
+		$this->sale_price = null;
+		$this->date_on_sale_from = null;
+		$this->date_on_sale_to = null;
+		return TRUE;
+	}
 	/*******************************************************************************//**
 	 * Grab data out of the WOO table using the woo class and populate our fields.
 	 *
@@ -589,9 +609,12 @@ class woo_product extends woo_interface {
 		$this->permalink = null;
 		if( isset( $this->price ) )
 			$this->regular_price = $this->price;
+		$this->get_sale_data();
+		/*
 		$this->sale_price = null;
 		$this->date_on_sale_from = null;
 		$this->date_on_sale_to = null;
+		 */
 		if( $this->is_inactive() )
 		{
 			$this->status = "private";
@@ -1120,11 +1143,16 @@ class woo_product extends woo_interface {
 	 * Send SKU as an update
 	 *
 	 * @param string stock_id optional if this->stock_id set
-	 * @returns bool were we able to process a stock_id
+	 * @returns bool|object were we able to process a stock_id
 	 * *******************************************************************************/
 	/*@bool@*/function send_sku( $stock_id = null, $caller )
 	{
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
+		if( $this->b_woo_has_sku )
+		{
+			//WC already has _our_ sku so not sending again.
+			return FALSE;
+		}
 		if( isset( $stock_id )  )
 			$this->stock_id = $stock_id;
 		if( !isset( $this->stock_id ) )

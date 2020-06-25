@@ -23,9 +23,11 @@ ini_set('xdebug.auto_trace', 2);
 include_once('config_api.php');
 
 global $security_areas, $security_groups, $security_headings, $path_to_root, $db, $db_connections;
+global $path_to_root, $_SESSION;
 
 $page_security = 'SA_API';
 
+//include_once (FA_ROOT . "/session-custom.inc");
 include_once (API_ROOT . "/session-custom.inc");
 include_once (API_ROOT . "/vendor/autoload.php");
 
@@ -45,7 +47,7 @@ include_once(FA_ROOT . "/includes/data_checks.inc");
 $rest = new \Slim\Slim(array(
 	'log.enabled' => true,
 	'mode' => 'debug',
-	'debug' => true
+	'debug' => true 
 ));
 $rest->setName('SASYS');
 
@@ -489,6 +491,11 @@ $rest->get('/sales/:trans_type/', function($trans_type) use ($rest){
 // ------------------------------- Sales Order Entry -------------------------------
 
 // Init API
-$rest->run();
+try {
+	$rest->run();
+} catch( Exception $e )
+{
+	$rest->run();
+}
 
 ?>

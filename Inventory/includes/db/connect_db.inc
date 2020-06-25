@@ -24,7 +24,7 @@ function set_global_connection($company=-1)
 
 	$connection = $db_connections[$company];
 
-	$db = @mysql_connect($connection["host"], $connection["dbuser"], $connection["dbpassword"]);
+	$db = mysql_connect($connection["host"], $connection["dbuser"], $connection["dbpassword"]);
 		mysql_select_db($connection["dbname"], $db);
 	///// From MySql release 5.6.6 the sql_mode is no longer empty as it was prior to
 	///// this release. Just for safety we set it empty for all 5.6 release and higher.

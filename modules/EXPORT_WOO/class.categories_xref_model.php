@@ -15,7 +15,8 @@ require_once( 'class.woo_interface.php' );
  * Current design is this class updates the table.
  * 
  ******************************************************/
-class categories_xref_model extends woo_interface {
+//class categories_xref_model extends woo_interface {
+class categories_xref_model extends MODEL {
 	var $fa_cat;
 	var $woo_cat;
 	var $description;

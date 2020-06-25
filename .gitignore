@@ -2,3 +2,7 @@
 *.swo
 *~
 tmp*
+*debug_log.txt
+modules/EXPORT_WOO/html
+modules/EXPORT_WOO/latex
+*.sw?
