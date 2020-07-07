@@ -391,7 +391,9 @@ class woo_product extends woo_interface {
 				$woo = $this->model_woo();
                 		$woo->stock_id = $this->stock_id;
                 		$woo->woo_id = $this->id;
-                		$woo->update_woo_id( $this->id );
+				$woo->update_woo_id( $this->id );
+				//cleanup
+				unset( $woo );
 				//Need to send the images for this product
 				$this->send_images( null, $this );
 				$this->send_sku( null, $this );
@@ -450,9 +452,17 @@ class woo_product extends woo_interface {
 				//We should reset the woo_id - case of rebuilding a store with no match
 				$this->notify( __METHOD__ . ":" . __LINE__ . " Resetting woo_id as there was no match" . __METHOD__, "WARN" );
 				$woo = $this->model_woo();
-				$woo->update_woo_id( '' );
+				$woo->woo_id = '';
+				$woo->update_woo_id();
 			} 
 		 	/*****************!MANTIS 235 *************************************/
+		//20200702 KSF We don't appear to be touching the woo_last_update timestamp when we get this far,
+		//so we are always updating the same entries over and over :(
+			$woo = $this->model_woo();
+			$woo->woo_id = $this->id;
+			$woo->update_woo_id();
+			$this->notify( __METHOD__ . ":" . __LINE__ . " Update woo table setting woo_last_update?" . __METHOD__, "DEBUG" );
+		//!20200702
 			 /*****************MANTIS 235 *************************************/
 			//if( isset( $this->id ) )	//We added a * -1 to the ID in woo_rest->send on NO MATCH
 			//No point sending images and SKUs on a bad match In fact that clobbers good data
@@ -753,6 +763,10 @@ class woo_product extends woo_interface {
 		{
 			$this->pz_model_woo->reset_values();
 		}
+		//We should probably copy all of our variables ot the model.  But I haven't analysed impact, so...
+		//send_simple products calls us so that the model can search for IDs to send so not set...
+		if( isset( $this->stock_id ) )
+			$this->pz_model_woo->stock_id = $this->stock_id;
 		return $this->pz_model_woo;
 	}
 	/*****************************************************************************//**

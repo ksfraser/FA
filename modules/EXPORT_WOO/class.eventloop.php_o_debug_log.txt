@@ -1,8 +1,0 @@
-Caller set!
-eventloop had event NOTIFY_LOG_INFO with message Adding Module TABS
-eventloop had event NOTIFY_LOG_INFO with message Completed Adding Modules
-eventloop had event NOTIFY_INIT_CONTROLLER_COMPLETE with message Completed Adding Modules
- opening module config file /var/www/html/devel/fhs/frontaccounting/modules/EXPORT_WOO/modules/config.log.php
- opening module config file /var/www/html/devel/fhs/frontaccounting/modules/EXPORT_WOO/modules/config.products.php
-eventloop had event NOTIFY_LOG_INFO with message Module controller_woo_product being added
-woo_product_simple had event NOTIFY_LOG_WARN with message woo_interface::__construct:185 Entering woo_interface::__construct

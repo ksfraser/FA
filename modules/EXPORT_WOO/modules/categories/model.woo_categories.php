@@ -166,17 +166,15 @@ class model_woo_category extends MODEL
 			throw new Exception( "Description not set", KSF_FIELD_NOT_SET );
 		require_once( 'class.categories_xref_model.php' );
 		$xref = new categories_xref_model( null, null, null, null, $this );
-		$xref->fa_cat = $this->fa_id;
-		$xref->woo_cat = $this->id;
-		$xref->description = $this->description;
+		$xref->set_my_values( $this->fa_id, $this->id, $this->description );
 		//We are setting blank descriptions.  WHY?
-		if( $xref->description == '' )
+		if( $this->description == '' )
 		{
 			$this->tell_eventloop( $this, 'NOTIFY_LOG_DEBUG',   __METHOD__ . ":" . __LINE__ . " Blank Description for FA-ID " . $this->fa_id );
 		}
 		else
 		{
-			$this->tell_eventloop( $this, 'NOTIFY_LOG_DEBUG',  __METHOD__ . ":" . __LINE__ . " Description for FA-ID " . $this->fa_id . " is " . $xref->description );
+			$this->tell_eventloop( $this, 'NOTIFY_LOG_DEBUG',  __METHOD__ . ":" . __LINE__ . " Description for FA-ID " . $this->fa_id . " is " . $this->description );
 		}
 		try {
 			$xref->insert_or_update( $this );
@@ -327,6 +325,7 @@ class model_woo_category extends MODEL
 	 * *************************************************************************************/
 	function select_new_categories()
 	{
+		$this->tell_eventloop( $this, 'NOTIFY_LOG_DEBUG',  __METHOD__ . ":" . __LINE__ );
 		$category_sql = "select category_id, description from " . TB_PREF . "stock_category where category_id not in (select fa_cat from " . TB_PREF . "woo_categories_xref ) order by category_id asc";
 		$res = db_query( $category_sql, __LINE__ . " Couldn't select from stock_category" );
 		return $res;
@@ -338,6 +337,7 @@ class model_woo_category extends MODEL
 	 * ****************************************************************************************************/
 	/*@int@*/function send_categories_to_woo( )
 	{
+		$this->tell_eventloop( $this, 'NOTIFY_LOG_DEBUG',  __METHOD__ . ":" . __LINE__ );
 		//$category_sql = "select category_id, description from " . TB_PREF . "stock_category where category_id not in (select fa_cat from " . TB_PREF . "woo_categories_xref ) order by category_id asc";
 		//$res = db_query( $category_sql, __LINE__ . " Couldn't select from stock_category" );
 		$res = $this->select_new_categories();

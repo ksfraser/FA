@@ -15,7 +15,7 @@ require_once( 'class.woo_interface.php' );
  * Current design is this class updates the table.
  * 
  ******************************************************/
-class categories_xref_model extends woo_interface {
+class categories_xref_model extends MODEL {
 	var $fa_cat;
 	var $woo_cat;
 	var $description;
@@ -38,6 +38,22 @@ class categories_xref_model extends woo_interface {
 		$this->table_details['index'][0]['columns'] = "fa_cat,woo_cat";
 		$this->table_details['index'][0]['keyname'] = "fa-woo";
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+       }
+       /********************************************//**
+        * Set the values we need to add an entry to the table
+        *
+        * @param fa_cat FA category's ID
+        * @param wc_cat WC's category ID
+        * @para description
+        * @return bool
+        * *********************************************/
+       function set_my_values( $fa_cat, $wc_cat, $description )
+       {
+               $this->fa_cat = $fa_cat;
+               $this->woo_cat = $wc_cat;
+               $this->description = description;
+               return TRUE;
+
 	}
 	function reset_endpoint() {}
 

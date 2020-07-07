@@ -450,6 +450,11 @@ class model_woo extends woo_interface {
 			$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "ERROR" );
 			throw new InvalidArgumentException( "stock_id" );
 		}
+		if( !isset( $this->woo_id ) )
+		{
+			$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "ERROR" );
+			throw new InvalidArgumentException( "woo_id" );
+		}
 		$updateprod_sql = "update " . $this->table_details['tablename'] . " set
 					woo_id = '" . $this->woo_id . "'";		
 		$updateprod_sql .= ", woo_last_update=now()";

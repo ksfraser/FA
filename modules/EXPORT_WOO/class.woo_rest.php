@@ -119,7 +119,15 @@ class woo_rest
 	 *
 	 * @enduml 
 	 *  
+	 * @startuml
+	 * title Class Constructor
 	 *
+	 * (*) --> "Validate passed in variables"
+	 * --> "set Class Variables from passed in variables"
+	 * --> "Create new Rest Client
+	 * --> (*)
+	 * @enduml 
+	 * 
 	 * @param string Server URL
 	 * @param string OAuth Key
 	 * @param string OAuth Secret
@@ -188,7 +196,9 @@ class woo_rest
 		}
 	}
 	/***********************************//***
-	 * Use our client to log messages
+	 * Send data to WooCommerce
+	 *
+	 * Uses our client to log messages
 	 *
 	 *
 	 * * @startuml
@@ -244,7 +254,37 @@ class woo_rest
 		return $response;
 	}
 	/******************************************************************************************//**
-	* Search WC for a matching item
+	 * Search WC for a matching item
+	 *
+	 * This function returns on the first RESPONSE from WC.
+	 * There is no guarantee that we search ALL fields in search_array.
+	 *   THEREFORE make sure the most important field is listed first!
+	 *
+	 * @startuml
+	 * title send_search
+	 * (*) --> "this->notify()"
+	 * if "search_array" then
+	 * 	->[list] foreach
+	 * 		if "field set"	then
+	 * 			->[field set] "call this->get"
+	 * 			if "fuzzy Match" then
+	 * 				->[match] "return response"
+	 * 			else
+	 * 				->[no match] "Next LOOP"
+	 * 			endif
+	 * 		else
+	 * 			->[field not set] Do Nothing
+	 * 		endif
+	 * 	-->(*) return empty array
+	 * else
+	 * 	->[empty] "throw Exception"
+	 * endif
+	 *
+	 * ->"throw Exception"
+	 *
+	 * -->(*)
+	 * @endum
+	 *
 	* @param endpoint string endpoint
 	* @param client object client to search against
 	* @return array of object
@@ -269,10 +309,71 @@ class woo_rest
 				}
 				//Can you have a zero length field in the middle of an array?  I suppose you could have a NULL
 			}
-			//THIS ISN"T AN EXCEPTION for new - there shouldn't be a match!!
-			//$this->notify( __METHOD__ . ":" . __LINE__ . " Throwing Exception " . __METHOD__, "WARN" );
-			//throw new Exception( "No Match Found", KSF_NO_MATCH_FOUND );
+			//No match found.  Return empty array.
 			return array();
+		}
+		else
+		{
+			$this->notify( __METHOD__ . ":" . __LINE__ . " Throwing Exception " . __METHOD__, "WARN" );
+			throw new Exception( "Search Array not set", KSF_FIELD_NOT_SET );
+		}
+		//Should be impossible to get here!
+		throw new Exception( "We should not be able to reach this point so there is a CODING error" );
+		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
+		return array();
+	}
+	/******************************************************************************************//**
+	 * Search WC for a matching item
+	 *
+	 * We ARE NOT doing any matching in this function
+	 *
+	 * @startuml
+	 * title search
+	 * (*) --> "this->notify()"
+	 * if "search_array" then
+	 * 	->[list] foreach
+	 * 		if "field set"	then
+	 * 			->[field set] "call this->get"
+	 * 			if "fuzzy Match" then
+	 * 				->[match] "return response"
+	 * 			else
+	 * 				->[no match] "Next LOOP"
+	 * 			endif
+	 * 		else
+	 * 			->[field not set] Do Nothing
+	 * 		endif
+	 * 	-->(*) return empty array
+	 * else
+	 * 	->[empty] "throw Exception"
+	 * endif
+	 *
+	 * ->"throw Exception"
+	 *
+	 * -->(*)
+	 * @endum
+	 *
+	* @param endpoint string endpoint
+	* @param client object client to search against
+	* @return array of response objects
+	***********************************************************************************************/
+	/*@array@*/ private function search( $endpoint, $client )
+	{
+		$response_array = array();
+		if(  isset( $client->search_array ) AND is_array( $client->search_array ) )
+		{
+			foreach( $client->search_array as $search_field )
+			{
+				//If the client doesn't have the field set that we are to search, then we can't match against it's value...
+				if( isset( $client->$search_field ) AND strlen( $client->$search_field ) > 1 )
+				{
+					$this->notify( __METHOD__ . ":" . __LINE__ . " Searching for match on field: " . $search_field . ":: Value: " . $client->$search_field, "DEBUG" );
+					$q = array( 'search' => $client->$search_field );
+					$response = $this->get( $endpoint, $q, $client );
+					$response_array[] = $response;
+				}
+			}
+			//No match found.  Return empty array.
+			return $response_array;
 		}
 		else
 		{
@@ -315,8 +416,7 @@ class woo_rest
 					if( isset( $response->id ) )
 					{
 						$client->update_woo_id( $response->id );
-						$this->notify( __METHOD__ . ":" . __LINE__ . " SKU already exists!! ", "WARN" );
-						//throw new Exception( "Send_Update instead of NEW", KSF_FCN_PATH_OVERRIDE );
+						$this->notify( __METHOD__ . ":" . __LINE__ . " Item already exists!! ", "WARN" );
 						$exists = 1;
 					}
 					else
@@ -376,6 +476,10 @@ class woo_rest
 				}
 			}
 			//If it isn't set, we can't update that item!
+			else
+			{
+				return $this->send_new( $endpoint, $data );
+			}
 		}
 		catch (Exception $e)
 		{
@@ -544,6 +648,7 @@ class woo_rest
 					if( stristr( $e->getMessage(), "product_invalid_sku" ) )
 					{
 						$this->notify( __METHOD__ . ":" . __LINE__ . " Invalid or Dupe SKU: " . $this->sku . "//" . $data['sku'], "ERROR" );
+						/*************MANTIS 235 ************************
 						//Try again without SKU set for update.
 						unset( $data['sku'] );	//DATA is JSON encoded.  Does this do what we intend?
 						try {
@@ -553,6 +658,8 @@ class woo_rest
 						} catch( Exception $e )	{
 							throw $e;
 						}
+						************MANTIS 235*****************************/
+						throw $e;
 					}
 					 
 					$this->notify( __METHOD__ . ":" . __LINE__ . " ERROR " . $code . ":" . $msg, "ERROR" );
