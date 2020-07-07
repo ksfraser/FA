@@ -376,6 +376,7 @@ class MODEL extends origin
 	 *
 	 * Will eventually throw exceptions!
 	 *
+	 *@return integer primary key
 	 * *****************************************************************************************/
 	function update_table()
 	{
@@ -401,6 +402,7 @@ class MODEL extends origin
 		$sql .= " WHERE '" . $pri . "'='" . $this->$pri . "'";
 		db_query( $sql, "Couldn't update table " . $this->table_details['tablename'] . " for key " .  $pri );	
 		$this->tell_eventloop( $this, 'NOTIFY_LOG_DEBUG', __METHOD__ . ":" . __LINE__ . " Exiting " );
+		return $pri;
 	}
 	/*****************************************************************************//**
 	 *
@@ -450,7 +452,7 @@ class MODEL extends origin
 	 *
 	 *
 	 * This function uses mysql_real_escape_string which is depreciated in 5.5 and removed in php 7.
-	 * @return int Index of last insert
+	 * @return int Index of last insert. -1 on failure
 	 * *********************************************************************************************************/
 	/*int index of last insert*/
 	/*@int@*/function insert_table()
@@ -479,6 +481,7 @@ class MODEL extends origin
 		$values .= ")";
 		$sql .= $fields . $values;
 		//var_dump( $sql );
+		$this->db_insert_id = -1;
 		if( $fieldcount > 0 )
 			db_query( $sql, "Couldn't insert into table " . $this->table_details['tablename'] . " for " .  $sql );	
 		else
