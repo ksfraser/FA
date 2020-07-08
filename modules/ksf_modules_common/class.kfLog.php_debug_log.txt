@@ -1,4 +1,3 @@
-Dec 02 09:44:39  [alert] eventloop had event NOTIFY_LOG_INFO with message Completed Adding Modules
-Dec 02 09:44:39  [alert] eventloop had event NOTIFY_INIT_CONTROLLER_COMPLETE with message Completed Adding Modules
-Dec 02 09:44:50  [alert] eventloop had event NOTIFY_LOG_INFO with message Completed Adding Modules
-Dec 02 09:44:50  [alert] eventloop had event NOTIFY_INIT_CONTROLLER_COMPLETE with message Completed Adding Modules
+eventloop had event NOTIFY_LOG_INFO with message Adding Module TABS
+eventloop had event NOTIFY_LOG_INFO with message Completed Adding Modules
+eventloop had event NOTIFY_INIT_CONTROLLER_COMPLETE with message Completed Adding Modules
