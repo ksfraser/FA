@@ -1,5 +1,7 @@
 <?php
 
+require_once( dirname( __FILE__ ) . '/../../../ksf_modules_common/class.VIEW.php' );
+
 class view_woo_categories extends VIEW
 {
 	var $model;
@@ -12,6 +14,12 @@ class view_woo_categories extends VIEW
 		$this->model->master_form();
 	}
 
+	function export_categories_form()
+        {
+        }
+        function exported_categories_form()
+        {
+        }
 
 }
 

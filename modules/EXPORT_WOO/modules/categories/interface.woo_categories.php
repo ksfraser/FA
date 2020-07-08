@@ -24,7 +24,7 @@
  * **********************************************************************************/
 
 //require_once( 'class.woo_rest.php' );	//Part of woo_interface
-require_once( 'class.woo_interface.php' );
+require_once( dirname( __FILE__ ) . '/../../class.woo_interface.php' );
 
 class model_woo_category extends woo_interface{
 	var $id;		//	integer 	Unique identifier for the resource.
@@ -73,92 +73,25 @@ class model_woo_category extends woo_interface{
 	{
 		$this->endpoint = "products/categories";
 	}
-	function define_table()
-	{
-		$this->fields_array[] = array('name' => 'woo_category_id', 	'type' => 'int(11)', 		'comment' => 'Index.', 'readwrite' => 'read', 'auto_increment' => 'anything');
-		$this->fields_array[] = array('name' => 'updated_ts', 		'type' => 'timestamp', 'null' => 'NOT NULL', 'default' => 'CURRENT_TIMESTAMP', 'readwrite' => 'read');
-		$this->fields_array[] = array('name' => 'updated_ts_woo',	'type' => 'timestamp', 'null' => 'NOT NULL', 'default' => 'CURRENT_TIMESTAMP', 'readwrite' => 'read');
-
-		$this->fields_array[] = array('name' => 'id', 			'type' => 'int(11)', 		'comment' => ' 	Item ID', 'readwrite' => 'read');
-		$this->fields_array[] = array('name' => 'name', 		'type' => 'varchar(64)', 	'comment' => ' 	Category Name.', 'readwrite' => 'readwrite');
-		$this->fields_array[] = array('name' => 'slug', 		'type' => 'varchar(64)', 	'comment' => ' 	Category Slug.', 'readwrite' => 'readwrite');
-		$this->fields_array[] = array('name' => 'parent', 		'type' => 'int(11)', 		'comment' => ' 	Parent Category ID.', 'readwrite' => 'readwrite');
-		$this->fields_array[] = array('name' => 'description', 		'type' => 'varchar(64)', 	'comment' => 'Category Description.', 'readwrite' => 'readwrite'); 	
-		$this->fields_array[] = array('name' => 'display', 		'type' => 'varchar(64)', 	'comment' => 'Display Type.  default/caregories/subcategories/both.', 'readwrite' => 'readwrite'); 	
-		$this->fields_array[] = array('name' => 'image', 		'type' => 'blob', 		'comment' => ' Category Image.', 'readwrite' => 'readwrite');
-		$this->fields_array[] = array('name' => 'menu_order', 		'type' => 'int(11)', 		'comment' => ' Menu Order.', 'readwrite' => 'readwrite');
-		$this->fields_array[] = array('name' => 'count', 		'type' => 'int(11)', 		'comment' => ' number of published categories', 'readwrite' => 'read');
-		$this->fields_array[] = array('name' => 'fa_id',		'type' => 'int(11)', 		'comment' => ' 	FA Category ID', 'readwrite' => 'read');
-
-		$this->table_details['tablename'] = $this->company_prefix . "woo_category";
-		$this->table_details['primarykey'] = "woo_category_id";
-		$this->table_details['index'][0]['type'] = 'unique';
-		$this->table_details['index'][0]['columns'] = "name";
-		$this->table_details['index'][0]['keyname'] = "u-name";
-		$this->table_details['index'][1]['type'] = 'unique';
-		$this->table_details['index'][1]['columns'] = "slug";
-		$this->table_details['index'][1]['keyname'] = "u-slug";
-	}
-	function build_properties_array()
-	{
-		/*All properties*/
-		$this->properties_array = array(
-			'id',
-			'name',
-			'slug',
-			'description',
-			'parent',
-			'image',
-			'menu_order',
-			'count'
-		);
-	}
-	function build_write_properties_array()
-	{
-		/*Took the list of properties, and removed the RO ones*/
-		$this->write_properties_array = array(
-			'name',
-			'slug',
-			'description',
-			'parent',
-			'image',
-			'menu_order',
-		);
-	}
+	//function define_table()	//MODEL
 	function fuzzy_match( $data )
 	{
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
 		if( !isset( $data[0] ) )
 			throw new Exception( "fuzzy_match expects a data array.  Not passed in", KSF_VALUE_NOT_SET );
 		$match=0;
-/*
-			echo "<br /><br />" . __METHOD__ . ":" . __LINE__ . " DEVELOPMENT----<br /> ";
-			var_dump( $this );
-			echo "<br /><br />"; 
-			var_dump( $data );
-*/
-/*
-			echo "<br /><br />"; 
-			var_dump( $data[0] );
-			echo "<br /><br />"; 
-			var_dump( $data[0]->name );
-			echo "<br /><br />" . __METHOD__ . ":" . __LINE__ . " ----DEVELOPMENT<br /> ";
-*/
 		if( ! strcasecmp( $data[0]->name, $this->name ) )
 		{
 			$match++; 
 			$match++; 
-//			echo  __METHOD__ . ":" . __LINE__ . " MATCH name<br /> ";
 		}
 		if( ! strcasecmp( $data[0]->slug, $this->slug ) )
 		{
 			$match++; 
-//			echo __METHOD__ . ":" . __LINE__ . " MATCH slug<br /> ";
 		}
 		if( ! strcasecmp( $data[0]->description, $this->description ) )
 		{
 			$match++; 
-//			echo __METHOD__ . ":" . __LINE__ . " MATCH description<br /> ";
 		}
 		if( $match > 1 )
 		{
@@ -174,25 +107,6 @@ class model_woo_category extends woo_interface{
 		
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
 		return FALSE;
-	}
-	/**********************************************************************************//**
-	 *
-	 *
-	 * ***********************************************************************************/
-	function error_handler( /*@Exception@*/$e )
-	{
-				$this->log_exception( $e, $client );
-		if ( $e instanceof WC_API_Client_HTTP_Exception ) 
-		{
-			//$msg = $e->getMessage();
-			////var_dump( $e->get_request() );
-			////var_dump( $e->get_response() );
-			switch( $e->getCode() ) {
-			default:
-				echo "<br />" . __FILE__ . ":" . __LINE__ . ":Unhandled Error Code: " . $e->getCode() . "<br />";
-				break;
-			}
-		}
 	}
 	/**********************************************************************************//**
 	 * Return the list of categories from WooCommerce as an array of stdClass objects
@@ -628,80 +542,6 @@ class model_woo_category extends woo_interface{
 		 *	curl https://example.com/wp-json/wc/v1/products/categories -u consumer_key:consumer_secret
 		*/
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
-	}
-	/****************************************************************************************************//**
-	 * Send categories to WooCommerce
-	 *
-	 * @returns count of categories sent
-	 * ****************************************************************************************************/
-	/*@int@*/function send_categories_to_woo( )
-	{
-		$this->notify( __METHOD__ . ":" . __LINE__ . " Entering " . __METHOD__, "WARN" );
-		$category_sql = "select category_id, description from " . TB_PREF . "stock_category where category_id not in (select fa_cat from " . TB_PREF . "woo_categories_xref ) order by category_id asc";
-		$res = db_query( $category_sql, __LINE__ . " Couldn't select from stock_category" );
-		$catcount = 0;
-		$sentcount = 0;
-		while( $cat_data = db_fetch_assoc( $res ) )
-		{
-			$this->reset_values();
-			$catcount++;
-			if( $this->debug > 0 )
-			{
-				$this->notify( __METHOD__ . ":" . __LINE__ . " Var_dump category data from stock category", "WARN" );
-				echo  __METHOD__ . ":" . __LINE__ . " Var_dump category data from stock category<br />";
-				var_dump( $cat_data );
-			}
-			//No point trying to send a blank item to Woo
-			if( strlen( $cat_data['description'] ) > 1 )
-			{
-				$this->id = null;
-				$this->name = $cat_data['description'];
-				$this->slug= $cat_data['description'];
-				$this->description= $cat_data['description'];
-				//$this->image;
-				$this->menu_order= $cat_data['category_id'];
-				$this->fa_id= $cat_data['category_id'];
-				$this->notify( __METHOD__ . ":" . __LINE__ . " Sending  " . $this->name . "::ID " . $this->fa_id, "NOTIFY" );
-				try
-				{
-					$ret = $this->create_category();
-					if( $ret == TRUE )
-						$sentcount++;
-				}
-				catch( OutOfBoundsException $e )
-				{
-					$this->log_exception( $e, $client );
-					//Reset since we sent an item that exists.  Resulting in us loading from WooCommerce the list of categories
-					$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving (recursively) " . __METHOD__, "WARN" );
-					return $this->send_categories_to_woo() + $sendcount;
-				}
-				catch( Exception $e )
-				{
-					//Mantis 213 triggered a refactor
-					$code = $e->getCode();
-					$msg = $e->getMessage();
-					switch( $code )
-					{
-						case '400':
-							if( strstr( $msg, "term_exists" ) )
-							{
-								$this->notify( __METHOD__ . ":" . __LINE__ . ":" . " TERM (Category) EXISTS for " . $this->name, "WARN" );
-								//update xref so we don't try to resend.
-								break;
-							}
-						default:
-							$this->notify( __METHOD__ . ":" . __LINE__ . ":" . __METHOD__ . " Exception " . $code . "::" . $msg, "ERROR" );
-							throw $e;
-					}
-				}
-			}
-			else
-				if( $this->debug >= 0 )
-					$this->notify( __METHOD__ . ":" . __LINE__ . " CatID " . $cat_data['category_id'] . " Strlen of description < 1.  Sent: " . $sentcount . " Catcount: " . $catcount, "ERROR" );
-				//display_notification( "Woo seems to have all of our categories" );
-		}
-		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
-		return $sentcount;
 	}
 
 }

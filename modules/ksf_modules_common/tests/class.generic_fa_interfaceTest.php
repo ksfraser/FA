@@ -2,6 +2,7 @@
 declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
+require_once( dirname( __FILE__ ) .  '/defines.php' );
 require_once( dirname( __FILE__ ) .  '/../class.generic_fa_interface.php' );
 
 global $db_connections;	//FA uses for DB stuff
@@ -11,6 +12,22 @@ $_SESSION['wa_current_user']->company = 1;
 $_SESSION["wa_current_user"]->cur_con = 1;
 $db_connections[$_SESSION["wa_current_user"]->cur_con]['tbpref'] = '1_';
 $db_connections[1]['tbpref'] = '1_';
+if( ! function_exists( 'user_company' ) )
+{
+	function user_company() {}
+}
+if( ! function_exists( 'find_submit' ) )
+{
+	function find_submit() {}
+}
+if( ! function_exists( 'display_error' ) )
+{
+	function display_error( $d ) {}
+}
+if( ! function_exists( 'display_notification' ) )
+{
+	function display_notification( $d ) {}
+}
 
 
 //If asserts fail returning type NULL that is because the field
@@ -33,6 +50,7 @@ class generic_fa_interfaceTest extends TestCase
 	{
 		$o = new generic_fa_interface( null, null, null, null, $this->pref_tablename );
 		$this->assertInstanceOf( generic_fa_interface::class, $o );
+		//$this->assertSame( $this->pref_tablename , $o->get( 'pref_tablename' ) );
 		return $o;
 	}
 	/**
@@ -272,7 +290,7 @@ class generic_fa_interfaceTest extends TestCase
 	 * @depends installTest
 	 * @depends displayTest
 	 */
-	public function runTest( $l, $i, $d )
+	public function run_Test( $l, $i, $d )
 	{
 		//if found is set, we load prefs else install.
 		$this->assertTrue( $l->run() );

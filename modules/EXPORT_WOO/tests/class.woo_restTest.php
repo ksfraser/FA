@@ -81,7 +81,7 @@ class woo_restTest extends TestCase
 		//->notify is inherited from generic_fa_interface.
 		$this->expectException( $o->send( "test", "test", null ) );
 		$this->expectException( $o->send( "test", "test", null ) );	//Bad endpoint so I expect the WC library to throw an exception
-		$this->assertIsArray( $o->send( "product",array( "test" ), $this ) );	//Should run send_new
+		$this->assertIsArray( $o->send( "product",array( "test" ), $this ) );	//Should run send_new_test
 		$o->set( 'id', 1 );
 		$this->assertIsArray( $o->send( "product",array( "test" ), $this ) );	//Should run send_update
 	}
@@ -100,7 +100,7 @@ class woo_restTest extends TestCase
 		$this->assertIsArray( $o->send_search( "test", $this ) );		//search_array is not empty so there MIGHT be a return array
 
 		$this->expectException( $o->send( "test", "test", null ) );	//Bad endpoint so I expect the WC library to throw an exception
-		$this->assertIsArray( $o->send( "product",array( "test" ), $this ) );	//Should run send_new
+		$this->assertIsArray( $o->send( "product",array( "test" ), $this ) );	//Should run send_new_test
 		$o->set( 'id', 1 );
 		$this->assertIsArray( $o->send( "product",array( "test" ), $this ) );	//Should run send_update
 	}
@@ -109,18 +109,18 @@ class woo_restTest extends TestCase
 	/**
 	 * @depends testInstanceOf
 	 */
-	public function testsend_new( $o )
+	public function testsend_new_test( $o )
 	{
 		//->notify is inherited from generic_fa_interface.
-		$this->expectException( $o->send_new( "test", null ) );	//search_array can't be set so exception
-		$this->expectException( $o->send_new( "test", $this ) );	//search_array isn't set so exception
+		$this->expectException( $o->send_new_test( "test", null ) );	//search_array can't be set so exception
+		$this->expectException( $o->send_new_test( "test", $this ) );	//search_array isn't set so exception
 		$this->search_array = array();
-		$this->assertIsArray( $o->send_new( "test", $this ) );		//search_array is empty so returned array should also be.
+		$this->assertIsArray( $o->send_new_test( "test", $this ) );		//search_array is empty so returned array should also be.
 		$this->search_array = array( 'client' );
-		$this->assertIsArray( $o->send_new( "test", $this ) );		//search_array is not empty so there MIGHT be a return array
+		$this->assertIsArray( $o->send_new_test( "test", $this ) );		//search_array is not empty so there MIGHT be a return array
 
 		$this->expectException( $o->send( "test", "test", null ) );	//Bad endpoint so I expect the WC library to throw an exception
-		$this->assertIsArray( $o->send( "product",array( "test" ), $this ) );	//Should run send_new
+		$this->assertIsArray( $o->send( "product",array( "test" ), $this ) );	//Should run send_new_test
 		$o->set( 'id', 1 );
 		$this->assertIsArray( $o->send( "product",array( "test" ), $this ) );	//Should run send_update
 	}

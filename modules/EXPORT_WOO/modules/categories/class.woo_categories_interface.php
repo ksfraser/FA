@@ -35,6 +35,8 @@ menu_order	integer	Menu order, used to custom sort the resource.
 count	integer	Number of published products for the resource.
  * */
 
+require_once( '../../class.woo_interface.php'  );
+
 /****************************************************************
  *
  * Depends on client->model

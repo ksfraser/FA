@@ -385,6 +385,15 @@ class woo_rest
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
 		return array();
 	}
+	function send_new_test( $endpoint, $data )
+	{
+		try {
+			return $this->send_new( $endpoint, $data );
+		} catch( Exception $e )
+		{
+			throw $e;
+		}
+	}
 	/******************************************************************************************//**
 	* Send an item to WC that we haven't sent before (lack of WC ID in our table)
 	*
@@ -443,6 +452,15 @@ class woo_rest
 		$response = $this->$act( $endpoint, $data, $client );
 		$this->notify( __METHOD__ . ":" . __LINE__ . " Leaving " . __METHOD__, "WARN" );
 		return $response;
+	}
+	function send_update_test( $endpoint, $data )
+	{
+		try {
+			return $this->send_update( $endpoint, $data );
+		} catch( Exception $e )
+		{
+			throw $e;
+		}
 	}
 	/******************************************************************************************//**
 	* Send updates to an item in WC

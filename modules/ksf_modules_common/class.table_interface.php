@@ -7,9 +7,9 @@
 require_once( 'defines.inc.php' );
 require_once( 'class.kfLog.php' );
 
-global $path_to_root;
-if( !isset( $path_to_root ) )
-	$path_to_root = '../..';
+//global $path_to_root;
+//if( !isset( $path_to_root ) )
+	$path_to_root = dirname( __FILE__ ) . '/../..';
 require_once( $path_to_root . "/includes/db/connect_db.inc" );	//db_escape
 
 /*****************************************************************************************//**

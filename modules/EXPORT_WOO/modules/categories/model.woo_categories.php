@@ -6,9 +6,19 @@
  * */
 
 /*******************************************************************************//**
+ * The model class to store data for send/recv from WooCommerce
  *
- *	Sends a category to WooCommerce and updates xref table
  *	If gets an error, then requests the data for the category (so can xref)
+ *
+ *	BREQs:
+ *		236  Have categories match from FA to WC
+ *		237  Have FA push categories to WC
+ *		238  Have FA pull categories from WC
+ *		239  Tag products with secondary categories in FA (module for FA)
+ *
+ *	FREQ:
+ * 		242  Have FA push NEW categories to WC
+* 		243  Upon successful push, update model_woo with WC ID of category.
  *
  *TODO:
  *	Get the master list of categories and then insert into FA any that 
@@ -22,6 +32,7 @@
  * 	it doesn't necessarily get added into _xref
  *
  * **********************************************************************************/
+require_once( dirname( __FILE__ ) . '/../../../ksf_modules_common/class.MODEL.php' );
 
 
 class model_woo_category extends MODEL
@@ -36,6 +47,8 @@ class model_woo_category extends MODEL
 	var $menu_order;		//	integer 	Menu order, used to custom sort the resource.
 	var $count;		// 	integer 	Number of published categorys for the resource.   RO
 	var $fa_id;
+	var $updated_ts;	//	timestamp
+	var $woo_last_updated;	//	datetime
 	var $collection;
 
 	//var $woo_rest;
@@ -54,13 +67,14 @@ class model_woo_category extends MODEL
 	*************************************************/
 	function reset_endpoint()
 	{
+		throw new Exception( "MODEL shouldn't have endpoints!" );
 		$this->endpoint = "products/categories";
 	}
 	function define_table()
 	{
 		$this->fields_array[] = array('name' => 'woo_category_id', 	'type' => 'int(11)', 		'comment' => 'Index.', 'readwrite' => 'read', 'auto_increment' => 'anything');
 		$this->fields_array[] = array('name' => 'updated_ts', 		'type' => 'timestamp', 'null' => 'NOT NULL', 'default' => 'CURRENT_TIMESTAMP', 'readwrite' => 'read');
-		$this->fields_array[] = array('name' => 'updated_ts_woo',	'type' => 'timestamp', 'null' => 'NOT NULL', 'default' => 'CURRENT_TIMESTAMP', 'readwrite' => 'read');
+		$this->fields_array[] = array('name' => 'woo_last_updated',	'type' => 'datetime', 'null' => 'NOT NULL', 'default' => 'now()', 'readwrite' => 'readwrite');
 
 		$this->fields_array[] = array('name' => 'id', 			'type' => 'int(11)', 		'comment' => ' 	Item ID', 'readwrite' => 'read');
 		$this->fields_array[] = array('name' => 'name', 		'type' => 'varchar(64)', 	'comment' => ' 	Category Name.', 'readwrite' => 'readwrite');
@@ -326,7 +340,7 @@ class model_woo_category extends MODEL
 	function select_new_categories()
 	{
 		$this->tell_eventloop( $this, 'NOTIFY_LOG_DEBUG',  __METHOD__ . ":" . __LINE__ );
-		$category_sql = "select category_id, description from " . TB_PREF . "stock_category where category_id not in (select fa_cat from " . TB_PREF . "woo_categories_xref ) order by category_id asc";
+		$category_sql = "select category_id, description from " . TB_PREF . "stock_category where inactive = '0' and category_id not in (select fa_id from " . 	$this->table_details['tablename'] . " ) order by category_id asc";
 		$res = db_query( $category_sql, __LINE__ . " Couldn't select from stock_category" );
 		return $res;
 	}

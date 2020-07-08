@@ -6,7 +6,30 @@ Free software under GNU GPL
 ***********************************************/
 
 $page_security = 'SA_EXPORTWOO';
-$path_to_root="../..";
+//if( ! defined( $path_to_root ) )
+//{
+	$path_to_root= dirname( __FILE__ ) . "/../..";
+//}
+
+//	require_once( 'tests/defines.php' );	//sets variables for testing/CLI
+/*
+if( ! function_exists( 'user_company' ) )
+{
+        function user_company() {}
+}
+*/
+if( ! function_exists( 'find_submit' ) )
+{
+        function find_submit() {}
+}
+if( ! function_exists( 'display_error' ) )
+{
+        function display_error( $d ) {}
+}
+if( ! function_exists( 'display_notification' ) )
+{
+        function display_notification( $d ) {}
+}
 
 include($path_to_root . "/includes/session.inc");
 add_access_extensions();

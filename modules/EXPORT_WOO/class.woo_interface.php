@@ -39,8 +39,8 @@
 		// $ -> );
  * *******************************************************************************************/
 
-require_once( '../ksf_modules_common/class.table_interface.php' );
-require_once( '../ksf_modules_common/defines.inc.php' );
+require_once( dirname( __FILE__ ) . '/../ksf_modules_common/class.table_interface.php' );
+require_once( dirname( __FILE__ ) . '/../ksf_modules_common/defines.inc.php' );
 require_once( 'woo_defines.inc.php' );
 require_once( 'class.woo_rest.php' );
 
