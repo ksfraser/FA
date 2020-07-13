@@ -155,6 +155,8 @@ define( 'KSF_FCN_PATH_OVERRIDE', $eventcount ); $eventcount++;
 define( 'KSF_FCN_NOT_EXIST', $eventcount ); $eventcount++;
 define( 'KSF_LOST_CONNECTION', $eventcount ); $eventcount++;
 define( 'KSF_CONFIG_NOT_EXIST', $eventcount ); $eventcount++;
+define( 'KSF_SEARCHED_VALUE_NOT_FOUND', $eventcount ); $eventcount++;
+define( 'KSF_FCN_REFACTORED', $eventcount ); $eventcount++;
 /************************************************************************//**
  * Data Access levels
  *  Think filesystem RWX values R = 0/1, W = 0/2 and X = 0/4

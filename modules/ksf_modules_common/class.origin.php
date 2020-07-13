@@ -51,8 +51,22 @@ class origin
 	/************************************************************************//**
 	 *constructor
 	 *
-	 *@param $loglevel int PEAR log levels
+	 * @startuml
+	 * partition Origin {
+	 * title Origin Constructor
+	 * (*) --> "Set variables"
+	 * --> "set variables from SESSION"
+	 * --> "call object_var_names()"
+	 * -->(*)
+	 * }
+	 * @enduml
 	 *
+	 * Should we be calling build_interestedin and register_with_eventloop?
+	 * Should attach_eventloop be creating an eventloop if one doesn't exist?
+	 *
+	 *@param $loglevel int PEAR log levels
+	 * @param client Object that uses us.
+	 * @returns null
 	 * ***************************************************************************/
 	function __construct( $loglevel = PEAR_LOG_DEBUG, $client = null )
 	{
@@ -78,6 +92,16 @@ class origin
 		$this->log = array();
 		//Set, with end of constructor values noted
 		$this->object_var_names();
+	}
+	/***************************************************//**
+	*
+	* @since 20200708
+	* @param none
+	* @returns none
+	*********************************************************/
+	function __destruct()
+	{
+		//adding because child class called us and error'd out.
 	}
 	/*********************************************************//**
 	 * Magic call method example from http://php.net/manual/en/language.types.object.php
@@ -394,7 +418,25 @@ class origin
                         $tocall = $this->interested[$event]['function'];
                         $this->$tocall( $obj, $msg );
                 }
-        }
+	}
+	/*************************************************//**
+	 *
+	 * @since 20200712
+	 * @TODO - write Unit Test
+	 * @param Exception object
+	 * @returns null
+	 * **************************************************/
+	function error_handler( Exception $e )
+	{
+		$code = $e->getCode();
+		$msg = $e->getMessage();
+		switch( $code )
+		{
+			default:
+				$this->tell_eventloop( $this, "NOTIFY_LOG_ERROR", $msg );
+		}
+	}
+
 }
 
 /***************DYNAMIC create setter and getter**********************

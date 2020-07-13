@@ -56,6 +56,27 @@ if( ! class_exists( 'controller_origin' ) )
 		var $view;
 		var $model;
 		var $endpoint;
+		/*************************************************//**
+		 *
+		 * @startuml
+		 *  partition Origin {
+	 	* title Origin Constructor
+	 	* (*) --> "Set variables"
+	 	* --> "set variables from SESSION"
+	 	* --> "call object_var_names()"
+	 	* -->(*)
+	 	* }
+		*
+		* partition controller_Origin {
+		* (*) --> "Call Origin Constructor"
+		* --> "Set Mode and Action from POST/GET"
+		* --> "Set mode_callbacks"
+		* --> "Set config_values"
+		* --> "Set tabs"
+		* -->(*)
+		* }
+		* @enduml
+		 * ***************************************************/
 		function __construct(  $client = null )
 		{
 			parent::__construct( null, $client );

@@ -61,7 +61,7 @@ class MODEL extends origin
 	function __construct( $client = null )
 	{
 		if( isset( $client ) )
-			$this->set_var( "client", $client );
+			$this->set( "client", $client, false );
 		if( isset( $client->view ) )
 			$this->view = $client->view;
 
@@ -73,6 +73,7 @@ class MODEL extends origin
 		if( !isset( $this->fields_array ) )
                        $this->fields_array = array();
 		$this->objLog = new kfLog();
+		$this->define_table();
 
 	}
 	function __destruct()
@@ -81,11 +82,15 @@ class MODEL extends origin
 	}
 	function run( $action )
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
 	}
 	function backtrace()
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		echo "<br />";
 		array_walk(debug_backtrace(),create_function('$a,$b','print "{$a[\'function\']}()(".basename($a[\'file\']).":{$a[\'line\']});<br /> ";'));
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
 	}
 	/***************************************************************//**
          *build_interestedin
@@ -96,13 +101,19 @@ class MODEL extends origin
          * ******************************************************************/
         function build_interestedin()
         {
-                $this->interestedin['NOTIFY_INIT_TABLES']['function'] = "create_table";
+       		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
+         	$this->interestedin['NOTIFY_INIT_TABLES']['function'] = "create_table";
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
         }
 	function db_pager( $model )
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
 	}
+	//This is VIEW functionality
 	function db_result2rows()
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		if( isset( $this->db_result ) )
 		{
 			$k = 0;
@@ -140,6 +151,7 @@ class MODEL extends origin
 			}
 
 		}
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
 	}
 	/*********************************************//**
 	 * Set a variable.  Throws exceptions on sanity checks
@@ -148,37 +160,85 @@ class MODEL extends origin
 	 * @param field string Variable to be set
 	 * @param value ... value for variable to be set
  	 * @param native... bool enforce only the variables of the class itself.  default TRUE, which will break code.
-
 	 * @return bool Did we set the value
 	 * **********************************************/
 	/*@bool@*/function set( $field, $value = null, $enforce_only_native_vars = true )//:bool
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		if( !isset( $field )  )
-			throw new Exception( "Fields not set", KSF_FIELD_NOT_SET );
+		{
+			$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
+			throw new Exception( "Fcn VAR Field not set", KSF_VAR_NOT_SET );
+		}
+		$valid = -1;
+		try 
+		{
+			$row = $this->get_fields_array_row( $field );
+			$valid = $this->validate( $value, $row['type'] );
+		} catch( Exception $e )
+		{
+			$this->tell_eventloop( $this, 'NOTIFY_LOG_ERROR', $e->getMessage() );
+			//If we caught an exception the field wasn't found
+			if( true == $enforce_only_native_vars )
+			{
+				$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
+				return false;
+			}
+			else
+			{
+				//If not enforcing carry on.
+			}
+		}
+		try 
+		{
+			if( $valid <> 0  )
+			{
+				//Having looped through fields_array validates the field belongs so setting FALSE on parent call
+				//OR we aren't enforcing anyway
+				$ret = parent::set( $field, $value, false );
+				$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
+				return $ret;
+			}
+			else
+			{
+				$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Value wasn't of valid data type for the field");
+				$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
+				return false;
+			}
+		} catch( Exception $e )
+		{
+			$this->tell_eventloop( $this, 'NOTIFY_LOG_ERROR', $e->getMessage() );
+		}
+		//We should never reach this point.
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
+		return false;
+	}
+	/*******************************************************//**
+	 * Search for the fields_array row that matches the field
+	 *
+	 * Throws an exception on not finding the answer
+	 *
+	 * @param field string name of field to seek in definition
+	 * @returns row array of definition data
+	 * ********************************************************/
+	function get_fields_array_row( $field )
+	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		if( ! isset( $this->fields_array ) )
-			debug_print_backtrace();
+		{
+			$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting via EXCEPTION");
+			throw new Exception( "Class field fields_array not set", KSF_FIELD_NOT_SET );
+		}
 		foreach( $this->fields_array as $row )
 		{
 			if( $field == $row['name'] )
 			{
-				try
-				{
-					if( $this->validate( $value, $row['type'] ) )
-						return parent::set( $field, $value, $enforce_only_native_vars );
-					else
-						return false;
-				}
-				catch(InvalidArgumentException $e)
-				{
-					$this->tell_eventloop( $this, 'NOTIFY_LOG_ERROR', $e->getMessage() );
-				}
-				catch( Exception $e )
-				{
-					$this->tell_eventloop( $this, 'NOTIFY_LOG_NOTICE', $e->getMessage() );
-				}
+				$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting");
+				return $row;
 			}
 		}
-		return true;
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting via EXCEPTION");
+		throw new Exception( "Searched for VAR not found", KSF_SEARCHED_VALUE_NOT_FOUND );
 	}
 	/*******************************************************************************************//**
 	 * Sanity check on passed in data versus table definition (data dictionary)
@@ -189,6 +249,7 @@ class MODEL extends origin
 	 * **********************************************************************************************/
 	/*@bool@*/function validate( $data_value, $data_type )
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		if( strncasecmp( $data_type, "int(1)", 6 ) )
 			$data_type = 'digit';
 		if( strncasecmp( $data_type, "int", 3 ) )
@@ -199,17 +260,39 @@ class MODEL extends origin
 		{
 			case 'bool':
 			case 'boolean':
-					if( $data_value === true ) return true;
-					if( $data_value === false ) return true;
-					if( $data_value == 0 ) return true;
-					if( $data_value == 1 ) return true;
+					if( $data_value === true )
+					{
+						$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
+						return true;
+					}
+					if( $data_value === false )
+					{
+						$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
+						return true;
+					}
+					if( $data_value == 0 )
+					{
+						$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
+						return true;
+					}
+					if( $data_value == 1 ) 
+					{
+						$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
+						return true;
+					}
 					throw new InvalidArgumentException("Expected Boolean.  Received " . $data_value);
 					break;	//fall out of switch and return false
 			case 'string':
+				$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
 				return is_string( $data_value );
 				break;
 			case 'digit':
-				if( $data_value >= 0 AND $data_value <= 9 ) return true;
+				if( $data_value >= 0 AND $data_value <= 9 )
+				{
+					$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
+					return true;
+				}
+				$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
 				return false;
 				break;	//fall out of switch and return false
 			case 'int':
@@ -221,9 +304,11 @@ class MODEL extends origin
 					throw new InvalidArgumentException("Expected INT.  Received " . $data_value);
 				break;
 			default:
+				$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
 				return true;	//data type not found
 		}
 		//throw new InvalidArgumentException();
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
 		return false;
 		/*
 			BadFunctionCallException
@@ -250,10 +335,14 @@ class MODEL extends origin
 	 * ***************************************************************************************************************/
 	/*none*/function select_row( $unused )
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		if( isset( $this->table_details['primarykey'] ) )
 			$key = $this->table_details['primarykey'];
 		else
+		{
+			$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting via EXCEPTION");
 			throw new Exception( "Primary Key not defined.  This function uses that field in the query", KSF_PRIKEY_NOT_DEFINED );
+		}
 		if( ! isset( $this->$key ) )
 		{
 			$this->tell_eventloop( $this, 'NOTIFY_LOG_DEBUG', print_r( $this->table_details, true ) );
@@ -284,7 +373,7 @@ class MODEL extends origin
 	*******************************************************************************************************************/
 	/*@mysql_result@*/function select_table($fieldlist = "*", /*@array@*/$where = null, /*@array@*/$orderby = null, /*@int@*/$limit = null)
 	{
-		$this->tell_eventloop( $this, 'NOTIFY_LOG_DEBUG', __METHOD__ . ":" . __LINE__ . " Entering" );
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		$whereset = FALSE;
 		$sql = "SELECT " . $fieldlist . " from `" . $this->table_details['tablename'] . "`";
 		if( isset( $where ) )
@@ -351,6 +440,7 @@ class MODEL extends origin
 	}
 	function query( $msg )
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		$this->query_result = db_query( $this->sql, $msg );
 		$this->tell_eventloop( $this, 'NOTIFY_LOG_DEBUG', __METHOD__ . ":" . __LINE__ . " Exiting " );
 		return $this->query_result;
@@ -364,9 +454,13 @@ class MODEL extends origin
 	 * *****************************************************************************************/
 	function delete_table()
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		$pri = $this->table_details['primarykey'];
 		if( !isset( $this->$pri ) )
-			throw new Exception( "Primary Key not set", PRIMARY_KEY_NOT_SET );
+		{
+			$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting via EXCEPTION");
+			throw new Exception( "Primary Key not set.  This function requires that key", KSF_PRIKEY_NOT_SET );
+		}
 		$sql = "DELETE from " . $this->table_details['tablename'] . " WHERE " . $pri . " = '" . $this->$pri . "'";
 		db_query( $sql, "Couldn't update table " . $this->table_details['tablename'] . " for key " .  $pri );	
 		$this->tell_eventloop( $this, 'NOTIFY_LOG_DEBUG', __METHOD__ . ":" . __LINE__ . " Exiting " );
@@ -380,10 +474,14 @@ class MODEL extends origin
 	 * *****************************************************************************************/
 	function update_table()
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		$pri = $this->table_details['primarykey'];
 		if( !isset( $this->$pri ) )
-			return;
-			//throw new Exception( "Primary Key field is not set.  This function requires that key" );
+		{
+			$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting via EXCEPTION");
+			throw new Exception( "Primary Key field is not set.  This function requires that key", KSF_PRIKEY_NOT_SET );
+			//return -1;
+		}
 		$sql = "UPDATE `" . $this->table_details['tablename'] . "` set" . "\n";
 		$fieldcount = 0;
 		foreach( $this->fields_array as $row )
@@ -411,6 +509,7 @@ class MODEL extends origin
 	 * ******************************************************************************/
 	/*@bool@*/function check_table_for_id()
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		if( isset( $this->table_details['primarykey'] ) )
 		{
 			$prikey = $this->table_details['primarykey'];
@@ -457,6 +556,7 @@ class MODEL extends origin
 	/*int index of last insert*/
 	/*@int@*/function insert_table()
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		//display_notification( __FILE__ . "::" . __CLASS__ . "::"  . __METHOD__ . ":" . __LINE__, "WARN" );
 		global $db_connection;
 		$sql = "INSERT IGNORE INTO `" . $this->table_details['tablename'] . "`" . "\n";
@@ -492,12 +592,16 @@ class MODEL extends origin
 	}
 	function create_table()
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		if( ! isset( $this->table_details['tablename'] ) )
 		{
 			if( method_exists( $this, 'define_table' ) )
 				$this->define_table();
 			else
+			{
+				$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting via EXCEPTION");
 				throw new Exception( "Table Definition not defined so can't create table", KSF_TABLE_NOT_DEFINED );
+			}
 		}
 		$sql = "CREATE TABLE IF NOT EXISTS `" . $this->table_details['tablename'] . "` (" . "\n";
 		$fieldcount = 0;
@@ -562,8 +666,9 @@ class MODEL extends origin
 		//var_dump( $sql );
 		$this->tell_eventloop( $this, 'NOTIFY_LOG_DEBUG', __METHOD__ . ":" . __LINE__ . " Creating table " . $this->table_details['tablename'] );
 		db_query( $sql, "Couldn't create table " . $this->table_details['tablename'] );
+		$ret = $this->alter_table();
 		$this->tell_eventloop( $this, 'NOTIFY_LOG_DEBUG', __METHOD__ . ":" . __LINE__ . " Exiting " );
-		return $this->alter_table();
+		return $ret;
 	}
 	function alter_table()
 	{
@@ -619,8 +724,9 @@ class MODEL extends origin
 		//ASSUMING no changes to the engine nor charset
 		//var_dump( $sql );
 		$this->tell_eventloop( $this, 'NOTIFY_LOG_DEBUG', __METHOD__ . ":" . __LINE__ . " Altering table " . $this->table_details['tablename'] );
+		$ret = db_query( $sql, "Couldn't alter table " . $this->table_details['tablename'] );
 		$this->tell_eventloop( $this, 'NOTIFY_LOG_DEBUG', __METHOD__ . ":" . __LINE__ . " Exiting " );
-		return db_query( $sql, "Couldn't alter table " . $this->table_details['tablename'] );
+		return $ret;
 	}
 	/*****************************************************************************************//**
 	 * Count the number of rows in the table.
@@ -629,6 +735,8 @@ class MODEL extends origin
 	 * ******************************************************************************************/
 	/*@int@*/function count_rows()
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
 		$res = db_query( "select count(*) from " . $this->table_details['tablename'], "Couldn't count rows in " . $this->table_details['tablename'] );
 		$count = db_fetch_row( $res );
 		$this->tell_eventloop( $this, 'NOTIFY_LOG_DEBUG', __METHOD__ . ":" . __LINE__ . " Exiting " );
@@ -637,13 +745,20 @@ class MODEL extends origin
 	/*****************************************************************************************//**
 	 * Count the number of rows in the table filtered by criteria
 	 *
+	 * @TODO refactor this and count_rows to use array of query fields...
+	 *
 	 * @params string where criteria w/o leading "where"
 	 * @returns int number of rows
 	 * ******************************************************************************************/
 	/*@int@*/function count_filtered($where = null)
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		if( !isset( $where ) )
-			return $this->count_rows();
+		{
+			$ret = $this->count_rows();
+			$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
+			return $ret;
+		}
 		$res = db_query( "select count(*) from " . $this->table_details['tablename'] . " where " . $where, "Couldn't count rows in " . $this->table_details['tablename'] );
 		$count = db_fetch_row( $res );
 		$this->tell_eventloop( $this, 'NOTIFY_LOG_DEBUG', __METHOD__ . ":" . __LINE__ . " Exiting " );
@@ -651,16 +766,21 @@ class MODEL extends origin
 	}
 	/*string*/function getPrimaryKey()
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		if( isset( $this->table_details['primarykey'] ) )
 		{
 			$this->tell_eventloop( $this, 'NOTIFY_LOG_DEBUG', __METHOD__ . ":" . __LINE__ . " Exiting " );
 			return $this->table_details['primarykey'];
 		}
 		else
+		{
+			$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting via EXCEPTION");
 			throw new Exception( "Primary Key Not Set", KSF_PRIKEY_NOT_DEFINED );
+		}
 	}
 	/*none*/function getByPrimaryKey()
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		/*
 		$fields = "*";	//comma separated list
 		$prikey = $this->getPrimaryKey();
@@ -683,6 +803,7 @@ class MODEL extends origin
 	 * *****************************************/
 	function buildLimit()
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		if( (strlen( $this->limit_startrow ) < 1) 
 			OR ($this->limit_startrow < 0) 
 		  )
@@ -707,6 +828,7 @@ class MODEL extends origin
 	 * *****************************************/
 	function ReplaceQuery( $b_validate_in_table = false)
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		global $db_connection;
 		$sql = "REPLACE INTO `" . $this->table_details['tablename'] . "`" . "\n";
 		$fieldcount = 0;
@@ -746,9 +868,13 @@ class MODEL extends origin
 	 * *****************************************/
 	function buildSelect( $b_validate_in_table = false)
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		/**/
 		if( null === $this->select_array )
+		{
+			$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting via EXCEPTION");
 			throw new Exception( "Required Field not set", KSF_FIELD_NOT_SET );
+		}
 		$fieldcount = 0;
 		$sql = "";
 		foreach( $this->select_array as $val )
@@ -778,10 +904,14 @@ class MODEL extends origin
 	 * *****************************************/
 	function buildFrom()
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 
 		/**/
 		if( null === $this->from_array )
+		{
+			$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting via EXCEPTION");
 			throw new Exception( "Required Field not set", KSF_FIELD_NOT_SET );
+		}
 		$fieldcount = 0;
 		$sql = "";
 		foreach( $this->from_array as $val )
@@ -806,9 +936,13 @@ class MODEL extends origin
 	 * *****************************************/
 	function buildWhere( $b_validate_in_table = false)
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		/**/
 		if( null === $this->where_array )
+		{
+			$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting via EXCEPTION");
 			throw new Exception( "Required Field not set", KSF_FIELD_NOT_SET );
+		}
 		if( count( $this->where_array ) < 1 )
 		{
 			$this->tell_eventloop( $this, 'NOTIFY_LOG_DEBUG', __METHOD__ . ":" . __LINE__ . " Exiting " );
@@ -846,9 +980,13 @@ class MODEL extends origin
 	 * *****************************************/
 	function buildOrderBy( $b_validate_in_table = false)
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		/**/
 		if( null === $this->orderby_array )
+		{
+			$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting via EXCEPTION");
 			throw new Exception( "Required Field not set", KSF_FIELD_NOT_SET );
+		}
 		if( count( $this->orderby_array ) < 1 )
 		{
 			$this->tell_eventloop( $this, 'NOTIFY_LOG_DEBUG', __METHOD__ . ":" . __LINE__ . " Exiting " );
@@ -888,9 +1026,13 @@ class MODEL extends origin
 	 * *****************************************/
 	function buildGroupBy( $b_validate_in_table = false)
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		/**/
 		if( null === $this->groupby_array )
+		{
+			$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting via EXCEPTION");
 			throw new Exception( "Required Field not set", KSF_FIELD_NOT_SET );
+		}
 		if( count( $this->groupby_array ) < 1 )
 		{
 			$this->tell_eventloop( $this, 'NOTIFY_LOG_DEBUG', __METHOD__ . ":" . __LINE__ . " Exiting " );
@@ -931,9 +1073,13 @@ class MODEL extends origin
 	 * *****************************************/
 	function buildHaving( )
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		/**/
 		if( null === $this->having_array )
+		{
+			$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting via EXCEPTION");
 			throw new Exception( "Required Field not set", KSF_FIELD_NOT_SET );
+		}
 		if( count( $this->having_array ) < 1 )
 		{
 			$this->tell_eventloop( $this, 'NOTIFY_LOG_DEBUG', __METHOD__ . ":" . __LINE__ . " Exiting " );
@@ -974,9 +1120,13 @@ class MODEL extends origin
 	 * *****************************************/
 	function buildJoin() 
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		/**/
 		if( null === $this->join_array )
+		{
+			$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting via EXCEPTION");
 			throw new Exception( "Required Field not set", KSF_FIELD_NOT_SET );
+		}
 		if( count( $this->join_array ) < 1 )
 		{
 			$this->tell_eventloop( $this, 'NOTIFY_LOG_DEBUG', __METHOD__ . ":" . __LINE__ . " Exiting " );
@@ -994,13 +1144,18 @@ class MODEL extends origin
 				foreach( $FIELDS as $col )
 				{
 					if( isset( $arr[$col] ) )
+					{
 						$sql .= $arr[$col] . " ";
 						if( $col == 'table2' )
 							$sql .= "on ";
 						else if( $col == 'field1' )
 							$sql .= "= ";
+					}
 					else
+					{
+						$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting via EXCEPTION");
 						throw new Exception( "Mandatory field $col not set" );
+					}
 				}
 				$joincount++;
 			}
@@ -1011,17 +1166,20 @@ class MODEL extends origin
 	}	
 	function buildSelectQuery( $b_validate_in_table = false )
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		/**/
 		try {
 			$this->buildSelect($b_validate_in_table);
 		} catch( Exception $e )
-		{
+		{	
+			$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting via EXCEPTION");
 			throw new Exception( "Can't select anything with invalid select criterea", $e->getCode() );
 		}
 		try {
 			$this->buildFrom($b_validate_in_table);
 		} catch( Exception $e )
 		{
+			$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting via EXCEPTION");
 			throw new Exception( "Can't select anything with invalid FROM criterea", $e->getCode() );
 		}
 		try {
@@ -1034,7 +1192,10 @@ class MODEL extends origin
 				//Not mandatory, continue
 			}
 			else
+			{
+				$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting via EXCEPTION");
 				throw new Exception( "Can't select anything with invalid WHERE criterea", $e->getCode() );
+			}
 		}
 		try {
 			$this->buildGroupby($b_validate_in_table);
@@ -1060,6 +1221,7 @@ class MODEL extends origin
 			}
 			else
 			{
+				$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting via EXCEPTION");
 				//Invalid Orderby might not result in the right data set returned but shouldn't hard fail
 				throw new Exception( "Can't select anything with invalid ORDERBY criterea" );
 			}
@@ -1076,6 +1238,7 @@ class MODEL extends origin
 			}
 			else
 			{
+				$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting via EXCEPTION");
 				//Invalid Having might not result in the right data set returned but shouldn't hard fail
 				throw new Exception( "Can't select anything with invalid HAVING criterea" );
 			}
@@ -1120,6 +1283,7 @@ class MODEL extends origin
 	}
 	function clear_sql_vars()
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		$this->select_array = null;
 		$this->where_array = null;
 		$this->from_array = null;
@@ -1142,18 +1306,41 @@ class MODEL extends origin
 	/***!GENERICTABLE***/
 	function assoc2var( $assoc )
         {
-                foreach( $this->fields_array as $field_spec )
+       		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
+         	foreach( $this->fields_array as $field_spec )
                 {
                         $field = $field_spec['name'];
                         if( isset( $assoc[$field] ) )
                                 $this->set( $field, $assoc[$field] );
                 }
 		$this->tell_eventloop( $this, 'NOTIFY_LOG_DEBUG', __METHOD__ . ":" . __LINE__ . " Exiting " );
+	}
+	/**********************************************//**
+	 * Take a stdClass object and copy its fields to us
+	 *
+	 * @since 20200712
+	 * @param stdClass
+	 * @return null
+	 * ********************************************/
+	function stdClass2var( $stdclass )
+        {
+       		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
+         	foreach( $this->fields_array as $field_spec )
+                {
+                        $field = $field_spec['name'];
+                        if( isset( $stdClass->$field ) )
+                                $this->set( $field, $stdClass->$field );
+                }
+		$this->tell_eventloop( $this, 'NOTIFY_LOG_DEBUG', __METHOD__ . ":" . __LINE__ . " Exiting " );
         }
 	function var2caller()
         {
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		if( ! isset( $this->caller ) )
+		{
+			$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting via EXCEPTION ");
 			throw new Exception( "Caller not set so can't pass values back", KSF_FIELD_NOT_SET );
+		}
                 foreach( $this->fields_array as $field_spec )
                 {
                         $field = $field_spec['name'];
@@ -1167,6 +1354,7 @@ class MODEL extends origin
 	 * ******************************************************************************/
 	function define_table()
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		//Inheriting class MUST extend
 		//20200302 KSF check for model_ in class name
 		//If the class name starts with model_ we want to strip that off.
@@ -1188,9 +1376,11 @@ class MODEL extends origin
 		//$this->table_details['index'][0]['type'] = 'unique';
 		//$this->table_details['index'][0]['columns'] = "variablename";
 		//$this->table_details['index'][0]['keyname'] = "variablename";
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
 	}
 	function build_write_properties_array()
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		/*Took the list of properties, and removed the RO ones*/
 		foreach( $this->fields_array as $row )
 		{
@@ -1213,13 +1403,16 @@ class MODEL extends origin
 				$this->write_properties_array[] = $this->get_properties_field_name( $row );
 			}
 		}
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
 	}
 	/***********************************************
 	 * 20200307 What if we need a field name for WC that is different than how we store in the table?
 	 * ********************************************/
 	function get_properties_field_name( $row )
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		$name = trim( $row['name'] );
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
 		return $name;
 	}
 	/***********************************************
@@ -1230,6 +1423,7 @@ class MODEL extends origin
 	 * ********************************************/
 	function get_properties_external_field_name( $field )
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		foreach( $this->fields_array as $row )
 		{
 			if( $row['name'] == $field )
@@ -1241,10 +1435,12 @@ class MODEL extends origin
 				return $name;
 			}
 		}
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
 		return $field;
 	}
 	function build_properties_array()
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		/*All properties*/
 		foreach( $this->fields_array as $row )
 		{
@@ -1255,13 +1451,17 @@ class MODEL extends origin
 			else
 				$this->properties_array[] = $this->get_properties_field_name( $row );
 		}
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
 	}
 	function build_foreign_objects_array()
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
 		//return;
 	}
 	function array2var( $data_array )
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		$extract_count = 0;
 		foreach( $this->properties_array as $property )
 		{
@@ -1271,11 +1471,15 @@ class MODEL extends origin
 				$extract_count++;
 			}
 		}
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
 		return $extract_count;
 	}
 	/*@int@*/function extract_data_array( $assoc_array )
 	{
-		return $this->array2var( $assoc_array);
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
+		$ret = $this->array2var( $assoc_array);
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
+		return $ret;
 	}
 
 	/*********************************************
@@ -1286,6 +1490,7 @@ class MODEL extends origin
 	 * *******************************************/
 	function build_data_array()
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		/***20180917 KSF Clean up old data arrays so we quit sending sales data, bad images, etc*/
 		if( isset( $this->data_array ) )
 		{
@@ -1301,7 +1506,7 @@ class MODEL extends origin
 				$this->data_array[$external_name] = $this->$property;
 			}
 		}
-		$this->notify( __METHOD__ . ":" . __LINE__ . " Exiting " . __METHOD__, "WARN" );
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
 	}
 	/*******************************************************************//**
 	 *
@@ -1315,11 +1520,13 @@ class MODEL extends origin
 	 * **********************************************************************/
 	function reset_values()
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		foreach( $this->properties_array as $val )
 		{
 			unset( $this->$val );
 		}
 		$this->tell_eventloop( $this, 'NOTIFY_LOG_DEBUG', __METHOD__ . ":" . __LINE__ . " Reset values.  Should be nulls for class " . get_class( $this ) );
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
 	}
 	/***************************************************************
 	 *
@@ -1330,6 +1537,7 @@ class MODEL extends origin
 	***************************************************************/
 	function extract_data_objects( $srvobj_array )
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		//Woo sends an array of the objects
 		$nextptr = $this;
 		$objectcount = 0;
@@ -1346,6 +1554,7 @@ class MODEL extends origin
 			//The next time through the loop does another...
 			//Not unsetting the object because it is part of the dbl linked list
 		}
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
 		return $objectcount;
 	}
 
@@ -1353,6 +1562,7 @@ class MODEL extends origin
 	/*int count of properties extracted*/
 	/*@int@*/function extract_data_obj( $srvobj )
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		$extract_count = 0;
 		foreach( $this->properties_array as $property )
 		{
@@ -1407,26 +1617,35 @@ class MODEL extends origin
 				}
 			}
 		}
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
 		return $extract_count;
 	}
 	function build_json_data()
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		$this->json_data = json_encode( $this->data_array );
 		$this->tell_eventloop( $this, 'NOTIFY_LOG_DEBUG', __METHOD__ . "::" . __LINE__ . " JSON data::" . print_r( $this->json_data, true ) );
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
 	}
 	/*@bool@*/function prep_json_for_send( $func = NULL )
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		$this->build_data_array();
 		$this->build_json_data();
 		if( $this->json_data == FALSE )
 		{
+			$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
 			return FALSE;
 		}
 		else
+		{
+			$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
 			return TRUE;
+		}
 	}
 	function ll_walk_insert_fa()
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		$nextptr = $this->next_ptr;
 		while( $nextptr != NULL )
 		{
@@ -1437,15 +1656,18 @@ class MODEL extends origin
 				$nextptr->insert_table();
 			$nextptr = $nextptr->next_ptr;
 		}
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
 	}
 	function ll_walk_update_fa()
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		$nextptr = $this->next_ptr;
 		while( $nextptr != NULL )
 		{
 			$nextptr->update_table();
 			$nextptr = $nextptr->next_ptr;
 		}
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
 	}
 	/************************************************
 	 * Import the fields from another table
@@ -1461,6 +1683,7 @@ class MODEL extends origin
 	 * *********************************************/
 	function import_fields_array( $obj )
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		foreach( $obj->fields_array as $row )
 		{
 			//woo_interface constructor builds our list of fields
@@ -1469,6 +1692,7 @@ class MODEL extends origin
 				$this->fields_array[] = $row;
 			}
 		}
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
 	}
 	/******************************************************
 	 * Import table details from a class we are decorating
@@ -1480,6 +1704,7 @@ class MODEL extends origin
 	 * ***************************************************/
 	function import_table_details( $obj )
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		if( isset( $obj->table_details['index'] ) )
 		{
 			foreach( $obj->table_details['index'] as $row )
@@ -1487,6 +1712,7 @@ class MODEL extends origin
 				$this->table_details['index'] = $row;
 			}
 		}
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
 	}
 	/**********************************************
 	 * Extracted out of constructor so they can be
@@ -1496,12 +1722,14 @@ class MODEL extends origin
 	 * *******************************************/
 	public function build_model_related_arrays()
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		$this->write_properties_array = array();
 		$this->properties_array = array();
 		$this->foreign_objects_array = array();
 		$this->build_write_properties_array();
 		$this->build_properties_array();
 		//$this->fields_array2entry();
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
 		
 	}
 	/************************************************
@@ -1512,7 +1740,9 @@ class MODEL extends origin
 	 * **********************************************/
 	function obj_fields2me( $obj )
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		$this->copy_obj_fieldlist2me( $obj, $this->properties_array );
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
 	}
 	/***************************************//**
 	 * Take data from an external object and insert/update table
@@ -1521,8 +1751,10 @@ class MODEL extends origin
 	 * *****************************************/
 	public function obj_insert_or_update( $obj )
 	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
 		$this->reset_values();
 		$this->obj_fields2me( $obj );
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
 	}
 
 
