@@ -31,8 +31,8 @@ class kfLog extends origin
 		parent::__construct();
 		$conf = array();
 		$filename = basename( realpath( $filename ) );
-		$this->logobject = new Log_file( $filename . "_debug_log.txt", "", $conf, $level );
-		$this->objWriteFile = new write_file( ".", $filename . "_debug_log.txt" );
+		$this->logobject = new Log_file( $filename . "_debug_log_pear.txt", "", $conf, $level );
+		$this->objWriteFile = new write_file( ".", $filename . "_debug_log." . date( 'YmdHis' ) . ".txt" );
 		return;	
 	}
 	function __destruct()
@@ -49,6 +49,18 @@ class kfLog extends origin
 		}
 		$this->objWriteFile->write_line( $msg );
 		return;	
+	}
+	function build_interested()
+	{
+		$this->interestedin['NOTIFY_LOG_DEBUG']['function'] = "Log";
+                $this->interestedin['NOTIFY_LOG_INFO']['function'] = "Log";
+                $this->interestedin['NOTIFY_LOG_NOTICE']['function'] = "Log";
+                $this->interestedin['NOTIFY_LOG_WARNING']['function'] = "Log";
+                $this->interestedin['NOTIFY_LOG_ERR']['function'] = "Log";
+                $this->interestedin['NOTIFY_LOG_CRIT']['function'] = "Log";
+                $this->interestedin['NOTIFY_LOG_ALERT']['function'] = "Log";
+                $this->interestedin['NOTIFY_LOG_EMERG']['function'] = "Log";
+		
 	}
 }
 ?>

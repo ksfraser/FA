@@ -198,8 +198,10 @@ class VIEW extends origin
 		 * Obviously Page has already been called
 		//page(_($help_context = "FA-CRM"), false, false, "", $this->js);
 		 */
+		/*20200713 hitting the can't redeclare help_url() again...
 		if( ! defined( "help_url" ) )
 			page(_($help_context = "FA-KSF"), false, false, "", $this->js);
+		 */
 
 
 	}

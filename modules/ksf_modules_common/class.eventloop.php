@@ -62,17 +62,35 @@ class eventloop extends kfLog implements splSubject
 		 */
 		if( ! isset( $moduledir ) )
 			$moduledir = dirname( __FILE__ ) . '/modules';
-		$this->moduledir = $moduledir;
+		$this->set_moduledir( $moduledir );
 		$this->load_modules();
 		$this->ObserverNotify( $this, 'NOTIFY_LOG_INFO', "Completed Adding Modules" );
 		$this->ObserverNotify( $this, 'NOTIFY_INIT_CONTROLLER_COMPLETE', "Completed Adding Modules" );
 	}
+	function build_interestedin()
+	{
+		parent::build_interestedin();
+		$this->interestedin['NOTIFY_DUMP_OBSERVERS']['function'] = "dumpObservers";
+	}
 	function set_moduledir( $dir )
 	{
+		echo get_class( $this ) . "::" . __METHOD__ . "\n\r";
 		$this->moduledir = $dir;
 	}
-	function dumpObservers()
+	/*
+	function notified( $obj, $event, $msg )
 	{
+		echo get_class( $this ) . "::" . __METHOD__ . "\n\r";
+		if( $event == "NOTIFY_DUMP_OBSERVERS" )
+			$this->dumpObservers();
+		else
+			parent::notified();
+               	return SUCCESS;
+	}
+ 	*/
+	function dumpObservers( $obj, $msg )
+	{
+		echo get_class( $this ) . "::" . __METHOD__ . "\n\r";
 		if( isset( $this->observers ) )
 		{
 			foreach( $this->observers as $key=>$val )
@@ -97,8 +115,10 @@ class eventloop extends kfLog implements splSubject
          * ******************************************************************************/
 	function ObserverRegister( /*Class Instance*/$observer, $event )
         {
+		echo get_class( $this ) . "::" . __METHOD__ . "\n\r";
 		//return FALSE;
 		$this->initEventGroup( $event );
+		echo "Attaching Observer " . get_class( $observer ) . " to event " . $event . "\n\r";
                	$this->observers[$event][] = $observer;	//Indirect modification has no effect ERROR
 /*
 		try {
@@ -124,13 +144,16 @@ class eventloop extends kfLog implements splSubject
 	}
         function ObserverDeRegister( $observer )
         {
+		echo get_class( $this ) . "::" . __METHOD__ . "\n\r";
               	$this->observers[] = array_diff( $this->observers, array( $observer) );
               	return SUCCESS;
         }
 	private function initEventGroup($event = "*")
  	{
+			echo get_class( $this ) . "::" . __METHOD__ . "\n\r";
 		if (!isset($this->observers[$event])) {
 	        	$this->observers[$event] = [];
+			echo "Created observer Event Group for " . $event . "\n\r";
 	     	}
  	}
         /*****************************************************************************//**
@@ -142,6 +165,8 @@ class eventloop extends kfLog implements splSubject
          * *******************************************************************************/
         function ObserverNotify( $trigger_class, $event, $msg )
         {
+		echo get_class( $this ) . "::" . __METHOD__ . "\n\r";
+		var_dump( $msg );
 		if( is_string( $msg ) )
 			$this->Log( get_class( $trigger_class ) . " had event " . $event . " with message " . $msg, 1 );
 		else
@@ -159,14 +184,9 @@ class eventloop extends kfLog implements splSubject
                       	}
                	return SUCCESS;
          }
-         function notified( $object, $event, $message )
-         {
-               	//Called when another object we are observing sends us a notification
-		//Needs to be extended by the inheriting class
-               	return SUCCESS;
-         }
 	private function getEventObservers($event = "*")
     	{
+		echo get_class( $this ) . "::" . __METHOD__ . "\n\r";
         	$this->initEventGroup($event);
         	$group = $this->observers[$event];
         	$all = $this->observers["*"];
@@ -174,6 +194,7 @@ class eventloop extends kfLog implements splSubject
     	}
 	function load_modules()
 	{
+		echo get_class( $this ) . "::" . __METHOD__ . "\n\r";
 		global $configArray;
 		//We should probably check for the existance of the moduledir.
 		//See Mantis 214 for what triggered this...
@@ -246,12 +267,14 @@ class eventloop extends kfLog implements splSubject
 /****************************splSubject************************************************/
 	public function attach(\SplObserver $observer, $event = "*")
     	{
+		echo get_class( $this ) . "::" . __METHOD__ . "\n\r";
         	$this->initEventGroup($event);
         	$this->observers[$event][] = $observer;
 		$this->storage->attach($observer);	//php.net
     	}
     	public function detach(\SplObserver $observer, $event = "*")
     	{
+		echo get_class( $this ) . "::" . __METHOD__ . "\n\r";
 		$this->storage->detach($observer);	//php.net
         	foreach ($this->getEventObservers($event) as $key => $s) {
             		if ($s === $observer) {
@@ -268,6 +291,7 @@ class eventloop extends kfLog implements splSubject
     	//public function notify(string $event = "*", $data = null)
     	public function notify( $event = "*", $data = null)
     	{
+		echo get_class( $this ) . "::" . __METHOD__ . "\n\r";
         	foreach ($this->getEventObservers($event) as $observer) {
             		$observer->update($this, $event, $data);
         	}
