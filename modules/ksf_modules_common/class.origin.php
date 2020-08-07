@@ -347,7 +347,7 @@ class origin
 				if( is_object( $eventloop ) AND get_class( $eventloop ) == "eventloop" )
 				{
 					$this->eventloop = $eventloop;
-					$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG", get_class( $this ) . "::" . __METHOD__ );
+					//$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG", get_class( $this ) . "::" . __METHOD__ );
 					return TRUE;
 				}
 				else
@@ -397,7 +397,7 @@ class origin
 		}
 		else
 		{
-				$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG", get_class( $this ) . "::" . __METHOD__ );
+			//$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG", get_class( $this ) . "::" . __METHOD__ );
 			return TRUE;
 		}
 	}
@@ -495,7 +495,7 @@ class origin
          * ******************************************************************/
         function build_interestedin()
         {
-		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG", get_class( $this ) . "::" . __METHOD__ );
+		//$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG", get_class( $this ) . "::" . __METHOD__ );
 
                 //This NEEDS to be overridden
                 $this->interestedin[KSF_DUMMY_EVENT]['function'] = "dummy";
@@ -536,7 +536,7 @@ class origin
 	 * **************************************************/
 	function error_handler( Exception $e )
 	{
-		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG", get_class( $this ) . "::" . __METHOD__ );
+		//$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG", get_class( $this ) . "::" . __METHOD__ );
 
 		$code = $e->getCode();
 		$msg = $e->getMessage();
