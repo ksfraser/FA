@@ -167,7 +167,7 @@ class origin
 
 	function object_var_names()
 	{
-		echo get_class( $this ) . "::" . __METHOD__ . "\n\r";
+		//$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG", get_class( $this ) . "::" . __METHOD__ );
 
 		$clone = (array) $this;	    		
 		$rtn = array ();
@@ -183,7 +183,7 @@ class origin
 	//STUB until I can code module and data access...
 	function user_access( $action )
 	{
-		echo get_class( $this ) . "::" . __METHOD__ . "\n\r";
+		//$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG", get_class( $this ) . "::" . __METHOD__ );
 
 		switch( $action )
 		{
@@ -212,7 +212,7 @@ class origin
 	 * **********************************************/
 	function set( $field, $value = null, $enforce_only_native_vars = true )
 	{
-		echo get_class( $this ) . "::" . __METHOD__ . "\n\r";
+		//$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG", get_class( $this ) . "::" . __METHOD__ );
 
 		if( !isset( $field )  )
 			throw new Exception( "Fields not set", KSF_FIELD_NOT_SET );
@@ -237,7 +237,7 @@ class origin
 		if( isset( $value ) )
 			$this->$field = $value;
 		else
-			throw new Exception( "Value to be set not passed in", KSF_VALUE_NOT_SET );
+			throw new Exception( "Value to be set not passed in for field " . $field, KSF_VALUE_NOT_SET );
 	}
 	/***************************************************//**
 	 * Most of our existing code does not use TRY/CATCH so we will trap here
@@ -247,7 +247,7 @@ class origin
 	 * *****************************************************/
 	/*@NULL@*/function set_var( $var, $value )
 	{
-		echo get_class( $this ) . "::" . __METHOD__ . "\n\r";
+		//$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG", get_class( $this ) . "::" . __METHOD__ );
 
 		try {
 			$this->set( $var, $value );
@@ -267,7 +267,7 @@ class origin
 	}
 	function get( $field )
 	{
-		echo get_class( $this ) . "::" . __METHOD__ . "\n\r";
+		//$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG", get_class( $this ) . "::" . __METHOD__ );
 
 		if( isset( $this->$field ) )
 			return $this->$field;
@@ -276,13 +276,31 @@ class origin
 	}
 	function get_var( $var )
 	{
-		echo get_class( $this ) . "::" . __METHOD__ . "\n\r";
+		//$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG", get_class( $this ) . "::" . __METHOD__ );
 
 		return $this->get( $var );
 	}
+	/**********************************
+	 * php serialize calls __sleep/__serialize for cleanup prior to serialization
+	 * php unserialize calls __wakeup/__unserialize for cleanup prior to serialization
+	 * BINARY STRING!! Store in Blob in DB, not char/text.  CAN include NULL bytes
+	 * *********************************
+	function __sleep()
+	{
+	}
+	funtion __serialize()
+	{
+	}
+	function __unserialize()
+	{
+	}
+	function __wakeup()
+	{
+	}
+	 * *********************************/
 	/*@array@*/function var2data()
 	{
-		echo get_class( $this ) . "::" . __METHOD__ . "\n\r";
+		//$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG", get_class( $this ) . "::" . __METHOD__ );
 
 		foreach( $this->fields as $f )
 		{
@@ -291,7 +309,7 @@ class origin
 	}
 	/*@array@*/function fields2data( $fieldlist )
         {
-		echo get_class( $this ) . "::" . __METHOD__ . "\n\r";
+		//$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG", get_class( $this ) . "::" . __METHOD__ );
 
                 foreach( $fieldlist as $field )
                 {
@@ -302,16 +320,12 @@ class origin
 	
 	/*@NULL@*/function LogError( $message, $level = PEAR_LOG_ERR )
 	{
-		echo get_class( $this ) . "::" . __METHOD__ . "\n\r";
-
 		if( $level <= $this->loglevel )
 			$this->errors[] = $message;
 		return;
 	}
 	/*@NULL@*/function LogMsg( $message, $level = PEAR_LOG_INFO )
 	{
-		echo get_class( $this ) . "::" . __METHOD__ . "\n\r";
-
 		if( $level <= $this->loglevel )
 			$this->log[] = $message;
 		return;
@@ -325,8 +339,6 @@ class origin
 	********************/
 	function attach_eventloop( $create_if_not_exist = true )
 	{
-		echo get_class( $this ) . "::" . __METHOD__ . "\n\r";
-
 		global $eventloop;
 		if( ! isset( $this->eventloop ) )
 		{
@@ -335,13 +347,12 @@ class origin
 				if( is_object( $eventloop ) AND get_class( $eventloop ) == "eventloop" )
 				{
 					$this->eventloop = $eventloop;
-					echo __METHOD__ . "::" . __LINE__ . "\n\r";
+					$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG", get_class( $this ) . "::" . __METHOD__ );
 					return TRUE;
 				}
 				else
 				{
 					//Not a valid eventloop so replace
-					echo __METHOD__ . "::" . __LINE__ . "\n\r";
 					return $this->create_eventloop();
 				}
 			}
@@ -351,7 +362,6 @@ class origin
 				{
 					if( isset( $this->client->eventloop ) )
 					{
-						echo __METHOD__ . "::" . __LINE__ . "\n\r";
 						//IF we got this far, there should be a global eventloop!!
 						$this->eventloop = $this->client->eventloop;
 						if( $create_if_not_exist )
@@ -362,12 +372,10 @@ class origin
 					{
 						if( $create_if_not_exist )
 						{
-							echo __METHOD__ . "::" . __LINE__ . "\n\r";
 							return $this->create_eventloop();
 						}
 						else
 						{
-							echo __METHOD__ . "::" . __LINE__ . "\n\r";
 							return FALSE;
 						}
 
@@ -378,12 +386,10 @@ class origin
 					//This should be the very 1st time through, and ONLY 1st.
 					if( $create_if_not_exist )
 					{
-						echo __METHOD__ . "::" . __LINE__ . "\n\r";
 						return $this->create_eventloop();
 					}
 					else
 					{
-						echo __METHOD__ . "::" . __LINE__ . "\n\r";
 						return FALSE;
 					}
 				}
@@ -391,7 +397,7 @@ class origin
 		}
 		else
 		{
-				echo __METHOD__ . "::" . __LINE__ . "\n\r";
+				$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG", get_class( $this ) . "::" . __METHOD__ );
 			return TRUE;
 		}
 	}
@@ -403,20 +409,16 @@ class origin
 	 * *******************************************************/
 	function create_eventloop()
 	{
-		echo get_class( $this ) . "::" . __METHOD__ . "\n\r";
-
 		require_once( 'class.eventloop.php' );
 		global $eventloop;
 		if( is_object( $eventloop ) AND get_class( $eventloop ) == "eventloop" )
 		{
 			//eventloop already exists so we don't want to do anything
-			echo get_class( $this ) . "::" . __METHOD__ . "::--EVENTLOOP already exists!" . "\n\r";
+			//$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG", get_class( $this ) . "::" . __METHOD__ . "::--EVENTLOOP already exists!" . "\n\r";
 		}
 		else
 		{
-			echo "\n\r";
 			$eventloop = new eventloop();
-			echo "\n\r";
 		}
 		$this->eventloop = $eventloop;
 		return TRUE;
@@ -434,7 +436,7 @@ class origin
          * **************************************************************/
         function tell( $msg, $method )
         {
-		echo get_class( $this ) . "::" . __METHOD__ . "\n\r";
+		//$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG", get_class( $this ) . "::" . __METHOD__ );
 
 		if( ! isset( $msg ) )
 			throw new Exception( "MSG to tell not set", KSF_VAR_NOT_SET );
@@ -449,11 +451,8 @@ class origin
         }
         function tell_eventloop( $caller, $event, $msg )
         {
-		echo get_class( $this ) . "::" . __METHOD__ . "\n\r";
-
 		if( $this->attach_eventloop() )
                         $this->eventloop->ObserverNotify( $caller, $event, $msg );
-
         }
         /***************************************************************//**
          *dummy
@@ -465,15 +464,14 @@ class origin
          * ******************************************************************/
         function dummy( $obj, $msg )
         {
-		echo get_class( $this ) . "::" . __METHOD__ . "\n\r";
+		//$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG", get_class( $this ) . "::" . __METHOD__ . "\n\r";
                 $this->tell_eventloop( $this, NOTIFY_LOG_DEBUG, __METHOD__ . ":" . __LINE__ . " Entering " );
                 $this->tell_eventloop( $this, NOTIFY_LOG_DEBUG, __METHOD__ . ":" . __LINE__ . " Exiting " );
                 return FALSE;
         }
    	function register_with_eventloop()
 	{
-		echo "\n\r";
-		echo get_class( $this ) . "::" . __METHOD__ . "\n\r";
+		//$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG", get_class( $this ) . "::" . __METHOD__ . "\n\r";
 
 		if( $this->attach_eventloop() )
                 {
@@ -497,7 +495,7 @@ class origin
          * ******************************************************************/
         function build_interestedin()
         {
-		echo get_class( $this ) . "::" . __METHOD__ . "\n\r";
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG", get_class( $this ) . "::" . __METHOD__ );
 
                 //This NEEDS to be overridden
                 $this->interestedin[KSF_DUMMY_EVENT]['function'] = "dummy";
@@ -520,12 +518,12 @@ class origin
          * ******************************************************************/
         function notified( $obj, $event, $msg )
         {
-		echo get_class( $this ) . "::" . __METHOD__ . "\n\r";
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG", get_class( $this ) . "::" . __METHOD__ );
 
                 if( isset( $this->interestedin[$event] ) )
                 {
 			$tocall = $this->interestedin[$event]['function'];
-			echo "Calling " . $tocall . " for event " . $event .  "\n\r";
+			$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG", "Calling " . $tocall . " for event " . $event );
                         $this->$tocall( $obj, $msg );
                 }
 	}
@@ -538,7 +536,7 @@ class origin
 	 * **************************************************/
 	function error_handler( Exception $e )
 	{
-		echo get_class( $this ) . "::" . __METHOD__ . "\n\r";
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG", get_class( $this ) . "::" . __METHOD__ );
 
 		$code = $e->getCode();
 		$msg = $e->getMessage();
