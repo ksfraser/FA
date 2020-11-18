@@ -47,6 +47,7 @@ class test_suitecrm
 }
 
 $test = new test_suitecrm("http://fhsws001/devel/fhs/SuiteCRM/service/v4_1/rest.php", "admin", "m1l1ce", "login" );
+var_dump( $test );
 $test->test_create_account();
 
 

@@ -1,0 +1,12 @@
+{
+	"autoload": {
+        	"classmap": [
+        	]
+    	},
+    "require-dev": {
+	},
+	"require": {
+		"phpunit/phpunit": "^9.4",
+		"econea/nusoap": "^0.9.10"
+	}
+}
