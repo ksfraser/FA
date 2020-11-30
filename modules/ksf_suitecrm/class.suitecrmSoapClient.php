@@ -10,7 +10,7 @@
 // Required libraries
 
 //require_once( "vendor/econea/nusoap/src/nusoap.php" );
-require_once( "class.name_value_list.php" );
+
 
 /*
  "entry_value login(user_auth $user_auth, string $application_name, name_value_list $name_value_list)"
@@ -197,109 +197,460 @@ class get_relationships_soapClient extends get_entry_soapClient
  * */
 
 
-class suitecrmSoapClient
+/*************************************************//**
+ * Class for querying the SuiteCRM SOAP server
+ *
+ * @TODO Major refactor since there are many fields which
+ * could be the same thing. (i.e. _ids vs _id )
+ * @TODO data validation
+ *
+ *
+ * ***************************************************/
+
+//require_once( 'class.suitecrm.php' );
+class suitecrm extends origin
 {
-	protected $url;
-	protected $username;
-	protected $soapCredential;
-	protected $session_id;
+	function __construct()
+	{
+		global $sugar_config;
+		$this->url = $sugar_config['site_url'] . "/soap.php";	//$sugarSoapEndpoint 
+		$this->appname = $sugar_config['appname'];
+		$this->username = $sugar_config['soapuser'];
+		$this->password = $sugar_config['user_hash'];
+		$this->soap_url( $sugar_config['site_url'] . "/soap.php?wsdl" );
+		$this->appname( $sugar_config['appname'] );
+		$this->soapuser( $sugar_config['soapuser'] );
+		$this->user_hash( $sugar_config['user_hash'] );
+		parent::__construct();
+	}
+	function tell_eventloop( $a, $b )
+	{
+		return TRUE;
+	}
+}
+
+class suitecrmSoapClient extends suitecrm
+{
 	protected $userGUID;
 	protected $module_name;
-	var $debug_level;
-	protected $soapLoginTime;
-	protected $soapClient;
-	protected $soap_auth_array;
-	protected $retryCount;
+	protected $module_names;
+	protected $module_ids;
+	protected $module_id;
+	protected $record_id;		//!< int 
+	protected $record_ids;		//!< array
+	protected $select_fields;	//!< array
+	protected $link_name_to_fields_array;
+	protected $link_field_name;
+	protected $link_field_names;
+	protected $related_ids;
+	protected $related_module_query;
+	protected $related_fields;
+	protected $track_view;
+	protected $query;		//!<string
+	protected $order_by;		//!<string
+	protected $offset;		//!<int
+	public    $limit;		//!<int
+	protected $max_results;		//!<int
+	protected $deleted;		//!<int
+	protected $delete;		//!<int
+	protected $favorites;		//!<bool
 	protected $result;
-	protected $appname;
 	protected $nvl;
+
+
     function __construct()
     {
-	global $sugar_config;
-	    $this->debug_level = 0;
-	    $this->retryCount = 0;
-	    $this->result = null;
-	    $this->session_id = null;
-	    $this->module_name = null;
+	    global $sugar_config;
+	    //parent::__construct();
 
-	    $this->url = $sugar_config['site_url'] . "/soap.php";	//$sugarSoapEndpoint 
-	    $this->appname = $sugar_config['appname'];	//$sugarSoapUser
-	    $this->username = $sugar_config['soapuser'];	//$sugarSoapUser
-	    $this->soapCredential = $sugar_config['user_hash'];		//"select user_hash from users where user_name='$sugarSoapUser'";
-	    $this->nvl = new name_value_list();
-	    $this->soapClient = new SoapClient($this->url . '?wsdl'); //Build in library
+	//    $this->url = $sugar_config['site_url'] . "/soap.php";	//$sugarSoapEndpoint 
+	    $this->soapClient = new ksfSOAP();
+	    parent::__construct();
+	    $this->tell_eventloop( "READ_INI", "soap.ini" );
+	    if( 
+		    $this->tell_eventloop( "SETTINGS_QUERY", "soap_url" )
+		    AND $this->tell_eventloop( "SETTINGS_QUERY", "appname" )
+		    AND $this->tell_eventloop( "SETTINGS_QUERY", "soapuser" )
+		    AND $this->tell_eventloop( "SETTINGS_QUERY", "user_hash" )
+	    )
+	    {
+	    	$this->soapClient->soapLogin();
+		$this->nvl = new name_value_list();
+	    }
+	    else
+	    {
+		    throw new Exception( "Couldn't Initialize SOAP client" );
+	    }
     }
-	function get( $name )
+	/*****************************************//**
+	 * Callback function from tell_eventloop SETTINGS_QUERY
+	 *
+	 * @param value string to search for.
+	 * @return NONE
+	 * *****************************************/
+	function soap_url( $value )
 	{
-		return $this->$name;
+		$this->soapClient->set( 'url', $value );
 	}
-	function build_auth_array()
+	/*****************************************//**
+	 * Callback function from tell_eventloop SETTINGS_QUERY
+	 *
+	 * @param value string to search for.
+	 * @return NONE
+	 * *****************************************/
+	function appname( $value )
 	{
-		$this->soap_auth_array = array(
-			'user_name' => $this->username,
-			'password' => $this->soapCredential );
-		return $this->soap_auth_array;
+		$this->soapClient->set( 'appname', $value );
 	}
-	function soapReconnect()
+	/*****************************************//**
+	 * Callback function from tell_eventloop SETTINGS_QUERY
+	 *
+	 * @param value string to search for.
+	 * @return NONE
+	 * *****************************************/
+	function soapuser( $value )
 	{
-		if (time() - $this->soapLoginTime > 600) // 10 minutes
+		$this->soapClient->set( 'username', $value );
+	}
+	/*****************************************//**
+	 * Callback function from tell_eventloop SETTINGS_QUERY
+	 *
+	 * @param value string to search for.
+	 * @return NONE
+	 * *****************************************/
+	function user_hash( $value )
+	{
+		$this->soapClient->set( 'password', $value );
+	}
+	/*****************************************//**
+	 * Wrapper to the soapCall in the client class. 
+	 *
+	 * @param operation string function to call on server.
+	 * @param soapParams array|Null only if we haven't set otherwise
+	 * @return array | stdClass
+	 * *****************************************/
+	function soapCall( $operation, $soapParams = null )
+	{
+		$this->result = null;
+		if( $soapParams !== null )
 		{
-			$this->soapLogin();
+			$this->soapClient->set( "soapParams", $soapParams );
 		}
+		try {
+			$this->result = $this->soapClient->soapCall( $operation );
+		}
+		catch( Exception $e )
+		{
+		}
+		return $this->result;
 	}
-	function soapLogin()
+	//Inherited function get( $name )
+	//Inherited function set( $name, $value )
+	function get_one( $name )
 	{
-		global $userGUID;
-		if( ! isset( $this->soap_auth_array ) OR ! isset( $this->soap_auth_array['user_name'] ) )
-			$this->build_auth_array();
-		$soapLogin = $this->soapClient->login( $this->soap_auth_array, $this->appname, array() );
-		$this->session_id  = $soapLogin->id;
-		$this->soapLoginTime = time();
-		print "! Successful SOAP login id=" . $this->session_id  . " user=" . $this->soap_auth_array['user_name']. "\n";
-		return $this->session_id;
+		if( is_array( $this->$name ) )
+		{
+			if( isset( $this->$name[0] ) )
+				return $this->$name[0];
+			else
+				throw new Exception( "0 element not set" );
+		}
+		else
+			throw new Exception( "Not an array.  Did you mean ->get" );
 	}
 	function setSoapParams( $module, $nvl_array, $a = null, $b = null, $c = null, $d = null )
 	{
-		throw new Exception( "Must override!" );
+		//throw new Exception( "Must override!" );
+		//$this->soapParams = array( $this->get( 'session_id' ), "Accounts", "accounts.name like '%Fraser%'", "", "0", array(), "", "10", "0", "false" ) ;
+		$this->soapParams[] = $this->soapClient->get( 'session_id' ); 
+		$this->soapParams[] = $module; 
+		foreach( $nvl_array as $row )
+		{
+			if( is_array( $row ) and count( $row ) > 1 )
+			{
+				if( isset( $row['value'] ) )
+				{
+					$this->soapParams[] = $row['value'];
+				}
+				else
+				{
+					//Going to assume the keys are row[name] = value
+					$this->soapParams[] = $row[0];
+				}
+			}
+			else
+			{
+				$this->soapParams[] = $row;
+			}
+		}
+		/*
+		if( isset( $a ) )
+		{
+			if( is_array( $a ) )
+			{
+				foreach( $a as row )
+				{
+					$this->soapParams[] = $row;
+				}
+			}
+			else
+				$this->soapParams[] = $a;
+		}
+		if( isset( $b ) )
+		{
+			if( is_array( $b ) )
+			{
+				foreach( $b as row )
+				{
+					$this->soapParams[] = $row;
+				}
+			}
+			else
+				$this->soapParams[] = $b;
+		}
+		if( isset( $c ) )
+		{
+			if( is_array( $c ) )
+			{
+				foreach( $c as row )
+				{
+					$this->soapParams[] = $row;
+				}
+			}
+			else
+				$this->soapParams[] = $c;
+		}
+		if( isset( $d ) )
+		{
+			if( is_array( $d ) )
+			{
+				foreach( $d as row )
+				{
+					$this->soapParams[] = $row;
+				}
+			}
+			else
+				$this->soapParams[] = $d;
+		}
+		 */
 	}
-	function soapCall( $operation )
+	function get_entry()
 	{
-		try {
-			//var_dump( $this->soapClient->__getFunctions() );
-			if( ! isset( $this->soapParams ) OR ! is_array( $this->soapParams ) )
-				$this->soapParams = array( $this->get( 'session_id' ), "Accounts", "accounts.name like '%Fraser%'", "", "0", array(), "", "10", "0", "false" ) ;
-
-			$result = $this->result = $this->soapClient->__soapCall( $operation, $this->soapParams  );
-			//$result = $this->soapClient->__soapCall( $operation,  $this->soapParams   );
-			//$result = $this->soapClient->$operation(  $this->soapParams  );
-			//$result = $this->soapClient->$operation( array( $params ) );	//DOESN"T WORK
-			var_dump( $this->result );
-		} catch( Exception $e )
-		{
-			//Seeing an invalid session ID error.
-		}
-		//$result = $this->soapClient->call( $operation, $this->soapParams );
-		if (isset($result->error) && $result->error['number'] == 10 && $this->retryCount < 5)
-		{
-			// Session lost, try to reconnect and retry
-			$this->soapReconnect();
-			$this->retryCount++;
-			$this->result = $this->soapCall($operation);
-		}
-		//What about if retrycount, and errnum <>10
-		return $result;
+		$this->soapParams = array( 	$this->soapClient->get( 'session_id' ), 
+						$this->get( 'module_name' ),
+						$this->get( 'record_id' ),	
+						$this->get( 'select_fields' ),
+						$this->get( 'link_name_to_fields_array' ),
+						$this->get( 'track_view' ) 
+					) ;
+		return $this->soapCall( "get_entry" );
 	}
-/*	    $login_parameters = array(
-	         "user_auth" => array(
-	              "user_name" => $this->username,
-	              //"password" => bin2hex(mcrypt_cbc(MCRYPT_3DES, $ldap_enc_key, $password, MCRYPT_ENCRYPT, 'password')),
-		      "password" => md5($this->password),
-	              "version" => "1"
-	         ),
-	         "application_name" => "FrontAccounting",
-	         "name_value_list" => array(),
-	 );
- */
+	function get_entries()
+	{
+		$this->soapParams = array( 	$this->soapClient->get( 'session_id' ), 
+						$this->get( 'module_name' ),
+						$this->get( 'record_ids' ),	
+						$this->get( 'select_fields' ),
+						$this->get( 'link_name_to_fields_array' ),
+						$this->get( 'track_view' ) 
+					) ;
+		return $this->soapCall( "get_entries" );
+	}
+	function get_entry_list()
+	{
+		$this->soapParams = array( 	$this->soapClient->get( 'session_id' ), 
+						$this->get( 'module_name' ),
+						$this->get( 'query' ),	
+						$this->get( 'order_by' ),	
+						$this->get( 'offset' ),	
+						$this->get( 'select_fields' ),
+						$this->get( 'link_name_to_fields_array' ),
+						$this->get( 'max_results' ), 
+						$this->get( 'deleted' ),
+						$this->get( 'favorites' ),
+					) ;
+		return $this->soapCall( "get_entry_list" );
+	}
+	function set_relationship()
+	{
+		$this->soapParams = array( 	$this->soapClient->get( 'session_id' ), 
+						$this->get( 'module_name' ),
+						$this->get( 'record_id' ),	
+						$this->get( 'link_field_name' ),	
+						$this->get( 'related_ids' ),	
+						$this->get( 'nvl' ),	
+						$this->get( 'delete' ),	
+					) ;
+		return $this->soapCall( "set_relationship" );
+	}
+	
+	function set_relationships()
+	{
+		$this->soapParams = array( 	$this->soapClient->get( 'session_id' ), 
+						$this->get( 'module_names' ),
+						$this->get( 'module_ids' ),	
+						$this->get( 'link_field_names' ),	
+						$this->get( 'related_ids' ),	
+						$this->get( 'nvl' ), 
+						$this->get( 'delete' ), 
+					) ;
+		return $this->soapCall( "set_relationships" );
+	}
+	function get_relationships()
+	{
+		$this->soapParams = array( 	$this->soapClient->get( 'session_id' ), 
+						$this->get( 'module_name' ),
+						$this->get( 'module_id' ),	
+						$this->get( 'related_module_query' ),	
+						$this->get( 'related_fields' ),	
+						$this->get( 'link_name_to_fields_array' ),
+						$this->get( 'deleted' ), 
+						$this->get( 'order_by' ), 
+						$this->get( 'offset' ), 
+						$this->get( 'limit' ), 
+					) ;
+		return $this->soapCall( "get_relationships" );
+	}
+	function set_entry()
+	{
+
+		/*
+		//The following is tested working with code in client.protect.php
+		$ret = $this->soapClient->set_entry( 
+				$this->get( 'session_id' ), 
+				$this->get( 'module_name' ),
+				$this->get( 'nvl' )						
+			);
+		var_dump( $ret );
+		return $ret;
+		 */
+
+		//The following is ALSO tested working with code in client.protect.php
+		$this->soapParams = array( 	
+			$this->soapClient->get( 'session_id' ), 
+			$this->get( 'module_name' ),
+			$this->get( 'nvl' )							
+			) ;
+		$ret = $this->soapCall( "set_entry" );
+		//var_dump( $ret );
+		return $ret;
+	}
+	function set_entries()
+	{
+		$this->soapParams = array( 	$this->soapClient->get( 'session_id' ), 
+						$this->get( 'module_name' ),
+						$this->get( 'nvl' ),
+					) ;
+		return $this->soapCall( "set_entries" );
+	}
+	function get_server_info()
+	{
+		$this->soapParams = array( 
+			$this->soapClient->get( 'session_id' ) );
+		return $this->soapCall( "get_server_info" );
+	}
+	function get_user_id()
+	{
+		$this->soapParams = array( 
+			$this->soapClient->get( 'session_id' ) );
+		return $this->soapCall( "get_user_id" );
+	
+	}
+	function get_module_fields()
+	{
+		$this->soapParams = array( 	$this->soapClient->get( 'session_id' ), 
+						$this->get( 'module_name' ),
+						$this->get( 'select_fields' ),
+					) ;
+		return $this->soapCall( "get_module_fields" );
+	}
+	function seamless_login()
+	{
+		$this->soapParams = array( 	$this->soapClient->get( 'session_id' ), 
+					) ;
+		return $this->soapCall( "seamless_login" );
+	}
+	function set_note_attachment()
+	{
+		//string $session, new_note_attachment $note)"
+	}
+	function get_note_attachment()
+	{
+		$this->soapParams = array( 	$this->soapClient->get( 'session_id' ), 
+						$this->get( 'record_id' ),	
+					) ;
+		return $this->soapCall( "get_note_attachment" );
+	}
+	function set_document_revision()
+	{
+		//string $session, document_revision $note)"
+	}
+	function get_document_revision()
+	{
+		$this->soapParams = array( 	$this->soapClient->get( 'session_id' ), 
+						$this->get( 'record_id' ),	
+					) ;
+		return $this->soapCall( "get_document_revision" );
+	}
+	function search_by_module()
+	{
+		//string $session, string $search_string, select_fields $modules, int $offset, int $max_results, string $assigned_user_id, select_fields $select_fields, boolean $unified_search_only, boolean $favorites)"
+	}
+	function get_available_modules()
+	{
+		$this->soapParams = array( 	$this->soapClient->get( 'session_id' ), 
+						$this->get( 'query' ),	
+					) ;
+		return $this->soapCall( "get_available_modules" );
+	}
+	function get_user_team_id()
+	{
+		$this->soapParams = array( 	$this->soapClient->get( 'session_id' ), 
+					) ;
+		return $this->soapCall( "get_user_team_id" );
+	
+	}
+	function set_campaign_merge()
+	{
+		//string $session, select_fields $targets, string $campaign_id)"
+		return new stdClass();
+	}
+	function get_entries_count()
+	{
+		$this->soapParams = array( 	$this->soapClient->get( 'session_id' ), 
+						$this->get( 'module_name' ),
+						$this->get( 'query' ),	
+						$this->get( 'deleted' ) 
+					) ;
+		return $this->soapCall( "get_entries_count" );
+	}
+	function get_module_fields_md5()
+	{
+		//string $session, select_fields $module_names)"
+		return new stdClass();
+	}
+	function get_last_viewed()
+	{
+		//string $session, module_names $module_names)"
+		return new stdClass();
+	}
+	function get_upcoming_activities()
+	{
+		$this->soapParams = array( 	$this->soapClient->get( 'session_id' ), 
+					) ;
+		return $this->soapCall( "get_upcoming_activities" );
+	}
+	function get_modified_relationships()
+	{
+		//Temp measure for TESTING until func actually written
+		return new stdClass();
+		//string $session, string $module_name, string $related_module, string $from_date, string $to_date, int $offset, int $max_results, int $deleted, string $module_user_id, select_fields $select_fields, string $relationship_name, string $deletion_date)"
+	}
+
+
+
+
+
 /*        $parameters = array(
         	"session" => $this->session_id,
                 "module_name" => $this->module_name,
@@ -497,7 +848,7 @@ $sugar_config = array();
 //$sugar_config['soapuser'] = "soapuser";
 //$sugar_config['user_hash'] = "user_hash";
 //$sugar_config['site_url'] = "https://mickey.ksfraser.com/devel/fhs/suitecrm/service/v4_1/rest.php";
-$sugar_config['site_url'] = "https://mickey.ksfraser.com/ksfii/suitecrm/service/v4_1/";
+$sugar_config['site_url'] = "https://mickey.ksfraser.com/ksfii/suitecrm/service/v4_1/soap.php";
 $sugar_config['appname'] = "FA_Integration";
 //$sugar_config['site_url'] = "https://mickey.ksfraser.com/devel/fhs/suitecrm/service/v4_1/";
 $sugar_config['soapuser'] = "admin";
@@ -518,7 +869,9 @@ $nvl->add_nvl( "Module", "Accounts" );
 //$nvl->add_nvl( "Link", "" );
 //$nvl->add_nvl( "Results", "" );
 //$nvl->add_nvl( "Deleted", "1" );
-$o->soapParams = $nvl->get_nvl();
+//$o->setSoapParams( $nvl->get_nvl() );
+////$o->soapParams =  $nvl->get_nvl();
 //var_dump( $nvl->get_nvl() );
-print $o->soapCall( "get_entry_list" );
+//var_dump( $o->soapCall( "get_entry_list" ) );
+print_r( $o->soapCall( "get_entry_list" ), true );
  */

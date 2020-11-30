@@ -4,6 +4,83 @@ require_once( 'class.suitecrm.php' );
 
 //http://support.sugarcrm.com/Documentation/Sugar_Developer/Sugar_Developer_Guide_6.5/Application_Framework/Web_Services/Examples/REST/PHP/Creating_or_Updating_a_Record/
 
+class model_suitecrm_Accounts extends suitecrm_model
+{
+	protected $name;			//!< name
+	protected $date_entered;		//!< datetime
+	protected $date_modified;		//!< datetime
+	protected $description;			//!< text
+	protected $deleted;			//!< checkbox
+	protected $account_type;		//!< dropdown
+	protected $industry;			//!< dropdown
+	protected $annual_revenue;		//!< text
+	protected $phone_fax;			//!< phone
+	protected $billing_address_street;	//!< text
+	protected $billing_address_city;	//!< text
+	protected $billing_address_postalcode;	//!< text
+	protected $billing_address_state;	//!< text
+	protected $billing_address_country;	//!< text
+	protected $rating;			//!< text
+	protected $phone_office;		//!< phone
+	protected $phone_alternate;		//!< phone
+	protected $website;			//!< URL
+	protected $ownership;			//!< text
+	protected $employees;			//!< text
+	protected $ticker_symbol;		//!< text
+	protected $shipping_address_street;	//!< text
+	protected $shipping_address_city;	//!< text
+	protected $shipping_address_postalcode;	//!< text
+	protected $shipping_address_state;	//!< text
+	protected $shipping_address_country;	//!< text
+	protected $email1;			//!< text
+	protected $sic_code;			//!< text
+	protected $jjwg_maps_address_c;		//!< text
+	protected $jjwg_maps_geocode_c;		//!< text
+	protected $jjwg_maps_lat_c;		//!< float
+	protected $jjwg_maps_lng_c;		//!< float
+	
+    function __construct( $url, $username, $password )
+    {
+    }
+	function define_table()
+	{
+		parent::define_table();
+		$this->fields_array[] = array('name' => 'name', 'type' => 'varchar(64)', 'auto_increment' => 'no', 'readwrite' => 'readwrite' );			//!< name
+		$this->fields_array[] = array('name' => 'date_entered', 'type' => 'varchar(64)', 'auto_increment' => 'no', 'readwrite' => 'readwrite' );		//!< datetime
+		$this->fields_array[] = array('name' => 'date_modified', 'type' => 'varchar(64)', 'auto_increment' => 'no', 'readwrite' => 'readwrite' );		//!< datetime
+		$this->fields_array[] = array('name' => 'description', 'type' => 'varchar(64)', 'auto_increment' => 'no', 'readwrite' => 'readwrite' );			//!< text
+		$this->fields_array[] = array('name' => 'deleted', 'type' => 'varchar(64)', 'auto_increment' => 'no', 'readwrite' => 'readwrite' );			//!< checkbox
+		$this->fields_array[] = array('name' => 'account_type', 'type' => 'varchar(64)', 'auto_increment' => 'no', 'readwrite' => 'readwrite' );		//!< dropdown
+		$this->fields_array[] = array('name' => 'industry', 'type' => 'varchar(64)', 'auto_increment' => 'no', 'readwrite' => 'readwrite' );			//!< dropdown
+		$this->fields_array[] = array('name' => 'annual_revenue', 'type' => 'varchar(64)', 'auto_increment' => 'no', 'readwrite' => 'readwrite' );		//!< text
+		$this->fields_array[] = array('name' => 'phone_fax', 'type' => 'varchar(64)', 'auto_increment' => 'no', 'readwrite' => 'readwrite' );			//!< phone
+		$this->fields_array[] = array('name' => 'billing_address_street', 'type' => 'varchar(64)', 'auto_increment' => 'no', 'readwrite' => 'readwrite' );	//!< text
+		$this->fields_array[] = array('name' => 'billing_address_city', 'type' => 'varchar(64)', 'auto_increment' => 'no', 'readwrite' => 'readwrite' );	//!< text
+		$this->fields_array[] = array('name' => 'billing_address_postalcode', 'type' => 'varchar(64)', 'auto_increment' => 'no', 'readwrite' => 'readwrite' );	//!< text
+		$this->fields_array[] = array('name' => 'billing_address_state', 'type' => 'varchar(64)', 'auto_increment' => 'no', 'readwrite' => 'readwrite' );	//!< text
+		$this->fields_array[] = array('name' => 'billing_address_country', 'type' => 'varchar(64)', 'auto_increment' => 'no', 'readwrite' => 'readwrite' );	//!< text
+		$this->fields_array[] = array('name' => 'rating', 'type' => 'varchar(64)', 'auto_increment' => 'no', 'readwrite' => 'readwrite' );			//!< text
+		$this->fields_array[] = array('name' => 'phone_office', 'type' => 'varchar(64)', 'auto_increment' => 'no', 'readwrite' => 'readwrite' );		//!< phone
+		$this->fields_array[] = array('name' => 'phone_alternate', 'type' => 'varchar(64)', 'auto_increment' => 'no', 'readwrite' => 'readwrite' );		//!< phone
+		$this->fields_array[] = array('name' => 'website', 'type' => 'varchar(64)', 'auto_increment' => 'no', 'readwrite' => 'readwrite' );			//!< URL
+		$this->fields_array[] = array('name' => 'ownership', 'type' => 'varchar(64)', 'auto_increment' => 'no', 'readwrite' => 'readwrite' );			//!< text
+		$this->fields_array[] = array('name' => 'employees', 'type' => 'varchar(64)', 'auto_increment' => 'no', 'readwrite' => 'readwrite' );			//!< text
+		$this->fields_array[] = array('name' => 'ticker_symbol', 'type' => 'varchar(64)', 'auto_increment' => 'no', 'readwrite' => 'readwrite' );		//!< text
+		$this->fields_array[] = array('name' => 'shipping_address_street', 'type' => 'varchar(64)', 'auto_increment' => 'no', 'readwrite' => 'readwrite' );	//!< text
+		$this->fields_array[] = array('name' => 'shipping_address_city', 'type' => 'varchar(64)', 'auto_increment' => 'no', 'readwrite' => 'readwrite' );	//!< text
+		$this->fields_array[] = array('name' => 'shipping_address_postalcode', 'type' => 'varchar(64)', 'auto_increment' => 'no', 'readwrite' => 'readwrite' );	//!< text
+		$this->fields_array[] = array('name' => 'shipping_address_state', 'type' => 'varchar(64)', 'auto_increment' => 'no', 'readwrite' => 'readwrite' );	//!< text
+		$this->fields_array[] = array('name' => 'shipping_address_country', 'type' => 'varchar(64)', 'auto_increment' => 'no', 'readwrite' => 'readwrite' );	//!< text
+		$this->fields_array[] = array('name' => 'email1', 'type' => 'varchar(64)', 'auto_increment' => 'no', 'readwrite' => 'readwrite' );			//!< text
+		$this->fields_array[] = array('name' => 'sic_code', 'type' => 'varchar(64)', 'auto_increment' => 'no', 'readwrite' => 'readwrite' );			//!< text
+		$this->fields_array[] = array('name' => 'jjwg_maps_address_c', 'type' => 'varchar(64)', 'auto_increment' => 'no', 'readwrite' => 'readwrite' );		//!< text
+		$this->fields_array[] = array('name' => 'jjwg_maps_geocode_c', 'type' => 'varchar(64)', 'auto_increment' => 'no', 'readwrite' => 'readwrite' );		//!< text
+		$this->fields_array[] = array('name' => 'jjwg_maps_lat_c', 'type' => 'varchar(64)', 'auto_increment' => 'no', 'readwrite' => 'readwrite' );		//!< float
+		$this->fields_array[] = array('name' => 'jjwg_maps_lng_c', 'type' => 'varchar(64)', 'auto_increment' => 'no', 'readwrite' => 'readwrite' );		//!< float
+
+	}
+}
+
 class suitecrm_account extends suitecrm
 {
 	var $id;

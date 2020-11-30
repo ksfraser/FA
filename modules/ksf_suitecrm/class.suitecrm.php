@@ -1,10 +1,125 @@
 <?php
 
+/****************************************************************//**
+ * Base class for all SuiteCRM classes to be used in API
+ *
+ * REFACTORING
+ * 20201121
+ * 	I've tested SOAP code that makes it fairly easy to do the API
+ * 	calls without a lot of specific code.  As we are writing modules
+ * 	to interface between apps, we need a way to "map" fields betweem
+ * 	systems.
+ *
+ * 	See client.protect.php for examples of creating an account + contact.
+ *
+ * 	********************************************************************/
+
+/***********************//**
+ * Generic class
+ * ***********************/
+
+require_once( '../ksf_modules_common/class.MODEL.php' );
+require_once( '../ksf_modules_common/class.CONTROLLER.php' );
+require_once( "class.name_value_list.php" );
+
+class suitecrm_model extends MODEL
+{
+	protected $id;
+	protected $nvl;
+	protected $module_name;
+
+	function __construct()
+	{
+		$baseclassname = "model_suitecrm";
+		$baseclassnamelength = strlen( $baseclassname );
+		parent::__construct();
+		$this->nvl = array();
+		if( ! strncasecmp( $baseclassname, $this->iam, $baseclassnamelength ) )
+		{
+			$this->set( 'module_name', $this->iam );
+		}
+		else
+		{
+			$this->set( 'module_name', substr( $this->iam, $baseclassnamelength + 1 ) );
+		}
+	}
+	/***************************************************//**
+	 * Define the data structure that this MODEL class will handle
+	 *
+	 * ***************************************************/
+	function define_table()
+	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
+		if( ! strncasecmp( "model_", $this->iam, 5 ) )
+		{
+			$tablename = $this->iam;
+		}
+		else
+		{
+			$char = stripos( $this->iam, "_" ) + 1;
+			$tablename = substr( $this->iam, $char );
+		}
+		//The following should be common to pretty well EVERY table...
+		$ind = "id";
+		//$ind = "id_" . $tablename;
+		$this->fields_array[] = array('name' => $ind, 'type' => 'varchar(64)', 'auto_increment' => 'no', 'readwrite' => 'readwrite' );
+		//$this->fields_array[] = array('name' => 'updated_ts', 'type' => 'timestamp', 'null' => 'NOT NULL', 'default' => 'CURRENT_TIMESTAMP', 'readwrite' => 'read' );
+		$this->table_details['tablename'] =  $tablename;
+		$this->table_details['primarykey'] = $ind;	//We can override this in child class!
+		//$this->table_details['index'][0]['type'] = 'unique';
+		//$this->table_details['index'][0]['columns'] = "variablename";
+		//$this->table_details['index'][0]['keyname'] = "variablename";
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
+	}
+	/*****************************************************//**
+	 * Take our base fields and convert them into an NVL for sending.
+	 *
+	 * @param none
+	 * @return none
+	 * ******************************************************/
+	function fields2nvl()
+	{
+		$nvl = new name_value_list();
+		foreach( $this->fields_array as $vardef )
+		{
+			//array( "name" => "name", "value" => (isset( $this->name ) ) ? $this->name : "" ),		//!< datetime
+			$field = $vardef['name'];
+			if( isset( $this->$field ) )
+			{
+				$nvl->add_nvl( $field, $this->$field );
+			}
+		}
+		$this->set( 'nvl', $nvl->get_nvl() );
+	}
+}
+
+class suite_controller extends CONTROLLER
+{
+	public $model;
+	protected $soap;
+	function __construct( $appname )
+	{
+		$this->soap = new suitecrmSoapClient();
+		//$this->tell_eventloop();
+	}
+}
+
+/***********************************************//**
+ * Superparent to SUITECRM classes.  Call classes model_
+ *
+ * This class handles SOAP activities.
+ * *************************************************/
+class suitecrm extends suitecrm_model
+{
+}
+
+require_once( 'class.ksfSOAP.php' );
+
 require_once( '../ksf_modules_common/class.curl_handler.php' );
 
 //http://support.sugarcrm.com/Documentation/Sugar_Developer/Sugar_Developer_Guide_6.5/Application_Framework/Web_Services/Examples/REST/PHP/Creating_or_Updating_a_Record/
 
-class suitecrm
+class suitecrm_old
 {
 	protected $url;
 	protected $username;
