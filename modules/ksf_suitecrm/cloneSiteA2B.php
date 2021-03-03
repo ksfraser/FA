@@ -340,6 +340,12 @@ class cloneSiteA2B extends origin
 					if( $arr->id == $B->entry_list[0]->id )
 					{
 						//Compare fields
+						$b = $B->entry_list[0]->name_value_list;
+						$a = $arr->name_value_list;
+						foreach( $a as $key=>$value )
+						{
+							//Find the NV pair that matches a
+						}
 					}
 					//if not on B and A is authoratative, create
 					//	Recursively create contacts, notes, opps, calls, meetings etc.
