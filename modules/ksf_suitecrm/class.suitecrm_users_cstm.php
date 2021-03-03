@@ -4,48 +4,15 @@ require_once( 'class.suitecrm.php' );
 
 //http://support.sugarcrm.com/Documentation/Sugar_Developer/Sugar_Developer_Guide_6.5/Application_Framework/Web_Services/Examples/REST/PHP/Creating_or_Updating_a_Record/
 
-class suitecrm_contact extends suitecrm
+class suitecrm_users_cstm extends suitecrm
 {
 	var $id;
-	protected $date_entered;
-	protected $date_modified;
-	protected $description;
-	protected $deleted;
-	protected $salutation;
-	protected $first_name;
-	protected $last_name;
-	protected $title;
-	protected $photo;
-	protected $department;
-	protected $do_not_call;
-	protected $phone_home;
-	protected $phone_mobile;
-	protected $phone_work;
-	protected $phone_other;
-	protected $phone_fax;
-	protected $email1;
-	protected $primary_address_street;
-	protected $primary_address_city;
-	protected $primary_address_postal;
-	protected $primary_address_state;
-	protected $primary_address_country;
-	protected $alt_address_street;
-	protected $alt_address_city;
-	protected $alt_address_postal;
-	protected $alt_address_state;
-	protected $alt_address_country;
-	protected $assistant;
-	protected $assistant_phone;
-	protected $lead_source;
-	protected $birthdate;
-	protected $joomla_account_id;
-	protected $portal_user_type;
 
     function __construct( $url, $username, $password )
     {
-	    parent::__construct( $url, $username, $password, "Contacts" );
-	    $this->modname = "Contacts";
-	    $this->phone_fields_array = array( "phone_work", "phone_mobile", "phone_home", "phone_other" );
+	    parent::__construct( $url, $username, $password, "Users" );
+	    $this->modname = "users_cstm";
+	    $this->phone_fields_array = array( "asterisk_ext_c" );
     }
     function update()
     {
@@ -55,25 +22,27 @@ class suitecrm_contact extends suitecrm
     }
 
     /************************************************//**
-     * Find a SuiteCRM contact by phone number
+     * Find a SuiteCRM user by phone number
      *
      * Inspired by asteriskLogger (YAII) from SuiteCRM
+     *
+     * THIS FUNCTION IS SIMILAR TO BUT NOT IDENTICAL TO OTHER MODULES
+     * SINCE IT USES A CUSTOM VAR
+     *
      * @param number Phone Number to search for
      *
      * **************************************************/
-    function findContactByPhone( $number )
+    function findUserByExtension( $number )
     {
 	global $soapSessionId;
 	print("# +++ findSugarObjectByPhoneNumber($number)\n");
-	$searchPattern = $this->regexify($number);
-	//
-	// Plan A: Attempt to locate an object in Contacts
-	//        $soapResult = $soapClient->call('get_entry' , array('session' => $soapSessionId, 'module_name' => 'Calls', 'id' => $callRecId));
+	//extensions in Asterisk can be non numberic
+	//$searchPattern = $this->regexify($number);
 	//
 	$query = $this->build_query_string( $this->phone_fields_array, $searchPattern );
 	$soapArgs = array(
 		'session' => $soapSessionId,
-		'module_name' => $this->modname,
+		'module_name' => "Users",
 		'query' => $query,
 	);
 	// print "--- SOAP get_entry_list() ----- ARGS ----------------------------------------\n";
@@ -97,61 +66,12 @@ class suitecrm_contact extends suitecrm
 		// print "--- SOAP get_entry_list() ----- RESULT --------------------------------------\n";
 		// var_dump($resultDecoded);
 		// print "-----------------------------------------------------------------------------\n";
-		return array('type' => 'Contacts', 'values' => $resultDecoded);
+		return  isset($resultDecoded['id']) ? $resultDecoded['id'] : FALSE;
 	}
 
 	// Oops nothing found :-(
 	return FALSE;
     }
-    	//
-	// Finds related account for given contact id
-	//
-	function findAccountForContact($aContactId)
-	{
-		global $soapSessionId;
-		print("# +++ findAccountForContact($aContactId)\n");
-
-		$soapArgs = array(
-			'session' => $soapSessionId,
-			'module_name' => 'Contacts',
-			'module_id' => $aContactId,
-			'related_module' => 'Accounts',
-			'related_module_query' => '',
-			'deleted' => 0
-		);
-
-		$soapResult = soapCall('get_relationships', $soapArgs);
-
-		if ($soapResult['error']['number'] != '0')
-		{
-			echo "! WARNING Soap called returned with error "
-			. $soapResult['error']['number'] . " "
-			. $soapResult['error']['name'] . " // "
-			. $soapResult['error']['description']
-			. "\n";
-			return FALSE;
-		}
-		else
-		{
-			// var_dump($soapResult);
-			$assocCount = count($soapResult['ids']);
-			if ($assocCount == 0)
-			{
-				echo "# No associated account found\n";
-				return FALSE;
-			}
-			else
-			{
-				if ($assocCount > 1)
-				{
-					echo "! WARNING: More than one associated account found, using first one.\n";
-				}
-				$assoAccountID = $soapResult['ids'][0]['id'];
-				echo "# Associated account is $assoAccountID\n";
-				return $assoAccountID;
-			}
-		}
-	}
 }
 
 

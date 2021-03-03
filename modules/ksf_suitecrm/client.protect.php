@@ -9,6 +9,7 @@
 //
 // Required libraries
 
+require_once( "../ksf_modules_common/class.origin.php" );
 require_once( "class.suitecrmSoapClient.php" );
 
 

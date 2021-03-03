@@ -1,0 +1,235 @@
+It's a solution for autoimport a incoming email into Accounts. Maybe this is not a very beautiful solution, but it works :)
+
+
+
+Find file: youserver/modules/Emails/index.php
+
+At the end add:
+
+
+//Vitalka email autoimport
+?>
+
+<script type="text/javascript">
+<!--
+function detect_nr(){
+var nr
+$('body .emailDetailTable').each(function(){
+if($(this).parent().attr('class')!='yui-hidden'){
+nr = $(this).find('div:first').attr('id').replace('viewMenuDiv','')
+}
+})
+return nr;
+}
+
+function check(mode,mail){
+
+$('body .emailDetailTable').each(function(){
+if($(this).parent().attr('class')!='yui-hidden'){
+email = findEmailAddresses($(this).find('td.displayEmailValue').text())
+}
+})
+
+if(mode=="2"){
+email=mail
+}
+
+postEmail(email,'Accounts',mode)
+}
+
+$(document).ready(function(){
+
+
+setInterval(function(){
+var nr = detect_nr()
+$('#archiveEmail'+ nr).attr('onclick',$('#archiveEmail'+ nr).attr('onclick').replace("check(1,'')","")+"check(1,'')")
+
+$('body .emailDetailTable').each(function(){
+if($(this).parent().attr('class')!='yui-hidden'){
+email = findEmailAddresses($(this).find('td.displayEmailValue').text())
+$(this).find('.displayEmailValue button:first').attr('onclick',$(this).find('.displayEmailValue button:first').attr('onclick').replace("check(2,'"+email+"')","")+"check(2,'"+email+"')")
+}
+})
+},1000)
+
+})
+
+function parenttypenone(){
+$('#parent_type, #data_parent_type1').val('')
+}
+
+function open_popup_sp(p1,p2,module_name,width,height,initial_filter,close_popup,hide_clear_button,popup_request_data,popup_mode,create,metadata){
+if(typeof(popupCount)=="undefined"||popupCount==0)
+popupCount=1;
+window.document.popup_request_data=popup_request_data;
+window.document.close_popup=close_popup;
+width=(width==600)?800:width;
+height=(height==400)?800:height;
+URL='index.php?'+'module='+module_name+'&action=Popup';
+if(initial_filter!=''){
+URL+='&query=true'+initial_filter;
+popupName=initial_filter.replace(/[^a-z_0-9]+/ig,'_');
+windowName=module_name+'_popup_window'+popupName;
+}else{
+windowName=module_name+'_popup_window'+popupCount;
+}
+popupCount++;
+if(hide_clear_button){URL+='&hide_clear_button=true';}
+windowFeatures='width=1,height=1,resizable=0,scrollbars=0';
+if(popup_mode==''||popup_mode==undefined){popup_mode='single';}
+URL+='&mode='+popup_mode;
+if(create==''||create==undefined){create='false';}
+URL+='&create='+create;
+if(metadata!=''&&metadata!=undefined){URL+='&metadata='+metadata;}
+if(popup_request_data.jsonObject){
+var request_data=popup_request_data.jsonObject;
+}else{
+var request_data=popup_request_data;
+}
+var field_to_name_array_url='';
+if(request_data&&request_data.field_to_name_array!=undefined)
+{
+for(var key in request_data.field_to_name_array){
+if(key.toLowerCase()!='id'){
+field_to_name_array_url+='&field_to_name[]='+encodeURIComponent(key.toLowerCase());
+}
+}
+}
+if(field_to_name_array_url){
+URL+=field_to_name_array_url;
+}
+win=SUGAR.util.openWindow(URL+"&p1="+p1+'&p2='+p2,windowName,windowFeatures);
+if(window.focus){
+win.blur();
+}
+win.popupCount=popupCount;
+return win;
+}
+
+function findEmailAddresses(StrObj) {
+var emailsArray = StrObj.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/gi);
+if (emailsArray) {
+return emailsArray[0];
+}
+}
+
+function postEmail(email,mode,iorr){
+
+$.post('index.php?module='+mode+'&action=Popup&mode=single&create=false&field_to_name[]=name',{ email_advanced: email },function(data){
+var redata = $('.oddListRowS1 a', data).attr('onclick')
+if(typeof(redata)!="undefined"){
+if(iorr=="1"){
+
+getemail(email,mode)
+}
+if(iorr=="2"){
+getemailr(email,mode)
+}
+}else{
+if(mode!='Contacts'){
+postEmail(email,'Contacts',iorr)
+}else{
+$('<br><span style="color:red;font:11px arial">No data...</span>').insertAfter('#change_parent');
+$('#parent_type').val('Accounts')
+$('input[name=serverDelete]').attr('checked','checked')
+}
+}
+})
+}
+
+function getemail(mailas,pt){
+
+$.post('index.php?module='+pt+'&action=Popup&mode=single&create=false&field_to_name[]=name',{ email_advanced: mailas },function(data){
+var redata = $('.oddListRowS1 a', data).attr('onclick')
+
+if(typeof(redata)!="undefined"){
+$('#parent_type').val(pt)
+$('.laukti').remove()
+$('input[name=serverDelete]').attr('checked','checked')
+$('<br><span style="color:green;font:11px arial">Record found! <b style="font-weight:bold">'+ mailas+'</b></span>').insertAfter('#change_parent')
+redata = redata.split("'")
+open_popup_sp(redata[1],redata[3]+"&p3="+mailas,pt,1,1,"",true,false,{"call_back_function":"set_return","form_name":"ImportEditView","field_to_name_array":{"id":"parent_id","name":"parent_name"}})
+}else{
+
+}
+})
+}
+
+function getemailr(mailas,pt){
+
+$.post('index.php?module='+pt+'&action=Popup&mode=single&create=false&field_to_name[]=name',{ email_advanced: mailas },function(data){
+var redata = $('.oddListRowS1 a', data).attr('onclick')
+
+if(typeof(redata)!="undefined"){
+
+
+$('body select').each(function(){
+if($(this).attr('id').substr(0,16)=='data_parent_type'){
+$(this).val(pt)
+currid=$(this).attr('id')
+currid=currid.replace('data_parent_type','')+'_'
+currid=currid.split('_')
+currid=currid[0]
+if(currid!=""){
+theid=currid
+}
+}
+})
+
+
+redata = redata.split("'")
+open_popup_sp(redata[1],redata[3]+"&p3="+mailas,pt,1,1,"",true,false,{"call_back_function":"set_return","form_name":"ComposeEditView"+theid,"field_to_name_array":{"id":"data_parent_id"+theid,"name":"data_parent_name"+theid}})
+}else{
+
+}
+})
+}
+//-->
+</script>
+
+
+
+
+Find file: youserver/modules/Accounts/Account.php
+
+Find: require_once("include/SugarObjects/templates/company/Company.php");
+
+Add this code below:
+
+//Vitalka email autoimport
+if(isset($_GET) && isset($_GET)){
+?>
+<script type="text/javascript" src="ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<style>
+body{overflow:hidden}
+</style>
+<div style="background:black;color:white;position:absolute;display:;top:0px;left:0px;text-align:center;width:140px;height:140px"><div style="margin-top:35px">Checking data...</div></div>
+<?php
+if(isset($_GET)){
+?>
+<script type="text/javascript">
+<!--
+setTimeout(function(){
+$('#email_advanced').val('<?= $_GET["p3"]; ?>')
+$('#popup_query_form').attr('action','index.php?p1=<?= $_GET["p1"]; ?>&p2=<?= $_GET["p2"]; ?>')
+$('#search_form_submit').trigger('click')
+},2000)
+//-->
+</script>
+<?php }else{ ?>
+<script type="text/javascript">
+<!--
+setTimeout(function(){
+send_back('<?= $_GET["p1"]; ?>','<?= $_GET["p2"]; ?>');
+},2000)
+
+setTimeout(function(){
+window.opener.parenttypenone()
+window.close()
+},3000)
+//-->
+</script>
+<?php
+}
+}
+//Vitalka end email autoimport

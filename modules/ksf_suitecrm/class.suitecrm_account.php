@@ -41,6 +41,9 @@ class model_suitecrm_Accounts extends suitecrm_model
 	
     function __construct( $url, $username, $password )
     {
+	     $this->modname = "Accounts";
+	    $this->phone_fields_array = array( "phone_office", "phone_alternate");
+
     }
 	function define_table()
 	{
@@ -173,6 +176,45 @@ class suitecrm_account extends suitecrm
 	    	$this->name_value_list[] = array("name" => "id", "value" => $this->id );
 		return parent::update(); 
     }
+	// Finds an account by given phone number
+	function findAccountByPhoneNumber($aPhoneNumber)
+	{
+		global $soapSessionId;
+		print("# +++ findAccountByPhoneNumber($aPhoneNumber)\n");
+		$searchPattern = regexify($aPhoneNumber);
+		$query = $this->build_query_string( $this->phone_fields_array, $searchPattern );
+		$soapArgs = array(
+			'session' => $soapSessionId,
+			'module_name' => 'Accounts',
+			'query' => $query,
+	);
+
+		// print "--- SOAP get_entry_list() ----- ARGS ----------------------------------------\n";
+		// var_dump($soapArgs);
+		// print "-----------------------------------------------------------------------------\n";
+
+		$soapResult = soapCall('get_entry_list', $soapArgs);
+
+		//     print "--- SOAP get_entry_list() ----- RESULT --------------------------------------\n";
+		//     var_dump($soapResult);
+		//     print "-----------------------------------------------------------------------------\n";
+
+		if ($soapResult['error']['number'] != 0)
+		{
+			echo "! Warning: SOAP error " . $soapResult['error']['number'] . " " . $soapResult['error']['string'] . "\n";
+		}
+		elseif (count($soapResult['entry_list']) > 0)
+		{
+		//		print "--- SOAP get_entry_list() ----- RESULT --------------------------------------\n";
+		//		var_dump($soapResult['entry_list'][0]);
+		//		print "-----------------------------------------------------------------------------\n";
+		// Return just Account ID
+			return $soapResult['entry_list'][0]['id'];
+		}
+		// Oops nothing found :-(
+		return FALSE;
+	}
+
 }
 
 

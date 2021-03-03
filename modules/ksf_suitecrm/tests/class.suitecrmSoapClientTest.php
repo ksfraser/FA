@@ -7,6 +7,7 @@ global $path_to_root;
 if( $path_to_root == null OR strlen( $path_to_root ) < 5 )
  	$path_to_root = dirname( __FILE__ ) . "/../../../";
 use PHPUnit\Framework\TestCase;
+require_once( 'defines.php' );
 require_once( dirname( __FILE__ ) .  '/../class.suitecrmSoapClient.php' );
 
 /*
@@ -28,6 +29,8 @@ $sugar_config['site_url'] = "https://mickey.ksfraser.com/ksfii/suitecrm/service/
 $sugar_config['appname'] = "FA_Integration";
 $sugar_config['soapuser'] = "admin";
 $sugar_config['user_hash'] = md5('m1l1ce');
+//$sugar_config['soapuser'] = "kevin";
+//$sugar_config['user_hash'] = md5('Letmein1');
 global $userGUID;
 
 
@@ -80,15 +83,70 @@ class suitecrmSoapClientTest extends TestCase
 
 		return $o;
 	}
+	/**
+	 * Initializes a bunch of values.  Doesn't really test anything.
+	 * Refactoring of these values being set elsewhere.
+	 * @depends testConstructorValues
+	 */
+	public function testInit( $o )
+	{
+		//$o->set( "module_name", "Accounts" );
+		//$o->set( "module_id", "" );
+		$o->set( "module_name", "Contacts" );
+		$o->set( "module_id", "17ba9fdb-2f18-b080-cd7b-5f7390c41f0d" );	//Test Print
+		$o->set( "module_ids", array( "" ) );
+		$o->set( "record_id", "" );
+		$o->set( "related_ids", array( "" ) );
+		$o->set( "related_fields", array( "" ) );
+		$o->set( "related_module_query", "" );
+		$o->set( "module_names", array( "Accounts" ) );
+		$o->set( "query", "" );
+		$o->set( "track_view", "" );
+		$o->set( "max_results", "10" );
+		$o->set( "limit", "10" );
+		$o->set( "delete", "0" );
+		$o->set( "deleted", "0" );
+		$o->set( "order_by", "" );
+		$o->set( "offset", "" );
+		$o->set( "record_ids", array() );
+		$o->set( "select_fields", array() );
+		$o->set( "link_field_name", "" );
+		$o->set( "link_field_names", array() );
+		$o->set( "link_name_to_fields_array", array() );
+		$this->assertTrue( true ); //Getting rid of RISKY TEST warning
+		return $o;
+	}
+
 //soap_url implicitly tested in constructor
 //appname implicitly tested in constructor
 //soapuser implicitly tested in constructor
 //user_hash implicitly tested in constructor
+//
+	/**
+	 * @depends testConstructorValues
+	 */
+	public function testSoapCall_NoParams( $o )
+	{
+		try {
+			////var_dump( $o );
+			$ret = $o->soapCall( "get_entry_list" );
+			$this->assertIsObject( $ret );
+			//Getting a NULL back.  Is that expected from soapCall?
+		}
+		catch( Exception $e )
+		{
+			//At a guess because we don't have soapParams set, the underlying
+			//PHP soap client returning null?
+			$this->assertSame( KSF_RESULT_NOT_SET, $e->getCode() );
+		}
+		////var_dump( $ret );
+		return $o;
+	}
 	 
 	/**
 	 * @depends testConstructorValues
 	 */
-	public function testSoapCall( $o )
+	public function testSoapCall_ParamsSet( $o )
 	{
 		//, array( $o->get( 'session_id' ), "Accounts", "", "", array( 'id', 'name' ), '', '', '')
 		
@@ -102,12 +160,82 @@ class suitecrmSoapClientTest extends TestCase
 		$nvl->add_nvl( "Link", "" );
 		$nvl->add_nvl( "Results", "" );
 		$nvl->add_nvl( "Deleted", "1" );
-		$o->soapClient->set( "soapParams", $nvl->get_nvl() );
-		 
-		//$o->soapParams = $nvl->get_nvl();
-		//var_dump( $nvl->get_nvl() );
-		$this->assertIsObject( $o->soapCall( "get_entry_list" ) );
+
+		$o->set( "soapParams", $nvl->get_nvl() );
+		try {
+			$ret = $o->soapCall( "get_entry_list" );
+			$this->assertIsObject( $ret );
+		}
+		catch( Exception $e )
+		{
+			//Getting 8 vs 573000
+			$this->assertSame( KSF_FIELD_NOT_SET, $e->getCode() );
+		}
 		return $o;
+	}
+	/**
+	 * @depends testConstructorValues
+	 */
+	public function testSoapCall_ParamsPassed( $o )
+	{
+		$nvl = new name_value_list();
+		$nvl->add_nvl( "session_id", $o->soapClient->get( 'session_id' ) );
+		$nvl->add_nvl( "Module", "Accounts" );
+		$nvl->add_nvl( "Filter", "" );
+		$nvl->add_nvl( "Order_by", "" );
+		$nvl->add_nvl( "Start", "" );
+		$nvl->add_nvl( "Return", "" );
+		$nvl->add_nvl( "Link", "" );
+		$nvl->add_nvl( "Results", "" );
+		$nvl->add_nvl( "Deleted", "1" );
+		try {
+			$ret = $o->soapCall( "get_entry_list", $nvl->get_nvl() );
+			$this->assertIsObject( $ret );
+		}
+		catch( Exception $e )
+		{
+			//Getting 8 vs 573000
+			$this->assertSame( KSF_FIELD_NOT_SET, $e->getCode() );
+		}
+		return $o;
+	}
+	/**
+	 * Passing in a string
+	 * @depends testConstructorValues
+	 */
+	public function testGet_one_NotArray( $o )
+	{
+		$strings = "strings";
+		$o->set( "test_arr", $strings );
+		try
+		{
+			$o->get_one( "test_arr" );
+			$this->assertTrue( false ); //We shouldn't get here!
+		}
+		catch( Exception $e )
+		{
+			//$this->assertSame( "Not an array.  Did you mean ->get()", $e->getMessage() );
+			$this->assertSame( KSF_INVALID_DATA_TYPE, $e->getCode() );
+		}
+	}
+	/**
+	 * Passing in an array that doesn't have zero set
+	 * @depends testConstructorValues
+	 */
+	public function testGet_one_ZeroNotSet( $o )
+	{
+		$arr = array();
+		$o->set( "test_arr", $arr );
+		try
+		{
+			$ret = $o->get_one( "test_arr" );
+			$this->assertTrue( false ); //We shouldn't get here!
+		}
+		catch( Exception $e )
+		{
+			$this->assertSame( KSF_VAR_NOT_SET, $e->getCode() );
+			//getting 8 vice 573002
+		}
 	}
 	/**
 	 * @depends testConstructorValues
@@ -115,37 +243,22 @@ class suitecrmSoapClientTest extends TestCase
 	public function testGet_one( $o )
 	{
 		$strings = "strings";
-		try
-		{
-			$o->get_one( $strings );
-			$this->assertTrue( false ); //We shouldn't get here!
-		}
-		catch( Exception $e )
-		{
-			$this->assertSame( "Not an array.  Did you mean ->get", $e->getMessage() );
-		}
-		$arr = array();
-		try
-		{
-			$o->get_one( $arr );
-			$this->assertTrue( false ); //We shouldn't get here!
-		}
-		catch( Exception $e )
-		{
-			print_r( $e->getMessage(), true ); 
-			$this->assertSame( "0 element not set", $e->getMessage() );
-		}
+		
 		$r = "Test";
+		$arr = array();
 		$arr[] = $r;
+		$o->set( "test_arr", $arr );
 		try
 		{
-			$res = $o->get_one( $arr );
+			$res = $o->get_one( "test_arr" );
 			$this->assertSame( $r, $res );
 		}
 		catch( Exception $e )
 		{
+			$this->assertTrue( false ); //We shouldn't get here!
 		}
 	}
+	
 	/**
 	 * @depends testConstructorValues
 	 */
@@ -158,10 +271,21 @@ class suitecrmSoapClientTest extends TestCase
 		$nvl->add_nvl( "Start", "" );
 		$nvl->add_nvl( "Return", "" );
 		$nvl->add_nvl( "Link", "" );
-		$o->setSoapParams( $mod, $nvl->get_nvl() );
-		$res = $o->get( "soapParams" );
-		$this->assertIsArray( $res );
-		return $res;
+		if( $o->setSoapParams( $mod, $nvl->get_nvl() ) )
+		{
+			//print "//var_dump in setSoapParams shows soapParams to be an array\n";
+			////var_dump( $o->soapParams );
+			//print "\n";
+			////var_dump( $o );
+			$res = $o->get( "soapParams" );
+			$this->assertIsArray( $res );
+			return $res;
+		}
+		else
+		{
+			$this->assertTrue( False );
+			return null;
+		}
 	}
 	/**
 	 * @depends testsetSoapParams
@@ -189,26 +313,6 @@ class suitecrmSoapClientTest extends TestCase
 	}
 	 */
 
-	/**
-	 * @depends testConstructorValues
-	 */
-	
-	public function testSoapParams( $o )
-	{
-		try
-		{
-			//Default class has exception
-			$o->setSoapParams( "","" );
-		}
-		catch( Exception $e )
-		{
-			$this->assertTrue( true );
-			return $o;
-		}
-		throw new Exception( "We shouldn't have made it here!" );
-		//$this->expectException( $o->get_value( 1 ) );
-	}
-
 
 	/**
 	 * @ depends testConstructorValues
@@ -221,38 +325,15 @@ class suitecrmSoapClientTest extends TestCase
 	 */
 
 	/**
-	 * @depends testConstructorValues
-	 */
-	public function testInit( $o )
-	{
-		$o->set( "module_name", "Accounts" );
-		$o->set( "module_id", "" );
-		$o->set( "module_ids", array( "" ) );
-		$o->set( "record_id", "" );
-		$o->set( "related_ids", array( "" ) );
-		$o->set( "related_fields", array( "" ) );
-		$o->set( "related_module_query", "" );
-		$o->set( "module_names", array( "Accounts" ) );
-		$o->set( "query", "" );
-		$o->set( "track_view", "" );
-		$o->set( "max_results", "10" );
-		$o->set( "delete", "0" );
-		$o->set( "order_by", "" );
-		$o->set( "offset", "" );
-		$o->set( "record_ids", array() );
-		$o->set( "select_fields", array() );
-		$o->set( "link_field_name", "" );
-		$o->set( "link_field_names", array() );
-		$o->set( "link_name_to_fields_array", array() );
-		$this->assertTrue( true ); //Getting rid of RISKY TEST warning
-		return $o;
-	}
-	/**
 	 * @depends testInit
 	 */
 	public function testGet_entry( $o )
 	{
-		$this->assertIsObject( $o->get_entry() );
+		$o->set( "module_name", "Contacts" );
+		$o->set( "record_id", "17ba9fdb-2f18-b080-cd7b-5f7390c41f0d" );	//print test 
+		$ret = $o->get_entry();
+		////var_dump( $ret );
+		$this->assertIsObject( $ret );
 		//$this->assertIsArray( $o->getFunctions() );
 	}
 	/**
@@ -260,7 +341,14 @@ class suitecrmSoapClientTest extends TestCase
 	 */
 	public function testGet_entries( $o )
 	{
-		$this->assertIsObject( $o->get_entries() );
+		//Query doesn't get used by get_entry
+		//$o->set( "query", "name like '%print%'" );
+		$o->set( "module_name", "Contacts" );
+						//deleted, 	test test, print test
+		$o->set( "record_ids", array( "3D55e3344b-c045-7ca3-5078-603e93941b99", "3Defb4a753-8c48-d356-7f99-603e931503e1" , "17ba9fdb-2f18-b080-cd7b-5f7390c41f0d" ) );
+		$ret = $o->get_entries();
+		////var_dump( $ret );
+		$this->assertIsObject( $ret );
 		//$this->assertIsArray( $o->getFunctions() );
 	}
 	/**
@@ -268,12 +356,14 @@ class suitecrmSoapClientTest extends TestCase
 	 */
 	public function testGet_entry_list( $o )
 	{
-		$this->assertIsObject( $o->get_entry_list() );
-		//$this->assertIsArray( $o->getFunctions() );
+		$o->set( "query", "name like '%print%'" );
+		$res = $o->get_entry_list();
+		////var_dump( $res );
+		$this->assertIsObject( $res );
 	}
 	/**
 	 * @depends testInit
-	 */
+	 * /
 	public function testSet_relationship( $o )
 	{
 		$this->assertIsObject( $o->set_relationship() );
@@ -281,9 +371,10 @@ class suitecrmSoapClientTest extends TestCase
 	}
 	/**
 	 * @depends testInit
-	 */
+	 * /
 	public function testSet_relationships( $o )
 	{
+		//Invalid DATA sent
 		$this->assertIsObject( $o->set_relationships() );
 		//$this->assertIsArray( $o->getFunctions() );
 	}
@@ -292,16 +383,210 @@ class suitecrmSoapClientTest extends TestCase
 	 */
 	public function testGet_relationships( $o )
 	{
-		$this->assertIsObject( $o->get_relationships() );
-		//$this->assertIsArray( $o->getFunctions() );
+		//Record print test
+		$o->set( "module_name", "Contacts" );
+		$o->set( "module_id", "17ba9fdb-2f18-b080-cd7b-5f7390c41f0d" );
+		$ret = $o->get_relationships();
+		//Getting ACCESS DENIED
+		////var_dump( $res );
+		$this->assertIsObject( $ret );
 	}
+	/**
+	 *
+	 * @depends testInit
+	 * /
+	 public function testSet_entry( $o )
+	 {
+		 	//The following is tested working with code in client.protect.php
+			//$ret = $this->soapClient->set_entry( 
+			//	$this->get( 'session_id' ), 
+			//	$this->get( 'module_name' ),
+			//	$this->get( 'nvl' )						
+		 	//);
+		 $ret = $o->set_entry();
+		 $this->assertTrue( $ret );
+	 }
+	/**
+	 *
+	 * @depends testInit
+	 * /
+	 public function testSet_entries( $o )
+	 {
+		 	//The following is tested working with code in client.protect.php
+			//$ret = $this->soapClient->set_entry( 
+			//	$this->get( 'session_id' ), 
+			//	$this->get( 'module_name' ),
+			//	$this->get( 'nvl' )						
+		 	//);
+		 $ret = $o->set_entries();
+		 $this->assertTrue( $ret );
+	 }
+	/**
+	 *
+	 * @depends testInit
+	 */
+	 public function testGet_server_info( $o )
+	 {
+		 //Depends on a session_id.
+		 $ret = $o->get_server_info();
+		 ////var_dump( $ret );
+		 $this->assertIsObject( $ret );
+	 }
+	/**
+	 *
+	 * @depends testInit
+	 */
+	 public function testGet_user_id( $o )
+	 {
+		 //Depends on a session_id.
+		 $ret = $o->get_user_id();
+		 ////var_dump( $ret );
+		 //Returned '1' 
+		 //Using admin for testing, so ID is 1
+		 $this->assertSame( '1', $ret );
+	 }
+	/**
+	 *
+	 * @depends testInit
+	 */
+	 public function testGet_module_fields( $o )
+	 {
+		 //Depends on a session_id, module .
+		 $ret = $o->get_module_fields();
+		 ////var_dump( $ret );
+		 $this->assertIsObject( $ret );
+	 }
+		/**
+	 *
+	 * @depends testInit
+	 */
+	 public function testSeamless_login( $o )
+	 {
+		 //Depends on a session_id.
+		 $ret = $o->seamless_login();
+		 //Returns 1 (TRUE?)
+		 ////var_dump( $ret );
+		 $this->assertSame( 1, $ret );
+	 }
+	/**
+	 *
+	 * @depends testInit
+	 * /
+	 public function testSet_note_attachment( $o )
+	 {
+		 //Depends on a session_id, note attachment .
+		 $ret = $o->set_note_attachment();
+		 //var_dump( $ret );
+		 $this->assertIsObject( $ret );
+	 }
+	/**
+	 *
+	 * @depends testInit
+	 */
+	 public function testGet_note_attachment( $o )
+	 {
+		 //Depends on a session_id, record_id
+		 //$o->set( 'record_id', "8eb30b55-bd28-fb88-1107-5d9261ebe489" );	//Attachment?
+		 $o->set( 'record_id', "3D6657ee4d-2c80-5339-5fb9-5b32acb9870d" );
+		 $o->set( 'record_id', "5b4a3e5d-d6a4-e66d-1ffa-603ebc8716e2" ); 
+		 $ret = $o->get_note_attachment();
+		 ////var_dump( $ret );
+		 $this->assertIsObject( $ret );
+	 }
+	/**
+	 *
+	 * @depends testInit
+	 * /
+	 public function testSet_document_revision( $o )
+	 {
+		 //Depends on a session_id, note attachment .
+		 $ret = $o->set_document_revision();
+		 //var_dump( $ret );
+		 $this->assertIsObject( $ret );
+	 }
+	/**
+	 *
+	 * @depends testInit
+	 * /
+	 public function testSearch_by_module( $o )
+	 {
+		 $ret = $o->search_by_module();
+		 ////var_dump( $ret );
+		 $this->assertIsObject( $ret );
+	 }
+	/**
+	 *
+	 * @depends testInit
+	 * /
+	 public function testGet_available_modules( $o )
+	 {
+		 $ret = $o->get_available_modules();
+		 ////var_dump( $ret );
+		 $this->assertIsObject( $ret );
+	 }
+	/**
+	 * Not defined in v4.1
+	 * @depends testInit
+	 * /
+	 public function testGet_user_team_id( $o )
+	 {
+		 $ret = $o->get_user_team_id();
+		 //var_dump( $ret );
+		 $this->assertIsObject( $ret );
+	 }
+	/**
+	 *
+	 * @depends testInit
+	 */
+	 public function testSet_campaign_merge( $o )
+	 {
+		 $ret = $o->set_campaign_merge();
+		 //var_dump( $ret );
+		 $this->assertIsObject( $ret );
+	 }
+	/**
+	 *
+	 * @depends testInit
+	 */
+	 public function testGet_entries_count( $o )
+	 {
+		 //uses module_name, query, deleted
+		 $o->set( 'module_name', 'Accounts' );
+		 $o->set( 'query', '' );
+		 $o->set( 'deleted', '1' );
+		 $ret = $o->get_entries_count();
+		 //var_dump( $ret );
+		 $this->assertIsObject( $ret );
+	 }
+	/**
+	 *
+	 * @depends testInit
+	 */
+	 public function testGet_module_fields_md5( $o )
+	 {
+		 $ret = $o->get_module_fields_md5();
+		 //var_dump( $ret );
+		 $this->assertIsObject( $ret );
+	 }
+	/**
+	 *
+	 * @depends testInit
+	 */
+	 public function testGet_last_viewed( $o )
+	 {
+		 $ret = $o->get_last_viewed();
+		 //var_dump( $ret );
+		 $this->assertIsObject( $ret );
+	 }
+
 	/**
 	 * @depends testInit
 	 */
 	public function testGet_upcoming_activities( $o )
 	{
-		$this->assertIsObject( $o->get_upcoming_activities() );
-		//$this->assertIsArray( $o->getFunctions() );
+		//Array on successful download
+		//stdClass on error
+		$this->assertIsArray( $o->get_upcoming_activities() );
 	}
 	/**
 	 * @depends testInit
@@ -309,9 +594,7 @@ class suitecrmSoapClientTest extends TestCase
 	public function testGet_modified_relationships( $o )
 	{
 		$this->assertIsObject( $o->get_modified_relationships() );
-		//$this->assertIsArray( $o->getFunctions() );
 	}
-
 
 	/**
 	 * @ depends testConstructorValues

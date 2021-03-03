@@ -11,6 +11,7 @@ require_once( '../ksf_modules_common/defines.inc.php' );
 class name_value_list
 {
 	var $nvl;
+	var $hash;	//from asteriskLogger (yaii)
 	function __construct()
 	{
 		$this->nvl = array();
@@ -61,6 +62,36 @@ class name_value_list
 		{
 			throw $e;
 		}
+	}
+	/*****************************************//**
+	 * Repack a Name-Value list into an assoc array (hash)
+	 *
+	 * Inspired by asteriskLogger
+	 * @param nvl array to hash
+	 * @returns array
+	 * *********************************************/
+	function hash_nvl( $nvl = null )
+	{
+		if (null == $nvl AND isset( $this->nvl ) )
+		{
+			$nvl = $this->nvl;
+		}
+		else
+		{
+			throw new Exception( "No NVL to hash" );
+		}
+		$result = array();
+		if (is_array($nvl) && count($nvl) > 0)
+		{
+			foreach ($nvl as $nvlEntry)
+			{
+				$key = $nvlEntry['name'];
+				$val = $nvlEntry['value'];
+				$result[$key] = $val;
+			}
+		}
+		$this->hash = $result;
+		return $result;
 	}
 }
 

@@ -10,6 +10,7 @@
 // Required libraries
 
 //require_once( "vendor/econea/nusoap/src/nusoap.php" );
+require_once( 'class.ksfSOAP.php' );
 
 
 /*
@@ -41,19 +42,6 @@
  "upcoming_activities_list get_upcoming_activities(string $session)"
  "modified_relationship_result get_modified_relationships(string $session, string $module_name, string $related_module, string $from_date, string $to_date, int $offset, int $max_results, int $deleted, string $module_user_id, select_fields $select_fields, string $relationship_name, string $deletion_date)"
  * */
-
-/*
-class name_value_list
-{
-	protected $nvl;
-	function __construct()
-	function add_nvl( $name, $value )
-	function get_nvl()
-	function search_nvl( $name )
-	function get_value( $index )
-	function get_named_value( $name )
-}
- */
 
 
 /*
@@ -210,27 +198,26 @@ class get_relationships_soapClient extends get_entry_soapClient
 //require_once( 'class.suitecrm.php' );
 class suitecrm extends origin
 {
-	function __construct()
+	function __construct( )
 	{
-		global $sugar_config;
-		$this->url = $sugar_config['site_url'] . "/soap.php";	//$sugarSoapEndpoint 
-		$this->appname = $sugar_config['appname'];
-		$this->username = $sugar_config['soapuser'];
-		$this->password = $sugar_config['user_hash'];
-		$this->soap_url( $sugar_config['site_url'] . "/soap.php?wsdl" );
-		$this->appname( $sugar_config['appname'] );
-		$this->soapuser( $sugar_config['soapuser'] );
-		$this->user_hash( $sugar_config['user_hash'] );
 		parent::__construct();
 	}
-	function tell_eventloop( $a, $b )
+	/**********//**
+	 * Fake out the Controller process for testing.
+	 * *******/
+	function tell_eventloop( $a = null, $b = null, $c = null )
 	{
-		return TRUE;
+		return FALSE;
+		//return TRUE;
 	}
 }
 
 class suitecrmSoapClient extends suitecrm
 {
+	protected $url;			//Used in soapClient
+	protected $appname;		//Used in soapClient
+	protected $username;		//Used in soapClient
+	protected $password;		//Used in soapClient
 	protected $userGUID;
 	protected $module_name;
 	protected $module_names;
@@ -256,17 +243,21 @@ class suitecrmSoapClient extends suitecrm
 	protected $favorites;		//!<bool
 	protected $result;
 	protected $nvl;
+	protected $soapParams;
+	var $test_arr;
 
 
-    function __construct()
+    function __construct( $config_array = null )
     {
 	    global $sugar_config;
-	    //parent::__construct();
+	    parent::__construct();
+	 	
 
 	//    $this->url = $sugar_config['site_url'] . "/soap.php";	//$sugarSoapEndpoint 
 	    $this->soapClient = new ksfSOAP();
-	    parent::__construct();
+	    //parent::__construct();
 	    $this->tell_eventloop( "READ_INI", "soap.ini" );
+	    $this->soapParams = array();
 	    if( 
 		    $this->tell_eventloop( "SETTINGS_QUERY", "soap_url" )
 		    AND $this->tell_eventloop( "SETTINGS_QUERY", "appname" )
@@ -274,13 +265,56 @@ class suitecrmSoapClient extends suitecrm
 		    AND $this->tell_eventloop( "SETTINGS_QUERY", "user_hash" )
 	    )
 	    {
-	    	$this->soapClient->soapLogin();
-		$this->nvl = new name_value_list();
+		    //These 4 functions are TESTING procs that tell_eventloop above would
+		    //have called had we not dummied up that proc for testing.
+		    $this->soap_url( $sugar_config['site_url'] . "/soap.php?wsdl" );
+		    $this->appname( $sugar_config['appname'] );
+		    $this->soapuser( $sugar_config['soapuser'] );
+		    $this->user_hash( $sugar_config['user_hash'] );
+	
 	    }
 	    else
 	    {
-		    throw new Exception( "Couldn't Initialize SOAP client" );
+		    if( !isset( $this->url ) )
+		    {
+			    if( isset( $config_array['site_url'] ) )
+				    $this->soap_url( $config_array['site_url'] );
+			    else if( isset( $sugar_config['site_url'] ) )
+				    $this->soap_url( $sugar_config['site_url'] );
+			    else
+		    		throw new Exception( "Couldn't Initialize SOAP client CONFIG" );
+		    }
+		    if( !isset( $this->appname ) )
+		    {
+			    if( isset( $config_array['appname'] ) )
+				    $this->appname( $config_array['appname'] );
+			    else if( isset( $sugar_config['appname'] ) )
+				    $this->appname( $sugar_config['appname'] );
+			    else
+		    		throw new Exception( "Couldn't Initialize SOAP client CONFIG" );
+		    }
+		    if( !isset( $this->username ) )
+		    {
+			    if( isset( $config_array['username'] ) )
+				    $this->username( $config_array['username'] );
+			    else if( isset( $sugar_config['username'] ) )
+				    $this->username( $sugar_config['username'] );
+			    else
+		    		throw new Exception( "Couldn't Initialize SOAP client CONFIG" );
+		    }
+		    if( !isset( $this->password ) )
+		    {
+			    if( isset( $config_array['password'] ) )
+				    $this->password( $config_array['password'] );
+			    else if( isset( $sugar_config['password'] ) )
+				    $this->password( $sugar_config['password'] );
+			    else
+		    		throw new Exception( "Couldn't Initialize SOAP client CONFIG" );
+		    }
+
 	    }
+	    $this->soapClient->soapLogin();
+	    $this->nvl = new name_value_list();
     }
 	/*****************************************//**
 	 * Callback function from tell_eventloop SETTINGS_QUERY
@@ -290,7 +324,15 @@ class suitecrmSoapClient extends suitecrm
 	 * *****************************************/
 	function soap_url( $value )
 	{
-		$this->soapClient->set( 'url', $value );
+		if( $this->soapClient->set( 'url', $value ) )
+		{
+			//echo __FILE__ . "::" . __LINE__ . "\n";
+			//var_dump( $this->soapClient );
+			$this->set( 'url', $value );
+		}
+		else
+			throw new Exception( "Why are we here?" );
+			
 	}
 	/*****************************************//**
 	 * Callback function from tell_eventloop SETTINGS_QUERY
@@ -300,7 +342,10 @@ class suitecrmSoapClient extends suitecrm
 	 * *****************************************/
 	function appname( $value )
 	{
-		$this->soapClient->set( 'appname', $value );
+		if( $this->soapClient->set( 'appname', $value ) )
+			$this->set( 'appname', $value );
+		else
+			throw new Exception( "Why are we here?" );
 	}
 	/*****************************************//**
 	 * Callback function from tell_eventloop SETTINGS_QUERY
@@ -308,9 +353,12 @@ class suitecrmSoapClient extends suitecrm
 	 * @param value string to search for.
 	 * @return NONE
 	 * *****************************************/
-	function soapuser( $value )
+	function username( $value )
 	{
-		$this->soapClient->set( 'username', $value );
+		if( $this->soapClient->set( 'username', $value ) )
+			$this->set( 'username', $value );
+		else
+			throw new Exception( "Why are we here?" );
 	}
 	/*****************************************//**
 	 * Callback function from tell_eventloop SETTINGS_QUERY
@@ -318,9 +366,16 @@ class suitecrmSoapClient extends suitecrm
 	 * @param value string to search for.
 	 * @return NONE
 	 * *****************************************/
-	function user_hash( $value )
+	function password( $value )
 	{
-		$this->soapClient->set( 'password', $value );
+		if( $this->soapClient->set( 'password', $value ) )
+		{
+			$this->set( 'password', $value );
+			//echo __FILE__ . "::" . __LINE__ . "\n";
+			//var_dump( $this->soapClient );
+		}
+		else
+			throw new Exception( "Why are we here?" );
 	}
 	/*****************************************//**
 	 * Wrapper to the soapCall in the client class. 
@@ -336,16 +391,33 @@ class suitecrmSoapClient extends suitecrm
 		{
 			$this->soapClient->set( "soapParams", $soapParams );
 		}
+		else if( ! isset( $this->soapParams ) )
+		{
+			throw new Exception( "Soap Params not set", KSF_FIELD_NOT_SET );
+		}
+		else
+		{
+			//in ksfSOAPTest it uses nvl->get_nvl instead of this->soapParams
+			$this->soapClient->set( "soapParams", $this->soapParams );
+		}
 		try {
 			$this->result = $this->soapClient->soapCall( $operation );
 		}
 		catch( Exception $e )
 		{
+			print_r( $e->getMessage(), true );
+			throw $e;
 		}
 		return $this->result;
 	}
 	//Inherited function get( $name )
 	//Inherited function set( $name, $value )
+	/**********************************************//**
+	 * Get the 0 indexed item of an NAMED array object var
+	 *
+	 * @param name the name of the field to grab the first (0) element from
+	 * @return mixed | null
+	 * ***********************************************/
 	function get_one( $name )
 	{
 		if( is_array( $this->$name ) )
@@ -353,15 +425,35 @@ class suitecrmSoapClient extends suitecrm
 			if( isset( $this->$name[0] ) )
 				return $this->$name[0];
 			else
-				throw new Exception( "0 element not set" );
+				throw new Exception( "0 element not set", KSF_VAR_NOT_SET );
 		}
 		else
-			throw new Exception( "Not an array.  Did you mean ->get" );
+			throw new Exception( "Not an array.  Did you mean ->get()", KSF_INVALID_DATA_TYPE );
+		return NULL; //It should be impossible to get here, but we are throwing an exception
+				//that I can't track down either
 	}
+	/*********************************************//**
+	 * Not sure long term this func will get used
+	 *
+	 * Since we have an attached object soapClient that needs
+	 * its own set of params, and we are setting those before
+	 * calling it (see get_entry below) this func might be 
+	 * pointless.
+	 *
+	 * @param module string
+	 * @param nvl_array array of name_value_list values
+	 * @param a array
+	 * @param b array
+	 * @param c array
+	 * @param d array
+	 * @return bool
+	 * *********************************************/
 	function setSoapParams( $module, $nvl_array, $a = null, $b = null, $c = null, $d = null )
 	{
 		//throw new Exception( "Must override!" );
 		//$this->soapParams = array( $this->get( 'session_id' ), "Accounts", "accounts.name like '%Fraser%'", "", "0", array(), "", "10", "0", "false" ) ;
+		unset( $this->soapParams );
+		$this->soapParams = array();
 		$this->soapParams[] = $this->soapClient->get( 'session_id' ); 
 		$this->soapParams[] = $module; 
 		foreach( $nvl_array as $row )
@@ -433,32 +525,66 @@ class suitecrmSoapClient extends suitecrm
 				$this->soapParams[] = $d;
 		}
 		 */
+		//var_dump( $this->soapParams );
+		return true;
 	}
+
+//get_entry(string $session, string $module_name, string $id, select_fields $select_fields, link_names_to_fields_array $link_name_to_fields_array, boolean $track_view)"
 	function get_entry()
 	{
-		$this->soapParams = array( 	$this->soapClient->get( 'session_id' ), 
+		try 
+		{
+			$this->soapParams = array( 	$this->soapClient->get( 'session_id' ), 
 						$this->get( 'module_name' ),
-						$this->get( 'record_id' ),	
+						$this->get( 'record_id' ),	//Should this be module_id?
 						$this->get( 'select_fields' ),
 						$this->get( 'link_name_to_fields_array' ),
 						$this->get( 'track_view' ) 
 					) ;
-		return $this->soapCall( "get_entry" );
+			return $this->soapCall( "get_entry" );
+		
+		}
+		catch( Exception $e )
+		{
+			return new stdClass();
+		}
 	}
+//get_entries(string $session, string $module_name, select_fields $ids, select_fields $select_fields, link_names_to_fields_array $link_name_to_fields_array, boolean $track_view)"
 	function get_entries()
 	{
-		$this->soapParams = array( 	$this->soapClient->get( 'session_id' ), 
+		try 
+		{
+			$this->soapParams = array( 	$this->soapClient->get( 'session_id' ), 
 						$this->get( 'module_name' ),
 						$this->get( 'record_ids' ),	
 						$this->get( 'select_fields' ),
 						$this->get( 'link_name_to_fields_array' ),
 						$this->get( 'track_view' ) 
 					) ;
-		return $this->soapCall( "get_entries" );
+			return $this->soapCall( "get_entries" );
+		
+		}
+		catch( Exception $e )
+		{
+			return new stdClass();
+		}
 	}
+//get_entry_list(string $session, string $module_name, string $query, string $order_by, int $offset, select_fields $select_fields, link_names_to_fields_array $link_name_to_fields_array, int $max_results, int $deleted, boolean $favorites)"
 	function get_entry_list()
 	{
-		$this->soapParams = array( 	$this->soapClient->get( 'session_id' ), 
+		try 
+		{
+			/*
+			 * Tested working
+			 * 	$nvl2 = new name_value_list();
+			//$nvl2->add_nvl( "module_name", "Accounts" );
+			$nvl2->add_nvl( "filter", ""  );
+			$nvl2->add_nvl( "order_by", "" );
+			$this->connectionA->setSoapParams( "Accounts", $nvl2->get_nvl() );
+			$oret = $this->connectionA->soapCall( "get_entry_list" )
+			 */
+			/*Tested FAIL
+			$this->soapParams = array( 	$this->soapClient->get( 'session_id' ), 
 						$this->get( 'module_name' ),
 						$this->get( 'query' ),	
 						$this->get( 'order_by' ),	
@@ -469,11 +595,42 @@ class suitecrmSoapClient extends suitecrm
 						$this->get( 'deleted' ),
 						$this->get( 'favorites' ),
 					) ;
-		return $this->soapCall( "get_entry_list" );
+			return $this->soapCall( "get_entry_list" );
+			 */
+			$nvl2 = new name_value_list();
+			$nvl2->add_nvl( "filter", $this->get( 'query' )  );
+			$nvl2->add_nvl( "order_by", $this->get( 'order_by' ) );
+			$nvl2->add_nvl( "offset", $this->get( 'offset' ) );
+			$nvl2->add_nvl( "select_fields", $this->get( 'select_fields' ) );
+			$nvl2->add_nvl( "link_fields", $this->get( 'link_name_to_fields_array' ) );
+			$nvl2->add_nvl( "max_results", $this->get( 'max_results' ) );
+			$nvl2->add_nvl( "deleted", $this->get( 'deleted' ) );
+			$this->setSoapParams( $this->get( 'module_name' ), $nvl2->get_nvl() );
+			$oret = $this->soapCall( "get_entry_list" );
+			return $oret;
+		}
+		catch( Exception $e )
+		{
+			return new stdClass();
+		}
 	}
+//set_relationship(string $session, string $module_name, string $module_id, string $link_field_name, select_fields $related_ids, name_value_list $name_value_list, int $delete)"
 	function set_relationship()
 	{
-		$this->soapParams = array( 	$this->soapClient->get( 'session_id' ), 
+		try 
+		{
+			$nvl = new name_value_list();
+			//var_dump( $o );
+			$nvl->add_nvl( "session_id", $this->soapClient->get( "session_id" ) );
+			$nvl->add_nvl( "Module", $this->get( 'module_name' ) );
+			$nvl->add_nvl( "Record ID", $this->get( 'record_id' ) );
+			$nvl->add_nvl( "Link Field Name", $this->get( 'link_field_name' ) );
+			$nvl->add_nvl( "Related IDs",	$this->get( 'related_ids' ) );
+			$nvl->add_nvl( "nvl", $this->get( 'nvl' ) );
+			$nvl->add_nvl( "Delete", $this->get( 'delete' ) );	
+			$this->set( "soapParams", $nvl->get_nvl() );
+			/*
+			$this->soapParams = array( 	$this->soapClient->get( 'session_id' ), 
 						$this->get( 'module_name' ),
 						$this->get( 'record_id' ),	
 						$this->get( 'link_field_name' ),	
@@ -481,11 +638,20 @@ class suitecrmSoapClient extends suitecrm
 						$this->get( 'nvl' ),	
 						$this->get( 'delete' ),	
 					) ;
-		return $this->soapCall( "set_relationship" );
+			 */
+			return $this->soapCall( "set_relationship" );
+		}
+		catch( Exception $e )
+		{
+			return new stdClass();
+		}
+		
 	}
 	
+//set_relationships(string $session, select_fields $module_names, select_fields $module_ids, select_fields $link_field_names, new_set_relationhip_ids $related_ids, name_value_lists $name_value_lists, deleted_array $delete_array)"
 	function set_relationships()
 	{
+		/*
 		$this->soapParams = array( 	$this->soapClient->get( 'session_id' ), 
 						$this->get( 'module_names' ),
 						$this->get( 'module_ids' ),	
@@ -494,10 +660,41 @@ class suitecrmSoapClient extends suitecrm
 						$this->get( 'nvl' ), 
 						$this->get( 'delete' ), 
 					) ;
+		 */
+		$nvl = new name_value_list();
+		$nvl->add_nvl( "session_id", $this->soapClient->get( "session_id" ) );
+		$nvl->add_nvl( "Module", $this->get( 'module_name' ) );
+		$nvl->add_nvl( "module IDs", $this->get( 'module_ids' ) );
+		$nvl->add_nvl( "Link Fields Names", $this->get( 'link_field_names' ) );
+
+		$nvl->add_nvl( "related IDs", $this->get( 'related_ids' ) );
+		$nvl->add_nvl( "NVL", $this->get( 'nvl' ) );
+		$nvl->add_nvl( "deleted_array", array() );
+		//$nvl->add_nvl( "delete", $this->get( 'delete' ) );
+		$this->set( "soapParams", $nvl->get_nvl() );
 		return $this->soapCall( "set_relationships" );
 	}
+	/**
+	 * Came from a child class.  Don't know if it will work or not until tested.
+	 * */
+	function setRelationships( $module1, $id1, $module2, $id2 )
+	{
+		$this->soapParams = array(	'session' => $this->session_id,
+						'set_relationship_value' => array(
+							'module1' => $module1,
+							'module1_id' => $id1,
+							'module2' => $module2,
+							'module2_id' => $id2,
+						)
+					);
+		$this->soapCall( 'set_relationship' );
+	}
+
+
+//get_relationships(string $session, string $module_name, string $module_id, string $link_field_name, string $related_module_query, select_fields $related_fields, link_names_to_fields_array $related_module_link_name_to_fields_array, int $deleted, string $order_by, int $offset, int $limit)"
 	function get_relationships()
 	{
+		/*
 		$this->soapParams = array( 	$this->soapClient->get( 'session_id' ), 
 						$this->get( 'module_name' ),
 						$this->get( 'module_id' ),	
@@ -509,7 +706,34 @@ class suitecrmSoapClient extends suitecrm
 						$this->get( 'offset' ), 
 						$this->get( 'limit' ), 
 					) ;
-		return $this->soapCall( "get_relationships" );
+		 */
+		$nvl = new name_value_list();
+		$nvl->add_nvl( "session_id", $this->soapClient->get( "session_id" ) );
+		$nvl->add_nvl( "Module", $this->get( 'module_name' ) );
+		$nvl->add_nvl( "module ID", $this->get( 'module_id' ) );
+		$nvl->add_nvl( "Related Module Queryy", $this->get( 'related_module_query' ) );
+		$nvl->add_nvl( "Related Fields", $this->get( 'related_fields' ) );
+		$nvl->add_nvl( "Link Name to Fields", $this->get( 'link_name_to_fields_array' ) );
+		$nvl->add_nvl( "Deleted", $this->get( 'deleted' ) );
+		$nvl->add_nvl( "Order By", $this->get( 'order_by' ) );
+		$nvl->add_nvl( "Offset", $this->get( 'offset' ) );
+		$nvl->add_nvl( "Limit", $this->get( 'limit' ) );
+		$this->setSoapParams( $this->get( 'module_name' ), $nvl->get_nvl() );
+		//var_dump( $this->soapParams );
+		//var_dump( $this->soapClient->soapParams );
+		//
+		//Getting a SoapFault: Unknown error in SOAP call: service died unexpectedly
+		try
+		{
+			$ret = $this->soapCall( "get_relationships" );
+			return $ret;
+		}
+		catch( Exception $e )
+		{
+			//Should be a SoapFault
+			//var_dump( $e );
+			return new stdClass;
+		}
 	}
 	function set_entry()
 	{
@@ -521,7 +745,7 @@ class suitecrmSoapClient extends suitecrm
 				$this->get( 'module_name' ),
 				$this->get( 'nvl' )						
 			);
-		var_dump( $ret );
+		//var_dump( $ret );
 		return $ret;
 		 */
 
@@ -547,6 +771,15 @@ class suitecrmSoapClient extends suitecrm
 	{
 		$this->soapParams = array( 
 			$this->soapClient->get( 'session_id' ) );
+		/*
+ 		["flavor"]=>
+  			string(2) "CE"
+  		["version"]=>
+  			string(6) "6.5.25"
+  		["gmt_time"]=>
+  			string(19) "2021-03-02 22:14:50"
+		 * 
+		 * */
 		return $this->soapCall( "get_server_info" );
 	}
 	function get_user_id()
@@ -562,6 +795,24 @@ class suitecrmSoapClient extends suitecrm
 						$this->get( 'module_name' ),
 						$this->get( 'select_fields' ),
 					) ;
+			/*
+ 			[18]=>
+			    object(stdClass)#149 (6) {
+			      ["name"]=>
+			      string(10) "department"
+			      ["type"]=>
+			      string(7) "varchar"
+			      ["group"]=>
+			      string(0) ""
+			      ["label"]=>
+			      string(11) "Department:"
+			      ["required"]=>
+			      int(0)
+			      ["options"]=>
+			      array(0) {
+			      }
+			    }
+			 */
 		return $this->soapCall( "get_module_fields" );
 	}
 	function seamless_login()
@@ -579,6 +830,24 @@ class suitecrmSoapClient extends suitecrm
 		$this->soapParams = array( 	$this->soapClient->get( 'session_id' ), 
 						$this->get( 'record_id' ),	
 					) ;
+		/*
+			object(stdClass)#227 (1) {
+			  ["note_attachment"]=>
+			  object(stdClass)#605 (5) {
+			    ["id"]=>
+			    string(36) "5b4a3e5d-d6a4-e66d-1ffa-603ebc8716e2"
+			    ["filename"]=>
+			    string(10) "htpass.txt"
+			    ["file"]=>
+			    string(236) "a2V2aW46JGFwcjEkUDZPc2tGamokcUlpRGJ2V3RTYnF5bmZDWFBWOGVUMApraW1iZXJseTokYXByMSRUSEZiRkx3USRMVlZGSFR0L1owZHc2RnhtVnZyZksxCmJpbGw6JGFwcjEkOHN1TmNvUWkkQkQ5NVFUNTJWazIuaDdHWXVZT2FsMApnb3JkOiRhcHIxJENUU1pjMG5vJEh6YVJZa1NlR2JlRTRZL2U5cU1abTAK"
+			    ["related_module_id"]=>
+			    string(36) "9794cbbd-6542-a33e-619b-5ce73122cd9f"
+			    ["related_module_name"]=>
+			    string(8) "Accounts"
+			  }
+			}
+			 		 * 
+		 * */
 		return $this->soapCall( "get_note_attachment" );
 	}
 	function set_document_revision()
@@ -603,6 +872,9 @@ class suitecrmSoapClient extends suitecrm
 					) ;
 		return $this->soapCall( "get_available_modules" );
 	}
+	/**
+	 * Not defined in Sugar 4.1
+	 * /
 	function get_user_team_id()
 	{
 		$this->soapParams = array( 	$this->soapClient->get( 'session_id' ), 
@@ -610,6 +882,7 @@ class suitecrmSoapClient extends suitecrm
 		return $this->soapCall( "get_user_team_id" );
 	
 	}
+	 */
 	function set_campaign_merge()
 	{
 		//string $session, select_fields $targets, string $campaign_id)"
@@ -634,11 +907,23 @@ class suitecrmSoapClient extends suitecrm
 		//string $session, module_names $module_names)"
 		return new stdClass();
 	}
+	/*******************************//**
+	 *
+	 * @returns array | stdClass on exception
+	 */
 	function get_upcoming_activities()
 	{
-		$this->soapParams = array( 	$this->soapClient->get( 'session_id' ), 
-					) ;
-		return $this->soapCall( "get_upcoming_activities" );
+		try 
+		{
+			$this->soapParams = array( $this->soapClient->get( 'session_id' ) ) ;
+			//returns an array
+			return $this->soapCall( "get_upcoming_activities" );
+		}
+		catch( Exception $e )
+		{
+			//Should I return an ARRAY with the error info, or add the error info into the class?
+			return new stdClass();
+		}
 	}
 	function get_modified_relationships()
 	{
@@ -750,7 +1035,7 @@ class suitecrmSoapClient extends suitecrm
 					{
 	    					if( 0 < $this->debug_level )
                 					echo  __LINE__ . "::" . __FILE__ . "::" . __METHOD__ . "\n\r";
-						var_dump( $varval );
+						//var_dump( $varval );
 						//should have a name and value
 						//What do we need to do now?
 					}

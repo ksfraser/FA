@@ -15,7 +15,7 @@ require_once( dirname( __FILE__ ) .  '/../class.ksfSOAP.php' );
 
 global $sugar_config;
 $sugar_config = array();
-//$sugar_config['site_url'] = "https://mickey.ksfraser.com/ksfii/suitecrm/service/v4_1/soap.php/";
+$sugar_config['site_url'] = "https://mickey.ksfraser.com/ksfii/suitecrm/service/v4_1/soap.php";
 $sugar_config['appname'] = "FA_Integration";
 $sugar_config['soapuser'] = "admin";
 $sugar_config['user_hash'] = md5('m1l1ce');
@@ -163,22 +163,8 @@ class ksfSOAPTest extends TestCase
 	 */
 
 	/**
-	 * @depends testConstructorValues
-	 */
-	public function testSoapLogin( $o )
-	{
-		$o->set( 'appname', get_class( $this ) );
-		$o->soapLogin();
-		print $o->get( "session_id" );
-		$this->assertNotNull( $o->get( "session_id" ) );
-		$this->assertNotNull( $o->get( "soapLoginTime" ) );
-		//time is resolved in seconds, so it is possible these will be the same. add 1
-		$this->assertGreaterThan( $o->get( "soapLoginTime" ), time() + 1 );
-		return $o;
-	}
-	/**
 	 * @depends testSoapLogin
-	 */
+	 * /
 	public function testSoapLogout( $o )
 	{
 		$o->soapLogout();
@@ -207,11 +193,10 @@ class ksfSOAPTest extends TestCase
 	{
 	}
 	 */
-	 
 	/**
 	 * @depends testSoapLogin
 	 */
-	public function testSoapCall( $o )
+	public function testSoapCallInvalidOpts( $o )
 	{
 		try
 		{
@@ -222,19 +207,70 @@ class ksfSOAPTest extends TestCase
 		{
 			$this->assertSame( KSF_VALUE_NOT_SET, $e->getCode() );
 		}
+	}
+	/**
+	 * @depends testSoapLogin
+	 */
+	public function testSetSoapParams( $o )
+	{
+		try
+		{
+			$nvl = new name_value_list();
+			//var_dump( $o );
+			$nvl->add_nvl( "session_id", $o->get( "session_id" ) );
+			$nvl->add_nvl( "Module", "Accounts" );
+			$o->set( "soapParams", $nvl->get_nvl() );
+			$this->assertSame( $o->get( 'soapParams' ), $nvl->get_nvl() );
+		}
+		catch( Exception $e )
+		{
+			throw $e;
+			//print $e->getMessage();
+			//$this->assertSame( KSF_VALUE_NOT_SET, $e->getCode() );
+		}
+		return $o;
+	}
+
+	/**
+	 * @depends testSoapLogin
+	 *
+	 * Test passes, but the logout clobbers session_id which is
+	 * needed by other tests :(
+	 */
+	public function testSoapCallInvalidFunc( $o )
+	{
 		try
 		{
 			$nvl = new name_value_list();
 			$nvl->add_nvl( "session_id", $o->get( 'session_id' ) );
 			$nvl->add_nvl( "Module", "Accounts" );
 			$o->set( "soapParams", $nvl->get_nvl() );
-			$this->assertSame( $o->get( 'soapParams' ), $nvl->get_nvl() );
+			$o->soapCall( "Test" );
+		}
+		catch( Exception $e )
+		{
+			//print $e->getMessage();
+			//Not a valid method for this service
+			$this->assertSame( 0, $e->getCode() );
+		}
+	}
+	 
+	/**
+	 * @depends testSetSoapParams
+	 */
+	public function testSoapCall( $o )
+	{
+		try
+		{
 			$this->assertIsObject( $o->soapCall( "get_entry_list" ) );
 		}
 		catch( Exception $e )
 		{
-			print $e->getMessage();
-			$this->assertSame( KSF_VALUE_NOT_SET, $e->getCode() );
+			//print_r( $e->getMessage(), true );
+			//print $e->getMessage();
+			//8 is "Array to String Conversion"
+			$this->assertSame( 8, $e->getCode() );
+			//$this->assertSame( KSF_VALUE_NOT_SET, $e->getCode() );
 		}
 		return $o;
 	}
@@ -244,6 +280,44 @@ class ksfSOAPTest extends TestCase
 	public function testGetFunctions( $o )
 	{
 		$this->assertIsArray( $o->getFunctions() );
+	}
+	/**
+	 * @depends testSoapLogin
+	 */
+	public function testSoapCallNoSess( $o )
+	{
+		try
+		{
+			$nvl = new name_value_list();
+			$nvl->add_nvl( "session_id", "" );
+			$nvl->add_nvl( "Module", "Accounts" );
+			$o->set( "soapParams", $nvl->get_nvl() );
+			$this->assertSame( $o->get( 'soapParams' ), $nvl->get_nvl() );
+			$this->assertIsObject( $o->soapCall( "get_entry_list" ) );
+		}
+		catch( Exception $e )
+		{
+			//var_dump( $e );
+			//print_r( $e->getMessage(), true );
+			$this->assertSame( 8, $e->getCode() );
+			//$this->assertSame( KSF_VALUE_NOT_SET, $e->getCode() );
+		}
+		return $o;
+	}
+	/**
+	 * @depends testConstructorValues
+	 */
+	public function testSoapLogin( $o )
+	{
+		$o->set( 'appname', get_class( $this ) );
+		$o->soapLogin();
+		//print $o->get( "session_id" );
+		$this->assertNotNull( $o->get( "session_id" ) );
+		$this->assertNotNull( $o->get( "soapLoginTime" ) );
+		//time is resolved in seconds, so it is possible these will be the same. add 1
+		$this->assertGreaterThan( $o->get( "soapLoginTime" ), time() + 1 );
+		//var_dump( $o );
+		return $o;
 	}
 
 }

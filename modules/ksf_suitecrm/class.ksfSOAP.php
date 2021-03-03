@@ -78,6 +78,8 @@ class ksfSOAP extends origin
 		$this->soap_auth_array = array(
 			'user_name' => $this->username,
 			'password' => $this->password );
+		if( isset( $this->version ) )
+			$this->soap_auth_array['version'] = $this->version;
 		return $this->soap_auth_array;
 	}
 	/*********************************//**
@@ -92,7 +94,13 @@ class ksfSOAP extends origin
 			throw new Exception( "SOAP Login time must be set.  Since it is done in Login, why are we here and it isnt?", KSF_FIELD_NOT_SET );
 		if (time() - $this->soapLoginTime > 600) // 10 minutes
 		{
-			$this->soapLogin();
+			try {
+				$this->soapLogin();
+			}
+			catch( Exception $e )
+			{
+				throw $e;
+			}
 		}
 	}
 	/*********************************//**
@@ -109,11 +117,27 @@ class ksfSOAP extends origin
 	    	$this->setSoapClient();
 		if( ! isset( $this->soap_auth_array ) OR ! isset( $this->soap_auth_array['user_name'] ) )
 			$this->build_auth_array();
-		$soapLogin = $this->soapClient->login( $this->soap_auth_array, $this->appname, array() );
-		$this->session_id  = $soapLogin->id;
-		$this->soapLoginTime = time();
-		//print "! Successful SOAP login id=" . $this->session_id  . " user=" . $this->soap_auth_array['user_name']. "\n";
-		return $this->session_id;
+		try {
+			$soapLogin = $this->soapClient->login( $this->soap_auth_array, $this->appname, array() );
+			$this->set( 'session_id', $soapLogin->id );
+			$this->soapLoginTime = time();
+			print "! Successful SOAP login id=" . $this->session_id  . " user=" . $this->soap_auth_array['user_name']. "\n";
+			return $this->session_id;
+		}
+		catch( SoapFault $e )
+		{
+			//TEST assumes these are NULL
+			//$this->set( 'session_id', 0 );
+			//$this->set( 'soapLoginTime', 0 );
+			throw $e;
+		}
+		catch( Exception $e )
+		{
+			//TEST assumes these are NULL
+			//$this->set( 'session_id', 0 );
+			//$this->set( 'soapLoginTime', 0 );
+			throw $e;
+		}
 	}
 
 	/*********************************//**
@@ -132,6 +156,8 @@ class ksfSOAP extends origin
 	/*********************************//**
 	 * Call a SOAP function.
 	 *
+	 * receiving NULL returns too :(
+	 *
 	 * @param operation string name of function to call
 	 * @return result stdClass of results from call
 	 * ************************************/
@@ -142,10 +168,21 @@ class ksfSOAP extends origin
 			{
 				throw new Exception( "SoapParams must be set", KSF_VALUE_NOT_SET );
 			}
+			//Getting an array to string conversion error on ->soapParams
+			print_r( $operation, true );
+			print_r( $this->soapParams, true );
 			$this->result = $this->soapClient->__soapCall( 	$operation, 
 									 $this->soapParams );
+									//json_encode( $this->soapParams ) );
 									//array( $this->soapParams ) );
 			//var_dump( $this->result );
+		} catch( SoapFault $e )
+		{
+			//Seeing an invalid session ID error.
+			print_r( $e->getCode(), true );
+			print_r( $e->getMessage(), true );
+			//print_r( $e->getTrace(), true );
+			throw $e;
 		} catch( Exception $e )
 		{
 			//Seeing an invalid session ID error.
@@ -174,6 +211,10 @@ class ksfSOAP extends origin
 			}
 		}
 		//What about if retrycount, and/or errnum <>10
+		if( $this->result == null )
+		{
+			throw new Exception( "Why is result null?", KSF_RESULT_NOT_SET );
+		}
 		return $this->result;
 	}
 	/*********************************//**

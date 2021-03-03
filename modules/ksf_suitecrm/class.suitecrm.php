@@ -27,6 +27,8 @@ class suitecrm_model extends MODEL
 	protected $id;
 	protected $nvl;
 	protected $module_name;
+	protected $modname;
+	protected $phone_fields_array;
 
 	function __construct()
 	{
@@ -43,6 +45,49 @@ class suitecrm_model extends MODEL
 			$this->set( 'module_name', substr( $this->iam, $baseclassnamelength + 1 ) );
 		}
 	}
+    	/**********************************************************//**
+     	* Prepares a phone number for search in the database
+     	*
+     	* **************************************************************/
+	function regexify($aPhoneNumber)
+	{
+		global $calloutPrefix;
+		// only numbers
+		$aPhoneNumber = preg_replace('#\D#', '', $aPhoneNumber);
+		// delete leading zeros
+		$aPhoneNumber = ltrim($aPhoneNumber, '0');
+		if (empty($calloutPrefix))
+		{
+			// Remove callout prefix by phone number length
+			// (probably works for Russia only, others should use callout prefix config)
+			if (strlen($aPhoneNumber) == 11)
+			{
+				$aPhoneNumber = substr($aPhoneNumber, 1);
+			}
+		}
+		return '%' . $aPhoneNumber;
+	}
+    	function build_query_string( $fieldlist, $searchPattern )
+    	{
+		if( ! is_array( $fieldlist ) OR count( $fieldlist ) < 1 )
+	    	{
+			throw new Exception( "Invalid fields to search" );
+	    	}
+	    	$query = "(";
+	    	$count = 0;
+	    	foreach( $fieldlist as $field )
+	    	{
+			if( $count > 0 )
+			{
+				$query .= " OR ";
+		    	}
+		    	$query .= "(" . strtolower( $this->modname ) . "." $field . " LIKE '" . $searchPattern . "')";
+		    	$count++;
+	    	}
+	    	$query .= ")";
+	    	return $query;
+    	}
+
 	/***************************************************//**
 	 * Define the data structure that this MODEL class will handle
 	 *
