@@ -334,20 +334,47 @@ class cloneSiteA2B extends origin
 					{
 						echo "***\n";
 						echo "Record exists on B\n";
-						var_dump( json_encode( $arr ) );
+						var_dump( $arr  );
+						/*
+						object(stdClass)#20 (3) {
+						  ["id"]=>
+						  string(36) "ecd37b52-6cf9-2ce8-f4c9-5b7e3b8b3845"
+						  ["module_name"]=>
+						  string(8) "Accounts"
+						  ["name_value_list"]=>
+						  array(53) {
+					    	[0]=>
+					    	object(stdClass)#19 (2) {
+					    	  ["name"]=>
+					    	  string(18) "assigned_user_name"
+					    	  ["value"]=>
+					    	  string(12) "Kevin Fraser"
+					    	}
+						 *
+						 * */
+						//var_dump( json_encode( $arr ) );
 						echo "***\n";
 					}
 					if( $arr->id == $B->entry_list[0]->id )
 					{
+						$adata = new name_value_list();	//Source
+						$adata->hash_nvl( $arr->name_value_list );
+						echo __METHOD__ . "::" . __LINE__ . "\n";
+						var_dump( $adata );
+						exit;
+
 						//Compare fields
-						$b = $B->entry_list[0]->name_value_list;
-						$a = $arr->name_value_list;
-						$anvl = new name_value_list();
-						$bnvl = new name_value_list();
+						$b = $B->entry_list[0]->name_value_list[0];
+						$a = $arr->name_value_list[0];
+						$anvl = new name_value_list();	//Source
+						$bnvl = new name_value_list();	//Dest
+						$cnvl = new name_value_list();	//Combined list
 						$anvl->add_nvl( "module", $module );
 						$anvl->add_nvl( "record_id", $arr->id );
 						$bnvl->add_nvl( "module", $module );
 						$bnvl->add_nvl( "record_id", $arr->id );
+						$cnvl->add_nvl( "related_module_name", $module );
+						$cnvl->add_nvl( "related_module_id", $arr->id );
 						//$fieldstocheck = count( $a );
 						foreach( $a as $akey=>$avalue )
 						{
@@ -355,18 +382,49 @@ class cloneSiteA2B extends origin
 							//Find the NV pair that matches a
 							foreach( $b as $bkey => $bvalue )
 							{
+								echo __METHOD__ . "::" . __LINE__ . "\n";
+								var_dump( $akey );
 								if( $akey == $bkey )
 								{
 									$found = true;
 									if( $avalue == $bvalue )
 									{
 										//DO NOTHING THEY MATCH
+										$cnvl->add_nvl( $akey, $avalue );
 									}
 									else
 									{
 										//Build a list of differences
 										$anvl->add_nvl( $akey, $avalue );
 										$bnvl->add_nvl( $bkey, $bvalue );
+										//Build a "merged" set of data using the authoratative source
+										//first, but if there is no data there, use the non auth source.
+										//If I wanted to make the logic really complex I could also
+										//consider the last modified dates for records.
+										if( $this->authoratative == "A" )
+										{
+											if( strlen( $avalue ) > 0 )
+											{
+												$cnvl->add_nvl( $akey, $avalue );
+											}
+											else if( strlen( $bvalue ) > 0 )
+											{
+												$cnvl->add_nvl( $bkey, $bvalue );
+											}
+										}
+										else
+										{
+											echo __METHOD__ . "::" . __LINE__ . "\n";
+											var_dump( $bvalue );
+											if( strlen( $bvalue ) > 0 )
+											{
+												$cnvl->add_nvl( $akey, $bvalue );
+											}
+											else if( strlen( $avalue ) > 0 )
+											{
+												$cnvl->add_nvl( $akey, $avalue );
+											}
+										}
 									}
 									break 2;	//exit foreach
 								}
@@ -376,6 +434,7 @@ class cloneSiteA2B extends origin
 							{
 								//B didn't have this field so we need to add it/send it
 								$anvl->add_nvl( $akey, $avalue );
+								$cnvl->add_nvl( $akey, $avalue );
 							}
 							else
 							{
@@ -384,7 +443,7 @@ class cloneSiteA2B extends origin
 						//**********************************
 						//Now we have a list of fields that differ between the 2 systems.
 						//1 - Create a NOTE of the differences recorded against the main record in B
-						$this->create_note_of_differences( $a, $b );
+						$this->create_note_of_differences( $anvl, $bnvl, $cnvl );
 						//2 - If A is authoratative, update B
 						//	If A is not authoratative do nothing (step 3)
 						//3 - Create a task to review the changes.  Link to note from 1
@@ -403,26 +462,31 @@ class cloneSiteA2B extends origin
 			}
 		}
 	}
-	function create_note_of_differences( $a, $b )
+	function create_note_of_differences( $a, $b, $c )
 	{
 		echo __METHOD__ . "::" . __LINE__ . "\n";
 		$ajson = json_encode( $a );
 		$bjson = json_encode( $b );
+		$cjson = json_encode( $c );
 		$name = "Difference on record between systems A and B";
 		$text = "Data from A: \n" . $ajson . "\n" . "Data from B: \n" . $bjson;
+		$text .= "\n\n" . "Merged data: \n" . $cjson;
 		$this->create_note( $name, $text );
 	}
-	function create_note( $name, $text )
+	function create_note( $name, $text, $related_module = null, $related_id = null )
 	{
 		require_once( 'class.suitecrm_note.php' );
 		echo __METHOD__ . "::" . __LINE__ . "\n";
-		$nvl = new name_value_list();
-		$nvl->add_nvl( "name", $name );
+		$data = array(
+			"name" => $name,
+			"description" => $text,
+			"related_module_name" => $related_module,
+			"related_module_id" => $related_id );
 		$this->connectionB->set( "module_name", "Notes" );
 
-		$note = new suitecrm_note( $name, $text );
+		$note = new suitecrm_note( $data );
 		$note->prepare();
-		$this->connectionB->set( "nvl", $note->get( "note_params" ) );
+		$this->connectionB->set( "nvl", $note->get( "nvl" ) );
 		$ret = $this->connectionB->set_entry();
 		echo __METHOD__ . "::" . __LINE__ . "\n";
 		var_dump( $ret );

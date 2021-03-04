@@ -76,6 +76,10 @@ class name_value_list
 		{
 			$nvl = $this->nvl;
 		}
+		else if( is_array( $nvl ) )
+		{
+			//Should be able to proceed
+		}
 		else
 		{
 			throw new Exception( "No NVL to hash" );
@@ -85,9 +89,20 @@ class name_value_list
 		{
 			foreach ($nvl as $nvlEntry)
 			{
-				$key = $nvlEntry['name'];
-				$val = $nvlEntry['value'];
-				$result[$key] = $val;
+				if( is_array( $nvlEntry ) )
+				{
+					var_dump( $nvlEntry );
+					$key = $nvlEntry['name'];
+					$val = $nvlEntry['value'];
+					$result[$key] = $val;
+				}
+				else if( is_object( $nvlEntry ) )
+				{
+					var_dump( $nvlEntry );
+					$key = $nvlEntry->name;
+					$val = $nvlEntry->value;
+					$result[$key] = $val;
+				}
 			}
 		}
 		$this->hash = $result;

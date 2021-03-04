@@ -22,7 +22,7 @@ class suitecrm_note extends suitecrm
 	protected $save_filename; //from example.  Might be for attachments
 	protected $upload_path; //from example.  Might be for attachments
 	protected $note_params; //NVL to send to Suite
-
+/*
     function __construct( $name, $description = "", $note_id = null  )
     {
 	    if( null !== $name )
@@ -42,6 +42,7 @@ class suitecrm_note extends suitecrm
 	    }
 
     }
+ */
 	function __construct( $data_array = null )
 	{
 		parent::__construct( $data_array );

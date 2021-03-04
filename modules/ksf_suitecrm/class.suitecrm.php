@@ -37,6 +37,8 @@ class suitecrm extends origin
 	protected $this_module_name;
 	protected $nvl;				//!<array of data to be added to SOAP msg
 	protected $nbl_obj;			//!<object name_value_list object
+	protected $related_module_name;		//!<string
+	protected $related_module_id;		//!<string
 	/**********************************************************//**
 	 *
 	 * @param data_array array of initialization values 
