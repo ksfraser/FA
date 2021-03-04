@@ -333,6 +333,7 @@ class cloneSiteA2B extends origin
 					if( $this->testing )
 					{
 						echo "***\n";
+						echo __METHOD__ . "::" . __LINE__ . "\n";
 						echo "Record exists on B\n";
 						var_dump( $arr  );
 						/*
@@ -358,14 +359,16 @@ class cloneSiteA2B extends origin
 					if( $arr->id == $B->entry_list[0]->id )
 					{
 						$adata = new name_value_list();	//Source
-						$adata->hash_nvl( $arr->name_value_list );
-						echo __METHOD__ . "::" . __LINE__ . "\n";
-						var_dump( $adata );
-						exit;
+						$a = $adata->hash_nvl( $arr->name_value_list );
+						//echo __METHOD__ . "::" . __LINE__ . "\n";
+						//var_dump( $adata );
+						//exit;
+						$bdata = new name_value_list();	//Source
+						$b = $bdata->hash_nvl( $B->entry_list[0]->name_value_list );
 
 						//Compare fields
-						$b = $B->entry_list[0]->name_value_list[0];
-						$a = $arr->name_value_list[0];
+						//$b = $B->entry_list[0]->name_value_list[0];
+						//$a = $arr->name_value_list[0];
 						$anvl = new name_value_list();	//Source
 						$bnvl = new name_value_list();	//Dest
 						$cnvl = new name_value_list();	//Combined list
@@ -382,15 +385,16 @@ class cloneSiteA2B extends origin
 							//Find the NV pair that matches a
 							foreach( $b as $bkey => $bvalue )
 							{
-								echo __METHOD__ . "::" . __LINE__ . "\n";
-								var_dump( $akey );
+								//echo __METHOD__ . "::" . __LINE__ . "\n";
+								//var_dump( $akey );
 								if( $akey == $bkey )
 								{
 									$found = true;
 									if( $avalue == $bvalue )
 									{
 										//DO NOTHING THEY MATCH
-										$cnvl->add_nvl( $akey, $avalue );
+										if( null !== $avalue )
+											$cnvl->add_nvl( $akey, $avalue );
 									}
 									else
 									{
@@ -405,24 +409,28 @@ class cloneSiteA2B extends origin
 										{
 											if( strlen( $avalue ) > 0 )
 											{
-												$cnvl->add_nvl( $akey, $avalue );
+												if( null !== $avalue )
+													$cnvl->add_nvl( $akey, $avalue );
 											}
 											else if( strlen( $bvalue ) > 0 )
 											{
-												$cnvl->add_nvl( $bkey, $bvalue );
+												if( null !== $bvalue )
+													$cnvl->add_nvl( $bkey, $bvalue );
 											}
 										}
 										else
 										{
-											echo __METHOD__ . "::" . __LINE__ . "\n";
-											var_dump( $bvalue );
+											//echo __METHOD__ . "::" . __LINE__ . "\n";
+											//var_dump( $bvalue );
 											if( strlen( $bvalue ) > 0 )
 											{
-												$cnvl->add_nvl( $akey, $bvalue );
+												if( null !== $bvalue )
+													$cnvl->add_nvl( $akey, $bvalue );
 											}
 											else if( strlen( $avalue ) > 0 )
 											{
-												$cnvl->add_nvl( $akey, $avalue );
+												if( null !== $avalue )
+													$cnvl->add_nvl( $akey, $avalue );
 											}
 										}
 									}
@@ -443,7 +451,7 @@ class cloneSiteA2B extends origin
 						//**********************************
 						//Now we have a list of fields that differ between the 2 systems.
 						//1 - Create a NOTE of the differences recorded against the main record in B
-						$this->create_note_of_differences( $anvl, $bnvl, $cnvl );
+						$this->create_note_of_differences( $anvl->get_nvl(), $bnvl->get_nvl(), $cnvl->get_nvl(), $module, $arr->id );
 						//2 - If A is authoratative, update B
 						//	If A is not authoratative do nothing (step 3)
 						//3 - Create a task to review the changes.  Link to note from 1
@@ -462,7 +470,7 @@ class cloneSiteA2B extends origin
 			}
 		}
 	}
-	function create_note_of_differences( $a, $b, $c )
+	function create_note_of_differences( $a, $b, $c, $mod, $r_id )
 	{
 		echo __METHOD__ . "::" . __LINE__ . "\n";
 		$ajson = json_encode( $a );
@@ -471,7 +479,7 @@ class cloneSiteA2B extends origin
 		$name = "Difference on record between systems A and B";
 		$text = "Data from A: \n" . $ajson . "\n" . "Data from B: \n" . $bjson;
 		$text .= "\n\n" . "Merged data: \n" . $cjson;
-		$this->create_note( $name, $text );
+		$this->create_note( $name, $text, $mod, $r_id );
 	}
 	function create_note( $name, $text, $related_module = null, $related_id = null )
 	{

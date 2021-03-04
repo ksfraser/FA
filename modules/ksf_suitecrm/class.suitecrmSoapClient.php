@@ -195,22 +195,8 @@ class get_relationships_soapClient extends get_entry_soapClient
  *
  * ***************************************************/
 
-//require_once( 'class.suitecrm.php' );
-class suitecrm extends origin
-{
-	function __construct( )
-	{
-		parent::__construct();
-	}
-	/**********//**
-	 * Fake out the Controller process for testing.
-	 * *******/
-	function tell_eventloop( $a = null, $b = null, $c = null )
-	{
-		return FALSE;
-		//return TRUE;
-	}
-}
+require_once( 'class.suitecrm.php' );
+
 
 class suitecrmSoapClient extends suitecrm
 {

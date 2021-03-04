@@ -54,13 +54,27 @@ class suitecrm extends origin
 			}
 		}
 	}
+	/**********//**
+	 * Fake out the Controller process for testing.
+	 * *******/
+	function tell_eventloop( $a = null, $b = null, $c = null )
+	{
+		return FALSE;
+		//return TRUE;
+	}
 	function prepare()
 	{
 		$var_arr = get_object_vars( $this );
-		foreach( $var_arr as $field )
+		echo __METHOD__ . "::" . __LINE__ . "\n";
+		var_dump( $var_arr );
+		foreach( $var_arr as $field => $value )
 		{
+			/*
 			if( isset( $this->$field ) )
 				$this->nvl_obj->add_nvl( $field, $this->get( $field ) );
+			 */
+			if( "nvl_obj" != $field )
+				$this->nvl_obj->add_nvl( $field, $value );
 		}
 		$this->set( 'nvl', $this->nvl_obj->get_nvl() );
 	}
@@ -78,7 +92,7 @@ class suitecrm extends origin
 			{
 				$query .= " OR ";
 		    	}
-		    	$query .= "(" . strtolower( $this->this_module_name ) . "." $field . " LIKE '" . $searchPattern . "')";
+		    	$query .= "(" . strtolower( $this->this_module_name ) . "." . $field . " LIKE '" . $searchPattern . "')";
 		    	$count++;
 	    	}
 	    	$query .= ")";
