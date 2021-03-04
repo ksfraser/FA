@@ -33,12 +33,12 @@ require_once( "../ksf_modules_common/defines.inc.php" );
 
 
 $config_array = array();
-$config_array['site_url'] = "https://mickey.ksfraser.com/ksfii/suitecrm/service/v4_1/soap.php";
+$config_array['site_url2'] = "https://mickey.ksfraser.com/ksfii/suitecrm/service/v4_1/soap.php";
 $config_array['appname'] = "FA_Integration";
 $config_array['soapuser2'] = "admin";
 $config_array['pass_hash2'] = md5('m1l1ce');
 global $userGUID;
-$config_array['site_url2'] = "http://fhsws001.ksfraser.com/devel/fhs/suitecrm/service/v4_1/soap.php";
+$config_array['site_url'] = "http://fhsws001.ksfraser.com/devel/fhs/suitecrm/service/v4_1/soap.php";
 $config_array['soapuser'] = "admin";
 $config_array['pass_hash'] = md5('m1l1ce');
 $config_array['version'] = "4";
@@ -266,7 +266,7 @@ class cloneSiteA2B extends origin
 			$this->connectionA->set( "track_view", "" ); 
 			if( $this->testing )
 			{
-				$this->connectionA->set( "max_results", "20" ); 
+				$this->connectionA->set( "max_results", "10" ); 
 			}
 			//get list from A
 			$res = $this->connectionA->get_entry_list();
@@ -314,7 +314,7 @@ class cloneSiteA2B extends origin
 				//if DELETED on B email
 				//TODO: Non existant also appears as deleted
 				$this->connectionB->set( "record_id", $arr->id );
-				$this->connectionB->set( "deleted", 1 );
+				$this->connectionB->set( "deleted", 0 );
 				$B = $this->connectionB->get_entry();
 				if( "warning" == $B->entry_list[0]->name_value_list[0]->name )
 				{
@@ -342,21 +342,96 @@ class cloneSiteA2B extends origin
 						//Compare fields
 						$b = $B->entry_list[0]->name_value_list;
 						$a = $arr->name_value_list;
-						foreach( $a as $key=>$value )
+						$anvl = new name_value_list();
+						$bnvl = new name_value_list();
+						$anvl->add_nvl( "module", $module );
+						$anvl->add_nvl( "record_id", $arr->id );
+						$bnvl->add_nvl( "module", $module );
+						$bnvl->add_nvl( "record_id", $arr->id );
+						//$fieldstocheck = count( $a );
+						foreach( $a as $akey=>$avalue )
 						{
+							$found = false;
 							//Find the NV pair that matches a
+							foreach( $b as $bkey => $bvalue )
+							{
+								if( $akey == $bkey )
+								{
+									$found = true;
+									if( $avalue == $bvalue )
+									{
+										//DO NOTHING THEY MATCH
+									}
+									else
+									{
+										//Build a list of differences
+										$anvl->add_nvl( $akey, $avalue );
+										$bnvl->add_nvl( $bkey, $bvalue );
+									}
+									break 2;	//exit foreach
+								}
+								//match not found.  NEXT.
+							}
+							if( ! $found )
+							{
+								//B didn't have this field so we need to add it/send it
+								$anvl->add_nvl( $akey, $avalue );
+							}
+							else
+							{
+							}
 						}
+						//**********************************
+						//Now we have a list of fields that differ between the 2 systems.
+						//1 - Create a NOTE of the differences recorded against the main record in B
+						$this->create_note_of_differences( $a, $b );
+						//2 - If A is authoratative, update B
+						//	If A is not authoratative do nothing (step 3)
+						//3 - Create a task to review the changes.  Link to note from 1
+						//4 - Create a note in A recording the fact we altered B
 					}
-					//if not on B and A is authoratative, create
+					else
+					{
+						//Since we did a search, the IDs should have matched so we should not have ended up here
+						var_dump( $arr );
+						var_dump( $B );
+						throw new Exception( "We shouldn't have gotten here.  Check LOGIC!", 987654321 );
+					}
+					//if not on B create
 					//	Recursively create contacts, notes, opps, calls, meetings etc.
-					//if not on B and A is NOT AUTHORATATIVE email
 				}
 			}
 		}
 	}
+	function create_note_of_differences( $a, $b )
+	{
+		echo __METHOD__ . "::" . __LINE__ . "\n";
+		$ajson = json_encode( $a );
+		$bjson = json_encode( $b );
+		$name = "Difference on record between systems A and B";
+		$text = "Data from A: \n" . $ajson . "\n" . "Data from B: \n" . $bjson;
+		$this->create_note( $name, $text );
+	}
+	function create_note( $name, $text )
+	{
+		require_once( 'class.suitecrm_note.php' );
+		echo __METHOD__ . "::" . __LINE__ . "\n";
+		$nvl = new name_value_list();
+		$nvl->add_nvl( "name", $name );
+		$this->connectionB->set( "module_name", "Notes" );
+
+		$note = new suitecrm_note( $name, $text );
+		$note->prepare();
+		$this->connectionB->set( "nvl", $note->get( "note_params" ) );
+		$ret = $this->connectionB->set_entry();
+		echo __METHOD__ . "::" . __LINE__ . "\n";
+		var_dump( $ret );
+		return $ret;
+	}
 	function email_record( $record, $subject )
 	{
-		$j = json_encode( $record );
+		echo __METHOD__ . "::" . __LINE__ . "\n";
+		$j = json_encode( $subject ) . "\n" . json_encode( $record );
 		var_dump( $j );
 	}
 }

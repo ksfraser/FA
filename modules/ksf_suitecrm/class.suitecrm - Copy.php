@@ -18,49 +18,54 @@
  * Generic class
  * ***********************/
 
-require_once( '../ksf_modules_common/class.origin.php' );
+require_once( '../ksf_modules_common/class.MODEL.php' );
+require_once( '../ksf_modules_common/class.CONTROLLER.php' );
 require_once( "class.name_value_list.php" );
 
-
-/***********************************************//**
- * Superparent to SUITECRM classes.  
- *
- * This class handles SOAP activities.
- * *************************************************/
-class suitecrm extends origin
+class suitecrm_model extends MODEL
 {
-	protected $id;		//!<string each module has an ID field
-	protected $date_entered;		//!< datetime
-	protected $date_modified;		//!< datetime
-	protected $deleted;			//!< checkbox
-	protected $params;			//!<array NVL to be sent via SOAP
-	protected $this_module_name;
-	protected $nvl;				//!<array of data to be added to SOAP msg
-	protected $nbl_obj;			//!<object name_value_list object
-	/**********************************************************//**
-	 *
-	 * @param data_array array of initialization values 
-	 * *********************************************************/	
-	function __construct( $data_array = null )
+	protected $id;
+	protected $nvl;
+	protected $module_name;
+	protected $modname;
+	protected $phone_fields_array;
+
+	function __construct()
 	{
-		$this->nvl_obj = new name_value_list();
-		if( null !== $data_array )
+		$baseclassname = "model_suitecrm";
+		$baseclassnamelength = strlen( $baseclassname );
+		parent::__construct();
+		$this->nvl = array();
+		if( ! strncasecmp( $baseclassname, $this->iam, $baseclassnamelength ) )
 		{
-			foreach( $data_array as $key=>$value )
-			{
-				$this->set( $key, $value );
-			}
+			$this->set( 'module_name', $this->iam );
+		}
+		else
+		{
+			$this->set( 'module_name', substr( $this->iam, $baseclassnamelength + 1 ) );
 		}
 	}
-	function prepare()
+    	/**********************************************************//**
+     	* Prepares a phone number for search in the database
+     	*
+     	* **************************************************************/
+	function regexify($aPhoneNumber)
 	{
-		$var_arr = get_object_vars( $this );
-		foreach( $var_arr as $field )
+		global $calloutPrefix;
+		// only numbers
+		$aPhoneNumber = preg_replace('#\D#', '', $aPhoneNumber);
+		// delete leading zeros
+		$aPhoneNumber = ltrim($aPhoneNumber, '0');
+		if (empty($calloutPrefix))
 		{
-			if( isset( $this->$field ) )
-				$this->nvl_obj->add_nvl( $field, $this->get( $field ) );
+			// Remove callout prefix by phone number length
+			// (probably works for Russia only, others should use callout prefix config)
+			if (strlen($aPhoneNumber) == 11)
+			{
+				$aPhoneNumber = substr($aPhoneNumber, 1);
+			}
 		}
-		$this->set( 'nvl', $this->nvl_obj->get_nvl() );
+		return '%' . $aPhoneNumber;
 	}
     	function build_query_string( $fieldlist, $searchPattern )
     	{
@@ -76,12 +81,41 @@ class suitecrm extends origin
 			{
 				$query .= " OR ";
 		    	}
-		    	$query .= "(" . strtolower( $this->this_module_name ) . "." $field . " LIKE '" . $searchPattern . "')";
+		    	$query .= "(" . strtolower( $this->modname ) . "." $field . " LIKE '" . $searchPattern . "')";
 		    	$count++;
 	    	}
 	    	$query .= ")";
 	    	return $query;
     	}
+
+	/***************************************************//**
+	 * Define the data structure that this MODEL class will handle
+	 *
+	 * ***************************************************/
+	function define_table()
+	{
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Entering ");
+		if( ! strncasecmp( "model_", $this->iam, 5 ) )
+		{
+			$tablename = $this->iam;
+		}
+		else
+		{
+			$char = stripos( $this->iam, "_" ) + 1;
+			$tablename = substr( $this->iam, $char );
+		}
+		//The following should be common to pretty well EVERY table...
+		$ind = "id";
+		//$ind = "id_" . $tablename;
+		$this->fields_array[] = array('name' => $ind, 'type' => 'varchar(64)', 'auto_increment' => 'no', 'readwrite' => 'readwrite' );
+		//$this->fields_array[] = array('name' => 'updated_ts', 'type' => 'timestamp', 'null' => 'NOT NULL', 'default' => 'CURRENT_TIMESTAMP', 'readwrite' => 'read' );
+		$this->table_details['tablename'] =  $tablename;
+		$this->table_details['primarykey'] = $ind;	//We can override this in child class!
+		//$this->table_details['index'][0]['type'] = 'unique';
+		//$this->table_details['index'][0]['columns'] = "variablename";
+		//$this->table_details['index'][0]['keyname'] = "variablename";
+		$this->tell_eventloop( $this, "NOTIFY_LOG_DEBUG",  __METHOD__ . ":" . __LINE__ . " Exiting ");
+	}
 	/*****************************************************//**
 	 * Take our base fields and convert them into an NVL for sending.
 	 *
@@ -90,8 +124,38 @@ class suitecrm extends origin
 	 * ******************************************************/
 	function fields2nvl()
 	{
-		throw new Exception( "Depreciated Function.  Use PREPARE instead!" );
+		$nvl = new name_value_list();
+		foreach( $this->fields_array as $vardef )
+		{
+			//array( "name" => "name", "value" => (isset( $this->name ) ) ? $this->name : "" ),		//!< datetime
+			$field = $vardef['name'];
+			if( isset( $this->$field ) )
+			{
+				$nvl->add_nvl( $field, $this->$field );
+			}
+		}
+		$this->set( 'nvl', $nvl->get_nvl() );
 	}
+}
+
+class suite_controller extends CONTROLLER
+{
+	public $model;
+	protected $soap;
+	function __construct( $appname )
+	{
+		$this->soap = new suitecrmSoapClient();
+		//$this->tell_eventloop();
+	}
+}
+
+/***********************************************//**
+ * Superparent to SUITECRM classes.  Call classes model_
+ *
+ * This class handles SOAP activities.
+ * *************************************************/
+class suitecrm extends suitecrm_model
+{
 }
 
 require_once( 'class.ksfSOAP.php' );
