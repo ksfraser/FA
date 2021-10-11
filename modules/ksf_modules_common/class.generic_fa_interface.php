@@ -548,6 +548,69 @@ if( ! class_exists( 'generic_fa_interface' ) )
 			array_walk(debug_backtrace(),create_function('$a,$b','print "{$a[\'function\']}()(".basename($a[\'file\']).":{$a[\'line\']});<br /> ";'));
 		}
 		/******************************************************************************//**
+		* Adjust stock_id lengths
+		*
+		* @param int barcode_max_length the longest length we want to allow
+		* @param int $sku_length the length calculated in the calling routine
+		* @param string sku the barcode/sku/stock_id to be adjusted
+		* @returns string stock_id
+		**************************************************************************************/
+		function adjust_stock_id_lengths( $barcode_max_length, $sku_length, $stock_id )
+		{
+			$highest_offset = $sku_length - $barcode_max_length;
+			$pieces_array = explode( "-", $stock_id );
+			//broach-d-ths-stn-pnk
+			//kilt-rs-48
+			//buckle-celtic-msg
+			//hd-ghillies-19.5-dw
+			//U-HT-B-M
+			//beermug-dancer-irish
+			//1234-5678-9012-3456   	19char
+			//1234-5678-9012-3456-7890   	24char
+			$pieces_count = count( $pieces_array );
+			//zero based array
+			for( $i = $pieces_count - 1; $i > 0; $i-- )	//don't need 0, that is sku_length
+			{
+				$chunklength[$i] = strlen( $pieces_array[$i] );
+				if( isset( $backlength[$i + 1] ) )
+					$backlength[$i] = $backlength[$i + 1] + $chunklength[$i] + 1;	//If we cut the sku here...
+				else
+					$backlength[$i] = $chunklength[$i] + 1; //missing leading separator from chunk
+			}
+			if( !isset( $backlength[1]  ) )
+			       $backlength[1] = $barcode_max_length - 1;	
+			if( $backlength[1] < $barcode_max_length ) 
+			{
+				//19char would work
+				$stock_id = substr( $stock_id, -$barcode_max_length );	//last 17 chars
+				$trimcase = 1;
+			}
+			else
+			{
+				//need to find a good middle e.g. 24char
+				//						4-5678-9012-3456-7
+				if( ( $sku_length - strlen( $pieces_array[0] ) + 1 - $backlength[ $pieces_count - 1 ] + 1 ) < $barcode_max_length )
+				{
+					//u-balmoral-navy-75
+					$offset = floor( (strlen( $pieces_array[0] ) + $backlength[ $pieces_count - 1 ])/2) ;
+					if( $offset > strlen( $pieces_array[0] ) AND $pieces_count > 3 )	//want 1 char of first piece
+						$offset = strlen( $pieces_array[0] );
+
+					$trimcase = 2;
+					$stock_id = substr( $stock_id, $offset , $barcode_max_length );	
+				}
+				else	//exact middle			24char => 12 - 8 => -5678-9012-3456-7
+				{
+					//Risk is prod-6789012345-21 and prod-6789012345-22 will end up with same barcode
+					//At least it gets us into the right products...
+					$offset = floor($sku_length/2) - floor($barcode_max_length/2);
+					$stock_id = substr( $stock_id, $offset , $barcode_max_length );	
+					$trimcase = 3;
+				}
+			}
+			return $stock_id;
+		}
+		/******************************************************************************//**
 		* Generate a line in a CSV to be used to print labels
 		*
 		*
@@ -579,80 +642,38 @@ if( ! class_exists( 'generic_fa_interface' ) )
 			$sku_length = strlen( $stock_id );
 			if( $sku_length > $barcode_max_length )
 			{
-				$highest_offset = $sku_length - $barcode_max_length;
-				//$pieces = explode(" ", $string, (optional) MAXPIECECOUNT);
-				$pieces_array = explode( "-", $stock_id );
-				//broach-d-ths-stn-pnk
-				//kilt-rs-48
-				//buckle-celtic-msg
-				//hd-ghillies-19.5-dw
-				//U-HT-B-M
-				//beermug-dancer-irish
-				//1234-5678-9012-3456   	19char
-				//1234-5678-9012-3456-7890   	24char
-				$pieces_count = count( $pieces_array );
-				//zero based array
-				for( $i = $pieces_count - 1; $i > 0; $i-- )	//don't need 0, that is sku_length
-				{
-					$chunklength[$i] = strlen( $pieces_array[$i] );
-					if( isset( $backlength[$i + 1] ) )
-						$backlength[$i] = $backlength[$i + 1] + $chunklength[$i] + 1;	//If we cut the sku here...
-					else
-						$backlength[$i] = $chunklength[$i] + 1; //missing leading separator from chunk
-				}
-				if( !isset( $backlength[1]  ) )
-				       $backlength[1] = $barcode_max_length - 1;	
-				//TODO
-				//Find the last n-1 chuncks.
-				//The following algo can certainly be improved GREATLY!!
-				//
-				//Could also do a Foreign Code search and replace if exists...
-				if( $backlength[1] < $barcode_max_length ) 
-				{
-					//19char would work
-					$stock_id = substr( $stock_id, -$barcode_max_length );	//last 17 chars
-					$trimcase = 1;
-				}
-				else
-				{
-					//need to find a good middle e.g. 24char
-					//						4-5678-9012-3456-7
-					if( ( $sku_length - strlen( $pieces_array[0] ) + 1 - $backlength[ $pieces_count - 1 ] + 1 ) < $barcode_max_length )
-					{
-						//u-balmoral-navy-75
-						/*
-						if( $sku_length - $barcode_max_length < 2 )
-							$offset = 1;
-						else
-							$offset = strlen( $pieces_array[0] ) - 2 );
-	 					*/
-						$offset = floor( (strlen( $pieces_array[0] ) + $backlength[ $pieces_count - 1 ])/2) ;
-						if( $offset > strlen( $pieces_array[0] ) AND $pieces_count > 3 )	//want 1 char of first piece
-							$offset = strlen( $pieces_array[0] );
-
-						$trimcase = 2;
-						$stock_id = substr( $stock_id, $offset , $barcode_max_length );	
-					}
-					else	//exact middle			24char => 12 - 8 => -5678-9012-3456-7
-					{
-						//Risk is prod-6789012345-21 and prod-6789012345-22 will end up with same barcode
-						//At least it gets us into the right products...
-						$offset = floor($sku_length/2) - floor($barcode_max_length/2);
-						$stock_id = substr( $stock_id, $offset , $barcode_max_length );	
-						$trimcase = 3;
-					}
-				}
+				$stock_id = $this->adjust_stock_id_lengths( $barcode_max_length, $sku_length, $stock_id );
 			}
 			/*********************
 			 * !20180828 strlen check and dash count...
 			 * *******************/
                         $line  .= '"*' . strtoupper( $stock_id ) . '*",';        //For 3of9 Barcode
                         $line .= '"' . $category . '",';
-                        $line .= '"' . $price . '",';
-                        $line .= '"' . $trimcase . '",';
+                        $line .= '"' . $price . '"';
+                        //$line .= '"' . $trimcase . '",';  //On refactor we no longer have this value
                         $this->write_file->write_line( $line );
 			return null;
 		}
+		/******************************************************************************//**
+		* Generate a line in a CSV to be used to do a Stock Count
+		*
+		*	This function is being use to create a CSV for WooPOS Count
+		*
+		* @param string stock_id
+		* @param string description
+		* @param float price
+		*
+		* @returns null
+		************************************************************************************** /
+		function write_woo_pos_count_line( $stock_id, $description, $price )
+		{
+	 		$line  = '"' . $stock_id . '",';
+			$line .= '"' . $description . '",';
+                        $line .= '"' . $price . '"';
+                        $this->write_file->write_line( $line );
+			return null;
+		}
+		*****/
 		function show_generic_form($form_array)
 		{
 			start_form(true);

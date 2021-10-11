@@ -2,6 +2,16 @@
 
 require_once( 'class.fa_origin.php' );
 
+/*
+if( ! defined( 'company_path' ) )
+{
+	function company_path()
+	{
+		return "";
+	}
+}
+*/
+
 class ksf_file extends fa_origin
 {
 	protected $fp;	//!< @var handle File Pointer
