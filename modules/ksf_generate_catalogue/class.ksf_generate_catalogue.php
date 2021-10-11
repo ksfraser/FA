@@ -119,6 +119,17 @@ class ksf_generate_catalogue extends generic_fa_interface
 				$sc->$value = $this->$value;
 			}
 			$rowcount = $sc->create_file();
+			//return $rowcount;
+		}
+		if( include_once( 'class.WooPOS_Count.php' ) )
+		{
+			$woopos = new WooPOS_Count_file( $this->pref_tablename );
+			foreach( $this->config_values as $arr )
+			{
+				$value = $arr["pref_name"];
+				$woopos->$value = $this->$value;
+			}
+			$woopos->create_file();
 			return $rowcount;
 		}
 	}
@@ -247,9 +258,18 @@ class ksf_generate_catalogue extends generic_fa_interface
 			$lf = new labels_file( $this->pref_tablename );
 			foreach( $this->config_values as $arr )
 			{
-				foreach( $arr['title'] as $value )
+				if( isset( $arr['title'] ) )
 				{
-					$lf->$value = $this->$value;
+					foreach( $arr['title'] as $value )
+					{
+						$lf->$value = $this->$value;
+					}
+				}
+				else
+				{
+					echo "<br />";
+					var_dump( $arr );
+					echo "<br />";
 				}
 			}
 			$count = $lf->create_sku_labels_from_PO( $this->delivery_no );

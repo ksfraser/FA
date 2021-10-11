@@ -21,26 +21,6 @@ ini_set("display_errors", "on");
 
 global $db; // Allow access to the FA database connection
 $debug_sql = 0;  // Change to 1 for debug messages
-//global $prefsDB;	//defined in class.ksf_generate_catalogue.php
-/*
-if( isset( $_POST['edit_form'] ) )
-{
-	//AJAX call
-	$cl = $_POST['my_class'];	//set in woo_interface
-	require_once( 'class.' . $cl . '.php' );
-	$mycl = new $cl( null, null, null, null, null );
-	$mycl->form_post_handler();
-	$_GET['action'] = $_POST['action'] = $_POST['return_to'];
-	unset( $_POST );
-	header("Status: 301 Moved Permanently");
-	header("Location: " . $_SERVER['REQUEST_URI'] . ($_GET ? "?" . http_build_query( $_GET ) : "" ) );
-	
-
-}
-else
-{
-	$eventloop = new eventloop( "." );
- */
 
 //display_notification( __LINE__ );
 //page mode and page are needed to setup the theme, display_* Exception handler etc.
