@@ -89,7 +89,8 @@ class labels_file extends ksf_generate_catalogue
 		}
 		$this->write_file->close();
 		if( $rowcount > 0 )
-			$this->email_price_book();
+			$this->email_file();
+			//$this->email_price_book();	//email_price_book doesn't exist
 		return $rowcount;
 	}
 	function email_file( $subject = "Labels File" )

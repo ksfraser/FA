@@ -116,6 +116,7 @@ $stock_id_tables[] = array( 'table' => TB_PREF . 'wo_requirements', 'column' => 
 $stock_id_tables[] = array( 'table' => TB_PREF . 'workorders', 'column' => 'stock_id', 'type' => 'VARCHAR', 'length' => STOCK_ID_LENGTH );
 $stock_id_tables[] = array( 'table' => TB_PREF . 'woo', 'column' => 'stock_id', 'type' => 'VARCHAR', 'length' => STOCK_ID_LENGTH );
 //$stock_id_tables[] = array( 'table' => TB_PREF . '', 'column' => 'stock_id' );
+$stock_id_tables[] = array( 'table' => TB_PREF . 'purch_data', 'column' => 'supplier_description', 'type' => 'VARCHAR', 'length' => DESCRIPTION_LENGTH );
 
 
 /**************************************************************************//**
