@@ -22,7 +22,8 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	die("Restricted access");
 
 	if (!ini_get('date.timezone'))
-       ini_set('date.timezone', 'Europe/Berlin');
+       ini_set('date.timezone', 'America/Denver');
+       //ini_set('date.timezone', 'Europe/Berlin');
 
 	// Log file for error/warning messages. Should be set to any location
 	// writable by www server. When set to empty string logging is switched off. 
@@ -104,7 +105,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	$show_users_online = 0;
 
 	/* show item codes on purchase order */
-	$show_po_item_codes = 0;
+	$show_po_item_codes = 1;
 
 	/* default print destination. 0 = PDF/Printer, 1 = Excel */
 	$def_print_destination = 0;

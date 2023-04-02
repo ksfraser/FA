@@ -1,3 +1,6 @@
+#AddHandler application/x-httpd-php56 .php
+AddHandler php56-fcgi .php
+
 # Protect sensitive files.
 <FilesMatch "\.(inc|po|sh|.*sql|log)$">
 	Order allow,deny

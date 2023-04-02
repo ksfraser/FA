@@ -112,6 +112,17 @@ if (isset($_POST['import_paypal'])) {
       	die(_("can not open file")." ".$saveFilename);
 
       $fileline = fgetcsv($fp, 4096, $sep);
+//PAYPAL encodes UTF-8 which has a Marker at the start
+ 	if (mb_detect_encoding($fileline[0]) === 'UTF-8')
+        {
+                // delete possible BOM
+                // not all UTF-8 files start with these three bytes
+                $fileline[0] = preg_replace('/\x{EF}\x{BB}\x{BF}/', '', $fileline[0]);
+                //remove the extra doubled " (""Date"")
+                $fileline[0] = preg_replace('/"Date"/', 'Date', $fileline[0]);
+        }
+        //var_dump( $fileline );
+
       foreach( $fileline as $field ) { $headings[] = trim($field); }
 
       begin_transaction();

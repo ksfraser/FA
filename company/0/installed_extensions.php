@@ -30,7 +30,7 @@ $installed_extensions = array (
   array (
     'name' => 'Inventory Items CSV Import',
     'package' => 'import_items',
-    'version' => '2.3.0-1',
+    'version' => '2.3.0-2',
     'type' => 'extension',
     'active' => false,
     'path' => 'modules/import_items',
@@ -39,7 +39,7 @@ $installed_extensions = array (
   array (
     'name' => 'Requisitions',
     'package' => 'requisitions',
-    'version' => '2.3.13-3',
+    'version' => '2.3.13-4',
     'type' => 'extension',
     'active' => false,
     'path' => 'modules/requisitions',
@@ -147,7 +147,7 @@ $installed_extensions = array (
   array (
     'name' => 'Import Transactions',
     'package' => 'import_transactions',
-    'version' => '2.3.22-5',
+    'version' => '2.3.24-1',
     'type' => 'extension',
     'active' => false,
     'path' => 'modules/import_transactions',
@@ -156,7 +156,7 @@ $installed_extensions = array (
   array (
     'name' => 'Company Dashboard',
     'package' => 'dashboard',
-    'version' => '2.3.15-5',
+    'version' => '2.4.0-1',
     'type' => 'extension',
     'active' => false,
     'path' => 'modules/dashboard',
@@ -165,7 +165,7 @@ $installed_extensions = array (
   array (
     'name' => 'Asset register',
     'package' => 'asset_register',
-    'version' => '2.3.3-10',
+    'version' => '2.3.3-12',
     'type' => 'extension',
     'active' => false,
     'path' => 'modules/asset_register',
@@ -194,7 +194,7 @@ $installed_extensions = array (
   array (
     'name' => 'Import Multiple Journal Entries',
     'package' => 'import_multijournalentries',
-    'version' => '2.3.0-7',
+    'version' => '2.3.0-8',
     'type' => 'extension',
     'active' => false,
     'path' => 'modules/import_multijournalentries',
@@ -203,10 +203,247 @@ $installed_extensions = array (
   array (
     'name' => 'Import Paypal transactions',
     'package' => 'import_paypal',
-    'version' => '2.3.10-3',
+    'version' => '2.3.10-4',
     'type' => 'extension',
     'active' => false,
     'path' => 'modules/import_paypal',
+  ),
+  22 => 
+  array (
+    'package' => 'api',
+    'name' => 'api',
+    'version' => '-',
+    'available' => '',
+    'type' => 'extension',
+    'path' => 'modules/api',
+    'active' => true,
+  ),
+  23 => 
+  array (
+    'name' => 'osCommerce Order and Customer Import Module',
+    'package' => 'osc_orders',
+    'version' => '2.3.0-4',
+    'type' => 'extension',
+    'active' => false,
+    'path' => 'modules/osc_orders',
+  ),
+  24 => 
+  array (
+    'package' => 'fa_soap_web_services',
+    'name' => 'fa_soap_web_services',
+    'version' => '-',
+    'available' => '',
+    'type' => 'extension',
+    'path' => 'modules/fa_soap_web_services',
+    'active' => false,
+  ),
+  25 => 
+  array (
+    'package' => 'FrontAccountingSimpleAPI-master',
+    'name' => 'FrontAccountingSimpleAPI-master',
+    'version' => '-',
+    'available' => '',
+    'type' => 'extension',
+    'path' => 'modules/FrontAccountingSimpleAPI-master',
+    'active' => false,
+  ),
+  26 => 
+  array (
+    'package' => 'mobile',
+    'name' => 'mobile',
+    'version' => '-',
+    'available' => '',
+    'type' => 'extension',
+    'path' => 'modules/mobile',
+    'active' => false,
+  ),
+  27 => 
+  array (
+    'name' => 'Auth_LDAP',
+    'package' => 'auth_ldap',
+    'version' => '2.3.5-2',
+    'type' => 'extension',
+    'active' => false,
+    'path' => 'modules/auth_ldap',
+  ),
+  28 => 
+  array (
+    'package' => 'CALC_PRICING',
+    'name' => 'CALC_PRICING',
+    'version' => '-',
+    'available' => '',
+    'type' => 'extension',
+    'path' => 'modules/CALC_PRICING',
+    'active' => false,
+  ),
+  29 => 
+  array (
+    'package' => 'EXPORT_OSPOS',
+    'name' => 'EXPORT_OSPOS',
+    'version' => '-',
+    'available' => '',
+    'type' => 'extension',
+    'path' => 'modules/EXPORT_OSPOS',
+    'active' => false,
+  ),
+  30 => 
+  array (
+    'package' => 'EXPORT_WOO',
+    'name' => 'EXPORT_WOO',
+    'version' => '-',
+    'available' => '',
+    'type' => 'extension',
+    'path' => 'modules/EXPORT_WOO',
+    'active' => false,
+  ),
+  31 => 
+  array (
+    'package' => 'Inventory',
+    'name' => 'Inventory',
+    'version' => '-',
+    'available' => '',
+    'type' => 'extension',
+    'path' => 'modules/Inventory',
+    'active' => false,
+  ),
+  32 => 
+  array (
+    'package' => 'WOO',
+    'name' => 'WOO',
+    'version' => '-',
+    'available' => '',
+    'type' => 'extension',
+    'path' => 'modules/WOO',
+    'active' => false,
+  ),
+  33 => 
+  array (
+    'package' => 'coast_export',
+    'name' => 'coast_export',
+    'version' => '-',
+    'available' => '',
+    'type' => 'extension',
+    'path' => 'modules/coast_export',
+    'active' => false,
+  ),
+  34 => 
+  array (
+    'package' => 'generate_EAN',
+    'name' => 'generate_EAN',
+    'version' => '-',
+    'available' => '',
+    'type' => 'extension',
+    'path' => 'modules/generate_EAN',
+    'active' => false,
+  ),
+  35 => 
+  array (
+    'package' => 'vtiger_import',
+    'name' => 'vtiger_import',
+    'version' => '-',
+    'available' => '',
+    'type' => 'extension',
+    'path' => 'modules/vtiger_import',
+    'active' => false,
+  ),
+  36 => 
+  array (
+    'package' => 'ksf_data_dictionary',
+    'name' => 'ksf_data_dictionary',
+    'version' => '-',
+    'available' => '',
+    'type' => 'extension',
+    'path' => 'modules/ksf_data_dictionary',
+    'active' => true,
+  ),
+  37 => 
+  array (
+    'package' => 'ksf_generate_catalogue',
+    'name' => 'ksf_generate_catalogue',
+    'version' => '-',
+    'available' => '',
+    'type' => 'extension',
+    'path' => 'modules/ksf_generate_catalogue',
+    'active' => true,
+  ),
+  38 => 
+  array (
+    'package' => 'ksf_qoh',
+    'name' => 'ksf_qoh',
+    'version' => '-',
+    'available' => '',
+    'type' => 'extension',
+    'path' => 'modules/ksf_qoh',
+    'active' => true,
+  ),
+  39 => 
+  array (
+    'package' => 'ksf_expense_claims',
+    'name' => 'ksf_expense_claims',
+    'version' => '-',
+    'available' => '',
+    'type' => 'extension',
+    'path' => 'modules/ksf_expense_claims',
+    'active' => true,
+  ),
+  40 => 
+  array (
+    'package' => 'EXPORT_WOO_PROD',
+    'name' => 'EXPORT_WOO_PROD',
+    'version' => '-',
+    'available' => '',
+    'type' => 'extension',
+    'path' => 'modules/EXPORT_WOO_PROD',
+    'active' => true,
+  ),
+  41 => 
+  array (
+    'package' => 'ksf_stockid_search_replace',
+    'name' => 'ksf_stockid_search_replace',
+    'version' => '1',
+    'available' => '',
+    'type' => 'extension',
+    'path' => 'modules/ksf_stockid_search_replace',
+    'active' => false,
+  ),
+  42 => 
+  array (
+    'package' => 'ksf_missing_image',
+    'name' => 'ksf_missing_image',
+    'version' => '1',
+    'available' => '',
+    'type' => 'extension',
+    'path' => 'modules/ksf_missing_image',
+    'active' => true,
+  ),
+  43 => 
+  array (
+    'package' => 'ksf_payment_destinations',
+    'name' => 'ksf_payment_destinations',
+    'version' => '1',
+    'available' => '',
+    'type' => 'extension',
+    'path' => 'modules/ksf_payment_destinations',
+    'active' => true,
+  ),
+  44 => 
+  array (
+    'name' => 'textcart',
+    'package' => 'textcart',
+    'version' => '2.3.9-6',
+    'type' => 'extension',
+    'active' => false,
+    'path' => 'modules/textcart',
+  ),
+  45 => 
+  array (
+    'package' => 'mail',
+    'name' => 'mail',
+    'version' => '-',
+    'available' => '',
+    'type' => 'extension',
+    'path' => 'modules/mail',
+    'active' => false,
   ),
 );
 ?>

@@ -6,7 +6,7 @@
 	FA extension system documentation.
 */
 
-$next_extension_id = 44; // unique id for next installed extension
+$next_extension_id = 46; // unique id for next installed extension
 
 $installed_extensions = array (
   0 => 
@@ -42,7 +42,7 @@ $installed_extensions = array (
   array (
     'name' => 'Requisitions',
     'package' => 'requisitions',
-    'version' => '2.3.13-3',
+    'version' => '2.3.13-4',
     'type' => 'extension',
     'active' => false,
     'path' => 'modules/requisitions',
@@ -150,7 +150,7 @@ $installed_extensions = array (
   array (
     'name' => 'Import Transactions',
     'package' => 'import_transactions',
-    'version' => '2.3.22-5',
+    'version' => '2.3.24-1',
     'type' => 'extension',
     'active' => false,
     'path' => 'modules/import_transactions',
@@ -159,7 +159,7 @@ $installed_extensions = array (
   array (
     'name' => 'Company Dashboard',
     'package' => 'dashboard',
-    'version' => '2.3.15-5',
+    'version' => '2.4.0-1',
     'type' => 'extension',
     'active' => false,
     'path' => 'modules/dashboard',
@@ -168,7 +168,7 @@ $installed_extensions = array (
   array (
     'name' => 'Asset register',
     'package' => 'asset_register',
-    'version' => '2.3.3-10',
+    'version' => '2.3.3-12',
     'type' => 'extension',
     'active' => false,
     'path' => 'modules/asset_register',
@@ -197,7 +197,7 @@ $installed_extensions = array (
   array (
     'name' => 'Import Multiple Journal Entries',
     'package' => 'import_multijournalentries',
-    'version' => '2.3.0-7',
+    'version' => '2.3.0-8',
     'type' => 'extension',
     'active' => false,
     'path' => 'modules/import_multijournalentries',
@@ -206,7 +206,7 @@ $installed_extensions = array (
   array (
     'name' => 'Import Paypal transactions',
     'package' => 'import_paypal',
-    'version' => '2.3.10-3',
+    'version' => '2.3.10-4',
     'type' => 'extension',
     'active' => false,
     'path' => 'modules/import_paypal',
@@ -225,7 +225,7 @@ $installed_extensions = array (
   array (
     'name' => 'osCommerce Order and Customer Import Module',
     'package' => 'osc_orders',
-    'version' => '2.3.0-3',
+    'version' => '2.3.0-4',
     'type' => 'extension',
     'active' => false,
     'path' => 'modules/osc_orders',
@@ -359,7 +359,7 @@ $installed_extensions = array (
     'path' => 'modules/ksf_data_dictionary',
     'active' => true,
   ),
-   37 => 
+  37 => 
   array (
     'package' => 'ksf_generate_catalogue',
     'name' => 'ksf_generate_catalogue',
@@ -369,7 +369,7 @@ $installed_extensions = array (
     'path' => 'modules/ksf_generate_catalogue',
     'active' => true,
   ),
-   38 => 
+  38 => 
   array (
     'package' => 'ksf_qoh',
     'name' => 'ksf_qoh',
@@ -391,7 +391,7 @@ $installed_extensions = array (
   ),
   40 => 
   array (
-    'package' => 'EXPORT_WOO_PROd',
+    'package' => 'EXPORT_WOO_PROD',
     'name' => 'EXPORT_WOO_PROD',
     'version' => '-',
     'available' => '',
@@ -407,7 +407,7 @@ $installed_extensions = array (
     'available' => '',
     'type' => 'extension',
     'path' => 'modules/ksf_stockid_search_replace',
-    'active' => true,
+    'active' => false,
   ),
   42 => 
   array (
@@ -419,7 +419,7 @@ $installed_extensions = array (
     'path' => 'modules/ksf_missing_image',
     'active' => true,
   ),
- 43 => 
+  43 => 
   array (
     'package' => 'ksf_payment_destinations',
     'name' => 'ksf_payment_destinations',
@@ -428,7 +428,25 @@ $installed_extensions = array (
     'type' => 'extension',
     'path' => 'modules/ksf_payment_destinations',
     'active' => true,
-    //'active' => false,
   ),
-)
+  44 => 
+  array (
+    'name' => 'textcart',
+    'package' => 'textcart',
+    'version' => '2.3.9-6',
+    'type' => 'extension',
+    'active' => false,
+    'path' => 'modules/textcart',
+  ),
+  45 => 
+  array (
+    'package' => 'mail',
+    'name' => 'mail',
+    'version' => '-',
+    'available' => '',
+    'type' => 'extension',
+    'path' => 'modules/mail',
+    'active' => false,
+  ),
+);
 ?>

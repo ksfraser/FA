@@ -3,7 +3,7 @@
 /*Connection Information for the database
 $def_coy - the default company that is pre-selected on login
 
-'host' - the computer ip address or name where the database is. The default is 'localhost' assuming that the web server is also the sql server.
+'host' - the computer ip address or name where the database is. The default is 'mysql.ksfraser.com' assuming that the web server is also the sql server.
 
 'dbuser' - the user name under which the company database should be accessed.
   NB it is not secure to use root as the dbuser with no password - a user with appropriate privileges must be set up.
@@ -15,7 +15,7 @@ $def_coy - the default company that is pre-selected on login
 */
 
 
-$def_coy = 1;
+$def_coy = 3;
 
 $tb_pref_counter = 3;
 
@@ -23,28 +23,55 @@ $db_connections = array (
   0 => 
   array (
     'name' => 'ADMIN COMPANY',
-    'host' => 'localhost',
+    'host' => 'mysql.ksfraser.com',
     'dbuser' => 'fhs',
     'dbpassword' => 'fhs',
-    'dbname' => 'fhs',
+    'dbname' => 'fhs_frontaccounting',
     'tbpref' => '0_',
   ),
   1 => 
   array (
-    'name' => 'FHS laptop',
-    'host' => 'localhost',
+    'name' => 'FHS',
+    'host' => 'mysql.ksfraser.com',
     'dbuser' => 'fhs',
     'dbpassword' => 'fhs',
-    'dbname' => 'fhs',
+    'dbname' => 'fhs_frontaccounting',
     'tbpref' => '1_',
   ),
   2 => 
   array (
     'name' => 'DEVEL FHS',
-    'host' => 'fhsws001.ksfraser.com',
+    'host' => 'mysql.ksfraser.com',
     'dbuser' => 'fhs',
     'dbpassword' => 'fhs',
-    'dbname' => 'fhs',
+    'dbname' => 'devel_fhs_frontaccounting',
+    'tbpref' => '1_',
+  ),
+  3 => 
+  array (
+    'name' => 'FHS on Mysql.ksf',
+    'host' => 'mysql.ksfraser.com',
+    'dbuser' => 'fhs',
+    'dbpassword' => 'fhs',
+    'dbname' => 'fhs_frontaccounting',
+    'tbpref' => '1_',
+  ),
+  4 =>
+  array (
+    'name' => 'AGS on Mysql.ksf',
+    'host' => 'mysql.ksfraser.com',
+    'dbuser' => 'ags',
+    'dbpassword' => 'ags',
+    'dbname' => 'ags_frontaccounting',
+    'tbpref' => '1_',
+  ),
+  5 => 
+  array (
+    'name' => 'FHS REBUILD',
+    'host' => 'mysql.ksfraser.com',
+    'dbuser' => 'fhs',
+    'dbpassword' => 'fhs',
+    'dbname' => 'fhs_front_rebuild',
     'tbpref' => '1_',
   ),
 );
