@@ -2,16 +2,6 @@
 
 require_once( '../ksf_modules_common/class.ksf_file.php' );
 
-/*
-if( ! defined( 'item_img_name' ) )
-{
-	function item_img_name()
-	{
-		return "";
-	}
-}
-*/
-
 /**********************************************************************
  * Helper class for handling images in various modules
  * *******************************************************************/
