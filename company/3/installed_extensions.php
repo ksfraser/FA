@@ -41,7 +41,7 @@ $installed_extensions = array (
     'package' => 'requisitions',
     'version' => '2.3.13-4',
     'type' => 'extension',
-    'active' => 0,
+    'active' => 1,
     'path' => 'modules/requisitions',
   ),
   4 => 
@@ -59,7 +59,7 @@ $installed_extensions = array (
     'package' => 'repgen',
     'version' => '2.3.9-4',
     'type' => 'extension',
-    'active' => 0,
+    'active' => 1,
     'path' => 'modules/repgen',
   ),
   6 => 
@@ -113,7 +113,7 @@ $installed_extensions = array (
     'package' => 'rep_cheque_print',
     'version' => '2.3.0-1',
     'type' => 'extension',
-    'active' => 0,
+    'active' => 1,
     'path' => 'modules/rep_cheque_print',
   ),
   12 => 
@@ -158,7 +158,7 @@ $installed_extensions = array (
     'package' => 'dashboard',
     'version' => '2.4.0-1',
     'type' => 'extension',
-    'active' => 0,
+    'active' => 1,
     'path' => 'modules/dashboard',
   ),
   17 => 
@@ -167,7 +167,7 @@ $installed_extensions = array (
     'package' => 'asset_register',
     'version' => '2.3.3-12',
     'type' => 'extension',
-    'active' => 0,
+    'active' => 1,
     'path' => 'modules/asset_register',
   ),
   18 => 
@@ -188,7 +188,7 @@ $installed_extensions = array (
     'available' => '',
     'type' => 'extension',
     'path' => 'modules/bank_import-master',
-    'active' => 0,
+    'active' => 1,
   ),
   20 => 
   array (
@@ -284,16 +284,6 @@ $installed_extensions = array (
     'available' => '',
     'type' => 'extension',
     'path' => 'modules/EXPORT_OSPOS',
-    'active' => 0,
-  ),
-  30 => 
-  array (
-    'package' => 'EXPORT_WOO',
-    'name' => 'EXPORT_WOO',
-    'version' => '-',
-    'available' => '',
-    'type' => 'extension',
-    'path' => 'modules/EXPORT_WOO',
     'active' => 1,
   ),
   31 => 
@@ -324,7 +314,7 @@ $installed_extensions = array (
     'available' => '',
     'type' => 'extension',
     'path' => 'modules/coast_export',
-    'active' => 0,
+    'active' => 1,
   ),
   34 => 
   array (
@@ -394,7 +384,7 @@ $installed_extensions = array (
     'available' => '',
     'type' => 'extension',
     'path' => 'modules/EXPORT_WOO_PROD',
-    'active' => true,
+    'active' => 0,
   ),
   41 => 
   array (
@@ -443,6 +433,36 @@ $installed_extensions = array (
     'available' => '',
     'type' => 'extension',
     'path' => 'modules/mail',
+    'active' => 1,
+  ),
+  46 => 
+  array (
+    'package' => 'bank_auto_reconcile',
+    'name' => 'bank_auto_reconcile',
+    'version' => '-',
+    'available' => '',
+    'type' => 'extension',
+    'path' => 'modules/bank_auto_reconcile',
+    'active' => 1,
+  ),
+  47 => 
+  array (
+    'package' => 'bank_gl_inquiry',
+    'name' => 'bank_gl_inquiry',
+    'version' => '-',
+    'available' => '',
+    'type' => 'extension',
+    'path' => 'modules/bank_gl_inquiry',
+    'active' => 1,
+  ),
+  48 => 
+  array (
+    'package' => 'bank_import',
+    'name' => 'bank_import',
+    'version' => '-',
+    'available' => '',
+    'type' => 'extension',
+    'path' => 'modules/bank_import',
     'active' => 1,
   ),
 );

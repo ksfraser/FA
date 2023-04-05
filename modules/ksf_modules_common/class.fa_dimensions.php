@@ -3,6 +3,14 @@
 require_once( 'class.fa_table_wrapper.php' );
 
 $path_to_root="../..";
+require_once( 'class.fa_references.php' );
+
+include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/data_checks.inc");
+
+include_once($path_to_root . "/inventory/includes/inventory_db.inc");
+include_once($path_to_root . "/inventory/includes/db/items_codes_db.inc");
+include_once($path_to_root . "/dimensions/includes/dimensions_db.inc");
 
 
 /********************************************************//**
@@ -57,6 +65,13 @@ class fa_dimensions extends fa_table_wrapper
 
 		$this->table_details['primarykey'] = "category_id";
 	}
+	function getAll()
+	{
+		$this->from_array[] = $this->table_details['tablename'];
+		$this->buildSelectQuery();
+		$this->query( __METHOD__ . " couldn't get ALL dimensions" );
+		return $this->query_result;
+	}
 	function active_dimensions()
 	{
 		// select category_id, description, dflt_dim1, dflt_dim2 from 1_stock_category where inactive=0 and dflt_no_sale=0 limit 10;
@@ -87,10 +102,36 @@ class fa_dimensions extends fa_table_wrapper
 		}
 		return $dim_array;
 	}
+	function getDimensionByName( $name )
+	{
+		$this->from_array[] = $this->table_details['tablename'];
+		$this->where_array['closed'] ='0';
+		//$this->orderby_array = array( 'd.item_code', 's.supp_name' );
+		$this->buildSelectQuery();
+		$this->query( __METHOD__ . " couldn't get the dimension" );
+		return $this->query_result;
+	}
+	function insert_dimension( $dim_level = 1)
+	{
+		$date = Today();
+		$due = add_days($date, $this->get_sys_default_required_by() );
+
+		//$ref = references::get_next(systypes::dimension());
+		$c_ref = new fa_references();
+		$ref = $c_ref->get_next( systypes::dimension() );
+		
+		$this-id = add_dimension($ref, $this->name, $dim_level, $date, $due, "Added dimension");
+		//display_notification("Added Dimension ");
+
+	}
+	function get_sys_default_required_by()
+	{
+		return sys_prefs::default_dimension_required_by();
+	}
 	/**/
 }
 
-/**********Testing******************/
+/**********Testing****************** /
 class pod_test extends fa_stock_category
 {
 	function __construct()

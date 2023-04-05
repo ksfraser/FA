@@ -20,7 +20,7 @@ include_once($path_to_root . "/workcenters/includes/workcenters_db.inc");
  *	This is a wrapper for the FA table.
  *
  * **********************************************************/
-class fa_purch_order_details extends fa_table_wrapper
+class fa_salesman extends fa_table_wrapper
 {
 	var $min_cid;
 	var $max_cid;
@@ -28,34 +28,26 @@ class fa_purch_order_details extends fa_table_wrapper
 	var $warnings = array();
 
 	/*
-po_detail_item    | int(11)     | NO   | PRI | NULL       | auto_increment |
-| order_no          | int(11)     | NO   | MUL | 0          |                |
-| item_code         | varchar(64) | YES  |     | NULL       |                |
-| description       | tinytext    | YES  |     | NULL       |                |
-| delivery_date     | date        | NO   |     | 0000-00-00 |                |
-| qty_invoiced      | double      | NO   |     | 0          |                |
-| unit_price        | double      | NO   |     | 0          |                |
-| act_price         | double      | NO   |     | 0          |                |
-| std_cost_unit     | double      | NO   |     | 0          |                |
-| quantity_ordered  | double      | NO   |     | 0          |                |
-| quantity_received | double      | NO   |     | 0          |       
+| salesman_code  | int(11)      | NO   | PRI | NULL    | auto_increment |
+| salesman_name  | char(60)     | NO   | UNI |         |                |
+| salesman_phone | char(30)     | NO   |     |         |                |
+| salesman_fax   | char(30)     | NO   |     |         |                |
+| salesman_email | varchar(100) | NO   |     |         |                |
+| provision      | double       | NO   |     | 0       |                |
+| break_pt       | double       | NO   |     | 0       |                |
+| provision2     | double       | NO   |     | 0       |                |
+| inactive       | tinyint(1)   | NO   |     | 0       |                |
 	 *
 	 * */
-	protected $po_detail_item;
-	protected $order_no;//	 int(11)     | NO   | MUL | 0          |                |
-	protected $item_code;//	 varchar(64) | YES  |     | NULL       |                |
-	protected $description;//	 tinytext    | YES  |     | NULL       |                |
-	protected $delivery_date;//	 date      | NO   |     | 0000-00-00 |                |
-	protected $qty_invoiced;//	 double      | NO   |     | 0          |                |
-	protected $unit_price;//	 double      | NO   |     | 0          |                |
-	protected $act_price;//	 double      | NO   |     | 0          |                |
-	protected $std_cost_unit;//	 double    | NO   |     | 0          |                |
-	protected $quantity_ordered;//	 double | NO   |     | 0          |                |
-	protected $quantity_received;//	 double | NO   |     | 0          |       
-	protected $supplier_id;
-	protected $stock_id;
-	protected $shortest;
-	protected $longest;
+	protected $salesman_code  ;// int(11)      | NO   | PRI | NULL    | auto_increment |
+	protected $salesman_name  ;// char(60)     | NO   | UNI |         |                |
+	protected $salesman_phone ;// char(30)     | NO   |     |         |                |
+	protected $salesman_fax   ;// char(30)     | NO   |     |         |                |
+	protected $salesman_email ;// varchar(100) | NO   |     |         |                |
+	protected $provision      ;// double       | NO   |     | 0       |                |
+	protected $break_pt       ;// double       | NO   |     | 0       |                |
+	protected $provision2     ;// double       | NO   |     | 0       |                |
+	protected $inactive       ;// tinyint(1)   | NO   |     | 0       |                |
 
 
 	//function __construct( /*$prefs_db*/ )
@@ -78,6 +70,12 @@ po_detail_item    | int(11)     | NO   | PRI | NULL       | auto_increment |
 		$this->fields_array[] = array('name' => 'quantity_received', 'type' => 'double', 'null' => 'NOT NULL', 'default' => '0',           'readwrite' => 'readwrite',  );
 		$this->table_details['primarykey'] = "po_detail_item";
 	}
+	/*************************************************//**
+	 * Retrieve Item, quantity, Supplier, Days to arrive on an order by order basis
+	 *
+	 * @param none
+	 * @return none.  Sets internal variable
+	 * ***************************************************/
 	function order2deliverydays()
 	{
 		//select d.item_code, s.supp_name, abs(datediff(d.delivery_date, o.ord_date) ) from 1_purch_order_details d, 1_purch_orders o, 1_suppliers s  where o.order_no=d.order_no   and o.supplier_id=s.supplier_id  order by d.item_code, s.supp_name;
@@ -85,6 +83,7 @@ po_detail_item    | int(11)     | NO   | PRI | NULL       | auto_increment |
 		$this->select_array[] = 's.supp_name as supplier';
 		$this->select_array[] = 'abs(datediff(d.delivery_date, o.ord_date) ) as days';
 		$this->select_array[] = 'd.order_no as order_number';
+		$this->select_array[] = 'd.quantity_ordered as quantity';
 		$this->from_array[] = 'purch_order_details d';
 		$this->from_array[] = 'purch_orders o';
 		$this->from_array[] = 'suppliers s';
@@ -212,6 +211,44 @@ po_detail_item    | int(11)     | NO   | PRI | NULL       | auto_increment |
 		return $this->getByPrimaryKey();
 	}
 	/**/
+	/***********************************************//**
+	 * Get the number on order for an item
+	 *
+	 * based upon get_on_porder_qty($stock_id, $location) 
+	 * from includes\db\manufacturing_db.php
+	 *
+	 * @param loc_code optional
+	 * @param internal stock_id
+	 * @return array (stock_id, onorder)
+	 * ***********************************************/
+	function on_order_quantity( $location = null )
+	{
+		/*	$sql = "SELECT SUM(".TB_PREF."purch_order_details.quantity_ordered - "
+		.TB_PREF."purch_order_details.quantity_received) AS qoo
+		FROM ".TB_PREF."purch_order_details INNER JOIN "
+			.TB_PREF."purch_orders ON ".TB_PREF."purch_order_details.order_no=".TB_PREF."purch_orders.order_no
+		WHERE ".TB_PREF."purch_order_details.item_code=".db_escape($stock_id)." ";
+	if ($location != "")
+		$sql .= "AND ".TB_PREF."purch_orders.into_stock_location=".db_escape($location)." ";
+	$sql .= "AND ".TB_PREF."purch_order_details.item_code=".db_escape($stock_id); */
+		$this->select_array[] = 'd.item_code as stock_id';
+		$this->select_array[] = 'sum(d.quantity_ordered - d.quantity_received) as onorder';
+		$this->from_array[] = 'purch_order_details d';
+		$this->from_array[] = 'purch_orders o';
+		$this->where_array['o.order_no'] ='d.order_no';
+		if( isset( $this->stock_id ) )
+		{
+			$this->where_array['d.item_code'] = $this->item_code;
+		}
+		if( isset( $location ) )
+		{
+			$this->where_array['o.into_stock_location'] = $location;
+			$this->select_array[] = 'o.into_stock_location as loc_code';
+		}
+		$this->buildSelectQuery();
+		$this->query( __METHOD__ . " couldn't get the list of items their delay in fulfillment" );
+		return $this->query_results;
+	}
 }
 
 /**********Testing******************/

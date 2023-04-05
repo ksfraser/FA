@@ -13,60 +13,73 @@ require_once( 'class.table_interface.php' );
  *
  * **********************************************************/
 //class fa_stock_master extends fa_origin
-class fa_stock_master extends table_interface
+class fa_users extends table_interface
 {
 	/*
 | Field              | Type         | Null | Key | Default | Extra |
 +--------------------+--------------+------+-----+---------+-------+
-| stock_id           | varchar(64)  | NO   | PRI |         |       |
-| category_id        | int(11)      | NO   |     | 0       |       |
-| tax_type_id        | int(11)      | NO   |     | 0       |       |
-| description        | varchar(200) | NO   |     |         |       |
-| long_description   | text         | NO   |     | NULL    |       |
-| units              | varchar(20)  | NO   |     | each    |       |
-| mb_flag            | char(1)      | NO   |     | B       |       |
-| sales_account      | varchar(15)  | NO   |     |         |       |
-| cogs_account       | varchar(15)  | NO   |     |         |       |
-| inventory_account  | varchar(15)  | NO   |     |         |       |
-| adjustment_account | varchar(15)  | NO   |     |         |       |
-| assembly_account   | varchar(15)  | NO   |     |         |       |
-| dimension_id       | int(11)      | YES  |     | NULL    |       |
-| dimension2_id      | int(11)      | YES  |     | NULL    |       |
-| actual_cost        | double       | NO   |     | 0       |       |
-| last_cost          | double       | NO   |     | 0       |       |
-| material_cost      | double       | NO   |     | 0       |       |
-| labour_cost        | double       | NO   |     | 0       |       |
-| overhead_cost      | double       | NO   |     | 0       |       |
-| inactive           | tinyint(1)   | NO   |     | 0       |       |
-| no_sale            | tinyint(1)   | NO   |     | 0       |       |
-| editable           | tinyint(1)   | NO   |     | 0       |       |
+| id              | smallint(6)  | NO   | PRI | NULL    | auto_increment |
+| user_id         | varchar(60)  | NO   | UNI |         |                |
+| password        | varchar(100) | NO   |     |         |                |
+| real_name       | varchar(100) | NO   |     |         |                |
+| role_id         | int(11)      | NO   |     | 1       |                |
+| phone           | varchar(30)  | NO   |     |         |                |
+| email           | varchar(100) | YES  |     | NULL    |                |
+| language        | varchar(20)  | YES  |     | NULL    |                |
+| date_format     | tinyint(1)   | NO   |     | 0       |                |
+| date_sep        | tinyint(1)   | NO   |     | 0       |                |
+| tho_sep         | tinyint(1)   | NO   |     | 0       |                |
+| dec_sep         | tinyint(1)   | NO   |     | 0       |                |
+| theme           | varchar(20)  | NO   |     | default |                |
+| page_size       | varchar(20)  | NO   |     | A4      |                |
+| prices_dec      | smallint(6)  | NO   |     | 2       |                |
+| qty_dec         | smallint(6)  | NO   |     | 2       |                |
+| rates_dec       | smallint(6)  | NO   |     | 4       |                |
+| percent_dec     | smallint(6)  | NO   |     | 1       |                |
+| show_gl         | tinyint(1)   | NO   |     | 1       |                |
+| show_codes      | tinyint(1)   | NO   |     | 0       |                |
+| show_hints      | tinyint(1)   | NO   |     | 0       |                |
+| last_visit_date | datetime     | YES  |     | NULL    |                |
+| query_size      | tinyint(1)   | YES  |     | 10      |                |
+| graphic_links   | tinyint(1)   | YES  |     | 1       |                |
+| pos             | smallint(6)  | YES  |     | 1       |                |
+| print_profile   | varchar(30)  | NO   |     | 1       |                |
+| rep_popup       | tinyint(1)   | YES  |     | 1       |                |
+| sticky_doc_date | tinyint(1)   | YES  |     | 0       |                |
+| startup_tab     | varchar(20)  | NO   |     | orders  |                |
+| inactive        | tinyint(1)   | NO   |     | 0       |                |
 	 *
 	 * */
-	protected $active_count;
-	var $stock_id_array;
-	var $stock_array;
-	 protected $stock_id;
-	 protected $category_id;
-	 protected $tax_type_id;
-	 protected $description;
-	 protected $long_description;
-	 protected $units;
-	 protected $mb_flag;
-	 protected $sales_account;
-	 protected $cogs_account;
-	 protected $inventory_account;
-	 protected $adjustment_account;
-	 protected $assembly_account;
-	 protected $dimension_id;
-	 protected $dimension2_id;
-	 protected $actual_cost;
-	 protected $last_cost;
-	 protected $material_cost;
-	 protected $labour_cost;
-	 protected $overhead_cost;
-	 protected $inactive;
-	 protected $no_sale;
-	 protected $editable;
+	protected $id              ;// smallint(6)  | NO   | PRI | NULL    | auto_increment |
+	protected $user_id         ;// varchar(60)  | NO   | UNI |         |                |
+	protected $password        ;// varchar(100) | NO   |     |         |                |
+	protected $real_name       ;// varchar(100) | NO   |     |         |                |
+	protected $role_id         ;// int(11)      | NO   |     | 1       |                |
+	protected $phone           ;// varchar(30)  | NO   |     |         |                |
+	protected $email           ;// varchar(100) | YES  |     | NULL    |                |
+	protected $language        ;// varchar(20)  | YES  |     | NULL    |                |
+	protected $date_format     ;// tinyint(1)   | NO   |     | 0       |                |
+	protected $date_sep        ;// tinyint(1)   | NO   |     | 0       |                |
+	protected $tho_sep         ;// tinyint(1)   | NO   |     | 0       |                |
+	protected $dec_sep         ;// tinyint(1)   | NO   |     | 0       |                |
+	protected $theme           ;// varchar(20)  | NO   |     | default |                |
+	protected $page_size       ;// varchar(20)  | NO   |     | A4      |                |
+	protected $prices_dec      ;// smallint(6)  | NO   |     | 2       |                |
+	protected $qty_dec         ;// smallint(6)  | NO   |     | 2       |                |
+	protected $rates_dec       ;// smallint(6)  | NO   |     | 4       |                |
+	protected $percent_dec     ;// smallint(6)  | NO   |     | 1       |                |
+	protected $show_gl         ;// tinyint(1)   | NO   |     | 1       |                |
+	protected $show_codes      ;// tinyint(1)   | NO   |     | 0       |                |
+	protected $show_hints      ;// tinyint(1)   | NO   |     | 0       |                |
+	protected $last_visit_date ;// datetime     | YES  |     | NULL    |                |
+	protected $query_size      ;// tinyint(1)   | YES  |     | 10      |                |
+	protected $graphic_links   ;// tinyint(1)   | YES  |     | 1       |                |
+	protected $pos             ;// smallint(6)  | YES  |     | 1       |                |
+	protected $print_profile   ;// varchar(30)  | NO   |     | 1       |                |
+	protected $rep_popup       ;// tinyint(1)   | YES  |     | 1       |                |
+	protected $sticky_doc_date ;// tinyint(1)   | YES  |     | 0       |                |
+	protected $startup_tab     ;// varchar(20)  | NO   |     | orders  |                |
+	protected $inactive        ;// tinyint(1)   | NO   |     | 0       |                |
 	function __construct( $prefs_db )
 	{
 		//parent::__construct( $prefs_db );

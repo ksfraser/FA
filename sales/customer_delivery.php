@@ -55,6 +55,10 @@ if (isset($_GET['AddedID'])) {
 	display_note(print_document_link($dispatch_no, _("&Email Delivery Note"), true, ST_CUSTDELIVERY, false, "printlink", "", 1), 1, 1);
 	display_note(print_document_link($dispatch_no, _("P&rint as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink", "", 0, 1));
 	display_note(print_document_link($dispatch_no, _("E&mail as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink", "", 1, 1), 1);
+/**20230405 Print Mailing Label*/
+	//This is displaying the link but it isn't launching the PDF.  Testing by URL, it generates it on screen.  I must have missed a line...
+	display_note(print_document_link($dispatch_no, _("Print Address Label"), true, 910, false, "printlink", "", 1, 1), 1);
+/** */
 
 	display_note(get_gl_view_str(13, $dispatch_no, _("View the GL Journal Entries for this Dispatch")),1);
 
