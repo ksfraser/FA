@@ -114,6 +114,17 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 				'PARAM_3' => '', 
 				'PARAM_4' => $def_orientation);
 			break;
+		case 910 :
+			$rep = 910;
+			// from, to, email, packing slip, comments, orientation
+			$ar = array(
+				'PARAM_0' => $doc_no, 
+				'PARAM_1' => $doc_no, 
+				'PARAM_2' => $email,
+				'PARAM_3' => $extra,
+				'PARAM_4' => '',
+				'PARAM_5' => $def_orientation);
+			break;
 //		default: $ar = array();
 	}
 	
