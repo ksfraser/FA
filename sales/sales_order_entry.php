@@ -113,11 +113,10 @@ if (isset($_GET['AddedID'])) {
 	submenu_print(_("&Print This Order"), ST_SALESORDER, $order_no, 'prtopt');
 	submenu_print(_("&Email This Order"), ST_SALESORDER, $order_no, null, 1);
 /**20230405 Print Mailing Label*/
+	//submenu_pring calls display_note.  Going straight there....
         //This is displaying the link but it isn't launching the PDF.  Testing by URL, it generates it on screen.  I must have missed a line...
-        display_note(print_document_link($order_no, _("Print Address Label"), true, 910, false, "printlink", "", 1, 1), 1);
-	//submenu_pring calls display_note
-	//function submenu_print($title, $type, $number, $id=null, $email=0, $extra=0)
-        //  display_note(print_document_link($number, $title, true, $type, false, 'printlink', $id, $email, $extra), 0, 1);
+		$delivery = get_sales_parent_numbers(ST_SALESORDER, $order_no);
+        display_note(print_document_link($delivery, _("Print Address Label"), true, 910, false, "printlink", "", 1, 1), 1);
 /** */
 	set_focus('prtopt');
 	
@@ -140,11 +139,10 @@ if (isset($_GET['AddedID'])) {
 	submenu_print(_("&Print This Order"), ST_SALESORDER, $order_no, 'prtopt');
 	submenu_print(_("&Email This Order"), ST_SALESORDER, $order_no, null, 1);
 /**20230405 Print Mailing Label*/
-        //This is displaying the link but it isn't launching the PDF.  Testing by URL, it generates it on screen.  I must have missed a line...
-        display_note(print_document_link($order_no, _("Print Address Label"), true, 910, false, "printlink", "", 1, 1), 1);
-	//submenu_pring calls display_note
-	//function submenu_print($title, $type, $number, $id=null, $email=0, $extra=0)
-        //  display_note(print_document_link($number, $title, true, $type, false, 'printlink', $id, $email, $extra), 0, 1);
+	//submenu_print calls display_note
+		$delivery = get_sales_parent_numbers(ST_SALESORDER, $order_no);
+        //display_note(print_document_link($delivery, _("Print Address Label"), true, 910, false, "printlink", "", 1, 1), 1);
+	submenu_print(_("&Address Label"), 910, $delivery[0], null, 1, 1);
 /** */
 	set_focus('prtopt');
 
@@ -203,11 +201,11 @@ if (isset($_GET['AddedID'])) {
 	submenu_print(_("P&rint as Packing Slip"), ST_CUSTDELIVERY, $delivery, 'prtopt', null, 1);
 	submenu_print(_("E&mail as Packing Slip"), ST_CUSTDELIVERY, $delivery, null, 1, 1);
 /**20230405 Print Mailing Label*/
-        //This is displaying the link but it isn't launching the PDF.  Testing by URL, it generates it on screen.  I must have missed a line...
-        display_note(print_document_link($delivery, _("Print Address Label"), true, 910, false, "printlink", "", 1, 1), 1);
-	//submenu_pring calls display_note
-	//function submenu_print($title, $type, $number, $id=null, $email=0, $extra=0)
-        //  display_note(print_document_link($number, $title, true, $type, false, 'printlink', $id, $email, $extra), 0, 1);
+	//submenu_print calls display_note
+		//$delivery = get_sales_parent_numbers(ST_SALESORDER, $order_no);
+        //display_note(print_document_link($delivery, _("Print Address Label"), true, 910, false, "printlink", "", 1, 1), 1);
+	//submenu_print(_("A&ddress Label"), 910, $delivery, null, 1, 1);
+	submenu_print(_("&Address Label"), 910, $delivery[0], null, 1, 1);
 /** */
 
 	set_focus('prtopt');
@@ -244,11 +242,10 @@ if (isset($_GET['AddedID'])) {
 	if ($row !== false)
 		submenu_print(_("Print &Receipt"), $row['trans_type_from'], $row['trans_no_from']."-".$row['trans_type_from'], 'prtopt');
 /**20230405 Print Mailing Label*/
-        //This is displaying the link but it isn't launching the PDF.  Testing by URL, it generates it on screen.  I must have missed a line...
-        display_note(print_document_link($invoice, _("Print Address Label"), true, 910, false, "printlink", "", 1, 1), 1);
-	//submenu_pring calls display_note
-	//function submenu_print($title, $type, $number, $id=null, $email=0, $extra=0)
-        //  display_note(print_document_link($number, $title, true, $type, false, 'printlink', $id, $email, $extra), 0, 1);
+	//submenu_print calls display_note
+		$delivery = get_sales_parent_numbers(ST_SALESINVOICE, $invoice);
+        //display_note(print_document_link($delivery, _("Print Address Label"), true, 910, false, "printlink", "", 1, 1), 1);
+	submenu_print(_("&Address Label"), 910, $delivery[0], null, 1, 1);
 /** */
 
 	display_note(get_gl_view_str(ST_SALESINVOICE, $invoice, _("View the GL &Journal Entries for this Invoice")),0, 1);

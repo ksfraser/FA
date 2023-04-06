@@ -28,30 +28,37 @@ include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 include_once($path_to_root . "/reporting/class.ksfFrontReport.php");
 
-$packing_slip = 0;
 //----------------------------------------------------------------------------------------------------
 
 print_mailing();
+
+/**
+ * Paramaters 0 and 1 give us a FROM and TO range.  This will allow us
+ * to add this as  a report in other menus permitted batch printing of
+ * shipping labels.  This will be useful on importing orders from WC etc.
+ *
+ */
 
 //----------------------------------------------------------------------------------------------------
 
 function print_mailing()
 {
-	global $path_to_root, $packing_slip, $alternative_tax_include_on_docs, $suppress_tax_rates, $no_zero_lines_amount;
+	global $path_to_root;
 
 	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
+//When called post adding a different document than delivery (i.e. Direct Sales Invoice)
+//the from and to (Param 0 and 1) could/will be wrong.  We need to check the doc type and
+//backtrack the DELIVERY numbers
 
 	$from = $_POST['PARAM_0'];
 	$to = $_POST['PARAM_1'];
-	$email = $_POST['PARAM_2'];
-	$packing_slip = $_POST['PARAM_3'];
+	//$email = $_POST['PARAM_2'];
 	$comments = $_POST['PARAM_4'];
 	$orientation = $_POST['PARAM_5'];
 
 	if (!$from || !$to) return;
 
 	$orientation = ($orientation ? 'L' : 'P');
-	$dec = user_price_dec();
 
 	$fno = explode("-", $from);
 	$tno = explode("-", $to);
@@ -59,13 +66,11 @@ function print_mailing()
 	$to = max($fno[0], $tno[0]);
 
 	$cols = array(4, 60, 225, 300, 325, 385, 450, 515);
-
-	// $headers in doctext.inc
 	$aligns = array('left',	'left',	'right', 'left', 'right', 'right', 'right');
 
 	$params = array('comments' => $comments);
 
-	$cur = get_company_Pref('curr_default');
+	//$cur = get_company_Pref('curr_default');
 						//title, filename, size, font, orientation, margins
 			$rep = new ksfFrontReport(_('Mailing'), "MailingBulk", user_pagesize(), 10, 'L' );
 //Taking out check of orientation, and setting to Landscape
@@ -77,27 +82,15 @@ function print_mailing()
 			$myrow = get_customer_trans($i, ST_CUSTDELIVERY);
 			$branch = get_branch($myrow["branch_code"]);
 			$sales_order = get_sales_order_header($myrow["order_"], ST_SALESORDER); // ?
-		//We will never be mailing a shipping label (at least not the one TO the customer)
-			//$rep->SetHeaderType('LetterHeader');
-			//$rep->SetHeaderType('Header3');
 			$rep->SetHeaderType('Header4');
 				//NewPage calls the function specified by SetHeaderType
-			$rep->currency = $cur;
+			//$rep->currency = $cur;
 			$rep->Font();
 			$rep->Info($params, $cols, null, $aligns);
 
 			$contacts = get_branch_contacts($branch['branch_code'], 'delivery', $branch['debtor_no'], true);
 			$rep->SetCommonData($myrow, $branch, $sales_order, '', ST_CUSTDELIVERY, $contacts);
 			$rep->NewPage();
-
-			//Won't be adding items onto a shipping label
-			/*************************
-						//$rep->TextCol(4, 5,	$DisplayPrice, -2);
-						//$rep->TextCol(5, 6,	$DisplayDiscount, -2);
-				//$rep->row = $newrow;
-				//$rep->NewLine(1);
-				//if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
-				//	$rep->NewPage();
 
 			$memo = get_comments_string(ST_CUSTDELIVERY, $i);
 			if ($memo != "")
@@ -106,21 +99,11 @@ function print_mailing()
 				$rep->TextColLines(1, 5, $memo, -2);
 			}
 
-			**************************************** */
 
     		$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
 			$doctype=ST_CUSTDELIVERY;
-			/*************************************************
-			if ($packing_slip == 0)
-			{
-    				$rep->NewLine();
-				$rep->Font('bold');
-				$rep->Font();
-			}	
-			****************************************************/
 	}
-	if ($email == 0)
-		$rep->End();
+	$rep->End();
 }
 
 ?>
