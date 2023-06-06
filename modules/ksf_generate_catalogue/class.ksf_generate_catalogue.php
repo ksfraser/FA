@@ -1,15 +1,9 @@
 <?php
 
-//require_once( 'class.generic_orders.php' ); 
 require_once( '../ksf_modules_common/class.generic_fa_interface.php' ); 
 
-//global $prefsDB;
-//$prefsDB = "ksf_generate_catalogue_prefs";	//used in module install (hooks.php), file ksf_generate_catalogue.php
 
 
-//class ksf_generate_catalogue
-//class ksf_generate_catalogue extends generic_orders
-//
 /************************************************************************//**
  *
  * uses inherited call_table
@@ -146,6 +140,7 @@ class ksf_generate_catalogue extends generic_fa_interface
 			}
 			$rowcount = $lf->create_file();
 			$lf->email_file();
+/** 20230605 This is running twice, no need.
 			if( include_once( 'class.square_catalog.php' ) )
 			{
 				$sc = new square_catalog( $this->pref_tablename );
@@ -156,6 +151,7 @@ class ksf_generate_catalogue extends generic_fa_interface
 				}
 				$rowcount2 = $sc->create_file();
 			}
+**/
 			return $rowcount;
 		}
 		else

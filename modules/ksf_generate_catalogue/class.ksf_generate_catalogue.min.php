@@ -1,17 +1,8 @@
 <?php
 
-//require_once( 'class.generic_orders.php' ); 
 require_once( '../ksf_modules_common/class.generic_fa_interface.php' ); 
 
-//dirname ( realpath ( __FILE__ ) )
 
-//global $prefsDB;
-//$prefsDB = "ksf_generate_catalogue_prefs";	//used in module install (hooks.php), file ksf_generate_catalogue.php
-
-
-//class ksf_generate_catalogue
-//class ksf_generate_catalogue extends generic_orders
-//
 /************************************************************************//**
  *
  * uses inherited call_table

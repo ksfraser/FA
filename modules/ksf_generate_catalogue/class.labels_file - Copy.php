@@ -1,6 +1,5 @@
 <?php
 
-//require_once( 'class.generic_orders.php' ); 
 require_once( 'class.labels_file.php' ); 
 
 /*******************************************************//**

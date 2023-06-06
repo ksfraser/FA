@@ -1,7 +1,7 @@
 <?php
 /**********************************************
-Name: COAST purchase order export
-modified for COAST 1.5.1 and FrontAccounting 2.3.15 by kfraser 
+Name: KSF Generate Catalogue 
+for FrontAccounting 2.3.15 by kfraser 
 Free software under GNU GPL
 ***********************************************/
 

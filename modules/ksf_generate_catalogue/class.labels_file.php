@@ -1,8 +1,6 @@
 <?php
 
-//require_once( 'class.generic_orders.php' ); 
 require_once( 'class.ksf_generate_catalogue.php' ); 
-
 
 /*******************************************************//**
  * Generate an import CSV for SquareUp
