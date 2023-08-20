@@ -184,22 +184,23 @@ class square_catalog extends pricebook_file
 	$good_decode = array ( "'" );
 	$row['description'] = str_replace( $bad_decode, $good_decode, html_entity_decode( $row['description'] ) );
 	$row['long_description'] = str_replace( $bad_decode, $good_decode, html_entity_decode( $row['long_description'] ) );
+	$row['category'] = str_replace( $bad_decode, $good_decode, html_entity_decode( $row['category'] ) );
 
 				if( strlen( $row['description'] ) > 2 )
 				{
 					if( "N" == $row["Square_Online_Item_Visibility"] )
 					{
-						$row["Square_Online_Item_Visibility"] = "Invisible";	//2448
+						$row["Square_Online_Item_Visibility"] = "HIDDEN";	//2448
 					}
 					else
 					{
-						$row["Square_Online_Item_Visibility"] = "Visible";	//2448
+						$row["Square_Online_Item_Visibility"] = "VISIBLE";	//2448
 					}
 					$this->write_file->write_array_to_csv( array( 
 						'', //$row["token"],	//Token
 						$row['description'],
 						$row['long_description'],
-						html_entity_decode ( $row['category'] ),	//Category
+						$row['category'],	//Category
 						$row['stock_id'],
 						'Regular', 		//Variation Name
 						$price,
