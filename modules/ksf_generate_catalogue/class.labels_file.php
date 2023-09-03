@@ -13,9 +13,16 @@ class labels_file extends ksf_generate_catalogue
 {
 	protected $hline = '"stock_id", "Title", "barcode", "category", "price"';
 	protected $query;
+/***	INHERIT
+	protected $delivery_no;
+*/
 	 	
 	function __construct( $pref_tablename )
 	{
+/** 20230903 Mantis 2323
+	Wrong results were being returned.  this->delivery_no was not being set
+*/	
+		$this->delivery_no = 0;
 		parent::__construct( null, null, null, null, $pref_tablename );
 		set_time_limit(300);
 		
@@ -65,18 +72,33 @@ class labels_file extends ksf_generate_catalogue
 	/*@int@*/function create_sku_labels_from_PO( $delivery_no )
 	{
 		//display_notification( __METHOD__ );
-		$this->filename = "delivery_" . $delivery_no . "_labels.csv";
+/** 20230903 Mantis 2323
+	Wrong results were being returned.  this->delivery_no was not being set
+*/	
+		$this->delivery_no = $delivery_no;
+		$this->filename = "delivery_" . $this->delivery_no . "_labels.csv";
 		
 		$this->prep_write_file();
 		$this->write_file->write_line( $this->hline );
 
 		require_once( '../ksf_qoh/class.ksf_qoh.php' ); 
-			
+
+/** 20230903 Mantis 2323
+	Wrong results were being returned.  this->delivery_no was not being set
+*/	
+		//$result = get_grn_items( $delivery_no, "", false, false, 0, "", "" );
 		$result = get_grn_items( $this->delivery_no, "", false, false, 0, "", "" );
+
+		//	var_dump( $result );	//type mysql_result
 
 		$rowcount=0;
 		while ($row = db_fetch($result)) 
 		{
+			//20230903 don't print the list unless debugging turned up
+                        if( $this->debug > 1 )
+                        {
+				var_dump( $row );
+			}
 			$num = $row['qty_recd'];
 			//If we have 6 items instock, we need 6 labels to print so we can put on product
 			for( $num; $num > 0; $num-- )

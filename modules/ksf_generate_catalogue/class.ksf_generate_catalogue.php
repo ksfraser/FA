@@ -263,9 +263,13 @@ class ksf_generate_catalogue extends generic_fa_interface
 				}
 				else
 				{
-					echo "<br />";
-					var_dump( $arr );
-					echo "<br />";
+					//20230903 This was printing the PREFS always!
+					if( $this->debug > 1 )
+					{
+						echo "<br />";
+						var_dump( $arr );
+						echo "<br />";
+					}
 				}
 			}
 			$count = $lf->create_sku_labels_from_PO( $this->delivery_no );
