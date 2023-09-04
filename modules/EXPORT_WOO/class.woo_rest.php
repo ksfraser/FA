@@ -3,9 +3,134 @@
 
 require_once( __DIR__ . '/../ksf_modules_common/class.rest_client.php' ); 
 
+//WC official client
+require_once __DIR__ . '/vendor/autoload.php';
+use Automattic\WooCommerce\Client;
+
+/**********************************************************************************************
+*
+*	Client Library looks like it takes arrays of data instead of JSON
+*
+**********************************************************************************************/
+class woo_rest
+{
+	private $wc;
+	private $client;
+	function __construct( $serverURL, /*UNUSED*/$subpath, $data_array, $key, $secret, /*UNUSE*/$conn_type, /*UNUSED*/$woo_rest_path, /*deprec*/$header_array = null, $environment = "devel", $debug = 0 )
+	{
+        	//Need the index.php since .htaccess changes didn't work
+		$options = array(
+        		'wp_api' => true, // Enable the WP REST API integration
+        		'version' => 'wc/v3', // WooCommerce WP REST API version
+			'ssl_verify' => 'false',
+        		//'query_string_auth' => true // Force Basic Authentication as query string true and using under HTTPS
+		);
+
+		$this->wc = new Client(
+        		$serverURL,
+        		$key,
+        		$secret,
+        		$options
+		);
+	}
+	function post( $endpoint, $data = [], $client = null )
+	{
+		if( ! is_null( $client ) )
+			$this->client = $client;
+		try {
+			$response = $this->wc->post( $endpoint, $data );
+		} catch( Exception $e )
+		{
+			throw $e;
+		}
+	}
+	function put( $endpoint, $data = [], $client = null )
+	{
+		if( ! is_null( $client ) )
+			$this->client = $client;
+		try {
+			$response = $this->wc->put( $endpoint, $data );
+		} catch( Exception $e )
+		{
+			throw $e;
+		}
+	}
+	function get( $endpoint, $data = [], $client = null )
+	{
+		if( ! is_null( $client ) )
+			$this->client = $client;
+		try {
+			$response = $this->wc->get( $endpoint, $data );
+		} catch( Exception $e )
+		{
+			throw $e;
+		}
+	}
+	function delete( $endpoint, $data = [], $client = null )
+	{
+		if( ! is_null( $client ) )
+			$this->client = $client;
+		try {
+			$response = $this->wc->delete( $endpoint, $data );
+		} catch( Exception $e )
+		{
+			throw $e;
+		}
+
+	}
+	function data_not_json( $data )
+	{
+		if( is_object( $data ) )
+			throw new Exception( "Object, not data", KSF_INVALID_DATA_TYPE );
+		$decoded = json_decode( $data, true );
+		if( JSON_ERROR_NONE == json_last_error() )
+			return $decoded;
+		else
+			return $data;
+	}
+	function dispatch( $data, $c_type, $client = null )
+	{
+		try {
+			$data = $this->data_not_json( $data );
+		} catch( Exception $e )
+		{
+			if( $e->code ==  KSF_INVALID_DATA_TYPE )
+			{
+				//convert the object so we can use it!
+			}
+		}
+		if( strncasecmp( "post", $c_type ) == 0 )
+			$this->post(  $data, $c_type, $client = null  );
+		else
+		if( strncasecmp( "put", $c_type ) == 0 )
+			$this->put( $data, $c_type, $client = null  );
+		else
+		if( strncasecmp( "delete", $c_type ) == 0 )
+			$this->delete( $data, $c_type, $client = null  );
+		else
+		if( strncasecmp( "get", $c_type ) == 0 )
+			$this->get( $data, $c_type, $client = null  );
+		else
+			throw new Exception( "Invalid c_type" );
+	}
+	/************************************************************
+	*
+	*	The following are for class compatibility in case clients
+	*	expect the functions
+	************************************************************/
+	
+ 	function set_content_type( $type ){}
+        function buildURL(){}
+        function write2woo_json( $json_data, $c_type, $client = null ){ $this->dispatch( $json_data, $c_type, $client ); }
+        function write2woo_object( $c_obj, $c_type, $client = null ){ $this->dispatch( $c_obj, $c_type, $client ); }
+        /*@string@*/function write2woo( $c_type = "POST", $client = null ){ $this->dispatch( null, $c_type, $client ); }
+	/***************************************************************
+	*	END COMPAT
+	************************************************************/
+}
 
 //class EXPORT_WOO
-class woo_rest extends rest_client
+class woo_rest_old extends rest_client
 {
 	var $loggedin;
 	var $login_url;

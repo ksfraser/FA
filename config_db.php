@@ -31,8 +31,13 @@ $db_connections = array (
   ),
   1 => 
   array (
+<<<<<<< HEAD
     'name' => 'FHS',
     'host' => 'mysql.ksfraser.com',
+=======
+    'name' => 'FHS laptop',
+    'host' => 'fhs-laptop1.ksfraser.com',
+>>>>>>> e7624552e2cfee6a014a5e785d22c90d0be8f0ce
     'dbuser' => 'fhs',
     'dbpassword' => 'fhs',
     'dbname' => 'fhs_frontaccounting',
@@ -72,6 +77,33 @@ $db_connections = array (
     'dbuser' => 'fhs',
     'dbpassword' => 'fhs',
     'dbname' => 'fhs_front_rebuild',
+    'tbpref' => '1_',
+  ),
+  3 => 
+  array (
+    'name' => 'FHS Mickey',
+    'host' => 'mickey.ksfraser.com',
+    'dbuser' => 'fhs',
+    'dbpassword' => 'fhs',
+    'dbname' => 'fhs_frontaccounting',
+    'tbpref' => '1_',
+  ),
+  4 => 
+  array (
+    'name' => 'FHS Mickey v2',
+    'host' => 'mickey.ksfraser.com',
+    'dbuser' => 'fhs',
+    'dbpassword' => 'fhs',
+    'dbname' => 'fhs_frontaccounting_v2',
+    'tbpref' => '1_',
+  ),
+  5 => 
+  array (
+    'name' => 'FHS Mickey v3',
+    'host' => 'mickey.ksfraser.com',
+    'dbuser' => 'fhs',
+    'dbpassword' => 'fhs',
+    'dbname' => 'fhs_frontaccounting_v3',
     'tbpref' => '1_',
   ),
 );

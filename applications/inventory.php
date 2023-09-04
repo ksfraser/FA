@@ -11,7 +11,7 @@
 ***********************************************************************/
 class inventory_app extends application
 {
-	function inventory_app()
+	function __construct()
 	{
 		$this->application("stock", _($this->help_context = "&Items and Inventory"));
 

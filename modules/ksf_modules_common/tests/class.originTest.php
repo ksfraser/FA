@@ -1,11 +1,14 @@
 <?php declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
+<<<<<<< HEAD
 require_once( dirname( __FILE__ ) .  '/defines.php' );
 require_once( dirname( __FILE__ ) .  '/../class.origin.php' );
 
 
 /*
+=======
+>>>>>>> e7624552e2cfee6a014a5e785d22c90d0be8f0ce
 final class EmailTest extends TestCase
 {
     public function testCanBeCreatedFromValidEmailAddress(): void
@@ -31,6 +34,7 @@ final class EmailTest extends TestCase
         );
     }
 }
+<<<<<<< HEAD
 */
 
 class originTest extends TestCase
@@ -221,4 +225,9 @@ class originTest extends TestCase
                 return $o;
         }
 
+=======
+
+class oroginTest extends TestCase
+{
+>>>>>>> e7624552e2cfee6a014a5e785d22c90d0be8f0ce
 }

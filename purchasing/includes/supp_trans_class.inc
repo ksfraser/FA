@@ -43,7 +43,7 @@ class supp_trans
 	var $credit = 0;
 	var $tax_overrides = array();		// array of taxes manually inserted during sales invoice entry
 
-	function supp_trans($trans_type)
+	function __construct($trans_type)
 	{
 		$this->trans_type = $trans_type;
 		/*Constructor function initialises a new Supplier Transaction object */
@@ -204,7 +204,7 @@ all the info to do the necessary entries without looking up ie additional querie
 	var $gl_code;
 	var $tax_included;
 
-	function grn_item ($id, $po_detail_item, $item_code, $item_description, $qty_recd, 
+	function __construct($id, $po_detail_item, $item_code, $item_description, $qty_recd, 
 		$prev_quantity_inv, $this_quantity_inv, $order_price, $chg_price,
 		$std_cost_unit, $gl_code, $tax_included)
 	{
@@ -248,7 +248,7 @@ class gl_codes
 	var $amount;
 	var $memo_;
 
-	function gl_codes ($Counter, $gl_code, $gl_act_name, $gl_dim, $gl_dim2, $amount, $memo_)
+	function __construct($Counter, $gl_code, $gl_act_name, $gl_dim, $gl_dim2, $amount, $memo_)
 	{
 
 	/* Constructor function to add a new gl_codes object with passed params */

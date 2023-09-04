@@ -11,7 +11,7 @@
 ***********************************************************************/
 class customers_app extends application 
 {
-	function customers_app() 
+	function __construct() 
 	{
 		$this->application("orders", _($this->help_context = "&Sales"));
 	

@@ -30,7 +30,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 
 		var $menu;
 
-		function front_accounting()
+		function __construct()
 		{
 		}
 		function add_application(&$app)

@@ -1,5 +1,11 @@
 <?php
 
+/***************************************************************
+*
+* THIS will be the CONTROLLER class for a MVC framework.
+*
+***************************************************************/
+
 //TODO: check in add_item for the barcode to be either an stock_id or a foreign_code
 
 require_once( '../ksf_modules_common/class.generic_fa_interface.php' ); 
@@ -121,8 +127,15 @@ class Inventory extends generic_fa_interface
 	var $table_interface;
 	var $found;
 	var $import_single_file;	//Should we allow multiple files to be loaded at once.
+	var $model;
+	var $ui;
 	function __construct( $host, $user, $pass, $database, $pref_tablename )
 	{
+		require_once( 'class.Inventory_model.php' );
+		require_once( 'class.Inventory_ui.php' );
+		$this->model = new Inventory_model( $host, $user, $pass, $database, $pref_tablename );
+		$this->ui = new Inventory_ui( $host, $user, $pass, $database, $pref_tablename );
+
 		parent::__construct( $host, $user, $pass, $database, $pref_tablename );
 		global $path_to_root;
 		$this->path_to_root = $path_to_root;
@@ -133,6 +146,11 @@ class Inventory extends generic_fa_interface
 		//$this->config_values[] = array( 'pref_name' => 'mailto', 'label' => 'Email Address to mail the results.' );
 		$this->config_values[] = array( 'pref_name' => 'holdtank', 'label' => 'Inventory HOLDING tank Code.' );
 		//$this->config_values[] = array( 'pref_name' => 'url', 'label' => 'URL' );
+
+		if( strlen( $this->holdtank ) < 2 )
+			$this->ui->display_message( "Holding Tank value not set.  It is necessary for the proper functioning of this module!", "WARN" );
+
+/***** UI ****************************
 		
 		//The forms/actions for this module
 		//Hidden tabs are just action handlers, without accompying GUI elements.
@@ -155,10 +173,24 @@ class Inventory extends generic_fa_interface
 		$this->tabs[] = array( 'title' => 'Transfered ALL inventory between locations', 'action' => 'xfer_all_to_location', 'form' => 'xfer_all_to_location', 'hidden' => TRUE );
 		$this->tabs[] = array( 'title' => 'Import CSV', 'action' => 'call_import', 'form' => 'import_csv', 'hidden' => TRUE );
 
-
 		$this->javascript = get_js_open_window(900, 500);
 		$this->javascript .= get_js_date_picker();
+***** UI ****************************/
 
+
+  //Make sure the UI has all the set values...
+  /*
+      if( isset( $this->ui_class ) )
+      {
+        foreach( $this->ui_class->config_values as $val )
+        {
+          $this->ui_class->set_var( $val, $this->get_var( $val ) );
+        }
+      }
+   */
+
+
+/****** MODEL ****************************
 		//Using 998 and 999 to be the starting numbers for barcodes indicating location
 		$this->set_var( 'locationPrefix', "999" );
 		$this->set_var( 'locationPrefix2', "998" );
@@ -166,7 +198,6 @@ class Inventory extends generic_fa_interface
 		$this->import_single_file = true;
 		require_once( '../ksf_modules_common/class.table_interface.php' );
 		$this->table_interface = new table_interface();
-
 		$this->trans_type = ST_LOCTRANSFER;
 		if( isset( $_POST['location'] ) )
 		{
@@ -176,32 +207,72 @@ class Inventory extends generic_fa_interface
 		{
 			$this->setLocation( $_GET['location'] );
 		}
-	 	//$this->trans_type = ST_Inventory;
 		global $Refs;
-		//$this->reference = $Refs->get_next($this->trans_type);
-		//echo __LINE__ . "<br />\n";
 	        $this->reference = rand();
-		//echo __LINE__ . "<br />\n";
 		$this->create_cart();
-		//$this->submenu_choices();
-		//echo __LINE__ . "<br />\n";
+****** MODEL ****************************/
 		$this->handlePOST();
-		//var_dump( $_POST );
-		//var_dump( $_SESSION );
-		//echo __LINE__ . "<br />\n";
 	}
+	/***************************************//**
+	*	Overriding because we have some actions to check
+	*
+	*********************************************/
+	function run()
+	{
+		/***
+		if( list_updated('FIELD_NAME' ) )
+		{
+			$var = get_field_data( get_post( 'FIELD_NAME' ) );
+			$_POST['FIELD_NAME'] = $var['field'];
+			$Ajax->activate('FIELD_NAME');
+		}
+		***/
+		/***
+		if( isset( $_GET['ActionIndicator'] ) )
+		{
+			$this->actionIndicator_handler();
+			$this->ui->SubMenus();
+			//set_focus(...);
+			//display_footer_exit();
+		}
+		***/
+		parent::run();
+	}
+	/***************************************//**
+	*	Overriding because we originally didn't use MVC
+	*
+	*********************************************/
+	function base_page()
+        {
+		$this->ui->base_page();
+	}
+ 	function show_form()
+        {
+		$this->ui->action = $this->action; 
+		$this->ui->show_form();
+                 return;
+	}
+
         function install()
         {
+		$this->model->install();
+		$this->ui->install();
+
+/****** MODEL ****
                 $this->create_prefs_tablename();
                 $this->loadprefs();
                 $this->updateprefs();
+****** MODEL ****/
+/***** UI *******
                 if( isset( $this->redirect_to ) )
                 {
                         header("location: " . $this->redirect_to );
                 }
+***** UI *******/
         }
 	function create_inventory_count_table()
 	{
+		$this->model->create_inventory_count_table();
 	}
 	function handlePOST()
 	{
@@ -247,6 +318,7 @@ class Inventory extends generic_fa_interface
 	}
 	function write()
 	{
+		$this->model->write();
 	}
 	function process_inventory()
 	{
@@ -296,6 +368,8 @@ class Inventory extends generic_fa_interface
 	}
 	function submenu_choices()
 	{
+		$this->ui->submenu_choices();
+/******** UI **********************
 		if (isset($_GET['AddedID'])) {
 		        $inventory_no = $_GET['AddedID'];
 		        display_notification_centered(sprintf( _("Order # %d has been entered."),$inventory_no));
@@ -336,6 +410,7 @@ class Inventory extends generic_fa_interface
 		} 
  		else
         		$this->check_edit_conflicts();
+******** UI **********************/
 
 	}
 	function check_edit_conflicts()
@@ -474,35 +549,31 @@ class Inventory extends generic_fa_interface
 	        global $Refs, $SysPrefs;
 		$input_error = 0;
 	
-	       	if (!$Refs->is_valid($this->reference) )
+	       	if (!$Refs->is_valid($this->model->reference) )
 	        {
 	                display_error(_("You must enter a reference."));
-			$this->reference = rand();
+			$this->model->gen_reference();
 			return $this->can_process();
-	                //set_focus('ref');
-	                //$input_error = 1;
 	        }
-	        elseif (!is_new_reference($this->reference, ST_LOCTRANSFER))
+	        elseif (!is_new_reference($this->model->reference, ST_LOCTRANSFER))
 	        {
 	                //display_error(_("The entered reference is already in use.  Trying another"));
-			$this->reference = rand();
+			$this->model->gen_reference();
 			return $this->can_process();
-	                //set_focus('ref');
-	                $input_error = 1;
 	        }
-	        elseif (!is_date($this->document_date))
+	        elseif (!is_date($this->model->document_date))
 	        {
 	                display_error(_("The entered transfer date is invalid."));
 	                set_focus('AdjDate');
 	                $input_error = 1;
 	        }
-	        elseif (!is_date_in_fiscalyear($this->document_date))
+	        elseif (!is_date_in_fiscalyear($this->model->document_date))
 	        {
 	                display_error(_("The entered date is not in fiscal year."));
 	                set_focus('AdjDate');
 	                $input_error = 1;
 	        }
-	        elseif ($this->holdtank == $this->location)
+	        elseif ($this->model->holdtank == $this->model->location)
 	        {
 	                display_error(_("The locations to transfer from and to must be different."));
 	                set_focus('FromStockLocation');
@@ -554,26 +625,14 @@ class Inventory extends generic_fa_interface
 	}
 	function handle_delete_item($line_no)
 	{
-	    	//$this->cart->remove_from_cart($line_no);
-		//$lineno = $this->find_cart_item();
 		display_notification( __LINE__ . ' handle_delete removing ' . $line_no . " item " . $this->line_items[$line_no]['stock_id'] );
-
-		//$this->line_items[$line_no]['stock_id'] = "";
 		$this->line_items[$line_no]['counted'] = -1;	//copy_to_session or _from_ should now discard this line
-		//
-		//unset( $this->line_items[$line_no]['stock_id'] );
-		//unset( $this->line_items[$line_no]['counted'] );
-		//$this->line_items[$line_no]['stock_id'] = null;
-		//$this->line_items[$line_no]['counted'] = null;
-		//var_dump( $this->line_items );
-		//$this->line_items[$line_no] = null;
 		$this->copy_to_session();
 	        $this->page_modified();
 	  	$this->line_start_focus();
 	}
 	function isStockid( $stock_id )
 	{
-		//echo __LINE__ . " DEBUG: isStockid<br />";
 		include_once( $this->path_to_root . "/includes/db/inventory_db.inc" );
 		return is_inventory_item( $stock_id );
 	}
@@ -590,7 +649,6 @@ class Inventory extends generic_fa_interface
 		$fet = db_fetch_assoc( $res );
 		if( count( $fet ) > 0  )
 		{
-			//echo __FILE__ . ":" . __LINE__ . " DEBUG: isItemCode count > 0<br />";
 		//should we set the data into a set of variables?
 			return TRUE;
 		}
@@ -627,13 +685,6 @@ class Inventory extends generic_fa_interface
 		}
 		if( strlen($item_row["description"]) > 1)
 			$ret = $item_row["description"];
-
-/*
-                $this->mb_flag = $item_row["mb_flag"];
-                $this->units = $item_row["units"];
-                $this->item_description = $item_row["description"];
-                $this->standard_cost = $item_row["actual_cost"];
-*/
 		return $ret;
 	}
 	function get_master_sku( $barcode )
@@ -741,34 +792,6 @@ class Inventory extends generic_fa_interface
 	}
 	function  handle_cancel_inventory()
 	{
-/*
-	        global $path_to_root, $Ajax;
-	
-	                if ($_SESSION['InventoryItems']->trans_no != 0)
-	                        delete_sales_inventory(key($_SESSION['InventoryItems']->trans_no), $_SESSION['InventoryItems']->trans_type);
-	                display_notification(_("This sales quotation has been cancelled as requested."), 1);
-	                submenu_option(_("Enter a New Sales Quotation"), "/sales/sales_inventory_entry.php?NewQuotation=Yes");
-	                if ($_SESSION['InventoryItems']->trans_no != 0) {
-	                        $inventory_no = key($_SESSION['InventoryItems']->trans_no);
-	                        if (sales_inventory_has_deliveries($inventory_no))
-	                        {
-	                                close_sales_inventory($inventory_no);
-	                                display_notification(_("Undelivered part of inventory has been cancelled as requested."), 1);
-	                                submenu_option(_("Select Another Sales Order for Edition"), "/sales/inquiry/sales_inventorys_view.php?type=".ST_Inventory);
-	                        } else {
-	                                delete_sales_inventory(key($_SESSION['InventoryItems']->trans_no), $_SESSION['InventoryItems']->trans_type);
-	
-	                                display_notification(_("This sales inventory has been cancelled as requested."), 1);
-	                                submenu_option(_("Enter a New Sales Order"), "/sales/sales_inventory_entry.php?NewOrder=Yes");
-	                        }
-	                } else {
-	                        processing_end();
-	                        meta_forward($path_to_root.'/index.php','application=inventorys');
-	                }
-	        $Ajax->activate('_page_body');
-	        processing_end();
-	        display_footer_exit();
-*/
 	}
 	function create_cart()
 	{
@@ -974,6 +997,8 @@ class Inventory extends generic_fa_interface
 	}
 	function call_table( $action, $msg )
 	{
+		$this->ui->call_table( $action, $msg );
+	/*** UI ***
                 start_form(true);
                  start_table(TABLESTYLE2, "width=40%");
                  table_section_title( $msg );
@@ -981,6 +1006,7 @@ class Inventory extends generic_fa_interface
                  end_table(1);
                  submit_center( $action, $msg );
                  end_form();
+	*** UI ***/
 	}
 	/*****************************************************************************************************************
 	 *
@@ -997,8 +1023,24 @@ class Inventory extends generic_fa_interface
 	 *
 	 *****************************************************************************************************************/
 	function xfer_all_to_location()
-	{
-	}
+        {
+                //display_notification( __method__ . ":" . __LINE__  );
+                //We are given the from, to and date
+                $this->to_location = $_POST['to_location'];
+                $this->xfer_all_settings( "xfer" );
+                $this->ui->xferall_form();
+        }
+        function xfer_all_to_holding()
+        {
+                //display_notification( __method__ . ":" . __LINE__  );
+		/** Mantis 179 **/
+		if( strlen( $this->holdtank ) < 2 )
+			throw new Exception( "Holding Tank setting appears invalid!", KSF_VAR_NOT_SET );
+		/** !Mantis 179 **/
+                $this->to_location = $this->holdtank;
+                $this->xfer_all_settings( "zero" );
+                $this->ui->overunder_form();
+        }
 	function xfer_all_to_location_form()
 	{
         	start_outer_table(TABLESTYLE, "width=70%");
@@ -1015,6 +1057,8 @@ class Inventory extends generic_fa_interface
 	}
 	function overunder_form()
 	{
+		$this->ui->overunder_form();
+/*** UI ***
 		//In this form we will display the list of items we've taken in inventory and show
 		//how many are in stock for the location selected.
 
@@ -1046,9 +1090,12 @@ class Inventory extends generic_fa_interface
 		                        //submit_js_confirm('CancelOrder', _('You are about to void this Document.\nDo you want to continue?'));
 
 		end_form();
+*** UI ***/
 	}
 	function Inventory_form()
 	{
+		$this->ui->Inventory_form();
+/*** UI ***
         	global $Refs;
 		$this->title = "Inventory Stock Taking";
   		$_SESSION['page_title'] = _($help_context = $this->title);
@@ -1082,10 +1129,13 @@ class Inventory extends generic_fa_interface
 		div_end();
 		//submit_js_confirm('CancelOrder', _('You are about to void this Document.\nDo you want to continue?'));
 		end_form();
+*** UI ***/
 	}
 	//Assumption/requirement the passed in variable is a 1D array of SKUs.
 	function csv2cart( $lines_arr )
 	{
+		$this->model->csv2cart( $lines_arr );
+/*** MODEL ***
 		display_notification( __LINE__ );
 		$this->create_cart();
 		$this->add_quantity = 1;
@@ -1096,6 +1146,7 @@ class Inventory extends generic_fa_interface
 		}
 	       // $this->page_modified();
 	        //$this->line_start_focus();
+*** MODEL ***/
 	}
 	function Import_text_file()
 	{
@@ -1137,15 +1188,11 @@ class Inventory extends generic_fa_interface
 		}
 
 	}
-	function EXPORT_CSV_form()
-	{
-                start_form(true);
-                    hidden('action', 'export_csv');
-                    submit_center('export_csv', 'Export inventory items to OSPOS via CSV');
-                end_form();
-	}
+
 	function config_form()
 	{
+		$this->ui->config_form();
+/*** UI ***
                 start_form(true);
 		if( isset(  $_POST['AddedID'] ) )
 		{
@@ -1156,7 +1203,7 @@ class Inventory extends generic_fa_interface
                 table_header($th);
                 $k = 0;
                 alt_table_row_color($k);
-                        /* To show a labeled cell...*/
+                        // To show a labeled cell...
                         //label_cell("Table Status");
                         //if ($this->found) $table_st = "Found";
                         //else $table_st = "<font color=red>Not Found</font>";
@@ -1176,6 +1223,7 @@ class Inventory extends generic_fa_interface
                     submit_center('update', 'Update Configuration');
                 }
                 end_form();
+*** UI ***/
 	}
 	function handle_new_inventory()
 	{
@@ -1193,8 +1241,11 @@ class Inventory extends generic_fa_interface
 	}
 	function init_tables_form()
 	{
+		$this->ui->init_tables_form();
+/*** UI ***
             	display_notification("init tables form");
 		$this->call_table( 'init_tables_completed_form', "Init Tables" );
+*** UI ***/
 	}
 
 	function init_tables_completed_form()
@@ -1234,6 +1285,11 @@ class Inventory extends generic_fa_interface
 	}
 	function process()
 	{
+		
+		/** Mantis 179 **/
+		if( strlen( $this->holdtank ) < 2 )
+			throw new Exception( "Holding Tank setting appears invalid!", KSF_VAR_NOT_SET );
+		/** !Mantis 179 **/
 		$trans_no = get_next_trans_no(ST_LOCTRANSFER);
 		foreach( $this->line_items as $item )
 		{
@@ -1515,13 +1571,17 @@ class Inventory extends generic_fa_interface
 	}
 	function adjustment_options_controls()
 	{
+		$this->ui->adjustment_options_controls();
 	}
 	function table_memo_field()
 	{
+		$this->ui->table_memo_field();
+/*** UI ***
 	          echo "<br>";
 	          start_table();
 	          textarea_row(_("Memo"), 'memo_', null, 50, 3);
 	          end_table(1);
+*** UI ***/
 	}
 	function processing_start()
 	{
@@ -1537,6 +1597,8 @@ class Inventory extends generic_fa_interface
 	}
 	
 	function confirm_dialog($submit, $msg) {
+		return $this->ui->confirm_dialog( $submit, $msg );
+/*** UI ***
 	        if (find_post($submit)) {
 	                display_warning($msg);
 	                br();
@@ -1545,6 +1607,7 @@ class Inventory extends generic_fa_interface
 	                return 0;
 	        } else
 	                return get_post('DialogConfirm', 0);
+*** UI ***/
 	}
 	
 	function page_processing($msg = false)
@@ -1552,6 +1615,8 @@ class Inventory extends generic_fa_interface
 		/*
 	        	Block menu/shortcut links during transaction procesing.
 		*/
+		$this->ui->page_processing( $msg );
+/*** UI ***
 	        global $Ajax;
 	
 	        if ($msg === true)
@@ -1563,10 +1628,14 @@ class Inventory extends generic_fa_interface
 	                $Ajax->addScript(true, $js);
 	        } else
 	                add_js_source($js);
+*** UI ***/
 	}
 	
 	function page_modified($status = true)
 	{
+		$this->ui->page_modified( $status );
+
+/*** UI ***
 	        global $Ajax;
 	
 	        $js = "_validate._modified=" . ($status ? 1:0).';';
@@ -1576,6 +1645,7 @@ class Inventory extends generic_fa_interface
 	                add_js_source($js);
 		//header( "Location: " . $_SERVER['REQUEST_URI'] );
 		echo '<script>parent.window.location.reload(true);</script>';
+*** UI ***/
 	}
 
 
