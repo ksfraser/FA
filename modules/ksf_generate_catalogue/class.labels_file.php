@@ -1,6 +1,7 @@
 <?php
 
 require_once( 'class.ksf_generate_catalogue.php' ); 
+//require_once( 'purchasing/includes/db/grn_db.inc:' );	/get_grn_items
 
 /*******************************************************//**
  * Generate an import CSV for SquareUp
@@ -16,6 +17,9 @@ class labels_file extends ksf_generate_catalogue
 /***	INHERIT
 	protected $delivery_no;
 */
+/**
+ *	Mantis 2483*/
+	protected $last_delivery_no;
 	 	
 	function __construct( $pref_tablename )
 	{
@@ -87,25 +91,32 @@ class labels_file extends ksf_generate_catalogue
 	Wrong results were being returned.  this->delivery_no was not being set
 */	
 		//$result = get_grn_items( $delivery_no, "", false, false, 0, "", "" );
-		$result = get_grn_items( $this->delivery_no, "", false, false, 0, "", "" );
-
-		//	var_dump( $result );	//type mysql_result
-
 		$rowcount=0;
-		while ($row = db_fetch($result)) 
+/**
+ *	Mantis 2483
+*/
+		for( $number = $this->delivery_no; $number <= $this->last_delivery_no; $number++ )
 		{
-			//20230903 don't print the list unless debugging turned up
-                        if( $this->debug > 1 )
-                        {
-				var_dump( $row );
-			}
-			$num = $row['qty_recd'];
-			//If we have 6 items instock, we need 6 labels to print so we can put on product
-			for( $num; $num > 0; $num-- )
+			// function get_grn_items($grn_batch_id=0, $supplier_id="", $outstanding_only=false, $is_invoiced_only=false, $invoice_no=0, $begin_date="", $end_date="")
+			$result = get_grn_items( $number, "", false, false, 0, "", "" );
+			while ($row = db_fetch($result)) 
 			{
-				$this->write_sku_labels_line( $row['item_code'], "", $row['description'], 0 );
-				$rowcount++;
+				//20230903 don't print the list unless debugging turned up
+	                        if( $this->debug > 1 )
+	                        {
+					var_dump( $row );
+				}
+				$num = $row['qty_recd'];
+				//If we have 6 items instock, we need 6 labels to print so we can put on product
+				for( $num; $num > 0; $num-- )
+				{
+					$this->write_sku_labels_line( $row['item_code'], "", $row['description'], 0 );
+					$rowcount++;
+				}
 			}
+/**
+ *	Mantis 2483
+*/
 		}
 		$this->write_file->close();
 		if( $rowcount > 0 )

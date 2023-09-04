@@ -218,7 +218,10 @@ class ksf_generate_catalogue extends generic_fa_interface
                 //echo combo_input("SupplierPO", $selected_id, $sql, 'supplier_id', 'supp_name',
 */
 
-                 text_row("Export Purchase Order Delivery ID:", 'delivery_no', $this->lastoid+1, 10, 10);
+                 text_row("Export Purchase Order Delivery ID (First):", 'delivery_no', $this->lastoid+1, 10, 10);
+		/**
+		 *      Mantis 2483 */
+                 text_row("Export Purchase Order Delivery ID (Last):", 'last_delivery_no', $this->lastoid+1, 10, 10);
 
                  end_table(1);
 
@@ -252,6 +255,18 @@ class ksf_generate_catalogue extends generic_fa_interface
 		if( include_once( 'class.labels_file.php' ) )
 		{
 			$lf = new labels_file( $this->pref_tablename );
+			$lf->set( "delivery_no", $this->delivery_no );
+			/**
+			 *      Mantis 2483 */
+			if( isset(  $_POST['last_delivery_no'] ) )
+			{
+				$lf->set( "last_delivery_no", $_POST['last_delivery_no'] );
+			}
+			else
+			{
+				$lf->set( "last_delivery_no", $this->delivery_no );
+			}
+			/** !	Mantis 2483 */
 			foreach( $this->config_values as $arr )
 			{
 				if( isset( $arr['title'] ) )
