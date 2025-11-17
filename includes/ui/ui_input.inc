@@ -647,7 +647,7 @@ function date_cells($label, $name, $title = null, $check=null, $inc_days=0,
 			if ($inc_days != 0)
 				$dd = DateService::addDaysStatic($dd, $inc_days);
 			if ($inc_months != 0)
-				$dd = add_months($dd, $inc_months);
+				$dd = DateService::addMonthsStatic($dd, $inc_months);
 			if ($inc_years != 0)
 				$dd = add_years($dd, $inc_years);
 			$_POST[$name] = $dd;

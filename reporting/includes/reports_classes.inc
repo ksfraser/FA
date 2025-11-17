@@ -204,14 +204,14 @@ class BoxReports
 						elseif ($type == 'DATEBEGINTAX' || $type == 'DATEENDTAX')
 						{
 							$row = get_company_prefs();
-							$edate = add_months($date, -$row['tax_last']);
+							$edate = DateService::addMonthsStatic($date, -$row['tax_last']);
 							$edate = end_month($edate);
 							if ($type == 'DATEENDTAX')
 								$date = $edate;
 							else
 							{
 								$bdate = begin_month($edate);
-								$bdate = add_months($bdate, -$row['tax_prd'] + 1);
+								$bdate = DateService::addMonthsStatic($bdate, -$row['tax_prd'] + 1);
 								$date = $bdate;
 							}
 						}

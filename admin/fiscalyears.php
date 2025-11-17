@@ -211,7 +211,7 @@ function display_fiscalyear_edit($selected_id)
 		if ($begin && $Mode != 'ADD_ITEM')
 		{
 			$_POST['from_date'] = $begin;
-			$_POST['to_date'] = end_month(add_months($begin, 11));
+			$_POST['to_date'] = end_month(DateService::addMonthsStatic($begin, 11));
 		}
 		date_row(_("Fiscal Year Begin:"), 'from_date', '', null, 0, 0, 1001);
 		date_row(_("Fiscal Year End:"), 'to_date', '', null, 0, 0, 1001);

@@ -225,8 +225,8 @@ function display_profit_and_loss($compare)
 	}
 	elseif ($compare == 1)
 	{
-		$begin = add_months($from, -12);
-		$end = add_months($to, -12);
+		$begin = DateService::addMonthsStatic($from, -12);
+		$end = DateService::addMonthsStatic($to, -12);
 	}
 	
 	div_start('pl_tbl');

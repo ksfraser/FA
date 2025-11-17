@@ -523,8 +523,8 @@ class DataChecksService {
      */
     public function dbHasDepreciableFixedAssets(): bool {
         $year = \get_current_fiscalyear();
-        $begin = \date2sql(\add_months(\sql2date($year['begin']), -1));
-        $end = \date2sql(\add_months(\sql2date($year['end']), -1));
+        $begin = \date2sql(\DateService::addMonthsStatic(\sql2date($year['begin']), -1));
+        $end = \date2sql(\DateService::addMonthsStatic(\sql2date($year['end']), -1));
 
         return \check_empty_result("SELECT COUNT(*) FROM ".\TB_PREF."stock_master 
             WHERE mb_flag='F'

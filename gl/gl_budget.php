@@ -37,7 +37,7 @@ if (isset($_POST['add']) || isset($_POST['delete']))
 			add_update_gl_budget_trans($da, $_POST['account'], $_POST['dim1'], $_POST['dim2'], input_num('amount'.$i));
 		else
 			delete_gl_budget_trans($da, $_POST['account'], $_POST['dim1'], $_POST['dim2']);
-		$da = add_months($da, 1);
+		$da = DateService::addMonthsStatic($da, 1);
 	}
 	commit_transaction();
 
@@ -119,7 +119,7 @@ if (db_has_gl_accounts())
 		$total += input_num('amount'.$i);
 		$ltotal += $lamount;
 		label_cell(number_format2($lamount, 0), "nowrap align=right");
-		$date_ = add_months($date_, 1);
+		$date_ = DateService::addMonthsStatic($date_, 1);
 		end_row();
 	}
 	start_row();

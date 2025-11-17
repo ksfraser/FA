@@ -82,7 +82,7 @@ function calculate_next($myrow)
 		$next = sql2date($myrow["begin"]);
 	else
 		$next = sql2date($myrow["last_sent"]);
-	$next = add_months($next, $myrow['monthly']);
+	$next = DateService::addMonthsStatic($next, $myrow['monthly']);
 	$next = DateService::addDaysStatic($next, $myrow['days']);
 	return DateService::addDaysStatic($next,-1);
 }
@@ -164,7 +164,7 @@ if ($id != -1)
 	$date = Today();
 	$myrow = get_recurrent_invoice($id);
 	$from = calculate_from($myrow);
-	$to = add_months($from, $myrow['monthly']);
+	$to = DateService::addMonthsStatic($from, $myrow['monthly']);
 	$to = DateService::addDaysStatic($to, $myrow['days']);
 
 	if (!DateService::isDateInFiscalYear($date))
@@ -185,7 +185,7 @@ if ($id != -1)
 		label_row(_('Template:'), get_customer_trans_view_str(ST_SALESORDER, $myrow["order_no"]));
 		label_row(_('Number of invoices:'), $count);
 		date_row(_('Invoice date:'), 'trans_date');
-		$newto = add_months($to, $myrow['monthly']);
+		$newto = DateService::addMonthsStatic($to, $myrow['monthly']);
 		$newto = DateService::addDaysStatic($newto, $myrow['days']);
 		text_row(_('Invoice notice:'), 'memo', sprintf(_("Recurrent Invoice covers period %s - %s."), $to,	 DateService::addDaysStatic($newto, -1)), 100, 100);
 		//text_row(_('Invoice notice:'), 'memo', sprintf(_("Recurrent Invoice covers period %s - %s."), //$from, DateService::addDaysStatic($to, -1)), 100, 100);

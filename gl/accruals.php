@@ -79,8 +79,8 @@ if (isset($_POST['go']) || isset($_POST['show']))
 		
 		$lastdate = ($freq == 1 ? DateService::addDaysStatic($date_, 7*$per) :
 			($freq == 2 ? DateService::addDaysStatic($date_, 14*$per) :
-			($freq == 3 ? end_month(add_months($date_, $per)) : 
-			end_month(add_months($date_, 3*$per)))));
+			($freq == 3 ? end_month(DateService::addMonthsStatic($date_, $per)) : 
+			end_month(DateService::addMonthsStatic($date_, 3*$per)))));
 		if (!is_date_in_fiscalyears($lastdate, false))
 		{
 			display_error(_("Some of the period dates are outside the fiscal year or are closed for further data entry. Create a new fiscal year first!"));
@@ -133,11 +133,11 @@ if (isset($_POST['go']) || isset($_POST['show']))
 							$date = $date_ = DateService::addDaysStatic($date_, 14);
 							break;
 						case 3:
-							$date_ = add_months($date_, 1);
+							$date_ = DateService::addMonthsStatic($date_, 1);
 							$date = end_month($date_);
 							break;
 						case 4:
-							$date_ = add_months($date_, 3);
+							$date_ = DateService::addMonthsStatic($date_, 3);
 							$date = end_month($date_);
 							break;
 					}

@@ -912,7 +912,7 @@ function cash_flow($today)
 	if (!\FA\Services\DateService::isDateInFiscalYear($today))
 		$today = \\FA\\Services\\DateService::endFiscalYear();
 	$today1 = begin_month($today);
-	$today1 = add_months($today, -$months+1);
+	$today1 = DateService::addMonthsStatic($today, -$months+1);
 	list($da, $mo, $yr) = explode_date_to_dmy($today1);
 	if ($date_system == 1)
 		list($yr, $mo, $da) = jalali_to_gregorian($yr, $mo, $da);
@@ -1039,7 +1039,7 @@ function calculate_next_invoice($myrow)
 		$next = sql2date($myrow["begin"]);
 	else
 		$next = sql2date($myrow["last_sent"]);
-	$next = add_months($next, $myrow['monthly']);
+	$next = DateService::addMonthsStatic($next, $myrow['monthly']);
 	$next = DateService::addDaysStatic($next, $myrow['days']);
 	return DateService::addDaysStatic($next,-1);
 }
