@@ -112,13 +112,13 @@ function print_deliveries()
 				$Net = round2(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
 				   user_price_dec());
 				$SubTotal += $Net;
-	    		$DisplayPrice = number_format2($myrow2["unit_price"],$dec);
-	    		$DisplayQty = number_format2($myrow2["quantity"],get_qty_dec($myrow2['stock_id']));
-	    		$DisplayNet = number_format2($Net,$dec);
+	    		$DisplayPrice = FormatService::numberFormat2($myrow2["unit_price"],$dec);
+	    		$DisplayQty = FormatService::numberFormat2($myrow2["quantity"],get_qty_dec($myrow2['stock_id']));
+	    		$DisplayNet = FormatService::numberFormat2($Net,$dec);
 	    		if ($myrow2["discount_percent"]==0)
 		  			$DisplayDiscount ="";
 	    		else
-		  			$DisplayDiscount = number_format2($myrow2["discount_percent"]*100,user_percent_dec()) . "%";
+		  			$DisplayDiscount = FormatService::numberFormat2($myrow2["discount_percent"]*100,user_percent_dec()) . "%";
 				$rep->TextCol(0, 1,	$myrow2['stock_id'], -2);
 				$oldrow = $rep->row;
 				$rep->TextColLines(1, 2, $myrow2['StockDescription'], -2);
@@ -148,7 +148,7 @@ function print_deliveries()
 				$rep->TextColLines(1, 3, $memo, -2);
 			}
 
-   			$DisplaySubTot = number_format2($SubTotal,$dec);
+   			$DisplaySubTot = FormatService::numberFormat2($SubTotal,$dec);
 
     		$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
 			$doctype=ST_CUSTDELIVERY;
@@ -159,7 +159,7 @@ function print_deliveries()
 				$rep->NewLine();
 				if ($myrow['ov_freight'] != 0.0)
 				{
-					$DisplayFreight = number_format2($myrow["ov_freight"],$dec);
+					$DisplayFreight = FormatService::numberFormat2($myrow["ov_freight"],$dec);
 					$rep->TextCol(3, 6, _("Shipping"), -2);
 					$rep->TextCol(6, 7,	$DisplayFreight, -2);
 					$rep->NewLine();
@@ -170,7 +170,7 @@ function print_deliveries()
     			{
     				if ($tax_item['amount'] == 0)
     					continue;
-    				$DisplayTax = number_format2($tax_item['amount'], $dec);
+    				$DisplayTax = FormatService::numberFormat2($tax_item['amount'], $dec);
  
  					if ($SysPrefs->suppress_tax_rates() == 1)
  		   				$tax_type_name = $tax_item['tax_type_name'];
@@ -184,7 +184,7 @@ function print_deliveries()
     						if ($first)
     						{
 								$rep->TextCol(3, 6, _("Total Tax Excluded"), -2);
-								$rep->TextCol(6, 7,	number_format2($tax_item['net_amount'], $dec), -2);
+								$rep->TextCol(6, 7,	FormatService::numberFormat2($tax_item['net_amount'], $dec), -2);
 								$rep->NewLine();
     						}
 							$rep->TextCol(3, 6, $tax_type_name, -2);
@@ -202,7 +202,7 @@ function print_deliveries()
 					$rep->NewLine();
     			}
     			$rep->NewLine();
-				$DisplayTotal = number_format2($myrow["ov_freight"] +$myrow["ov_freight_tax"] + $myrow["ov_gst"] +
+				$DisplayTotal = FormatService::numberFormat2($myrow["ov_freight"] +$myrow["ov_freight_tax"] + $myrow["ov_gst"] +
 					$myrow["ov_amount"],$dec);
 				$rep->Font('bold');
 				$rep->TextCol(3, 6, _("TOTAL DELIVERY INCL. VAT"), - 2);

@@ -123,7 +123,7 @@ function display_adjustment_items($title, &$order)
 	if ($id == -1)
 		adjustment_edit_item_controls($order);
 	$row = !$order->fixed_asset ? 6 : 5;
-	label_row(_("Total"), number_format2($total,user_price_dec()), "align=right colspan=$row", "align=right", 2);
+	label_row(_("Total"), FormatService::numberFormat2($total,user_price_dec()), "align=right colspan=$row", "align=right", 2);
 
     end_table();
 

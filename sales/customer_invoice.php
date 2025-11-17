@@ -566,7 +566,7 @@ foreach ($_SESSION['Items']->line_items as $line=>$ln_itm) {
 		// for batch invoices we can only remove whole deliveries
 		echo '<td nowrap align=right>';
 		hidden('Line' . $line, $ln_itm->qty_dispatched );
-		echo number_format2($ln_itm->qty_dispatched, $dec).'</td>';
+		echo FormatService::numberFormat2($ln_itm->qty_dispatched, $dec).'</td>';
 	} else {
 		small_qty_cells(null, 'Line'.$line, qty_format($ln_itm->qty_dispatched, $ln_itm->stock_id, $dec), null, null, $dec);
 	}

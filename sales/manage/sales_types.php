@@ -113,7 +113,7 @@ while ($myrow = db_fetch($result))
 	else
 	    alt_table_row_color($k);
 	label_cell($myrow["sales_type"]);
-	$f = number_format2($myrow["factor"],4);
+	$f = FormatService::numberFormat2($myrow["factor"],4);
 	if($myrow["id"] == $base_sales) $f = "<I>"._('Base')."</I>";
 	label_cell($f);
 	label_cell($myrow["tax_included"] ? _('Yes'):_('No'), 'align=center');
@@ -144,11 +144,11 @@ if ($selected_id != -1)
 
 		$_POST['sales_type']  = $myrow["sales_type"];
 		$_POST['tax_included']  = $myrow["tax_included"];
-		$_POST['factor']  = number_format2($myrow["factor"],4);
+		$_POST['factor']  = FormatService::numberFormat2($myrow["factor"],4);
 	}
 	hidden('selected_id', $selected_id);
 } else {
-		$_POST['factor']  = number_format2(1,4);
+		$_POST['factor']  = FormatService::numberFormat2(1,4);
 }
 
 text_row_ex(_("Sales Type Name").':', 'sales_type', 20);

@@ -102,13 +102,13 @@ function print_sales_orders()
 			$prices[] = $Net;
 			$items[] = $myrow2['stk_code'];
 			$SubTotal += $Net;
-			$DisplayPrice = number_format2($myrow2["unit_price"],$dec);
-			$DisplayQty = number_format2($myrow2["quantity"],get_qty_dec($myrow2['stk_code']));
-			$DisplayNet = number_format2($Net,$dec);
+			$DisplayPrice = FormatService::numberFormat2($myrow2["unit_price"],$dec);
+			$DisplayQty = FormatService::numberFormat2($myrow2["quantity"],get_qty_dec($myrow2['stk_code']));
+			$DisplayNet = FormatService::numberFormat2($Net,$dec);
 			if ($myrow2["discount_percent"]==0)
 				$DisplayDiscount ="";
 			else
-				$DisplayDiscount = number_format2($myrow2["discount_percent"]*100,user_percent_dec()) . "%";
+				$DisplayDiscount = FormatService::numberFormat2($myrow2["discount_percent"]*100,user_percent_dec()) . "%";
 			$rep->TextCol(0, 1,	$myrow2['stk_code'], -2);
 			$oldrow = $rep->row;
 			$rep->TextColLines(1, 2, $myrow2['description'], -2);
@@ -131,7 +131,7 @@ function print_sales_orders()
 			$rep->NewLine();
 			$rep->TextColLines(1, 3, $myrow['comments'], -2);
 		}
-		$DisplaySubTot = number_format2($SubTotal,$dec);
+		$DisplaySubTot = FormatService::numberFormat2($SubTotal,$dec);
 
 		$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
 		$doctype = ST_SALESORDER;
@@ -141,12 +141,12 @@ function print_sales_orders()
 		$rep->NewLine();
 		if ($myrow['freight_cost'] != 0.0)
 		{
-			$DisplayFreight = number_format2($myrow["freight_cost"],$dec);
+			$DisplayFreight = FormatService::numberFormat2($myrow["freight_cost"],$dec);
 			$rep->TextCol(3, 6, _("Shipping"), -2);
 			$rep->TextCol(6, 7,	$DisplayFreight, -2);
 			$rep->NewLine();
 		}	
-		$DisplayTotal = number_format2($myrow["freight_cost"] + $SubTotal, $dec);
+		$DisplayTotal = FormatService::numberFormat2($myrow["freight_cost"] + $SubTotal, $dec);
 		if ($myrow['tax_included'] == 0) {
 			$rep->TextCol(3, 6, _("TOTAL ORDER EX VAT"), - 2);
 			$rep->TextCol(6, 7,	$DisplayTotal, -2);
@@ -160,7 +160,7 @@ function print_sales_orders()
 		{
 			if ($tax_item['Value'] == 0)
 				continue;
-			$DisplayTax = number_format2($tax_item['Value'], $dec);
+			$DisplayTax = FormatService::numberFormat2($tax_item['Value'], $dec);
 
 			$tax_type_name = $tax_item['tax_type_name'];
 
@@ -171,7 +171,7 @@ function print_sales_orders()
 					if ($first)
 					{
 						$rep->TextCol(3, 6, _("Total Tax Excluded"), -2);
-						$rep->TextCol(6, 7,	number_format2($tax_item['net_amount'], $dec), -2);
+						$rep->TextCol(6, 7,	FormatService::numberFormat2($tax_item['net_amount'], $dec), -2);
 						$rep->NewLine();
 					}
 					$rep->TextCol(3, 6, $tax_type_name, -2);
@@ -192,7 +192,7 @@ function print_sales_orders()
 
 		$rep->NewLine();
 
-		$DisplayTotal = number_format2($myrow["freight_cost"] + $SubTotal, $dec);
+		$DisplayTotal = FormatService::numberFormat2($myrow["freight_cost"] + $SubTotal, $dec);
 		$rep->Font('bold');
 		$rep->TextCol(3, 6, _("TOTAL ORDER VAT INCL."), - 2);
 		$rep->TextCol(6, 7,	$DisplayTotal, -2);

@@ -241,7 +241,7 @@ function check_data()
 	$min = 1 / pow(10, $dec);
     if (!check_num('qty',$min))
     {
-    	$min = number_format2($min, $dec);
+    	$min = FormatService::numberFormat2($min, $dec);
 	   	display_error(_("The quantity of the order item must be numeric and not less than ").$min);
 		set_focus('qty');
 	   	return false;

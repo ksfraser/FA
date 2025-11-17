@@ -67,7 +67,7 @@ function display_bom($item_check)
 		{
 			$total_cost += $item['labour_cost'];
 			alt_table_row_color($k);
-	        label_cells(_("Standard Labour Cost"), number_format2($item['labour_cost'],user_price_dec()),
+	        label_cells(_("Standard Labour Cost"), FormatService::numberFormat2($item['labour_cost'],user_price_dec()),
     	    	"colspan=6 align=left", "class=odd_row nowrap align=right");
     	    end_row();
 		}
@@ -75,11 +75,11 @@ function display_bom($item_check)
 		{
 			$total_cost += $item['overhead_cost'];
 			alt_table_row_color($k);
-	        label_cells(_("Standard Overhead Cost"), number_format2($item['overhead_cost'],user_price_dec()),
+	        label_cells(_("Standard Overhead Cost"), FormatService::numberFormat2($item['overhead_cost'],user_price_dec()),
     	    	"colspan=6 align=left", "nowrap align=right");
     	    end_row();
 		}
-        label_row("<b>" . _("Total Cost") . "</b>", "<b>" . number_format2($total_cost,user_price_dec()) ."</b>",
+        label_row("<b>" . _("Total Cost") . "</b>", "<b>" . FormatService::numberFormat2($total_cost,user_price_dec()) ."</b>",
         	"colspan=6 align=right", "nowrap align=right");
 		end_table();
     }
@@ -197,7 +197,7 @@ function display_wo_productions($woid)
 			end_row();
 		}//end of while
 
-		label_row(_("Total"), number_format2($total_qty,user_qty_dec()),
+		label_row(_("Total"), FormatService::numberFormat2($total_qty,user_qty_dec()),
 			"colspan=3", "nowrap align=right");
 
 		end_table();

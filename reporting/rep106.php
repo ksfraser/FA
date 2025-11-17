@@ -132,9 +132,9 @@ function print_salesman_list()
 			$rep->TextCol(0, 2,	$myrow['salesman_code']." ".$myrow['salesman_name']);
 			$rep->TextCol(2, 3,	$myrow['salesman_phone']);
 			$rep->TextCol(3, 4,	$myrow['salesman_email']);
-			$rep->TextCol(4, 5,	number_format2($myrow['provision'], user_percent_dec()) ." %");
+			$rep->TextCol(4, 5,	FormatService::numberFormat2($myrow['provision'], user_percent_dec()) ." %");
 			$rep->AmountCol(5, 6, $myrow['break_pt'], $dec);
-			$rep->TextCol(6, 7,	number_format2($myrow['provision2'], user_percent_dec()) ." %");
+			$rep->TextCol(6, 7,	FormatService::numberFormat2($myrow['provision2'], user_percent_dec()) ." %");
 			$rep->NewLine(2);
 			$salesman = $myrow['salesman_code'];
 			$total += $subtotal;

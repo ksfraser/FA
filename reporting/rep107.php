@@ -172,13 +172,13 @@ function print_invoices()
 				$Net = round2($sign * ((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
 				   user_price_dec());
 				$SubTotal += $Net;
-	    		$DisplayPrice = number_format2($myrow2["unit_price"],$dec);
-	    		$DisplayQty = number_format2($sign*$myrow2["quantity"],get_qty_dec($myrow2['stock_id']));
-	    		$DisplayNet = number_format2($Net,$dec);
+	    		$DisplayPrice = FormatService::numberFormat2($myrow2["unit_price"],$dec);
+	    		$DisplayQty = FormatService::numberFormat2($sign*$myrow2["quantity"],get_qty_dec($myrow2['stock_id']));
+	    		$DisplayNet = FormatService::numberFormat2($Net,$dec);
 	    		if ($myrow2["discount_percent"]==0)
 		  			$DisplayDiscount ="";
 	    		else
-		  			$DisplayDiscount = number_format2($myrow2["discount_percent"]*100,user_percent_dec()) . "%";
+		  			$DisplayDiscount = FormatService::numberFormat2($myrow2["discount_percent"]*100,user_percent_dec()) . "%";
 				$c=0;
 				$rep->TextCol($c++, $c,	$myrow2['stock_id'], -2);
 				$oldrow = $rep->row;
@@ -211,7 +211,7 @@ function print_invoices()
 				$rep->TextColLines(1, 3, $memo, -2);
 			}
 
-   			$DisplaySubTot = number_format2($SubTotal,$dec);
+   			$DisplaySubTot = FormatService::numberFormat2($SubTotal,$dec);
 
 			// set to start of summary line:
     		$rep->row = $summary_start_row;
@@ -236,14 +236,14 @@ function print_invoices()
 						$c = 0; $tot_pym += $invoice['prep_amount'];
 						$rep->TextCol($c++, $c,	DateService::sql2dateStatic($invoice['tran_date']));
 						$rep->TextCol($c++, $c,	$invoice['reference']);
-						$rep->TextCol($c++, $c, number_format2($invoice['prep_amount'], $dec));
+						$rep->TextCol($c++, $c, FormatService::numberFormat2($invoice['prep_amount'], $dec));
 					}
 					if ($invoice['reference']==$myrow['reference']) break;
 				}
 				$rep->TextCol(0, 3,	str_pad('', 150, '_'));
 				$rep->NewLine();
 				$rep->TextCol(1, 2,	_("Total payments:"));
-				$rep->TextCol(2, 3,	number_format2($tot_pym, $dec));
+				$rep->TextCol(2, 3,	FormatService::numberFormat2($tot_pym, $dec));
 			}
 
 
@@ -258,7 +258,7 @@ function print_invoices()
 			$rep->NewLine();
 			if ($myrow['ov_freight'] != 0.0)
 			{
-   				$DisplayFreight = number_format2($sign*$myrow["ov_freight"],$dec);
+   				$DisplayFreight = FormatService::numberFormat2($sign*$myrow["ov_freight"],$dec);
 				$rep->TextCol(3, 6, _("Shipping"), -2);
 				$rep->TextCol(6, 7,	$DisplayFreight, -2);
 				$rep->NewLine();
@@ -269,7 +269,7 @@ function print_invoices()
     		{
     			if ($tax_item['amount'] == 0)
     				continue;
-    			$DisplayTax = number_format2($sign*$tax_item['amount'], $dec);
+    			$DisplayTax = FormatService::numberFormat2($sign*$tax_item['amount'], $dec);
 
     			if ($SysPrefs->suppress_tax_rates() == 1)
     				$tax_type_name = $tax_item['tax_type_name'];
@@ -283,7 +283,7 @@ function print_invoices()
     					if ($first)
     					{
 							$rep->TextCol(3, 6, _("Total Tax Excluded"), -2);
-							$rep->TextCol(6, 7,	number_format2($sign*$tax_item['net_amount'], $dec), -2);
+							$rep->TextCol(6, 7,	FormatService::numberFormat2($sign*$tax_item['net_amount'], $dec), -2);
 							$rep->NewLine();
     					}
 						$rep->TextCol(3, 6, $tax_type_name, -2);
@@ -302,7 +302,7 @@ function print_invoices()
     		}
 
     		$rep->NewLine();
-			$DisplayTotal = number_format2($sign*($myrow["ov_freight"] + $myrow["ov_gst"] +
+			$DisplayTotal = FormatService::numberFormat2($sign*($myrow["ov_freight"] + $myrow["ov_gst"] +
 				$myrow["ov_amount"]+$myrow["ov_freight_tax"]),$dec);
 			$rep->Font('bold');
 			if (!$myrow['prepaid']) $rep->Font('bold');
@@ -313,7 +313,7 @@ function print_invoices()
 				$rep->NewLine();
 				$rep->Font('bold');
 				$rep->TextCol(3, 6, $rep->formData['prepaid']=='final' ? _("THIS INVOICE") : _("TOTAL INVOICE"), - 2);
-				$rep->TextCol(6, 7, number_format2($myrow['prep_amount'], $dec), -2);
+				$rep->TextCol(6, 7, FormatService::numberFormat2($myrow['prep_amount'], $dec), -2);
 			}
 			$words = price_in_words($rep->formData['prepaid'] ? $myrow['prep_amount'] : $myrow['Total']
 				, array( 'type' => ST_SALESINVOICE, 'currency' => $myrow['curr_code']));

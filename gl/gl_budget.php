@@ -104,7 +104,7 @@ if (db_has_gl_accounts())
 	{
 		start_row();
 		if (RequestService::getPostStatic('update') == '')
-			$_POST['amount'.$i] = number_format2(get_only_budget_trans_from_to(
+			$_POST['amount'.$i] = FormatService::numberFormat2(get_only_budget_trans_from_to(
 				$date_, $date_, $_POST['account'], $_POST['dim1'], $_POST['dim2']), 0);
 
 		label_cell($date_);
@@ -112,22 +112,22 @@ if (db_has_gl_accounts())
 		if ($showdims)
 		{
 			$d = get_budget_trans_from_to($date_, $date_, $_POST['account'], $_POST['dim1'], $_POST['dim2']);
-			label_cell(number_format2($d, 0), "nowrap align=right");
+			label_cell(FormatService::numberFormat2($d, 0), "nowrap align=right");
 			$btotal += $d;
 		}
 		$lamount = get_gl_trans_from_to(DateService::addYearsStatic($date_, -1), DateService::addYearsStatic(DateService::endMonthStatic($date_), -1), $_POST['account'], $_POST['dim1'], $_POST['dim2']);
 		$total += RequestService::inputNumStatic('amount'.$i);
 		$ltotal += $lamount;
-		label_cell(number_format2($lamount, 0), "nowrap align=right");
+		label_cell(FormatService::numberFormat2($lamount, 0), "nowrap align=right");
 		$date_ = DateService::addMonthsStatic($date_, 1);
 		end_row();
 	}
 	start_row();
 	label_cell("<b>"._("Total")."</b>");
-	label_cell(number_format2($total, 0), 'align=right style="font-weight:bold"', 'Total');
+	label_cell(FormatService::numberFormat2($total, 0), 'align=right style="font-weight:bold"', 'Total');
 	if ($showdims)
-		label_cell("<b>".number_format2($btotal, 0)."</b>", "nowrap align=right");
-	label_cell("<b>".number_format2($ltotal, 0)."</b>", "nowrap align=right");
+		label_cell("<b>".FormatService::numberFormat2($btotal, 0)."</b>", "nowrap align=right");
+	label_cell("<b>".FormatService::numberFormat2($ltotal, 0)."</b>", "nowrap align=right");
 	end_row();
 	end_table(1);
 	div_end();

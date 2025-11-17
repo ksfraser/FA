@@ -138,8 +138,8 @@ function print_po()
 			$SubTotal += $Net;
 			$dec2 = 0;
 			$DisplayPrice = price_decimal_format($myrow2["unit_price"],$dec2);
-			$DisplayQty = number_format2($myrow2["quantity_ordered"],get_qty_dec($myrow2['item_code']));
-			$DisplayNet = number_format2($Net,$dec);
+			$DisplayQty = FormatService::numberFormat2($myrow2["quantity_ordered"],get_qty_dec($myrow2['item_code']));
+			$DisplayNet = FormatService::numberFormat2($Net,$dec);
 			if ($SysPrefs->show_po_item_codes()) {
 				$rep->TextCol(0, 1,	$myrow2['item_code'], -2);
 				$rep->TextCol(1, 2,	$myrow2['description'], -2);
@@ -159,7 +159,7 @@ function print_po()
 			$rep->NewLine();
 			$rep->TextColLines(1, 4, $myrow['comments'], -2);
 		}
-		$DisplaySubTot = number_format2($SubTotal,$dec);
+		$DisplaySubTot = FormatService::numberFormat2($SubTotal,$dec);
 
 		$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
 		$doctype = ST_PURCHORDER;
@@ -175,7 +175,7 @@ function print_po()
 		{
 			if ($tax_item['Value'] == 0)
 				continue;
-			$DisplayTax = number_format2($tax_item['Value'], $dec);
+			$DisplayTax = FormatService::numberFormat2($tax_item['Value'], $dec);
 
 			$tax_type_name = $tax_item['tax_type_name'];
 
@@ -186,7 +186,7 @@ function print_po()
 					if ($first)
 					{
 						$rep->TextCol(3, 6, _("Total Tax Excluded"), -2);
-						$rep->TextCol(6, 7,	number_format2($tax_item['net_amount'], $dec), -2);
+						$rep->TextCol(6, 7,	FormatService::numberFormat2($tax_item['net_amount'], $dec), -2);
 						$rep->NewLine();
 					}
 					$rep->TextCol(3, 6, $tax_type_name, -2);
@@ -206,7 +206,7 @@ function print_po()
 		}
 
 		$rep->NewLine();
-		$DisplayTotal = number_format2($SubTotal, $dec);
+		$DisplayTotal = FormatService::numberFormat2($SubTotal, $dec);
 		$rep->Font('bold');
 		$rep->TextCol(3, 6, _("TOTAL PO"), - 2);
 		$rep->TextCol(6, 7,	$DisplayTotal, -2);

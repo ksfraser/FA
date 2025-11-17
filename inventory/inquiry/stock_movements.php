@@ -142,12 +142,12 @@ while ($myrow = db_fetch($result))
 
 	if ($myrow["qty"] > 0)
 	{
-		$quantity_formatted = number_format2($myrow["qty"], $dec);
+		$quantity_formatted = FormatService::numberFormat2($myrow["qty"], $dec);
 		$total_in += $myrow["qty"];
 	}
 	else
 	{
-		$quantity_formatted = number_format2(-$myrow["qty"], $dec);
+		$quantity_formatted = FormatService::numberFormat2(-$myrow["qty"], $dec);
 		$total_out += -$myrow["qty"];
 	}
 	$after_qty += $myrow["qty"];

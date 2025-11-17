@@ -482,7 +482,7 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 	{
 		$_POST['stock_id'] = $order->line_items[$id]->stock_id;
 		$dec = get_qty_dec($_POST['stock_id']);
-		$_POST['qty'] = number_format2($order->line_items[$id]->qty_dispatched, $dec);
+		$_POST['qty'] = FormatService::numberFormat2($order->line_items[$id]->qty_dispatched, $dec);
 		$_POST['price'] = price_format($order->line_items[$id]->price);
 		$_POST['Disc'] = percent_format($order->line_items[$id]->discount_percent*100);
 		$units = $order->line_items[$id]->units;
@@ -520,7 +520,7 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 				$units = $item_info["units"];
 				$dec = $item_info['decimals'];
 		}
-		$_POST['qty'] = number_format2(1, $dec);
+		$_POST['qty'] = FormatService::numberFormat2(1, $dec);
 		$price = get_kit_price($_POST['stock_id'],
 			$order->customer_currency, $order->sales_type,
 			$order->price_factor, RequestService::getPostStatic('OrderDate'));

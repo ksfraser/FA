@@ -42,3 +42,4 @@ require_once __DIR__ . '/../includes/current_user.inc';
 require_once __DIR__ . '/../includes/ui/ui_input.inc';
 require_once __DIR__ . '/../includes/ui/ui_controls.inc';
 require_once __DIR__ . '/../includes/RequestService.php';
+require_once __DIR__ . '/../includes/FormatService.php';

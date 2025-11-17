@@ -136,11 +136,11 @@ function print_customer_details_listing()
 	else
 		$salesfolk = get_salesman_name($folk);
 	if ($more != '')
-		$morestr = _('Greater than ') . number_format2($more, $dec);
+		$morestr = _('Greater than ') . FormatService::numberFormat2($more, $dec);
 	else
 		$morestr = '';
 	if ($less != '')
-		$lessstr = _('Less than ') . number_format2($less, $dec);
+		$lessstr = _('Less than ') . FormatService::numberFormat2($less, $dec);
 	else
 		$lessstr = '';
 
@@ -264,7 +264,7 @@ function print_customer_details_listing()
 			if (isset($adr2[2]))
 				$rep->TextCol(3, 4, $adr2[2]);
 			if ($more != 0.0 || $less != 0.0)
-				$rep->TextCol(1, 2,	_('Turnover') . ": " . number_format2($turnover, $dec));
+				$rep->TextCol(1, 2,	_('Turnover') . ": " . FormatService::numberFormat2($turnover, $dec));
 			for ($i = 3; $i < $count1; $i++)
 			{
 				$rep->NewLine();

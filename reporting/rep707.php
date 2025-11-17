@@ -329,7 +329,7 @@ function print_profit_and_loss_statement()
 		$pg->setTitle($rep->title);
 		$pg->setXTitle(_("Group"));
 		$pg->setYTitle(_("Amount"));
-		$pg->setDTitle(number_format2(abs($salesper)));
+		$pg->setDTitle(FormatService::numberFormat2(abs($salesper)));
 		$pg->setValues(true);
 		$pg->latin_notation = ($SysPrefs->decseps[user_dec_sep()] != ".");
 		$filename = company_path(). "/pdf_files/". random_id().".png";

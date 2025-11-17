@@ -88,9 +88,9 @@ class simple_crud {
 			case 'price':
 				return price_format($value);
 			case 'qty':
-				return number_format2($value, $this->dec);
+				return FormatService::numberFormat2($value, $this->dec);
 			case 'number':
-				return number_format2($value);
+				return FormatService::numberFormat2($value);
 			case 'percent':
 				return percent_format($value*100);
 			case 'stock':

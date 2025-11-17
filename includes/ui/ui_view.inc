@@ -322,7 +322,7 @@ function exchange_rate_display($from_currency, $to_currency, $date_, $force_edit
 			$Ajax->activate('_ex_rate_span');
 		}
 
-		$rate = number_format2($rate, user_exrate_dec());
+		$rate = FormatService::numberFormat2($rate, user_exrate_dec());
 
 		if ($force_edit || !$readonly)
 			$ctrl = "<input type=\"text\" name=\"_ex_rate\" size=\"8\" maxlength=\"8\" value=\"$rate\">";
@@ -436,7 +436,7 @@ function display_customer_trans_tax_details($tax_items, $columns)
      	if (!$tax_item['amount'])
      		continue;
 
-    	$tax = number_format2($tax_item['amount'],user_price_dec());
+    	$tax = FormatService::numberFormat2($tax_item['amount'],user_price_dec());
 		if ($SysPrefs->suppress_tax_rates() == 1)
 			$tax_type_name = $tax_item['tax_type_name'];
 		else
@@ -446,7 +446,7 @@ function display_customer_trans_tax_details($tax_items, $columns)
 			if ($SysPrefs->alternative_tax_include_on_docs() == 1)
   			{
   				if ($first)
-  					label_row(_("Total Tax Excluded"), number_format2($tax_item['net_amount'], user_price_dec()),
+  					label_row(_("Total Tax Excluded"), FormatService::numberFormat2($tax_item['net_amount'], user_price_dec()),
   						"colspan=$columns align=right", "align=right");
         		label_row($tax_type_name, $tax, "colspan=$columns align=right", "align=right");
         		$first = false;
@@ -469,7 +469,7 @@ function display_supp_trans_tax_details($tax_items, $columns)
      	if (!$tax_item['amount'])
      		continue;
 
-    	$tax = number_format2(abs($tax_item['amount']),user_price_dec());
+    	$tax = FormatService::numberFormat2(abs($tax_item['amount']),user_price_dec());
     	if ($tax_item['included_in_price'])
         	label_row(_("Included") . " " . $tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%) "
         		. ": $tax", '', "colspan=$columns align=right", "align=right");
@@ -509,7 +509,7 @@ function display_edit_tax_items($taxes, $columns, $tax_included, $rightspan=0, $
 					label_cell('', "colspan ='$rightspan'");
 				end_row();
 			} else {
-				$value = number_format2($taxitem['Value'],user_price_dec());
+				$value = FormatService::numberFormat2($taxitem['Value'],user_price_dec());
 				if ($tax_included)
 				{
 					label_row(_("Included") . " " . $taxitem['tax_type_name']

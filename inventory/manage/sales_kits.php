@@ -216,7 +216,7 @@ if (RequestService::getPostStatic('item_code') == '') {
 	if ($Mode == 'Edit') {
 		$myrow = get_item_code($selected_id);
 		$_POST['component'] = $myrow["stock_id"];
-		$_POST['quantity'] = number_format2($myrow["quantity"], get_qty_dec($myrow["stock_id"]));
+		$_POST['quantity'] = FormatService::numberFormat2($myrow["quantity"], get_qty_dec($myrow["stock_id"]));
 	}
 	hidden("selected_id", $selected_id);
 	
@@ -235,12 +235,12 @@ if (RequestService::getPostStatic('item_code') == '') {
 	$units = $res["units"] == '' ? _('kits') : $res["units"];
 	if (list_updated('component')) 
 	{
-		$_POST['quantity'] = number_format2(1, $dec);
+		$_POST['quantity'] = FormatService::numberFormat2(1, $dec);
 		$Ajax->activate('quantity');
 		$Ajax->activate('category');
 	}
 	
-	qty_row(_("Quantity:"), 'quantity', number_format2(1, $dec), '', $units, $dec);
+	qty_row(_("Quantity:"), 'quantity', FormatService::numberFormat2(1, $dec), '', $units, $dec);
 
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');

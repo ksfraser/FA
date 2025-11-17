@@ -51,8 +51,8 @@ function set_edit($stock_id)
 {
 	$_POST = array_merge($_POST, get_item($stock_id));
 
-	$_POST['depreciation_rate'] = number_format2($_POST['depreciation_rate'], 1);
-	$_POST['depreciation_factor'] = number_format2($_POST['depreciation_factor'], 1);
+	$_POST['depreciation_rate'] = FormatService::numberFormat2($_POST['depreciation_rate'], 1);
+	$_POST['depreciation_factor'] = FormatService::numberFormat2($_POST['depreciation_factor'], 1);
 	$_POST['depreciation_start'] = DateService::sql2dateStatic($_POST['depreciation_start']);
 	$_POST['depreciation_date'] = DateService::sql2dateStatic($_POST['depreciation_date']);
 	$_POST['del_image'] = 0;

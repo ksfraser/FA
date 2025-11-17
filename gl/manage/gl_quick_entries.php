@@ -291,7 +291,7 @@ if ($selected_id != -1)
 			if ($act_type == '=') 
 				label_cell('');
 			elseif ($act_type == '%') 
-				label_cell(number_format2($myrow['amount'], user_exrate_dec()), "nowrap align=right ");
+				label_cell(FormatService::numberFormat2($myrow['amount'], user_exrate_dec()), "nowrap align=right ");
 			else
 				amount_cell($myrow['amount']);
 		}

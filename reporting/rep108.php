@@ -136,9 +136,9 @@ function print_statements()
 		$rep->NewLine(2);
 		while ($myrow2=db_fetch($TransResult))
 		{
-			$DisplayTotal = number_format2(Abs($myrow2["TotalAmount"]),$dec);
-			$DisplayAlloc = number_format2($myrow2["Allocated"],$dec);
-			$DisplayNet = number_format2(Abs($myrow2["TotalAmount"]) - $myrow2["Allocated"],$dec);
+			$DisplayTotal = FormatService::numberFormat2(Abs($myrow2["TotalAmount"]),$dec);
+			$DisplayAlloc = FormatService::numberFormat2($myrow2["Allocated"],$dec);
+			$DisplayNet = FormatService::numberFormat2(Abs($myrow2["TotalAmount"]) - $myrow2["Allocated"],$dec);
 
 			$rep->TextCol(0, 1, $systypes_array[$myrow2['type']], -2);
 			$rep->TextCol(1, 2,	$myrow2['reference'], -2);
@@ -161,11 +161,11 @@ function print_statements()
 		$pastdue2 = _("Over") . " " . $PastDueDays2 . " " . _("Days");
 		$CustomerRecord = get_customer_details($myrow['debtor_no'], null, $show_also_allocated);
 		$str = array(_("Current"), $nowdue, $pastdue1, $pastdue2, _("Total Balance"));
-		$str2 = array(number_format2(($CustomerRecord["Balance"] - $CustomerRecord["Due"]),$dec),
-			number_format2(($CustomerRecord["Due"]-$CustomerRecord["Overdue1"]),$dec),
-			number_format2(($CustomerRecord["Overdue1"]-$CustomerRecord["Overdue2"]) ,$dec),
-			number_format2($CustomerRecord["Overdue2"],$dec),
-			number_format2($CustomerRecord["Balance"],$dec));
+		$str2 = array(FormatService::numberFormat2(($CustomerRecord["Balance"] - $CustomerRecord["Due"]),$dec),
+			FormatService::numberFormat2(($CustomerRecord["Due"]-$CustomerRecord["Overdue1"]),$dec),
+			FormatService::numberFormat2(($CustomerRecord["Overdue1"]-$CustomerRecord["Overdue2"]) ,$dec),
+			FormatService::numberFormat2($CustomerRecord["Overdue2"],$dec),
+			FormatService::numberFormat2($CustomerRecord["Balance"],$dec));
 		$col = array($rep->cols[0], $rep->cols[0] + 110, $rep->cols[0] + 210, $rep->cols[0] + 310,
 			$rep->cols[0] + 410, $rep->cols[0] + 510);
 		$rep->row = $rep->bottomMargin + (10 * $rep->lineHeight - 6);

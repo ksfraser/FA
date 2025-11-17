@@ -312,7 +312,7 @@ function print_balance_sheet()
 		$pg->setTitle($rep->title);
 		$pg->setXTitle(_("Group"));
 		$pg->setYTitle(_("Amount"));
-		$pg->setDTitle(number_format2(abs($calc_open + $calc_period)));
+		$pg->setDTitle(FormatService::numberFormat2(abs($calc_open + $calc_period)));
 		$pg->setValues(true);
 		$pg->latin_notation = ($SysPrefs->decseps[user_dec_sep()] != ".");
 		$filename = company_path(). "/pdf_files/". random_id().".png";

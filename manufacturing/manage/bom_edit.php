@@ -205,7 +205,7 @@ start_form();
 			$_POST['loc_code'] = $myrow["loc_code"];
 			$_POST['component'] = $myrow["component"]; // by Tom Moulton
 			$_POST['workcentre_added']  = $myrow["workcentre_added"];
-			$_POST['quantity'] = number_format2($myrow["quantity"], get_qty_dec($myrow["component"]));
+			$_POST['quantity'] = FormatService::numberFormat2($myrow["quantity"], get_qty_dec($myrow["component"]));
 			label_row(_("Component:"), $myrow["component"] . " - " . $myrow["description"]);
 		}
 		hidden('selected_id', $selected_id);
@@ -229,7 +229,7 @@ start_form();
 	locations_list_row(_("Location to Draw From:"), 'loc_code', null);
 	workcenter_list_row(_("Work Centre Added:"), 'workcentre_added', null);
 	$dec = get_qty_dec(RequestService::getPostStatic('component'));
-	$_POST['quantity'] = number_format2(RequestService::inputNumStatic('quantity',1), $dec);
+	$_POST['quantity'] = FormatService::numberFormat2(RequestService::inputNumStatic('quantity',1), $dec);
 	qty_row(_("Quantity:"), 'quantity', null, null, null, $dec);
 
 	end_table(1);

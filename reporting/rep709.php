@@ -204,7 +204,7 @@ function print_tax_report()
 		if ($id)
 		{
 			$tx = getTaxInfo($id);
-			$rep->TextCol(0, 1, $tx['name'] . " " . number_format2($tx['rate'], $dec) . "%");
+			$rep->TextCol(0, 1, $tx['name'] . " " . FormatService::numberFormat2($tx['rate'], $dec) . "%");
 		} else {
 			$rep->TextCol(0, 1, _('Exempt'));
 		}

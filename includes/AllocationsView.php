@@ -77,9 +77,9 @@ class AllocationsView
             }
 
             // For simplicity, use HtmlString with formatted content
-            $cells[3] = number_format2($allocRow['Total'], user_price_dec());
-            $cells[4] = number_format2($allocRow['Total'] - $allocRow['alloc'], user_price_dec());
-            $cells[5] = number_format2($allocRow['amt'], user_price_dec());
+            $cells[3] = FormatService::numberFormat2($allocRow['Total'], user_price_dec());
+            $cells[4] = FormatService::numberFormat2($allocRow['Total'] - $allocRow['alloc'], user_price_dec());
+            $cells[5] = FormatService::numberFormat2($allocRow['amt'], user_price_dec());
 
             foreach ($cells as $cellContent) {
                 $td = new HtmlTd(new HtmlString($cellContent));
@@ -97,7 +97,7 @@ class AllocationsView
         $labelTd->addAttribute(new HtmlAttribute('align', 'right'));
         $labelTd->addAttribute(new HtmlAttribute('colspan', '5'));
         $totalRow->addNested($labelTd);
-        $amountTd = new HtmlTd(new HtmlString(number_format2($totalAllocated, user_price_dec())));
+        $amountTd = new HtmlTd(new HtmlString(FormatService::numberFormat2($totalAllocated, user_price_dec())));
         $totalRow->addNested($amountTd);
         $table->addNested($totalRow);
 
@@ -108,7 +108,7 @@ class AllocationsView
             $labelTd2->addAttribute(new HtmlAttribute('colspan', '5'));
             $summaryRow->addNested($labelTd2);
             $totalFormatted = round2($total, user_price_dec());
-            $amountTd2 = new HtmlTd(new HtmlString(number_format2($totalFormatted - $totalAllocated, user_price_dec())));
+            $amountTd2 = new HtmlTd(new HtmlString(FormatService::numberFormat2($totalFormatted - $totalAllocated, user_price_dec())));
             $summaryRow->addNested($amountTd2);
             $table->addNested($summaryRow);
         }

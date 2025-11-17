@@ -201,10 +201,10 @@ function display_customer_topten()
 	source_graphic($today, $title[0], _("Customer"), $pg);
 	br(3);
 	echo "<div class='square square1'>"._('Sales Total')."<p class='span1'>";
-	echo number_format2($title[1])."</p></div>";
+	echo FormatService::numberFormat2($title[1])."</p></div>";
 	br(3);
 	echo "<div class='square square1'>"._('Aging Total')."<p class='span1'>";
-	echo number_format2($total)."</p></div>";
+	echo FormatService::numberFormat2($total)."</p></div>";
 	table_end();
 	table('100%', '100%');
 	customer_recurrent_invoices($today);
@@ -238,10 +238,10 @@ function display_supplier_topten()
 	source_graphic($today, $title[0], _("Supplier"), $pg);
 	br(3);
 	echo "<div class='square square2'>"._('Purchasable Total')."<p class='span1'>";
-	echo number_format2($title[1])."</p></div>";
+	echo FormatService::numberFormat2($title[1])."</p></div>";
 	br(3);
 	echo "<div class='square square2'>"._('Aging Total')."<p class='span1'>";
-	echo number_format2($total)."</p></div>";
+	echo FormatService::numberFormat2($total)."</p></div>";
 	table_end();
 	table('100%', '100%');
 	supplier_trans($today);
@@ -306,10 +306,10 @@ function display_stock_topten($type=0)
 	$title = stock_top($today, 5, 66, $type, $pg);
 	table('50%', '25%');
 	echo "<div class='square square1'>"._('Total Sales')."<p class='span1'>";
-	echo number_format2($title[1])."</p></div>";
+	echo FormatService::numberFormat2($title[1])."</p></div>";
 	td('25%');
 	echo "<div class='square square2'>"._('Total Costs')."<p class='span1'>";
-	echo number_format2($title[2])."</p></div>";
+	echo FormatService::numberFormat2($title[2])."</p></div>";
 	table_end();
 	td('50%');
 	if ($type == 2)
@@ -320,7 +320,7 @@ function display_stock_topten($type=0)
 		$source = _("Items");
 	source_graphic($today, $title[0], $source, $pg);
 	echo "<div class='square'><span>"._('Total Results')."<br />";
-	echo number_format2($title[3])."</div>";
+	echo FormatService::numberFormat2($title[3])."</div>";
 	table_end();
 	table('100%', '100%');
 	stock_below_reorder($today, $type);
@@ -339,11 +339,11 @@ function display_dimension_topten()
 	$res = get_dim_total();
 	$s = $res[0] < 0.0 ? 2 : 1;
 	echo "<div class='square square{$s}'>"._('Dimensions Total Balance')."<p class='span1'>";
-	echo number_format2($res[0])."</p></div>";
+	echo FormatService::numberFormat2($res[0])."</p></div>";
 	td('25%');
 	$s = $res[1] < 0.0 ? 2 : 1;
 	echo "<div class='square square{$s}'>"._('Dimensions Total Result')."<p class='span1'>";
-	echo number_format2($res[1])."</p></div>";
+	echo FormatService::numberFormat2($res[1])."</p></div>";
 	table_end();
 	$pg = new chart('bar', 'd1');
 	if (isset($_POST['select_d1']))
@@ -361,16 +361,16 @@ function display_gl_info()
 	$today = calc_today();
 	table('100%', '25%');
 	echo "<div class='square square1'>"._('Receivables')."<p class='span1'>";
-	echo number_format2(customer_balance($today))."</p></div>";
+	echo FormatService::numberFormat2(customer_balance($today))."</p></div>";
 	td('25%');
 	echo "<div class='square square2'>"._('Payables')."<p class='span1'>";
-	echo number_format2(-supplier_balance($today))."</p></div>";
+	echo FormatService::numberFormat2(-supplier_balance($today))."</p></div>";
 	td('25%');
 	echo "<div class='square square1'>"._('Todays Deposits')."<p class='span1'>";
-	echo number_format2(get_today_deposits($today))."</p></div>";
+	echo FormatService::numberFormat2(get_today_deposits($today))."</p></div>";
 	td('25%');
 	echo "<div class='square square2'>"._('Todays Payments')."<p class='span1'>";
-	echo number_format2(get_today_payments($today))."</p></div>";
+	echo FormatService::numberFormat2(get_today_payments($today))."</p></div>";
 	table_end();
 	$pg = new chart('halfDonut', 'g1');
 	if (isset($_POST['select_g1']))
@@ -682,12 +682,12 @@ function gl_top($today, $width='33', &$pg=null)
 				$totals[] = round(abs($myrow['total']));
 			}	
 		}	
-		label_row($myrow['class_name'], number_format2($myrow['total'], user_price_dec()), 
+		label_row($myrow['class_name'], FormatService::numberFormat2($myrow['total'], user_price_dec()), 
 			"class='label' style='font-weight:bold;'", "style='font-weight:bold;' align=right");
 	}
 	$calculated = _("Calculated Return");
 	label_row("&nbsp;", "");
-	label_row($calculated, number_format2($total, user_price_dec()), 
+	label_row($calculated, FormatService::numberFormat2($total, user_price_dec()), 
 		"class='label' style='font-weight:bold;'", "style='font-weight:bold;' align=right");
 	if ($pg != null)
 	{
@@ -696,7 +696,7 @@ function gl_top($today, $width='33', &$pg=null)
 		$pg->setLabels($names);
 		$pg->addSerie(_('Totals'), $totals);
 		$pg->setValues(true);
-		$pg->setDTitle(number_format2($total));
+		$pg->setDTitle(FormatService::numberFormat2($total));
 	}
 	end_table(2);
 	return $title;
@@ -1487,7 +1487,7 @@ function get_database_size()
 		$size += $row['Data_length'];
 		$size += $row['Index_length'];
     }
-	return number_format2(($size / 1024 / 1024), 2).' MB';
+	return FormatService::numberFormat2(($size / 1024 / 1024), 2).' MB';
 }
 
 function calc_today()

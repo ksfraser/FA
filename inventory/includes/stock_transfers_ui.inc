@@ -133,7 +133,7 @@ function transfer_edit_item_controls(&$order, $line_no=-1)
     	$item_info = get_item_edit_info($_POST['stock_id']);
 
 		$dec = $item_info['decimals'];
-   		$_POST['qty'] = number_format2(0, $dec);
+   		$_POST['qty'] = FormatService::numberFormat2(0, $dec);
 		$_POST['units'] = $item_info["units"];
 	}
 

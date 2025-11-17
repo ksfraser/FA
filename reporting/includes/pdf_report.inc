@@ -762,7 +762,7 @@ class FrontReport extends Cpdf
 	{
 		if ($color_red && $txt < 0)
 			$this->SetTextColor(255, 0, 0);
-		$ret = $this->TextCol($c, $n, number_format2($txt, $dec), $corr, $r, $border, $fill, $link, $stretch);
+		$ret = $this->TextCol($c, $n, FormatService::numberFormat2($txt, $dec), $corr, $r, $border, $fill, $link, $stretch);
 		if ($color_red && $txt < 0)
 			$this->SetTextColor(0, 0, 0);
 		return $ret;	

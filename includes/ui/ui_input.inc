@@ -483,9 +483,9 @@ function qty_cell($label, $bold=false, $dec=null, $id=null)
 	if (!isset($dec))
 		$dec = get_qty_dec();
 	if ($bold)
-		label_cell("<b>".number_format2($label, $dec)."</b>", "nowrap align=right", $id);
+		label_cell("<b>".FormatService::numberFormat2($label, $dec)."</b>", "nowrap align=right", $id);
 	else
-		label_cell(number_format2($label, $dec), "nowrap align=right", $id);
+		label_cell(FormatService::numberFormat2($label, $dec), "nowrap align=right", $id);
 }
 
 function label_cells($label, $value, $params="", $params2="", $id=null)

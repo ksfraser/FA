@@ -243,7 +243,7 @@ function voiding_controls()
                                 $stock = get_item($myrow["item_code"]);
                                 display_error(_("The void cannot be processed because there is an insufficient quantity for item:") .
                                     " " . $stock['stock_id'] . " - " . $stock['description'] . " - " .
-                                    _("Quantity On Hand") . " = " . number_format2(get_qoh_on_date($stock['stock_id'], null, 
+                                    _("Quantity On Hand") . " = " . FormatService::numberFormat2(get_qoh_on_date($stock['stock_id'], null, 
                                     $_POST['date_']), get_qty_dec($stock['stock_id'])));
                                 return false;
                             }

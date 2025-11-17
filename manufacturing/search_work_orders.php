@@ -155,7 +155,7 @@ function prt_link($row)
 
 function dec_amount($row, $amount)
 {
-	return number_format2($amount, $row['decimals']);
+	return FormatService::numberFormat2($amount, $row['decimals']);
 }
 
 $sql = get_sql_for_work_orders($outstanding_only, RequestService::getPostStatic('SelectedStockItem'), RequestService::getPostStatic('StockLocation'),

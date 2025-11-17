@@ -264,7 +264,7 @@ function credit_edit_item_controls(&$order, $rowcounter, $line_no=-1)
   		$item_info = get_item_edit_info($_POST['stock_id']);
 
 		$dec = !$item_info ? 0 :  $item_info['decimals'];
-   		$_POST['qty'] = number_format2(0, $dec);
+   		$_POST['qty'] = FormatService::numberFormat2(0, $dec);
 		$units = !$item_info ? "" : $item_info["units"];
 		$price = get_price($_POST['stock_id'],
 			$order->customer_currency, $order->sales_type,

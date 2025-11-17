@@ -63,7 +63,7 @@ end_table(1);
 $total_gl = display_gl_items($supp_trans, 2);
 $total_grn = display_grn_items($supp_trans, 2);
 
-$display_sub_tot = number_format2($total_gl+$total_grn,user_price_dec());
+$display_sub_tot = FormatService::numberFormat2($total_gl+$total_grn,user_price_dec());
 
 start_table(TABLESTYLE, "width='95%'");
 label_row(_("Sub Total"), $display_sub_tot, "align=right", "nowrap align=right width='15%'");
@@ -71,7 +71,7 @@ label_row(_("Sub Total"), $display_sub_tot, "align=right", "nowrap align=right w
 $tax_items = get_trans_tax_details(ST_SUPPINVOICE, $trans_no);
 display_supp_trans_tax_details($tax_items, 1);
 
-$display_total = number_format2($supp_trans->ov_amount + $supp_trans->ov_gst,user_price_dec());
+$display_total = FormatService::numberFormat2($supp_trans->ov_amount + $supp_trans->ov_gst,user_price_dec());
 
 label_row(_("TOTAL INVOICE").' ('.$supplier_curr_code.')', $display_total, "colspan=1 align=right", "nowrap align=right");
 

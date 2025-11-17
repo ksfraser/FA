@@ -565,13 +565,13 @@ function check_item_data()
 	{
 		$dec = user_price_dec();
 		$curr = $_SESSION['Items']->customer_currency;
-		$price = number_format2(RequestService::inputNumStatic('price'), $dec);
+		$price = FormatService::numberFormat2(RequestService::inputNumStatic('price'), $dec);
 		if ($cost_home == $cost)
-			$std_cost = number_format2($cost_home, $dec);
+			$std_cost = FormatService::numberFormat2($cost_home, $dec);
 		else
 		{
 			$price = $curr . " " . $price;
-			$std_cost = $curr . " " . number_format2($cost, $dec);
+			$std_cost = $curr . " " . FormatService::numberFormat2($cost, $dec);
 		}
 		display_warning(sprintf(_("Price %s is below Standard Cost %s"), $price, $std_cost));
 	}	

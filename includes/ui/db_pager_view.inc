@@ -134,7 +134,7 @@ function display_db_pager(&$pager) {
 				email_cell($cell,isset( $col['align']) ? "align='" . $col['align'] . "'" : null);
 				break;
 		    case 'rate':
-				label_cell(number_format2($cell, user_exrate_dec()), "align=center"); break;
+				label_cell(FormatService::numberFormat2($cell, user_exrate_dec()), "align=center"); break;
 			case 'inactive':
 				if(RequestService::getPostStatic('show_inactive'))
 					$pager->inactive_control_cell($row); break;

@@ -233,7 +233,7 @@ function print_aged_customer_analysis()
 		$pg->setTitle($rep->title);
 		$pg->setXTitle(_("Days"));
 		$pg->setYTitle(_("Amount"));
-		$pg->setDTitle(number_format2($total[4]));
+		$pg->setDTitle(FormatService::numberFormat2($total[4]));
 		$pg->setValues(true);
 		$pg->latin_notation = ($SysPrefs->decseps[user_dec_sep()] != ".");
 		$filename = company_path(). "/pdf_files/". random_id().".png";

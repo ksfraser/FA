@@ -82,7 +82,7 @@ foreach ($purchase_order->line_items as $stock_item)
 	$total += $line_total;
 }
 
-$display_sub_tot = number_format2($total,user_price_dec());
+$display_sub_tot = FormatService::numberFormat2($total,user_price_dec());
 label_row(_("Sub Total"), $display_sub_tot,
 	"align=right colspan=6", "nowrap align=right",2);
 

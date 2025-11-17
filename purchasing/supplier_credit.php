@@ -233,7 +233,7 @@ function check_data()
 					$stock = get_item($item->item_code);
 					display_error(_("The return cannot be processed because there is an insufficient quantity for item:") .
 						" " . $stock['stock_id'] . " - " . $stock['description'] . " - " .
-						_("Quantity On Hand") . " = " . number_format2(get_qoh_on_date($stock['stock_id'], null, 
+						_("Quantity On Hand") . " = " . FormatService::numberFormat2(get_qoh_on_date($stock['stock_id'], null, 
 						$_SESSION['supp_trans']->tran_date), get_qty_dec($stock['stock_id'])));
 					return false;
 				}

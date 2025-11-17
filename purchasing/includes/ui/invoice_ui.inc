@@ -402,10 +402,10 @@ function display_grn_items_for_selection(&$supp_trans, $k)
             qty_cell($myrow["qty_recd"], false, $dec);
             qty_cell($myrow["quantity_inv"], false, $dec);
             if ($supp_trans->trans_type == ST_SUPPINVOICE)
-            	qty_cells(null, 'this_quantity_inv'.$n, number_format2($myrow["qty_recd"] - $myrow["quantity_inv"], $dec), 
+            	qty_cells(null, 'this_quantity_inv'.$n, FormatService::numberFormat2($myrow["qty_recd"] - $myrow["quantity_inv"], $dec), 
             		null, null, $dec);
             else
-            	qty_cells(null, 'This_QuantityCredited'.$n, number_format2(max($myrow["quantity_inv"], 0), $dec), 
+            	qty_cells(null, 'This_QuantityCredited'.$n, FormatService::numberFormat2(max($myrow["quantity_inv"], 0), $dec), 
             		null, null, $dec);
             $dec2 = 0;
             if ($supp_trans->trans_type == ST_SUPPINVOICE)
