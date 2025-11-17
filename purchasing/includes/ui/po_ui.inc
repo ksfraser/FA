@@ -359,7 +359,7 @@ function po_item_controls(&$order, &$rowcounter, $line_no=-1)
 	alt_table_row_color($rowcounter);
 	$new = $order->order_no == 0;
 
-	$dec2 = 0;
+	$dec2 = 6;
 	$id = find_submit('Edit');
 	if (($id != -1) && $line_no == $id)
 	{
@@ -403,10 +403,13 @@ function po_item_controls(&$order, &$rowcounter, $line_no=-1)
 			    $Ajax->activate('req_del_date');
 			    $Ajax->activate('line_total');
 		}
-    	$item_info = get_item_edit_info($_POST['stock_id']);
-		$_POST['units'] = $item_info["units"];
 
-   		$dec = $item_info["decimals"];
+		$dec = 0; $_POST['units'] = '';
+    	$item_info = get_item_edit_info($_POST['stock_id']);
+    	if ($item_info) {
+			$_POST['units'] = $item_info["units"];
+	   		$dec = $item_info["decimals"];
+	   	}
    		$_POST['qty'] =	number_format2(get_purchase_conversion_factor ($order->supplier_id, $_POST['stock_id']), $dec);
 		$_POST['price'] = price_decimal_format(get_purchase_price ($order->supplier_id, $_POST['stock_id']), $dec2);
 		if ($order->trans_type == ST_PURCHORDER)
@@ -432,7 +435,7 @@ function po_item_controls(&$order, &$rowcounter, $line_no=-1)
    		hidden('price', $_POST['price']);
    	}	
    	else	
-		amount_cells(null, 'price', null, null, null, $dec2);
+		unit_amount_cells(null, 'price');
 
 	$line_total = round(input_num('qty') * input_num('price'),  user_price_dec());
 	amount_cell($line_total, false, '','line_total');

@@ -44,7 +44,7 @@ function get_supp_trans_allocation_balance($trans_type, $trans_no)
 	$result = db_query($sql,"calculate the allocation");
 	$myrow = db_fetch_row($result);
 
-	return $myrow[0];
+	return $myrow ? $myrow[0] : 0;
 }
 
 //----------------------------------------------------------------------------------------
@@ -52,12 +52,13 @@ function get_supp_trans_allocation_balance($trans_type, $trans_no)
 //
 function update_supp_trans_allocation($trans_type, $trans_no, $person_id)
 {
+	$dec = user_price_dec();
 	$sql = "UPDATE `".TB_PREF.($trans_type==ST_PURCHORDER ? 'purch_orders' : 'supp_trans')."` trans,
 			(SELECT person_id, sum(amt) amt from ".TB_PREF."supp_allocations
 				WHERE person_id=".db_escape($person_id)." AND ((trans_type_to=".db_escape($trans_type)." AND trans_no_to=".db_escape($trans_no).")
 				OR (trans_type_from=".db_escape($trans_type)." AND trans_no_from=".db_escape($trans_no)."))) allocated
 		SET
-			trans.alloc=IFNULL(allocated.amt, 0)
+			trans.alloc=IFNULL(ROUND(allocated.amt, $dec), 0)
 		WHERE trans.supplier_id=person_id AND "	. ($trans_type==ST_PURCHORDER ? 
 			  "trans.order_no=".db_escape($trans_no)
 			: "trans.type=".db_escape($trans_type)." AND trans.trans_no=".db_escape($trans_no));
@@ -100,7 +101,7 @@ function clear_supp_alloctions($type, $type_no, $person_id=null, $date="")
 }
 //-------------------------------------------------------------------------------------------------------------
 
-function get_allocatable_from_supp_sql($supplier_id=null, $settled)
+function get_allocatable_from_supp_sql($supplier_id, $settled)
 {
 	$sql = "SELECT
 		trans.type,
@@ -301,6 +302,10 @@ function get_sql_for_supplier_allocation_inquiry()
    		elseif (($_POST['filterType'] == '4') || ($_POST['filterType'] == '5')) // credits
    		{
 			$sql .= " AND trans.type = ".ST_SUPPCREDIT." ";
+   		}
+   		elseif ($_POST['filterType'] == '6')	// Journal
+   		{
+			$sql .= " AND trans.type = ".ST_JOURNAL." ";
    		}
 
    		if (($_POST['filterType'] == '2') || ($_POST['filterType'] == '5')) // overdude 

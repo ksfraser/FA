@@ -31,7 +31,7 @@ include_once($path_to_root . "/taxes/tax_calc.inc");
 print_po();
 
 //----------------------------------------------------------------------------------------------------
-function get_po($order_no)
+function get_supp_po($order_no)
 {
    	$sql = "SELECT po.*, supplier.supp_name, supplier.supp_account_no,supplier.tax_included,
    		supplier.gst_no AS tax_id,
@@ -49,7 +49,7 @@ function get_po($order_no)
 
 function get_po_details($order_no)
 {
-	$sql = "SELECT poline.*, units
+	$sql = "SELECT poline.*, units, editable
 		FROM ".TB_PREF."purch_order_details poline
 			LEFT JOIN ".TB_PREF."stock_master item ON poline.item_code=item.stock_id
 		WHERE order_no =".db_escape($order_no)." ";
@@ -91,7 +91,7 @@ function print_po()
 
 	for ($i = $from; $i <= $to; $i++)
 	{
-		$myrow = get_po($i);
+		$myrow = get_supp_po($i);
 		if ($currency != ALL_TEXT && $myrow['curr_code'] != $currency) {
 			continue;
 		}
@@ -121,7 +121,8 @@ function print_po()
 			$data = get_purchase_data($myrow['supplier_id'], $myrow2['item_code']);
 			if ($data !== false)
 			{
-				if ($data['supplier_description'] != "")
+				if (!$myrow2['editable'] && $data['supplier_description'] != "" && 
+					$myrow2['description'] != $data['supplier_description']) // backward compatibility
 					$myrow2['description'] = $data['supplier_description'];
 				if ($data['suppliers_uom'] != "")
 					$myrow2['units'] = $data['suppliers_uom'];

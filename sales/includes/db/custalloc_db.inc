@@ -46,13 +46,14 @@ function get_cust_allocation($trans_id)
 //
 function update_debtor_trans_allocation($trans_type, $trans_no, $person_id)
 {
+	$dec = user_price_dec();
 	$sql = 
 		"UPDATE `".TB_PREF.($trans_type==ST_SALESORDER ? 'sales_orders' : 'debtor_trans')."` trans,
 			(SELECT sum(amt) amt FROM ".TB_PREF."cust_allocations
 				WHERE person_id=".db_escape($person_id)." AND ((trans_type_to=".db_escape($trans_type)." AND trans_no_to=".db_escape($trans_no).")
 				OR (trans_type_from=".db_escape($trans_type)." AND trans_no_from=".db_escape($trans_no)."))) allocated
 		SET 
-			trans.alloc=IFNULL(allocated.amt,0)
+			trans.alloc=IFNULL(ROUND(allocated.amt, $dec),0)
 		WHERE trans.debtor_no=".db_escape($person_id)." AND ".($trans_type==ST_SALESORDER ?
 			   "trans.trans_type=".db_escape($trans_type)." AND order_no=".db_escape($trans_no)
 			:  "trans.type=".db_escape($trans_type)." AND trans_no=".db_escape($trans_no));
@@ -98,7 +99,7 @@ function clear_cust_alloctions($type, $type_no, $person_id=null, $date="")
 }
 //-------------------------------------------------------------------------------------------------------------
 
-function get_allocatable_from_cust_sql($customer_id=null, $settled)
+function get_allocatable_from_cust_sql($customer_id, $settled)
 {
 	$sql = "SELECT
 		trans.type,
@@ -112,7 +113,7 @@ function get_allocatable_from_cust_sql($customer_id=null, $settled)
 		trans.due_date,
 		debtor.address,
 		trans.version,
-		round(abs(ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount-alloc),6) <= 0 AS settled,
+		round(abs(ov_amount)+ov_gst+ov_freight+ov_freight_tax+ov_discount-alloc,6) <= 0 AS settled,
 		trans.debtor_no
 
 	 FROM "
@@ -124,7 +125,7 @@ function get_allocatable_from_cust_sql($customer_id=null, $settled)
 		 OR (type=".ST_JOURNAL. " AND (trans.ov_amount < 0)))";
 
 	if (!$settled)
-		$sql .= " AND (round(abs(ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount-alloc),6) > 0)";
+		$sql .= " AND round(abs(ov_amount+ov_gst)+ov_freight+ov_freight_tax+ov_discount-alloc, 6) > 0";
 
 	if ($customer_id != null)
 		$sql .= " AND trans.debtor_no = ".db_escape($customer_id);
@@ -265,7 +266,7 @@ function get_allocatable_from_cust_transactions($customer_id, $trans_no=null, $t
 	}
 	else
 	{
-		$sql .= " AND round(ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount-alloc,6) > 0
+		$sql .= " AND round(abs(ov_amount)+ov_gst+ov_freight+ov_freight_tax+ov_discount-alloc,6) > 0
 			AND trans.type NOT IN (".implode(',',array(ST_CUSTPAYMENT,ST_BANKDEPOSIT,ST_CUSTCREDIT,ST_CUSTDELIVERY)).")";
 		$sql .= " GROUP BY type, trans_no";
 	}
@@ -322,14 +323,18 @@ function get_sql_for_customer_allocation_inquiry($from, $to, $customer, $filterT
    		{
 			$sql .= " AND trans.type = ".ST_CUSTCREDIT." ";
    		}
+   		elseif ($filterType == '6')
+   		{
+			$sql .= " AND trans.type = ".ST_JOURNAL." ";
+   		}
 
     	if ($filterType == '2')
     	{
     		$today =  date2sql(Today());
     		$sql .= " AND trans.due_date < '$today'
-				AND (round(abs(trans.ov_amount + "
+				AND (round(abs(trans.ov_amount) + "
 				."trans.ov_gst + trans.ov_freight + "
-				."trans.ov_freight_tax + trans.ov_discount) - trans.alloc,6) > 0) ";
+				."trans.ov_freight_tax + trans.ov_discount - trans.alloc,6) > 0) ";
     	}
    	}
    	else
@@ -340,9 +345,9 @@ function get_sql_for_customer_allocation_inquiry($from, $to, $customer, $filterT
 
    	if (!$settled)
    	{
-   		$sql .= " AND (round(IF(trans.prep_amount,trans.prep_amount, abs(trans.ov_amount + trans.ov_gst + "
+   		$sql .= " AND (ROUND(IF(trans.prep_amount,trans.prep_amount, ABS(trans.ov_amount) + trans.ov_gst + "
 		."trans.ov_freight + trans.ov_freight_tax + "
-		."trans.ov_discount)) - trans.alloc,6) != 0) ";
+		."trans.ov_discount) - trans.alloc,6) != 0) ";
    	}
    	return $sql;
 }

@@ -89,6 +89,8 @@ function delete_sales_order($order_no, $trans_type)
 	begin_transaction();
 	hook_db_prevoid($trans_type, $order_no);
 
+	$order = get_sales_order_header($order_no, $trans_type);
+	
 	$sql = "DELETE FROM ".TB_PREF."sales_orders WHERE order_no=" . db_escape($order_no) 
 		. " AND trans_type=".db_escape($trans_type);
 
@@ -98,7 +100,7 @@ function delete_sales_order($order_no, $trans_type)
 		.db_escape($order_no) . " AND trans_type=".db_escape($trans_type);
 	db_query($sql, "order Detail Delete");
 
-	add_audit_trail($trans_type, $order_no, Today(), _("Deleted."));
+	add_audit_trail($trans_type, $order_no, sql2date($order['ord_date']), _("Deleted."));
 	commit_transaction();
 }
 
@@ -283,6 +285,7 @@ function get_sales_order_details($order_no, $trans_type) {
 				line.quantity,
 				discount_percent,
 				qty_sent as qty_done,
+				item.long_description,
 				item.units,
 				item.mb_flag,
 				item.material_cost
@@ -462,8 +465,12 @@ function get_branch_to_order($customer_id, $branch_id) {
 	PrepaidOrders
 */
 function get_sql_for_sales_orders_view($trans_type, $trans_no, $filter, 
-	$stock_item='', $from='', $to='', $ref='', $location=ALL_TEXT, $customer_id=ALL_TEXT)
+	$stock_item='', $from='', $to='', $ref='', $location=ALL_TEXT, $customer_id=ALL_TEXT, $show_voided = 0, $by_delivery=0, $no_auto=0)
 {
+    if ($filter=='OutstandingOnly')
+        $order_value = 'Sum(line.unit_price*(line.quantity-line.qty_sent)*(1-line.discount_percent))+freight_cost';
+    else
+        $order_value = 'Sum(line.unit_price*line.quantity*(1-line.discount_percent))+freight_cost';
 
 	$sql = "SELECT 
 			sorder.order_no,
@@ -476,7 +483,7 @@ function get_sql_for_sales_orders_view($trans_type, $trans_no, $filter,
 			."sorder.ord_date,
 			sorder.delivery_date,
 			sorder.deliver_to,
-			Sum(line.unit_price*line.quantity*(1-line.discount_percent))+freight_cost AS OrderValue,
+			$order_value AS OrderValue,
 			sorder.type,
 			debtor.curr_code,
 			Sum(line.qty_sent) AS TotDelivered,
@@ -487,7 +494,8 @@ function get_sql_for_sales_orders_view($trans_type, $trans_no, $filter,
 			allocs.ord_payments,
 			inv.inv_payments,
 			sorder.total,
-			sorder.trans_type
+			sorder.trans_type,
+			sorder.debtor_no
 		FROM ".TB_PREF."sales_orders as sorder
 		LEFT JOIN (SELECT trans_no_to, sum(amt) ord_payments FROM ".TB_PREF."cust_allocations WHERE trans_type_to=".ST_SALESORDER." GROUP BY trans_no_to)
 			 allocs ON sorder.trans_type=".ST_SALESORDER." AND allocs.trans_no_to=sorder.order_no
@@ -522,10 +530,12 @@ function get_sql_for_sales_orders_view($trans_type, $trans_no, $filter,
 		{
 			$date_after = date2sql($from);
 			$date_before = date2sql($to);
-
-			$sql .=  " AND sorder.ord_date >= '$date_after'"
-					." AND sorder.ord_date <= '$date_before'";
+			$by_date = $by_delivery ? 'delivery_date' : 'ord_date';
+			$sql .=  " AND sorder.$by_date >= '$date_after'"
+					." AND sorder.$by_date <= '$date_before'";
 		}
+		if ($no_auto)
+		    $sql .= " AND sorder.reference != 'auto'";
 	}
 		if ($trans_type == ST_SALESQUOTE && !check_value('show_all'))
 			$sql .= " AND sorder.delivery_date >= '".date2sql(Today())."' AND line.qty_sent=0"; // show only outstanding, not realized quotes
@@ -557,8 +567,10 @@ function get_sql_for_sales_orders_view($trans_type, $trans_no, $filter,
 					sorder.branch_code,
 					sorder.customer_ref,
 					sorder.ord_date,
-					sorder.deliver_to
-				ORDER BY sorder.order_no DESC";
+					sorder.deliver_to";
+  		if ($show_voided == 0) 	
+    	 	$sql .= " HAVING OrderValue != 0";
+		$sql .= " ORDER BY sorder.order_no DESC";
 	return $sql;
 }
 
@@ -632,14 +644,11 @@ function last_sales_order_detail($order, $field)
 {
         $sql = "SELECT $field
             FROM ".TB_PREF."sales_order_details d
-            WHERE order_no =
-            (SELECT order_no FROM ".TB_PREF."sales_orders o
+            LEFT JOIN " .TB_PREF."sales_orders o on d.order_no=o.order_no
             WHERE debtor_no=" . db_escape($order->customer_id) . "
-            ORDER BY order_no DESC LIMIT 1)
-            ORDER BY d.id DESC LIMIT 1";        
+            ORDER BY d.id DESC LIMIT 1";
 
         $last_query=db_query($sql, "Could not retrieve last order detail");
         $row = db_fetch_row($last_query);
-        return $row[0];
+        return $row == false ? false : $row[0];
 }
-

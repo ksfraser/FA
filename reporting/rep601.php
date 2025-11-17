@@ -47,7 +47,6 @@ function get_bank_transactions($from, $to, $account)
 		WHERE bank_act = '$account'
 		AND trans_date >= '$from'
 		AND trans_date <= '$to'
-		AND amount <> 0
 		ORDER BY trans_date, id";
 
 	return db_query($sql,"The transactions for '$account' could not be retrieved");
@@ -133,7 +132,7 @@ function print_bank_transactions()
 					$rep->TextCol(1, 2,	$myrow['trans_no']);
 					$rep->TextCol(2, 3,	$myrow['ref']);
 					$rep->DateCol(3, 4,	$myrow["trans_date"], true);
-					$rep->TextCol(4, 5,	get_counterparty_name($myrow["type"], $myrow["trans_no"], false));
+					$rep->TextCol(4, 5,	payment_person_name($myrow["person_type_id"],$myrow["person_id"], false));
 					if ($myrow['amount'] > 0.0)
 					{
 						$rep->AmountCol(5, 6, abs($myrow['amount']), $dec);

@@ -24,6 +24,7 @@ include_once($path_to_root . "/reporting/includes/reporting.inc");
 include_once($path_to_root . "/admin/db/company_db.inc");
 include_once($path_to_root . "/admin/db/fiscalyears_db.inc");
 include_once($path_to_root . "/admin/db/printers_db.inc");
+include_once($path_to_root . "/includes/ui/ui_globals.inc");
 include_once($path_to_root . "/config.php");
 
 class FrontReport extends Cpdf
@@ -742,7 +743,7 @@ class FrontReport extends Cpdf
 
 	function TextWrap($xpos, $ypos, $len, $str, $align = 'left', $border = 0, $fill = 0, $link = NULL, $stretch = 1, $spacebreak=false)
 	{
-		$str = strtr($str, array("\r"=>''));
+		$str = ($str != NULL ? strtr($str, array("\r"=>'')) : "");
 
 		if ($this->fontSize != $this->oldFontSize)
 		{
@@ -772,7 +773,7 @@ class FrontReport extends Cpdf
 		setlocale(LC_MONETARY, $amount_locale);
 		if ($color_red && $txt < 0)
 			$this->SetTextColor(255, 0, 0);
-		$ret = $this->TextCol($c, $n, money_format($amount_format, $txt), $corr, $r, $border, $fill, $link, $stretch);
+		$ret = $this->TextCol($c, $n, price_format($txt), $corr, $r, $border, $fill, $link, $stretch);
 		if ($color_red && $txt < 0)
 			$this->SetTextColor(0, 0, 0);
 		return $ret;	
@@ -798,7 +799,7 @@ class FrontReport extends Cpdf
 
 	function TextWrapLines($c, $width, $txt, $align='left', $border=0, $fill=0, $link=NULL, $stretch=0, $spacebreak=true)
 	{
-		$str = explode("\n", $txt);
+		$str = ($txt != NULL ? explode("\n", $txt) : array());
 
 		for ($i = 0; $i < count($str); $i++)
 		{
@@ -997,14 +998,13 @@ class FrontReport extends Cpdf
 							continue;
 						$emailtype = true;
 						$this->SetLang($contact['lang']);
+						$coy_name = @html_entity_decode($this->company['coy_name'], ENT_QUOTES, $_SESSION['language']->encoding=='iso-8859-2' ? 'ISO-8859-1' : $_SESSION['language']->encoding);
 
 						require_once($path_to_root . "/reporting/includes/class.mail.inc");
-    					$mail = new email(str_replace(",", "", $this->company['coy_name']),
+    					$mail = new email(str_replace(",", "", $coy_name),
     						$this->company['email']);
 						$mail->charset = $this->encoding;
 
-	    				$to = str_replace(",", "", $contact['name'].' '.$contact['name2'])
-	    					." <" . $contact['email'] . ">";
     					$msg = _("Dear") . " " . $contact['name2'] . ",\n\n" 
     						. _("Attached you will find ") . " " . $subject ."\n\n";
 
@@ -1023,8 +1023,9 @@ class FrontReport extends Cpdf
 						}
 
 	    				$msg .= _("Kindest regards") . "\n\n";
-    					$sender = $this->user . "\n" . $this->company['coy_name'] . "\n" . $this->company['postal_address'] . "\n" . $this->company['email'] . "\n" . $this->company['phone'];
-    					$mail->to($to); $try++;
+    					$sender = $this->user . "\n" . $coy_name . "\n" . $this->company['postal_address'] . "\n" . $this->company['email'] . "\n" . $this->company['phone'];
+    					$mail->to(str_replace(",", "", $contact['name'].' '.$contact['name2']), $contact['email']);
+    					$try++;
     					$mail->subject($subject);
     					$mail->text($msg . $sender);
     					$mail->attachment($fname, $this->filename);

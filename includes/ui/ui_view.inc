@@ -270,7 +270,7 @@ function check_ui_refresh($name=null)
 // When there is no exrate for today, 
 // gets it form ECB and stores in local database.
 //
-function exchange_rate_display($from_currency=null, $to_currency=null, $date_, $force_edit=false)
+function exchange_rate_display($from_currency, $to_currency, $date_, $force_edit=false)
 {
     global $Ajax, $SysPrefs;
 
@@ -925,7 +925,7 @@ function get_js_select_combo_item() {
 		} else {			
 			var stock_element = doc.getElementsByName('stock_id');
 	    	if( stock_element.length > 0) {
-				stock_element.value = value;	
+				stock_element[0].value = value;	
 				var stock_id = doc.getElementById('_stock_id_edit'); 
 				stock_id.value=value;
 				stock_id.onblur();		
@@ -939,6 +939,7 @@ function get_js_select_combo_item() {
 function get_js_set_combo_item() {
 	$js = "function setComboItem(doc, client_id, value, text){
     	var element = doc.getElementById(client_id);
+    	var search = doc.getElementById('_'+client_id+'_edit');
   		if(typeof(element) != 'undefined' && element != null && element.tagName === 'SELECT') {
 	 		var options = element.options;
 	 		options.length = 0;
@@ -947,6 +948,7 @@ function get_js_set_combo_item() {
 			option.text = text;
 	   		element.add(option, 0);
 			element.selectedIndex = 0;
+			search.value = '';
 	        element.onchange();
 	    } else {
 			var stock_element = doc.getElementsByName('stock_id');
@@ -1526,6 +1528,7 @@ if (!isset($payment_services))
 {
 	$payment_services = array(
 		'PayPal' => "https://www.paypal.com/xclick?business=<company_email>&item_name=<comment>&amount=<amount>&currency_code=<currency>",
+		'XUMM XRP' => "https://xumm.app/detect/request:{{account}}?amount=<amount>"
 	);
 }
 /*
@@ -1543,6 +1546,41 @@ function payment_link($name, $options)
 	$patterns = array();
 	foreach ($options as $id => $option)
 		$patterns['<'.$id.'>'] = urlencode($options[$id]);
+
+    if (substr($name, 0, 4) == 'XUMM')
+    {
+        // Get the account number for 'XRPL Account' from 'bank_accounts' table
+        $sql = "SELECT bank_account_number FROM ".TB_PREF."bank_accounts WHERE bank_name = '$name'";
+        $result = db_query($sql, "could not retrieve $name bank account number");
+        $row = db_fetch($result);
+        if ($row == false) {
+        	display_error(sprintf(_("Could not retrieve %s bank account number"), $name));
+        	return false;
+        }
+        $account = $row['bank_account_number'];
+
+        // Replace the {{account}} placeholder in the XUMM URL with the extracted account value
+        $link = str_replace('{{account}}', urlencode($account), $link);
+
+        // Extract XRP exchange rate
+        $curr_code = substr($name, -3);
+        $date = date('Y-m-d'); // Get the current date in 'YYYY-MM-DD' format
+        $sql = "SELECT rate_buy FROM ".TB_PREF."exchange_rates WHERE curr_code = '$curr_code' AND date_ = '$date'";
+        $result = db_query($sql, "could not retrieve exchange rate for $curr_code - $date");
+        $row = db_fetch($result);
+        if ($row == false) {
+        	display_error(sprintf(_("Could not retrieve exchange rate for %s - %s"), $curr_code, $date));
+        	return false;
+        }
+        $exchange_rate = $row['rate_buy'];
+        if ($exchange_rate == 0) $exchange_rate = 1;
+
+        // Divide the amount by the exchange rate
+        $options['amount'] /= $exchange_rate;
+
+        // Replace the <amount> placeholder in the XUMM URL with the modified amount value
+        $link = str_replace('<amount>', urlencode($options['amount']), $link);
+    }
 
 	return strtr($link, $patterns);
 }
@@ -1579,4 +1617,22 @@ function trans_editor_link($type, $trans_no)
 	return !isset($editor_url[$type]) ? '--' :
 		(is_closed_trans($type, $trans_no) ? set_icon(ICON_CLOSED, _('Closed')) :
 			pager_link(_("Edit"), sprintf($editor_url[$type], $trans_no, $type), ICON_EDIT));
+}
+
+function company_logo_on_view()
+{
+	// Display View Header
+	global $SysPrefs;
+
+	$logo = company_path() . "/images/" . $SysPrefs->prefs['coy_logo'];
+	$nl = 1;
+	if (!empty($SysPrefs->prefs['company_logo_report']) && $SysPrefs->prefs['coy_logo'] != '' && file_exists($logo))
+	{
+		$size = getimagesize($logo);
+		$height = $size[0] > 150 ? $size[1] * 150 / $size[0] : 30; 
+		$text = "<img src='$logo' height=$height>";
+	}
+	else
+		$text = $SysPrefs->prefs['coy_name'];
+	display_note($text, 0, $nl, "style='font-size:16px;font-weight:600'");
 }
