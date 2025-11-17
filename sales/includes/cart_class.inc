@@ -21,6 +21,10 @@ iv)  a delivery note
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 include_once($path_to_root . "/taxes/tax_calc.inc");
 
+// Modern OOP Services
+require_once($path_to_root . "/includes/Services/InventoryService.php");
+use FA\Services\InventoryService;
+
 class Cart 
 {
 	var $trans_type; // invoice, order, quotation, delivery note ...
@@ -587,9 +591,10 @@ class Cart
 
 		// collect quantities by stock_id
 		$qtys = array();
+		$inventoryService = new InventoryService();
 		foreach ($this->line_items as $line_no => $line_item)
 		{
-			if (has_stock_holding($line_item->mb_flag))
+			if ($inventoryService->hasStockHolding($line_item->mb_flag))
 			{
 				if (!$this->trans_no) // new delivery
 					$qtys[$line_item->stock_id]['qty'] = $line_item->qty_dispatched + @$qtys[$line_item->stock_id]['qty'];

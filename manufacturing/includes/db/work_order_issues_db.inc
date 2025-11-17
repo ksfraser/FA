@@ -9,6 +9,10 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+// Modern OOP Services
+require_once(dirname(__FILE__) . "/../../../includes/Services/InventoryService.php");
+use FA\Services\InventoryService;
+
 //--------------------------------------------------------------------------------------
 
 function add_work_order_issue($woid, $ref, $to_work_order, $items, $location, $workcentre,
@@ -55,9 +59,10 @@ function add_work_order_issue($woid, $ref, $to_work_order, $items, $location, $w
 		$issue_cost = $unit_cost * $item->quantity;
 
         $stockitem = get_item($item->stock_id);
+		$inventoryService = new InventoryService();
 
 		// Compatibility for Service Items
-		if (!is_service($stockitem["mb_flag"]))
+		if (!$inventoryService->isService($stockitem["mb_flag"]))
 			$ivaccount = $stockitem["inventory_account"];
 		else
 			$ivaccount = $stockitem["cogs_account"];

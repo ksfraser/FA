@@ -9,6 +9,10 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+// Modern OOP Services
+require_once(dirname(__FILE__) . "/../../../includes/Services/InventoryService.php");
+use FA\Services\InventoryService;
+
 //-------------------------------------------------------------------------------------------------------------
 
 function stock_cost_update($stock_id, $material_cost, $labour_cost, $overhead_cost,
@@ -17,8 +21,9 @@ function stock_cost_update($stock_id, $material_cost, $labour_cost, $overhead_co
 	$mb_flag = get_mb_flag($stock_id);
 
 	$update_no = -1;
+	$inventoryService = new InventoryService();
 
-    if (is_service($mb_flag))
+    if ($inventoryService->isService($mb_flag))
     {
 		$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=".db_escape($material_cost)."
 		WHERE stock_id=".db_escape($stock_id);

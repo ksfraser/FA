@@ -9,6 +9,9 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+// Modern OOP Services
+require_once(dirname(__FILE__) . "/../../../includes/Services/InventoryService.php");
+use FA\Services\InventoryService;
 
 function add_stock_adjustment($items, $location, $date_, $reference, $memo_)
 {
@@ -88,8 +91,9 @@ function add_stock_adjustment_item($adj_id, $stock_id, $location, $date_, $refer
 	$quantity, $standard_cost, $memo_)
 {
 	$mb_flag = get_mb_flag($stock_id);
+	$inventoryService = new InventoryService();
 
-    if (is_service($mb_flag))
+    if ($inventoryService->isService($mb_flag))
     {
     	display_db_error("Cannot do inventory adjustment for Service item : $stock_id", "");
     }
