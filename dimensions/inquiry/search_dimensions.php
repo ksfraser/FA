@@ -14,6 +14,7 @@ $path_to_root="../..";
 
 include($path_to_root . "/includes/db_pager.inc");
 include_once($path_to_root . "/includes/session.inc");
+require_once($path_to_root . "/includes/DateService.php");
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
@@ -109,7 +110,7 @@ function is_closed($row)
 
 function is_overdue($row)
 {
-	return date_diff2(Today(), sql2date($row["due_date"]), "d") > 0;
+	return \FA\Services\DateService::dateDiff(Today(), sql2date($row["due_date"]), "d") > 0;
 }
 
 function edit_link($row)

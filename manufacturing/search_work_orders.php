@@ -13,6 +13,7 @@ $page_security = 'SA_MANUFTRANSVIEW';
 $path_to_root = "..";
 include($path_to_root . "/includes/db_pager.inc");
 include_once($path_to_root . "/includes/session.inc");
+require_once($path_to_root . "/includes/DateService.php");
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/manufacturing/includes/manufacturing_ui.inc");
@@ -91,7 +92,7 @@ end_table();
 function check_overdue($row)
 {
 	return (!$row["closed"] 
-		&& date_diff2(Today(), sql2date($row["required_by"]), "d") > 0);
+		&& \FA\Services\DateService::dateDiff(Today(), sql2date($row["required_by"]), "d") > 0);
 }
 
 function view_link($dummy, $order_no)
