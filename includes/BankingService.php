@@ -303,4 +303,13 @@ class BankingService
         $service = new self();
         return $service->getExchangeRateToHomeCurrency($currency_code, $date_);
     }
+    
+    /**
+     * Static wrapper for getCompanyCurrency
+     */
+    public static function getCompanyCurrencyStatic(): string
+    {
+        $service = new self();
+        return $service->getCompanyCurrency();
+    }
 }
