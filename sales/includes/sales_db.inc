@@ -10,6 +10,7 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 include_once($path_to_root . "/includes/banking.inc");
+require_once($path_to_root . "/includes/BankingService.php");
 include_once($path_to_root . "/includes/inventory.inc");
 include_once($path_to_root . "/includes/db/allocations_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_order_db.inc");
@@ -92,7 +93,7 @@ function get_price ($stock_id, $currency, $sales_type_id, $factor=null, $date=nu
 
 	$result = db_query($sql, "There was a problem retrieving the pricing information for the part $stock_id for customer");
 	$num_rows = db_num_rows($result);
-	$rate = round2(get_exchange_rate_from_home_currency($currency, $date),
+	$rate = round2(BankingService::getExchangeRateFromHomeCurrency($currency, $date),
 	    user_exrate_dec());
 	$round_to = get_company_pref('round_to');
 	$prices = array();

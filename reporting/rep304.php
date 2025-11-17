@@ -20,6 +20,7 @@ if (!isset($path_to_root)) $path_to_root="..";
 
 include_once($path_to_root . "/includes/session.inc");
 require_once($path_to_root . "/includes/InventoryService.php");
+require_once($path_to_root . "/includes/BankingService.php");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/includes/banking.inc");
@@ -174,7 +175,7 @@ function print_inventory_sales()
 		}
 
 		$curr = get_customer_currency($trans['debtor_no']);
-		$rate = get_exchange_rate_from_home_currency($curr, sql2date($trans['tran_date']));
+		$rate = BankingService::getExchangeRateFromHomeCurrency($curr, sql2date($trans['tran_date']));
 		$trans['amt'] *= $rate;
 		$cb = $trans['amt'] - $trans['cost'];
 		$rep->NewLine();

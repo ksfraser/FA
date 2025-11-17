@@ -19,6 +19,7 @@ $page_security = 'SA_CUSTPAYMREP';
 $path_to_root="..";
 
 include_once($path_to_root . "/includes/session.inc");
+require_once($path_to_root . "/includes/BankingService.php");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
@@ -151,7 +152,7 @@ function print_aged_customer_analysis()
 		if (!$convert && $currency != $myrow['curr_code'])
 			continue;
 
-		if ($convert) $rate = get_exchange_rate_from_home_currency($myrow['curr_code'], $to);
+		if ($convert) $rate = BankingService::getExchangeRateFromHomeCurrency($myrow['curr_code'], $to);
 		else $rate = 1.0;
 		$custrec = get_customer_details($myrow['debtor_no'], $to, $show_all);
 		if (!$custrec)

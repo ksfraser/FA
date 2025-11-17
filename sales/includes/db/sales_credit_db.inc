@@ -9,6 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+require_once(dirname(__FILE__) . "/../../../includes/BankingService.php");
 //----------------------------------------------------------------------------------------
 // if ($writeoff_acc==0) return goods into $cart->Location
 // if src_docs!=0 => credit invoice else credit note
@@ -149,7 +150,7 @@ function write_credit_note(&$credit_note, $write_off_acc)
 	foreach ($taxes as $taxitem) {
 		if ($taxitem['Net'] != 0) {
 
-			$ex_rate = get_exchange_rate_from_home_currency(get_customer_currency($credit_note->customer_id), $credit_note->document_date);
+			$ex_rate = BankingService::getExchangeRateFromHomeCurrency(get_customer_currency($credit_note->customer_id), $credit_note->document_date);
 			add_trans_tax_details(ST_CUSTCREDIT, $credit_no, $taxitem['tax_type_id'],
 				$taxitem['rate'], $credit_note->tax_included, $taxitem['Value'],
 				$taxitem['Net'], $ex_rate,

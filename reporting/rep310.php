@@ -19,6 +19,7 @@ $page_security = 'SA_SUPPLIERANALYTIC';
 $path_to_root="..";
 
 include_once($path_to_root . "/includes/session.inc");
+require_once($path_to_root . "/includes/BankingService.php");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/includes/banking.inc");
@@ -175,7 +176,7 @@ function print_inventory_purchase()
 		$stock_id = $trans['stock_id'];
 		$stock_description = $trans['description'];
 		$curr = get_supplier_currency($trans['supplier_id']);
-		$rate = get_exchange_rate_from_home_currency($curr, sql2date($trans['tran_date']));
+		$rate = BankingService::getExchangeRateFromHomeCurrency($curr, sql2date($trans['tran_date']));
 		$trans['price'] *= $rate;
 		//$rep->NewLine();
 		$trans['supp_reference'] = get_supp_inv_reference($trans['supplier_id'], $trans['stock_id'], $trans['tran_date']);

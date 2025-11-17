@@ -19,6 +19,7 @@ $page_security = 'SA_SUPPLIERANALYTIC';
 $path_to_root="..";
 
 include_once($path_to_root . "/includes/session.inc");
+require_once($path_to_root . "/includes/BankingService.php");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/includes/banking.inc");
@@ -167,7 +168,7 @@ function print_grn_valuation()
 		if ($trans['qty_recd'] - $trans['quantity_inv'] !=0 )
 		{
 			$curr = get_supplier_currency($trans['supplier_id']);
-			$rate = get_exchange_rate_from_home_currency($curr, sql2date($trans['delivery_date']));
+			$rate = BankingService::getExchangeRateFromHomeCurrency($curr, sql2date($trans['delivery_date']));
 			$trans['unit_price'] *= $rate;
 			$rep->TextCol(4, 5, "--");
 			$rep->AmountCol(5, 6, $trans['qty_recd'] - $trans['quantity_inv'], $qdec);

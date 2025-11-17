@@ -10,6 +10,7 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 require_once($path_to_root . "/includes/InventoryService.php");
+require_once($path_to_root . "/includes/BankingService.php");
 //-----------------------------------------------------------------------------
 // insert/update sales delivery
 //
@@ -187,7 +188,7 @@ function write_sales_delivery(&$delivery,$bo_policy)
 	// taxes - this is for printing purposes
 	foreach ($taxes as $taxitem) {
 		if ($taxitem['Net'] != 0) {
-				$ex_rate = get_exchange_rate_from_home_currency(get_customer_currency($delivery->customer_id), $delivery->document_date);
+				$ex_rate = BankingService::getExchangeRateFromHomeCurrency(get_customer_currency($delivery->customer_id), $delivery->document_date);
     		    add_trans_tax_details(ST_CUSTDELIVERY, $delivery_no, $taxitem['tax_type_id'],
 				$taxitem['rate'], $delivery->tax_included, $taxitem['Value'],
 				$taxitem['Net'], $ex_rate, $delivery->document_date, $delivery->reference, null);

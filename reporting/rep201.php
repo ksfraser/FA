@@ -19,6 +19,7 @@ $page_security = 'SA_SUPPLIERANALYTIC';
 $path_to_root="..";
 
 include_once($path_to_root . "/includes/session.inc");
+require_once($path_to_root . "/includes/BankingService.php");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
@@ -147,7 +148,7 @@ function print_supplier_balances()
 		if (!$convert && $currency != $myrow['curr_code'])
 			continue;
 		$accumulate = 0;
-		$rate = $convert ? get_exchange_rate_from_home_currency($myrow['curr_code'], Today()) : 1;
+		$rate = $convert ? BankingService::getExchangeRateFromHomeCurrency($myrow['curr_code'], Today()) : 1;
 		$bal = get_open_balance($myrow['supplier_id'], $from);
 		$init = array();
 		$init[0] = round2(($bal != false ? abs($bal['charges']) : 0)*$rate, $dec);

@@ -9,6 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+require_once(dirname(__FILE__) . "/../../../includes/BankingService.php");
 //-----------------------------------------------------------------------------
 //	Add or update Sales Invoice
 //
@@ -171,7 +172,7 @@ function write_sales_invoice(&$invoice)
 	// post all taxes
 	foreach ($taxes as $taxitem) {
 		if ($taxitem['Net'] != 0) {
-			$ex_rate = get_exchange_rate_from_home_currency(get_customer_currency($invoice->customer_id), $date_);
+			$ex_rate = BankingService::getExchangeRateFromHomeCurrency(get_customer_currency($invoice->customer_id), $date_);
 			add_trans_tax_details(ST_SALESINVOICE, $invoice_no, $taxitem['tax_type_id'],
 				$taxitem['rate'], $invoice->tax_included, $prepaid_factor*$taxitem['Value'],
 				 $taxitem['Net'], $ex_rate, $date_, $invoice->reference, TR_OUTPUT);

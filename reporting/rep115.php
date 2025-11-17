@@ -20,6 +20,7 @@ $page_security = 'SA_CUSTPAYMREP';
 $path_to_root="..";
 
 include_once($path_to_root . "/includes/session.inc");
+require_once($path_to_root . "/includes/BankingService.php");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
@@ -216,7 +217,7 @@ function print_customer_balances()
     {
         if (!$convert && $currency != $myrow['curr_code']) continue;
 
-        $rate = $convert ? get_exchange_rate_from_home_currency($myrow['curr_code'], Today()) : 1;
+        $rate = $convert ? BankingService::getExchangeRateFromHomeCurrency($myrow['curr_code'], Today()) : 1;
         $bal = get_open_balance($myrow['debtor_no'], $from);
         $init = array();
         $curr_db = $bal ? round2(abs($bal['charges'] * $rate), $dec) : 0; // db

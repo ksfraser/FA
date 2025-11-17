@@ -9,6 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+require_once(dirname(__FILE__) . "/../../../includes/BankingService.php");
 //----------------------------------------------------------------------------------------
 // Mark changes in debtor_trans_details
 //
@@ -61,7 +62,7 @@ function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 	$new = $trans_no==0;
 	$curr = get_customer_currency($debtor_no);
 	if ($rate == 0)
-		$rate = get_exchange_rate_from_home_currency($curr, $date_);
+		$rate = BankingService::getExchangeRateFromHomeCurrency($curr, $date_);
 
 	$SQLDate = date2sql($date_);
 	if ($due_date == "")
