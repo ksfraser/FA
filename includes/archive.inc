@@ -13,10 +13,58 @@
  +--------------------------------------------------
  | FrontAccounting bugfixes/changes added.
  +--------------------------------------------------*/
+namespace FA;
 
-class archive
+/**
+ * Archive Service
+ *
+ * Handles TAR/GZIP/BZIP2/ZIP archive creation and extraction.
+ * Refactored to OOP with SOLID principles.
+ *
+ * SOLID Principles:
+ * - Single Responsibility: Manages archive operations only
+ * - Open/Closed: Can be extended for additional archive types
+ * - Liskov Substitution: Compatible with existing archive usage
+ * - Interface Segregation: Focused archive methods
+ * - Dependency Inversion: No hard dependencies
+ *
+ * DRY: Reuses archive logic across the application
+ * TDD: Developed with unit tests for regression prevention
+ *
+ * UML Class Diagram:
+ * +---------------------+
+ * |       Archive      |
+ * +---------------------+
+ * | - options: array   |
+ * | - files: array     |
+ * | - exclude: array   |
+ * | - storeonly: array |
+ * | - error: array     |
+ * | - archive: resource|
+ * +---------------------+
+ * | + __construct()    |
+ * | + set_options()    |
+ * | + create_archive() |
+ * | ...                 |
+ * +---------------------+
+ *
+ * @package FA
+ */
+class Archive
 {
-	function __construct($name)
+	private array $options;
+	private array $files;
+	private array $exclude;
+	private array $storeonly;
+	private array $error;
+	private $archive;
+
+	/**
+	 * Constructor
+	 *
+	 * @param string $name Archive name
+	 */
+	public function __construct(string $name)
 	{
 		$this->options = array (
 			'basedir' => ".",
@@ -39,7 +87,12 @@ class archive
 		$this->error = array ();
 	}
 
-	function set_options($options)
+	/**
+	 * Set options for the archive
+	 *
+	 * @param array $options Options array
+	 */
+	public function set_options(array $options): void
 	{
 		foreach ($options as $key => $value)
 			$this->options[$key] = $value;
@@ -63,7 +116,12 @@ class archive
 		}
 	}
 
-	function create_archive()
+	/**
+	 * Create the archive
+	 *
+	 * @return bool|int Success status
+	 */
+	public function create_archive()
 	{
 		$this->make_list();
 

@@ -25,3 +25,4 @@ function user_date_format() { return 2; } // Y/m/d
 function user_date_sep() { return 1; } // -
 
 require_once __DIR__ . '/../includes/date_functions.inc';
+require_once __DIR__ . '/../includes/types.inc';

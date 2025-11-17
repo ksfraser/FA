@@ -41,6 +41,8 @@ class TaxCalculationServiceTest extends TestCase {
     private TaxCalculationService $service;
 
     protected function setUp(): void {
+        global $path_to_root;
+        $path_to_root = __DIR__ . '/../';
         $this->service = new TaxCalculationService();
     }
 

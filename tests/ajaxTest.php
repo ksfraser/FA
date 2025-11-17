@@ -1,4 +1,8 @@
 <?php
+global $path_to_root;
+$path_to_root = __DIR__ . '/../';
+require_once __DIR__ . '/../includes/ajax.inc';
+
 /**
  * Unit tests for Ajax class
  *
@@ -42,7 +46,6 @@ class ajaxTest extends TestCase {
     private Ajax $ajax;
 
     protected function setUp(): void {
-        require_once __DIR__ . '/../includes/ajax.inc';
         $this->ajax = new Ajax();
     }
 
