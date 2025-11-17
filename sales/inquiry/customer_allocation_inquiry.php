@@ -126,7 +126,7 @@ function fmt_debit($row)
 	$value =
 	    $row['type']==ST_CUSTCREDIT || $row['type']==ST_CUSTPAYMENT || $row['type']==ST_BANKDEPOSIT ?
 		-$row["TotalAmount"] : $row["TotalAmount"];
-	return $value>=0 ? price_format($value) : '';
+	return $value>=0 ? FormatService::priceFormat($value) : '';
 
 }
 
@@ -135,7 +135,7 @@ function fmt_credit($row)
 	$value =
 	    !($row['type']==ST_CUSTCREDIT || $row['type']==ST_CUSTPAYMENT || $row['type']==ST_BANKDEPOSIT) ?
 		-$row["TotalAmount"] : $row["TotalAmount"];
-	return $value>0 ? price_format($value) : '';
+	return $value>0 ? FormatService::priceFormat($value) : '';
 }
 //------------------------------------------------------------------------------------------------
 

@@ -26,7 +26,7 @@ function copy_from_trans(&$supp_trans)
 	$_POST['_ex_rate'] = $supp_trans->ex_rate;
 	if (isset($supp_trans->tax_overrides))
 	    foreach($supp_trans->tax_overrides as $id => $value)
-		    $_POST['mantax'][$id] = price_format($value);
+		    $_POST['mantax'][$id] = FormatService::priceFormat($value);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -173,12 +173,12 @@ function invoice_totals(&$supp_trans)
 	$colspan = 2;
  	div_start('tax_table');
    	start_table(TABLESTYLE, "width='95%'");
-   	label_row(_("Sub-total:"), price_format( $supp_trans->ov_amount), "width=80% colspan=$colspan align=right", "width=10% align=right", 2);
+   	label_row(_("Sub-total:"), FormatService::priceFormat( $supp_trans->ov_amount), "width=80% colspan=$colspan align=right", "width=10% align=right", 2);
 
     $taxes = $supp_trans->get_taxes($supp_trans->tax_group_id);
     $tax_total = display_edit_tax_items($taxes, $colspan, $supp_trans->tax_included, 0, true);
 
-    $display_total = price_format($supp_trans->ov_amount + $tax_total);
+    $display_total = FormatService::priceFormat($supp_trans->ov_amount + $tax_total);
 	start_row();
 	if ($supp_trans->trans_type == ST_SUPPINVOICE)
     	label_cells(_("Invoice Total:"), 
@@ -340,7 +340,7 @@ function display_gl_items(&$supp_trans, $mode=0)
 	if ($mode == 1)
 		display_gl_controls($supp_trans, $k);
 	$colspan = ($dim == 2 ? 4 : ($dim == 1 ? 3 : 2));
-	label_row(_("Total"), price_format($total),
+	label_row(_("Total"), FormatService::priceFormat($total),
 		"colspan=".$colspan." align=right", "nowrap align=right", ($mode==1?3:1));
 
 	end_table(1);
@@ -573,7 +573,7 @@ function display_grn_items(&$supp_trans, $mode=0)
 	}
 	else
 		$colspan = 5;
-	label_row(_("Total"), price_format($total_grn_value),
+	label_row(_("Total"), FormatService::priceFormat($total_grn_value),
 		"colspan=$colspan align=right", "nowrap align=right");
 	if (!$ret)
 	{

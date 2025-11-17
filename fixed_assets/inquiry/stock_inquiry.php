@@ -141,17 +141,17 @@ function disposal_link($row)
 
 function amount_link($row)
 {
-    return price_format($row['purchase_cost']);
+    return FormatService::priceFormat($row['purchase_cost']);
 }
 
 function depr_link($row)
 {
-    return price_format($row['purchase_cost'] - $row['material_cost']);
+    return FormatService::priceFormat($row['purchase_cost'] - $row['material_cost']);
 }
 
 function balance_link($row)
 {
-    return price_format($row['material_cost']);
+    return FormatService::priceFormat($row['material_cost']);
 }
 
 

@@ -182,7 +182,7 @@ if ($Mode == 'Edit')
 	$myrow = get_stock_price($selected_id);
 	$_POST['curr_abrev'] = $myrow["curr_abrev"];
 	$_POST['sales_type_id'] = $myrow["sales_type_id"];
-	$_POST['price'] = price_format($myrow["price"]);
+	$_POST['price'] = FormatService::priceFormat($myrow["price"]);
 }
 
 hidden('selected_id', $selected_id);
@@ -195,7 +195,7 @@ currencies_list_row(_("Currency:"), 'curr_abrev', null, true);
 sales_types_list_row(_("Sales Type:"), 'sales_type_id', null, true);
 
 if (!isset($_POST['price'])) {
-	$_POST['price'] = price_format(get_kit_price(RequestService::getPostStatic('stock_id'), 
+	$_POST['price'] = FormatService::priceFormat(get_kit_price(RequestService::getPostStatic('stock_id'), 
 		RequestService::getPostStatic('curr_abrev'),	RequestService::getPostStatic('sales_type_id')));
 }
 

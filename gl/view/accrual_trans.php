@@ -76,7 +76,7 @@ while ($myrow = db_fetch($result))
 	$trandate = DateService::sql2dateStatic($myrow["tran_date"]);
 
 	label_cell($systypes_array[$myrow["type"]]);
-	$amount = price_format($myrow["amount"]);
+	$amount = FormatService::priceFormat($myrow["amount"]);
 	$str = "<a href='#' onclick='return WindowClose(\"$amount\", \"$trandate\");' >".$myrow['type_no']."</a>";
 	label_cell($str);
 	label_cell($trandate);

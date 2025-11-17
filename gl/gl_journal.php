@@ -191,7 +191,7 @@ function update_tax_info()
 		{
 			foreach ($value as $id => $amount)
 			{
-				$_POST[$name.'_'.$id] = price_format($amount);
+				$_POST[$name.'_'.$id] = FormatService::priceFormat($amount);
 			}
 		} else
 			$_POST[$name] = $value;
@@ -514,7 +514,7 @@ if (isset($_POST['CancelItemChanges']))
 if (isset($_POST['go']))
 {
 	display_quick_entries($_SESSION['journal_items'], $_POST['quick'], RequestService::inputNumStatic('totamount'), QE_JOURNAL, RequestService::getPostStatic('aux_info'));
-	$_POST['totamount'] = price_format(0); $Ajax->activate('totamount');
+	$_POST['totamount'] = FormatService::priceFormat(0); $Ajax->activate('totamount');
 	line_start_focus();
 }
 

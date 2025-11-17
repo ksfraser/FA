@@ -27,13 +27,13 @@ function copy_from_cart()
 	$_POST['Comments'] = $cart->Comments;
     $_POST['StkLocation'] = $cart->Location;
     $_POST['delivery_address'] = $cart->delivery_address;
-	$_POST['prep_amount'] = price_format($cart->prep_amount);
+	$_POST['prep_amount'] = FormatService::priceFormat($cart->prep_amount);
 	$_POST['_ex_rate'] = $cart->ex_rate;
 	$_POST['cash_account'] = $cart->cash_account;
     $_POST['dimension'] = $cart->dimension;
     $_POST['dimension2'] = $cart->dimension2;
     foreach($cart->tax_overrides as $id => $value)
-	    $_POST['mantax'][$id] = price_format($value);
+	    $_POST['mantax'][$id] = FormatService::priceFormat($value);
 }
 
 function copy_to_cart()
@@ -272,7 +272,7 @@ function display_po_items(&$order, $editable=true)
 	if (count($order->line_items))
 		$colspan--;
 
-	$display_sub_total = price_format($total);
+	$display_sub_total = FormatService::priceFormat($total);
 
 	label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right","align=right", 2);
 
@@ -280,7 +280,7 @@ function display_po_items(&$order, $editable=true)
 	
 	$tax_total = display_edit_tax_items($taxes, $colspan, $order->tax_included, 2, $order->trans_type==ST_SUPPINVOICE);
 
-	$display_total = price_format(($total + RequestService::inputNumStatic('freight_cost') + $tax_total));
+	$display_total = FormatService::priceFormat(($total + RequestService::inputNumStatic('freight_cost') + $tax_total));
 
 	start_row();
 	label_cells(_("Amount Total"), $display_total, "colspan=$colspan align='right'","align='right'");
@@ -340,8 +340,8 @@ function display_po_summary(&$po, $is_self=false, $editable=false)
 	if (!$editable && ($po->prep_amount > 0))
 	{
 		start_row();
-		label_cells(_("Required Pre-Payment"), price_format($po->prep_amount), "class='tableheader2'");
-		label_cells(_("Pre-Payments Allocated"), price_format($po->alloc), "class='tableheader2'");
+		label_cells(_("Required Pre-Payment"), FormatService::priceFormat($po->prep_amount), "class='tableheader2'");
+		label_cells(_("Pre-Payments Allocated"), FormatService::priceFormat($po->alloc), "class='tableheader2'");
 		end_row();
 	}
 

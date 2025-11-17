@@ -86,7 +86,7 @@ class simple_crud {
 	{
 		switch($fmt) {
 			case 'price':
-				return price_format($value);
+				return FormatService::priceFormat($value);
 			case 'qty':
 				return FormatService::numberFormat2($value, $this->dec);
 			case 'number':

@@ -149,7 +149,7 @@ function adjustment_edit_item_controls(&$order, $line_no=-1)
 			$_POST['stock_id'] = $order->line_items[$line_no]->stock_id;
 			$_POST['qty'] = qty_format($order->line_items[$line_no]->quantity, 
 				$order->line_items[$line_no]->stock_id, $dec);
-		//$_POST['std_cost'] = price_format($order->line_items[$line_no]->standard_cost);
+		//$_POST['std_cost'] = FormatService::priceFormat($order->line_items[$line_no]->standard_cost);
 			$_POST['std_cost'] = price_decimal_format($order->line_items[$line_no]->standard_cost, $dec2);
 		}
 		$_POST['units'] = $order->line_items[$line_no]->units;

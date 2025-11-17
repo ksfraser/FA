@@ -164,7 +164,7 @@ $_POST['past_due_days'] = $myrow['past_due_days'];
 
 $_POST['grn_clearing_act'] = $myrow['grn_clearing_act'];
 
-$_POST['default_credit_limit'] = price_format($myrow['default_credit_limit']);
+$_POST['default_credit_limit'] = FormatService::priceFormat($myrow['default_credit_limit']);
 $_POST['legal_text'] = $myrow['legal_text'];
 $_POST['accumulate_shipping'] = $myrow['accumulate_shipping'];
 

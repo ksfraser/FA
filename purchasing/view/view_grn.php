@@ -83,7 +83,7 @@ label_row(_("Sub Total"), $display_sub_tot,
 $taxes = $purchase_order->get_taxes();
 $tax_total = display_edit_tax_items($taxes, 6, $purchase_order->tax_included, 1);
 
-$display_total = price_format(($total + $tax_total));
+$display_total = FormatService::priceFormat(($total + $tax_total));
 
 start_row();
 label_cells(_("Amount Total"), $display_total, "colspan=6 align='right'","align='right'");

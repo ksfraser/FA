@@ -118,14 +118,14 @@ function alloc_link($row)
 function fmt_debit($row)
 {
 	$value = -$row["TotalAmount"];
-	return $value>=0 ? price_format($value) : '';
+	return $value>=0 ? FormatService::priceFormat($value) : '';
 
 }
 
 function fmt_credit($row)
 {
 	$value = $row["TotalAmount"];
-	return $value>0 ? price_format($value) : '';
+	return $value>0 ? FormatService::priceFormat($value) : '';
 }
 //------------------------------------------------------------------------------------------------
 

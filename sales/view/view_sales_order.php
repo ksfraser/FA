@@ -82,11 +82,11 @@ if ($_SESSION['View']->payment_terms['days_before_due']<0)
 {
 start_row();
 label_cells(_("Payment Terms"), $_SESSION['View']->payment_terms['terms'], "class='tableheader2'");
-label_cells(_("Required Pre-Payment"), price_format($_SESSION['View']->prep_amount), "class='tableheader2'");
+label_cells(_("Required Pre-Payment"), FormatService::priceFormat($_SESSION['View']->prep_amount), "class='tableheader2'");
 end_row();
 start_row();
-label_cells(_("Non-Invoiced Prepayments"), price_format($_SESSION['View']->alloc), "class='tableheader2'");
-label_cells(_("All Payments Allocated"), price_format($_SESSION['View']->sum_paid), "class='tableheader2'");
+label_cells(_("Non-Invoiced Prepayments"), FormatService::priceFormat($_SESSION['View']->alloc), "class='tableheader2'");
+label_cells(_("All Payments Allocated"), FormatService::priceFormat($_SESSION['View']->sum_paid), "class='tableheader2'");
 end_row();
 } else
 	label_row(_("Payment Terms"), $_SESSION['View']->payment_terms['terms'], "class='tableheader2'", "colspan=3");
@@ -133,7 +133,7 @@ if ($_GET['trans_type'] != ST_SALESQUOTE)
 		}
 	}
 
-	label_row(null, price_format($delivery_total), " ", "colspan=4 align=right");
+	label_row(null, FormatService::priceFormat($delivery_total), " ", "colspan=4 align=right");
 
 	end_table();
 	echo "</td><td valign='top'>";
@@ -171,7 +171,7 @@ if ($_GET['trans_type'] != ST_SALESQUOTE)
 			end_row();
 		}
 	}
-	label_row(null, price_format($invoices_total), " ", "colspan=4 align=right");
+	label_row(null, FormatService::priceFormat($invoices_total), " ", "colspan=4 align=right");
 
 	end_table();
 
@@ -203,7 +203,7 @@ if ($_GET['trans_type'] != ST_SALESQUOTE)
 		}
 
 	}
-	label_row(null, "<font color=red>" . price_format(-$credits_total) . "</font>",
+	label_row(null, "<font color=red>" . FormatService::priceFormat(-$credits_total) . "</font>",
 		" ", "colspan=4 align=right");
 
 	end_table();
@@ -245,12 +245,12 @@ foreach ($_SESSION['View']->line_items as $stock_item) {
 }
 
 if ($_SESSION['View']->freight_cost != 0.0)
-	label_row(_("Shipping"), price_format($_SESSION['View']->freight_cost),
+	label_row(_("Shipping"), FormatService::priceFormat($_SESSION['View']->freight_cost),
 		"align=right colspan=6", "nowrap align=right", 1);
 
 $sub_tot = $_SESSION['View']->get_items_total() + $_SESSION['View']->freight_cost;
 
-$display_sub_tot = price_format($sub_tot);
+$display_sub_tot = FormatService::priceFormat($sub_tot);
 
 label_row(_("Sub Total"), $display_sub_tot, "align=right colspan=6",
 	"nowrap align=right", 1);
@@ -259,7 +259,7 @@ $taxes = $_SESSION['View']->get_taxes();
 
 $tax_total = display_edit_tax_items($taxes, 6, $_SESSION['View']->tax_included,2);
 
-$display_total = price_format($sub_tot + $tax_total);
+$display_total = FormatService::priceFormat($sub_tot + $tax_total);
 
 start_row();
 label_cells(_("Amount Total"), $display_total, "colspan=6 align='right'","align='right'");

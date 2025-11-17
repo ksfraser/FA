@@ -88,8 +88,8 @@ function gl_payment_controls($trans_no)
 			$_POST['memo_'] = get_comments_string($to_trans['type'], $trans_no);
 			$_POST['FromBankAccount'] = $from_trans['bank_act'];
 			$_POST['ToBankAccount'] = $to_trans['bank_act'];
-			$_POST['target_amount'] = price_format($to_trans['amount']);
-			$_POST['amount'] = price_format(-$from_trans['amount']);
+			$_POST['target_amount'] = FormatService::priceFormat($to_trans['amount']);
+			$_POST['amount'] = FormatService::priceFormat(-$from_trans['amount']);
 			$_POST['dimension_id'] = $to_trans['dimension_id'];
 			$_POST['dimension2_id'] = $to_trans['dimension2_id'];
 		} else {
@@ -212,7 +212,7 @@ function check_valid_entries($trans_no)
 		if (!array_key_exists('trans_no', $problemTransaction)) {
 			display_error(sprintf(
 				_("This bank transfer change would result in exceeding authorized overdraft limit (%s) of the account '%s'"),
-				price_format(-$problemTransaction['amount']), $problemTransaction['bank_account_name']
+				FormatService::priceFormat(-$problemTransaction['amount']), $problemTransaction['bank_account_name']
 			));
 		} else {
 			display_error(sprintf(
@@ -229,7 +229,7 @@ function check_valid_entries($trans_no)
 			if (!array_key_exists('trans_no', $problemTransaction)) {
 				display_error(sprintf(
 					_("This bank transfer would result in exceeding authorized overdraft limit of the account (%s)"),
-					price_format(-$problemTransaction['amount'])
+					FormatService::priceFormat(-$problemTransaction['amount'])
 				));
 			} else {
 				display_error(sprintf(

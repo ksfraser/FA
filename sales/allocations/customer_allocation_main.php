@@ -72,12 +72,12 @@ function alloc_link($row)
 
 function amount_total($row)
 {
-	return price_format($row['type'] == ST_JOURNAL && $row["Total"] < 0 ? -$row["Total"] : $row["Total"]);
+	return FormatService::priceFormat($row['type'] == ST_JOURNAL && $row["Total"] < 0 ? -$row["Total"] : $row["Total"]);
 }
 
 function amount_left($row)
 {
-	return price_format(($row['type'] == ST_JOURNAL && $row["Total"] < 0 ? -$row["Total"] : $row["Total"])-$row["alloc"]);
+	return FormatService::priceFormat(($row['type'] == ST_JOURNAL && $row["Total"] < 0 ? -$row["Total"] : $row["Total"])-$row["alloc"]);
 }
 
 function check_settled($row)

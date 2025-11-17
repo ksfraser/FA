@@ -94,7 +94,7 @@ function display_bank_header(&$order)
 				$Ajax->activate('footer');
 				$Ajax->activate('totamount');
 			}
-			amount_row($qid['base_desc'].":", 'totamount', price_format($qid['base_amount']),
+			amount_row($qid['base_desc'].":", 'totamount', FormatService::priceFormat($qid['base_amount']),
 				 null, "&nbsp;&nbsp;".submit('go', _("Go"), false, false, true));
 			break;	
     }
@@ -213,7 +213,7 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 		$_POST['code_id'] = $item->code_id;
 		$_POST['dimension_id'] = $item->dimension_id;
 		$_POST['dimension2_id'] = $item->dimension2_id;
-		$_POST['amount'] = price_format(abs($item->amount));
+		$_POST['amount'] = FormatService::priceFormat(abs($item->amount));
 		$_POST['description'] = $item->description;
 		$_POST['LineMemo'] = $item->reference;
 
@@ -293,7 +293,7 @@ function gl_options_controls($order)
 	if ($person_curr != $bank_curr)
 	{
 		$_POST['settled_amount'] =
-			price_format(abs($order->gl_items_total() / get_exchange_rate_from_to($bank_curr, $person_curr, RequestService::getPostStatic('date_'))));
+			FormatService::priceFormat(abs($order->gl_items_total() / get_exchange_rate_from_to($bank_curr, $person_curr, RequestService::getPostStatic('date_'))));
 		amount_row($type == PT_CUSTOMER ? _("Settled AR Amount:") :  _("Settled AP Amount:"),
 			 'settled_amount', null, null, $person_curr, user_price_dec());
 	}

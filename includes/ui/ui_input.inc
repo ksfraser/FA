@@ -455,9 +455,9 @@ function amount_decimal_cell($label, $params="", $id=null)
 function amount_cell($label, $bold=false, $params="", $id=null)
 {
 	if ($bold)
-		label_cell("<b>".price_format($label)."</b>", "nowrap align=right ".$params, $id);
+		label_cell("<b>".FormatService::priceFormat($label)."</b>", "nowrap align=right ".$params, $id);
 	else
-		label_cell(price_format($label), "nowrap align=right ".$params, $id);
+		label_cell(FormatService::priceFormat($label), "nowrap align=right ".$params, $id);
 }
 
 //JAM  Allow entered unit prices to be fractional
@@ -988,7 +988,7 @@ function customer_credit_row($customer, $credit, $parms='')
 		"<a target='_blank' " . ($credit<0 ? 'class="redfg"' : '')
 		."href='$path_to_root/sales/inquiry/customer_inquiry.php?customer_id=".$customer."'"
 		." onclick=\"javascript:openWindow(this.href,this.target); return false;\" >"
-		. price_format($credit)
+		. FormatService::priceFormat($credit)
 		."</a>", $parms);
 }
 
@@ -1000,7 +1000,7 @@ function supplier_credit_row($supplier, $credit, $parms='')
 		"<a target='_blank' " . ($credit<0 ? 'class="redfg"' : '')
 		."href='$path_to_root/purchasing/inquiry/supplier_inquiry.php?supplier_id=".$supplier."'"
 		." onclick=\"javascript:openWindow(this.href,this.target); return false;\" >"
-		. price_format($credit)
+		. FormatService::priceFormat($credit)
 		."</a>", $parms);
 }
 
@@ -1014,7 +1014,7 @@ function bank_balance_row($bank_acc, $parms='')
 		"<a target='_blank' " . ($bal<0 ? 'class="redfg"' : '')
 		."href='$path_to_root/gl/inquiry/bank_inquiry.php?bank_account=".$bank_acc."'"
 		." onclick=\"javascript:openWindow(this.href,this.target); return false;\" >&nbsp;"
-		. price_format($bal)
+		. FormatService::priceFormat($bal)
 		."</a>", $parms);
 }
 

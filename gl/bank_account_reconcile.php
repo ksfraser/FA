@@ -81,13 +81,13 @@ function gl_view($row)
 function fmt_debit($row)
 {
 	$value = $row["amount"];
-	return $value>=0 ? price_format($value) : '';
+	return $value>=0 ? FormatService::priceFormat($value) : '';
 }
 
 function fmt_credit($row)
 {
 	$value = -$row["amount"];
-	return $value>0 ? price_format($value) : '';
+	return $value>0 ? FormatService::priceFormat($value) : '';
 }
 
 function fmt_person($trans)
@@ -211,18 +211,18 @@ end_table();
 $result = get_max_reconciled(RequestService::getPostStatic('reconcile_date'), $_POST['bank_account']);
 
 if ($row = db_fetch($result)) {
-	$_POST["reconciled"] = price_format($row["end_balance"]-$row["beg_balance"]);
+	$_POST["reconciled"] = FormatService::priceFormat($row["end_balance"]-$row["beg_balance"]);
 	$total = $row["total"];
 	if (!isset($_POST["beg_balance"])) { // new selected account/statement
 		$_POST["last_date"] = DateService::sql2dateStatic($row["last_date"]);
-		$_POST["beg_balance"] = price_format($row["beg_balance"]);
-		$_POST["end_balance"] = price_format($row["end_balance"]);
+		$_POST["beg_balance"] = FormatService::priceFormat($row["beg_balance"]);
+		$_POST["end_balance"] = FormatService::priceFormat($row["end_balance"]);
 		if (RequestService::getPostStatic('bank_date')) {
 			// if it is the last updated bank statement retrieve ending balance
 
 			$row = get_ending_reconciled($_POST['bank_account'], $_POST['bank_date']);
 			if($row) {
-				$_POST["end_balance"] = price_format($row["ending_reconcile_balance"]);
+				$_POST["end_balance"] = FormatService::priceFormat($row["ending_reconcile_balance"]);
 			}
 		}
 	} 

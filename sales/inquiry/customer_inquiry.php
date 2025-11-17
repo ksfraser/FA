@@ -60,7 +60,7 @@ function fmt_amount($row)
 {
 	$value =
 	    $row['type']==ST_CUSTCREDIT || $row['type']==ST_CUSTPAYMENT || $row['type']==ST_BANKDEPOSIT ? -$row["TotalAmount"] : $row["TotalAmount"];
-    return price_format($value);
+    return FormatService::priceFormat($value);
 }
 
 function credit_link($row)

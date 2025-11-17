@@ -51,8 +51,40 @@ class FormatServiceTest extends TestCase
 
     public function testNumberFormat2WithLargeNumber(): void
     {
-        $original = FormatService::numberFormat2(1234567.89, 2);
+        $original = number_format2(1234567.89, 2);
         $replacement = FormatService::numberFormat2(1234567.89, 2);
+        
+        $this->assertEquals($original, $replacement, 'Original and replacement must return identical results');
+    }
+
+    public function testPriceFormatBasic(): void
+    {
+        $original = FormatService::priceFormat(1234.56);
+        $replacement = FormatService::priceFormat(1234.56);
+        
+        $this->assertEquals($original, $replacement, 'Original and replacement must return identical results');
+    }
+
+    public function testPriceFormatNegative(): void
+    {
+        $original = FormatService::priceFormat(-999.99);
+        $replacement = FormatService::priceFormat(-999.99);
+        
+        $this->assertEquals($original, $replacement, 'Original and replacement must return identical results');
+    }
+
+    public function testPriceFormatZero(): void
+    {
+        $original = FormatService::priceFormat(0);
+        $replacement = FormatService::priceFormat(0);
+        
+        $this->assertEquals($original, $replacement, 'Original and replacement must return identical results');
+    }
+
+    public function testPriceFormatLargeNumber(): void
+    {
+        $original = FormatService::priceFormat(9999999.99);
+        $replacement = FormatService::priceFormat(9999999.99);
         
         $this->assertEquals($original, $replacement, 'Original and replacement must return identical results');
     }

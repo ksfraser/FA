@@ -105,7 +105,7 @@ function credit_link($row)
 function fmt_amount($row)
 {
 	$value = $row["TotalAmount"];
-	return price_format($value);
+	return FormatService::priceFormat($value);
 }
 
 function prt_link($row)

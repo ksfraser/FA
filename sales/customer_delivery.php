@@ -187,7 +187,7 @@ function check_data()
 		}
 	}
 	if ($_POST['ChargeFreightCost'] == "") {
-		$_POST['ChargeFreightCost'] = price_format(0);
+		$_POST['ChargeFreightCost'] = FormatService::priceFormat(0);
 	}
 
 	if (!check_num('ChargeFreightCost',0)) {
@@ -237,7 +237,7 @@ function copy_from_cart()
 {
 	$cart = &$_SESSION['Items'];
 	$_POST['ship_via'] = $cart->ship_via;
-	$_POST['ChargeFreightCost'] = price_format($cart->freight_cost);
+	$_POST['ChargeFreightCost'] = FormatService::priceFormat($cart->freight_cost);
 	$_POST['DispatchDate'] = $cart->document_date;
 	$_POST['due_date'] = $cart->due_date;
 	$_POST['Location'] = $cart->Location;
@@ -497,7 +497,7 @@ foreach ($_SESSION['Items']->line_items as $line=>$ln_itm) {
 }
 
 $_POST['ChargeFreightCost'] =  RequestService::getPostStatic('ChargeFreightCost', 
-	price_format($_SESSION['Items']->freight_cost));
+	FormatService::priceFormat($_SESSION['Items']->freight_cost));
 
 $colspan = 9;
 
@@ -508,14 +508,14 @@ end_row();
 
 $inv_items_total = $_SESSION['Items']->get_items_total_dispatch();
 
-$display_sub_total = price_format($inv_items_total + RequestService::inputNumStatic('ChargeFreightCost'));
+$display_sub_total = FormatService::priceFormat($inv_items_total + RequestService::inputNumStatic('ChargeFreightCost'));
 
 label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right","align=right");
 
 $taxes = $_SESSION['Items']->get_taxes(RequestService::inputNumStatic('ChargeFreightCost'));
 $tax_total = display_edit_tax_items($taxes, $colspan, $_SESSION['Items']->tax_included);
 
-$display_total = price_format(($inv_items_total + RequestService::inputNumStatic('ChargeFreightCost') + $tax_total));
+$display_total = FormatService::priceFormat(($inv_items_total + RequestService::inputNumStatic('ChargeFreightCost') + $tax_total));
 
 label_row(_("Amount Total"), $display_total, "colspan=$colspan align=right","align=right");
 

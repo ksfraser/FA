@@ -216,15 +216,15 @@ function display_order_summary($title, &$order, $editable_items=false)
 		++$colspan;
 	start_row();
 	label_cell(_("Shipping Charge"), "colspan=$colspan align=right");
-	small_amount_cells(null, 'freight_cost', price_format(RequestService::getPostStatic('freight_cost',0)));
+	small_amount_cells(null, 'freight_cost', FormatService::priceFormat(RequestService::getPostStatic('freight_cost',0)));
 	label_cell('', 'colspan=2');
 	end_row();
-	$display_sub_total = price_format($total + RequestService::inputNumStatic('freight_cost'));
+	$display_sub_total = FormatService::priceFormat($total + RequestService::inputNumStatic('freight_cost'));
 	label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right","align=right", 2);
 	$taxes = $order->get_taxes(RequestService::inputNumStatic('freight_cost'));
 	$tax_total = display_edit_tax_items($taxes, $colspan, $order->tax_included, 2);
 
-	$display_total = price_format(($total + RequestService::inputNumStatic('freight_cost') + $tax_total));
+	$display_total = FormatService::priceFormat(($total + RequestService::inputNumStatic('freight_cost') + $tax_total));
 
 	start_row();
 	label_cells(_("Amount Total"), $display_total, "colspan=$colspan align=right","align=right");
@@ -483,7 +483,7 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 		$_POST['stock_id'] = $order->line_items[$id]->stock_id;
 		$dec = get_qty_dec($_POST['stock_id']);
 		$_POST['qty'] = FormatService::numberFormat2($order->line_items[$id]->qty_dispatched, $dec);
-		$_POST['price'] = price_format($order->line_items[$id]->price);
+		$_POST['price'] = FormatService::priceFormat($order->line_items[$id]->price);
 		$_POST['Disc'] = percent_format($order->line_items[$id]->discount_percent*100);
 		$units = $order->line_items[$id]->units;
 		$_POST['item_description'] = $order->line_items[$id]->item_description;
@@ -524,7 +524,7 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 		$price = get_kit_price($_POST['stock_id'],
 			$order->customer_currency, $order->sales_type,
 			$order->price_factor, RequestService::getPostStatic('OrderDate'));
-		$_POST['price'] = price_format($price);
+		$_POST['price'] = FormatService::priceFormat($price);
 		// default to the customer's discount %
 		$_POST['Disc'] = percent_format($order->default_discount * 100);
 	}
@@ -616,11 +616,11 @@ function display_delivery_details(&$order)
 		locations_list_row(_("Deliver from Location:"), 'Location', null, false, true, $order->fixed_asset);
 		if ($order->payment_terms['days_before_due'] == -1)
 		{
-			$Ajax->addUpdate('items_table', 'prep_amount', price_format($order->get_trans_total())); // bind to items_table update
+			$Ajax->addUpdate('items_table', 'prep_amount', FormatService::priceFormat($order->get_trans_total())); // bind to items_table update
 			if (!$order->is_started())
 				amount_row(_("Pre-Payment Required:"), 'prep_amount');
 			else
-				label_row(_("Pre-Payment Required:"), price_format($order->prep_amount), "class='label'");
+				label_row(_("Pre-Payment Required:"), FormatService::priceFormat($order->prep_amount), "class='label'");
 		}
 		if (list_updated('Location'))
 			$Ajax->activate('items_table');

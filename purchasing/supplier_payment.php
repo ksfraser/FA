@@ -79,7 +79,7 @@ if (!isset($_POST['bank_account'])) { // first page call
 				if ($trans->type == $_GET['trans_type'] && $trans->type_no == $_GET['PInvoice']) {
 					$un_allocated = abs($trans->amount) - $trans->amount_allocated;
 					$_SESSION['alloc']->amount = $_SESSION['alloc']->allocs[$line]->current_allocated = $un_allocated;
-					$_POST['amount'] = $_POST['amount'.$line] = price_format($un_allocated);
+					$_POST['amount'] = $_POST['amount'.$line] = FormatService::priceFormat($un_allocated);
 					break;
 				}
 			}
@@ -139,7 +139,7 @@ function check_inputs()
 	
 	if (@$_POST['amount'] == "") 
 	{
-		$_POST['amount'] = price_format(0);
+		$_POST['amount'] = FormatService::priceFormat(0);
 	}
 
 	if (!check_num('amount', 0))
@@ -210,7 +210,7 @@ function check_inputs()
 
 	if (($limit !== null) && (floatcmp($limit, RequestService::inputNumStatic('amount')) < 0))
 	{
-		display_error(sprintf(_("The total bank amount exceeds allowed limit (%s)."), price_format($limit)));
+		display_error(sprintf(_("The total bank amount exceeds allowed limit (%s)."), FormatService::priceFormat($limit)));
 		set_focus('amount');
 		return false;
 	}
@@ -280,7 +280,7 @@ start_form();
     supplier_list_row(_("Payment To:"), 'supplier_id', null, false, true);
 
 	if (list_updated('supplier_id')) {
-		$_POST['amount'] = price_format(0);
+		$_POST['amount'] = FormatService::priceFormat(0);
 		$_SESSION['alloc']->person_id = RequestService::getPostStatic('supplier_id');
 		$Ajax->activate('amount');
 	} elseif (list_updated('bank_account'))
@@ -299,7 +299,7 @@ start_form();
 		$_POST['bank_account'] = get_default_supplier_payment_bank_account($_POST['supplier_id'], $_POST['DatePaid']);
 	} else
 	{
-		$_POST['amount'] = price_format(0);
+		$_POST['amount'] = FormatService::priceFormat(0);
 	}
 
     bank_accounts_list_row(_("From Bank Account:"), 'bank_account', null, true);

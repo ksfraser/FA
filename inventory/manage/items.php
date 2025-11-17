@@ -526,9 +526,9 @@ function item_settings(&$stock_id, $new_item)
 		if (!$new_item) {
 			hidden('material_cost');
 			hidden('purchase_cost');
-			label_row(_("Initial Value").":", price_format($_POST['purchase_cost']), "", "align='right'");
-			label_row(_("Depreciations").":", price_format($_POST['purchase_cost'] - $_POST['material_cost']), "", "align='right'");
-			label_row(_("Current Value").':', price_format($_POST['material_cost']), "", "align='right'");
+			label_row(_("Initial Value").":", FormatService::priceFormat($_POST['purchase_cost']), "", "align='right'");
+			label_row(_("Depreciations").":", FormatService::priceFormat($_POST['purchase_cost'] - $_POST['material_cost']), "", "align='right'");
+			label_row(_("Current Value").':', FormatService::priceFormat($_POST['material_cost']), "", "align='right'");
 		}
 	}
 	end_outer_table(1);

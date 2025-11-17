@@ -349,7 +349,7 @@ if (isset($_POST['go']))
 {
 	$Ajax->activate('gl_items');
 	display_quick_entries($_SESSION['supp_trans'], $_POST['qid'], RequestService::inputNumStatic('totamount'), QE_SUPPINV);
-	$_POST['totamount'] = price_format(0); $Ajax->activate('totamount');
+	$_POST['totamount'] = FormatService::priceFormat(0); $Ajax->activate('totamount');
 	reset_tax_input();
 }
 

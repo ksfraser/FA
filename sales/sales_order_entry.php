@@ -336,7 +336,7 @@ function copy_from_cart()
 	$_POST['OrderDate'] = $cart->document_date;
 	$_POST['delivery_date'] = $cart->due_date;
 	$_POST['cust_ref'] = $cart->cust_ref;
-	$_POST['freight_cost'] = price_format($cart->freight_cost);
+	$_POST['freight_cost'] = FormatService::priceFormat($cart->freight_cost);
 
 	$_POST['deliver_to'] = $cart->deliver_to;
 	$_POST['delivery_address'] = $cart->delivery_address;
@@ -348,7 +348,7 @@ function copy_from_cart()
 
 	$_POST['branch_id'] = $cart->Branch;
 	$_POST['sales_type'] = $cart->sales_type;
-	$_POST['prep_amount'] = price_format($cart->prep_amount);
+	$_POST['prep_amount'] = FormatService::priceFormat($cart->prep_amount);
 	// POS 
 	$_POST['payment'] = $cart->payment;
 	if ($cart->trans_type!=ST_SALESORDER && $cart->trans_type!=ST_SALESQUOTE) { // 2008-11-12 Joe Hunt
@@ -428,7 +428,7 @@ function can_process() {
 		}
 
 		if ($_POST['freight_cost'] == "")
-			$_POST['freight_cost'] = price_format(0);
+			$_POST['freight_cost'] = FormatService::priceFormat(0);
 
 		if (!check_num('freight_cost',0)) {
 			display_error(_("The shipping cost entered is expected to be numeric."));

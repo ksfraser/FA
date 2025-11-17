@@ -68,7 +68,7 @@ if (!isset($_POST['bank_account'])) { // first page call
 					$un_allocated = $trans->amount - $trans->amount_allocated;
 					if ($un_allocated){
 						$_SESSION['alloc']->allocs[$line]->current_allocated = $un_allocated;
-						$_POST['amount'] = $_POST['amount'.$line] = price_format($un_allocated);
+						$_POST['amount'] = $_POST['amount'.$line] = FormatService::priceFormat($un_allocated);
 					}
 					break;
 				}
@@ -291,11 +291,11 @@ if (isset($_GET['trans_no']) && $_GET['trans_no'] > 0 )
 	$_POST['bank_account'] = $myrow["bank_act"];
 	$_POST['ref'] =  $myrow["reference"];
 	$charge = get_cust_bank_charge(ST_CUSTPAYMENT, $_POST['trans_no']);
-	$_POST['charge'] =  price_format($charge);
+	$_POST['charge'] =  FormatService::priceFormat($charge);
 	$_POST['DateBanked'] =  DateService::sql2dateStatic($myrow['tran_date']);
-	$_POST["amount"] = price_format($myrow['Total'] - $myrow['ov_discount']);
-	$_POST["bank_amount"] = price_format($myrow['bank_amount']+$charge);
-	$_POST["discount"] = price_format($myrow['ov_discount']);
+	$_POST["amount"] = FormatService::priceFormat($myrow['Total'] - $myrow['ov_discount']);
+	$_POST["bank_amount"] = FormatService::priceFormat($myrow['bank_amount']+$charge);
+	$_POST["discount"] = FormatService::priceFormat($myrow['ov_discount']);
 	$_POST["memo_"] = get_comments_string(ST_CUSTPAYMENT,$_POST['trans_no']);
 
 	//Prepare allocation cart 

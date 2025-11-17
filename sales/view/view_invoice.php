@@ -198,7 +198,7 @@ if (db_num_rows($result) > 0)
 		end_row();
 	} //end while there are line items to print out
 
-	$display_sub_tot = price_format($sub_total);
+	$display_sub_tot = FormatService::priceFormat($sub_total);
 	label_row(_("Sub-total"), $display_sub_tot, "colspan=6 align=right",
 		"nowrap align=right width='15%'");
 }
@@ -208,19 +208,19 @@ else
 /*Print out the invoice text entered */
 if ($myrow['ov_freight'] != 0.0)
 {
-	$display_freight = price_format($myrow["ov_freight"]);
+	$display_freight = FormatService::priceFormat($myrow["ov_freight"]);
 	label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
 }
 
 $tax_items = get_trans_tax_details(ST_SALESINVOICE, $trans_id);
 display_customer_trans_tax_details($tax_items, 6);
 
-$display_total = price_format($myrow["ov_freight"]+$myrow["ov_gst"]+$myrow["ov_amount"]+$myrow["ov_freight_tax"]);
+$display_total = FormatService::priceFormat($myrow["ov_freight"]+$myrow["ov_gst"]+$myrow["ov_amount"]+$myrow["ov_freight_tax"]);
 
 label_row(_("TOTAL INVOICE"), $display_total, "colspan=6 align=right",
 	"nowrap align=right");
 if ($myrow['prep_amount'])
-	label_row(_("PREPAYMENT AMOUNT INVOICED"), '<b>'.price_format($myrow['prep_amount']).'</b>', "colspan=6 align=right",
+	label_row(_("PREPAYMENT AMOUNT INVOICED"), '<b>'.FormatService::priceFormat($myrow['prep_amount']).'</b>', "colspan=6 align=right",
 		"nowrap align=right");
 end_table(1);
 

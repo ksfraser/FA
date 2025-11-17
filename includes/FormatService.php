@@ -7,7 +7,7 @@ namespace FA\Services;
  * Format Service
  * 
  * Handles number and currency formatting with user preferences.
- * Replaces legacy FormatService::numberFormat2() and price_format() functions.
+ * Replaces legacy FormatService::numberFormat2() and FormatService::priceFormat() functions.
  */
 class FormatService
 {
@@ -39,5 +39,19 @@ class FormatService
         $num = number_format($number, intval($dec), $dsep, $tsep);
 
         return $decimals === 'max' ? rtrim($num, '0') : $num;
+    }
+    
+    /**
+     * Format price with user's decimal precision
+     * 
+     * Formats a price value using the user's configured price decimal places.
+     * This is a convenience wrapper around numberFormat2().
+     * 
+     * @param float|int $number The price to format
+     * @return string Formatted price string
+     */
+    public static function priceFormat(float|int $number): string
+    {
+        return self::numberFormat2($number, user_price_dec());
     }
 }

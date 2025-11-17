@@ -327,7 +327,7 @@ function show_allocatable($show_totals) {
 	    		amount_cell(abs($alloc_item->amount));
 				amount_cell($alloc_item->amount_allocated);
 
-		    	$_POST['amount' . $id] = price_format($alloc_item->current_allocated);
+		    	$_POST['amount' . $id] = FormatService::priceFormat($alloc_item->current_allocated);
 
 	    		$un_allocated = round((abs($alloc_item->amount) - $alloc_item->amount_allocated), 6);
 	    		amount_cell($un_allocated, false,'', 'maxval'.$id);
@@ -336,14 +336,14 @@ function show_allocatable($show_totals) {
 					 . _("All") . "</a>");
 				label_cell("<a href='javascript:void(0)' name=DeAll$id onclick='allocate_none(this.name.substr(5));return true;'>"
 					 . _("None") . "</a>".hidden("un_allocated" . $id, 
-					 price_format($un_allocated), false));
+					 FormatService::priceFormat($un_allocated), false));
 				end_row();
 
    	    		$total_allocated += RequestService::inputNumStatic('amount' . $id);
 		   	}
 		}
 		if ($show_totals) {
-    	   	label_row(_("Total Allocated"), price_format($total_allocated),
+    	   	label_row(_("Total Allocated"), FormatService::priceFormat($total_allocated),
 	    		"colspan=8 align=right", "align=right id='total_allocated'", 3);
 
 			$amount = abs($cart->amount);
@@ -355,7 +355,7 @@ function show_allocatable($show_totals) {
     	    }
 	        else
         		$font1 = $font2 = "";
-			$left_to_allocate = price_format($amount - $total_allocated);
+			$left_to_allocate = FormatService::priceFormat($amount - $total_allocated);
 	        label_row(_("Left to Allocate"), $font1 . $left_to_allocate . $font2, 
 				"colspan=8 align=right", "nowrap align=right id='left_to_allocate'",
 				 3);

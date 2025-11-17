@@ -55,9 +55,9 @@ if (isset($_GET["amount_max"]))
 	$_POST["amount_max"] = $_GET["amount_max"];
 
 if (!isset($_POST["amount_min"]))
-	$_POST["amount_min"] = price_format(0);
+	$_POST["amount_min"] = FormatService::priceFormat(0);
 if (!isset($_POST["amount_max"]))
-	$_POST["amount_max"] = price_format(0);
+	$_POST["amount_max"] = FormatService::priceFormat(0);
 
 //----------------------------------------------------------------------------------------------------
 

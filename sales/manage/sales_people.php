@@ -140,13 +140,13 @@ if ($selected_id != -1)
 		$_POST['salesman_fax'] = $myrow["salesman_fax"];
 		$_POST['salesman_email'] = $myrow["salesman_email"];
 		$_POST['provision'] = percent_format($myrow["provision"]);
-		$_POST['break_pt'] = price_format($myrow["break_pt"]);
+		$_POST['break_pt'] = FormatService::priceFormat($myrow["break_pt"]);
 		$_POST['provision2'] = percent_format($myrow["provision2"]);
 	}
 	hidden('selected_id', $selected_id);
 } elseif ($Mode != 'ADD_ITEM') {
 	$_POST['provision'] = percent_format(0);
-	$_POST['break_pt'] = price_format(0);
+	$_POST['break_pt'] = FormatService::priceFormat(0);
 	$_POST['provision2'] = percent_format(0);	
 }
 

@@ -164,7 +164,7 @@ function can_process()
         }
 
 		if ($_POST['Labour'] == "")
-			$_POST['Labour'] = price_format(0);
+			$_POST['Labour'] = FormatService::priceFormat(0);
     	if (!check_num('Labour', 0))
     	{
     		display_error( _("The labour cost entered is invalid or less than zero."));
@@ -172,7 +172,7 @@ function can_process()
     		return false;
     	}
 		if ($_POST['Costs'] == "")
-			$_POST['Costs'] = price_format(0);
+			$_POST['Costs'] = FormatService::priceFormat(0);
     	if (!check_num('Costs', 0))
     	{
     		display_error( _("The cost entered is invalid or less than zero."));
@@ -343,7 +343,7 @@ if (isset($selected_id))
 	$_POST['RequDate'] = DateService::sql2dateStatic($myrow["required_by"]);
 	$_POST['released_date'] = DateService::sql2dateStatic($myrow["released_date"]);
 	$_POST['units_issued'] = $myrow["units_issued"];
-	$_POST['Costs'] = price_format($myrow["additional_costs"]);
+	$_POST['Costs'] = FormatService::priceFormat($myrow["additional_costs"]);
 
 	$_POST['memo_'] = get_comments_string(ST_WORKORDER, $selected_id);
 
@@ -408,9 +408,9 @@ else
 	{
 		$bank_act = get_default_bank_account();
 		$item = get_item(RequestService::getPostStatic('stock_id'));
-		$_POST['Labour'] = price_format(RequestService::getPostStatic('type') == WO_ASSEMBLY ? $item['labour_cost'] : 0);
+		$_POST['Labour'] = FormatService::priceFormat(RequestService::getPostStatic('type') == WO_ASSEMBLY ? $item['labour_cost'] : 0);
 		$_POST['cr_lab_acc'] = $bank_act['account_code'];
-		$_POST['Costs'] = price_format(RequestService::getPostStatic('type') == WO_ASSEMBLY ? $item['overhead_cost'] : 0);
+		$_POST['Costs'] = FormatService::priceFormat(RequestService::getPostStatic('type') == WO_ASSEMBLY ? $item['overhead_cost'] : 0);
 		$_POST['cr_acc'] = $bank_act['account_code'];
 		$Ajax->activate('_page_body');
 	}

@@ -173,7 +173,7 @@ if ($Mode == 'RESET')
 	$selected_id = -1;
 	$_POST['description'] = $_POST['type'] = $_POST['usage'] = '';
 	$_POST['base_desc']= _('Base Amount');
-	$_POST['base_amount'] = price_format(0);
+	$_POST['base_amount'] = FormatService::priceFormat(0);
 	$_POST['bal_type'] = 0;
 }
 if ($Mode2 == 'RESET2')
@@ -222,7 +222,7 @@ if ($selected_id != -1)
 		$_POST['usage']  = $myrow["usage"];
 		$_POST['bal_type']  = $myrow["bal_type"];
 		$_POST['base_amount']  = $myrow["bal_type"] ?
-			$myrow["base_amount"] : price_format($myrow["base_amount"]);
+			$myrow["base_amount"] : FormatService::priceFormat($myrow["base_amount"]);
 	}	
 	hidden('selected_id', $selected_id);
 } 
@@ -250,7 +250,7 @@ if (RequestService::getPostStatic('type') == QE_JOURNAL && RequestService::getPo
 else
 {
 	text_row_ex(_("Base Amount Description").':', 'base_desc', 50, 60, '');
-	amount_row(_("Default Base Amount").':', 'base_amount', price_format(0));
+	amount_row(_("Default Base Amount").':', 'base_amount', FormatService::priceFormat(0));
 }
 end_table(1);
 submit_add_or_update_center($selected_id == -1, '', 'both');
@@ -343,9 +343,9 @@ if ($selected_id != -1)
 		if ($actn != '=') 
 		{
 			if ($actn == '%') 
-				small_amount_row(_("Part").":", 'amount', price_format(0), null, "%", user_exrate_dec());
+				small_amount_row(_("Part").":", 'amount', FormatService::priceFormat(0), null, "%", user_exrate_dec());
 			else
-				amount_row(_("Amount").":", 'amount', price_format(0));
+				amount_row(_("Amount").":", 'amount', FormatService::priceFormat(0));
 		}
 		text_row_ex(_("Line memo").':', 'memo', 50, 256, '');
 	}

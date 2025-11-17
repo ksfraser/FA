@@ -261,7 +261,7 @@ class ViewDispatch
                 $k++;
             }
 
-            $displaySubTot = price_format($subTotal);
+            $displaySubTot = FormatService::priceFormat($subTotal);
             $labelRow = new HtmlTableRow(new HtmlString(''));
             $labelTd = new HtmlTd(new HtmlString(_("Sub-total")));
             $contentTd = new HtmlTd(new HtmlString($displaySubTot));
@@ -281,7 +281,7 @@ class ViewDispatch
         }
 
         if ($this->model->transData['ov_freight'] != 0.0) {
-            $displayFreight = price_format($this->model->transData["ov_freight"]);
+            $displayFreight = FormatService::priceFormat($this->model->transData["ov_freight"]);
             $labelRow = new HtmlTableRow(new HtmlString(''));
             $labelTd = new HtmlTd(new HtmlString(_("Shipping")));
             $contentTd = new HtmlTd(new HtmlString($displayFreight));
@@ -297,7 +297,7 @@ class ViewDispatch
         $taxView = new TaxDetailsView();
         $fragment->addChild($taxView->render($this->model->taxItems, 6));
 
-        $displayTotal = price_format($this->model->transData["ov_freight"] + $this->model->transData["ov_amount"] + $this->model->transData["ov_freight_tax"] + $this->model->transData["ov_gst"]);
+        $displayTotal = FormatService::priceFormat($this->model->transData["ov_freight"] + $this->model->transData["ov_amount"] + $this->model->transData["ov_freight_tax"] + $this->model->transData["ov_gst"]);
         $labelRow = new HtmlTableRow(new HtmlString(''));
         $labelTd = new HtmlTd(new HtmlString(_("TOTAL VALUE")));
         $contentTd = new HtmlTd(new HtmlString($displayTotal));

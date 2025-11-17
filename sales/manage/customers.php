@@ -202,7 +202,7 @@ function customer_settings($selected_id)
 			$_POST['payment_terms']  = $_POST['notes']  = '';
 
 			$_POST['discount']  = $_POST['pymt_discount'] = percent_format(0);
-			$_POST['credit_limit']	= price_format($SysPrefs->default_credit_limit());
+			$_POST['credit_limit']	= FormatService::priceFormat($SysPrefs->default_credit_limit());
 		}
 	}
 	else 
@@ -221,7 +221,7 @@ function customer_settings($selected_id)
 		$_POST['payment_terms']  = $myrow["payment_terms"];
 		$_POST['discount']  = percent_format($myrow["discount"] * 100);
 		$_POST['pymt_discount']  = percent_format($myrow["pymt_discount"] * 100);
-		$_POST['credit_limit']	= price_format($myrow["credit_limit"]);
+		$_POST['credit_limit']	= FormatService::priceFormat($myrow["credit_limit"]);
 		$_POST['notes']  = $myrow["notes"];
 		$_POST['inactive'] = $myrow["inactive"];
 	}

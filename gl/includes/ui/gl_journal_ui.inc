@@ -72,7 +72,7 @@ function display_order_header(&$Order)
 		else
 		{
 			text_row(_('Additional info:'), 'aux_info', null, 35, 255);
-			amount_row($qid['base_desc'].":", 'totamount', price_format($qid['base_amount']),
+			amount_row($qid['base_desc'].":", 'totamount', FormatService::priceFormat($qid['base_amount']),
 		 		null, "&nbsp;&nbsp;".submit('go', _("Go"), false, false, true));
 		}
 
@@ -210,13 +210,13 @@ function gl_edit_item_controls(&$order, $dim, $sub_accounts, $Index=null)
 			$_POST['person_id'] = $item->person_id;
 			if ($item->amount > 0)
 			{
-				$_POST['AmountDebit'] = price_format($item->amount);
+				$_POST['AmountDebit'] = FormatService::priceFormat($item->amount);
 				$_POST['AmountCredit'] = "";
 			}
 			else
 			{
 				$_POST['AmountDebit'] = "";
-				$_POST['AmountCredit'] = price_format(abs($item->amount));
+				$_POST['AmountCredit'] = FormatService::priceFormat(abs($item->amount));
 			}
 			$_POST['description'] = $item->description;
 			$_POST['LineMemo'] = $item->reference;

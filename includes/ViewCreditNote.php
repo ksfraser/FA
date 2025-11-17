@@ -163,9 +163,9 @@ class ViewCreditNote
             $lineTable->addNested($row);
         }
 
-        $display_sub_tot = price_format($sub_total);
+        $display_sub_tot = FormatService::priceFormat($sub_total);
         $credit_total = $this->model->transData["ov_freight"] + $this->model->transData["ov_gst"] + $this->model->transData["ov_amount"] + $this->model->transData["ov_freight_tax"];
-        $display_total = price_format($credit_total);
+        $display_total = FormatService::priceFormat($credit_total);
 
         if ($sub_total != 0) {
             $labelRow = new HtmlTableRow(new HtmlString(''));
@@ -181,7 +181,7 @@ class ViewCreditNote
         }
 
         if ($this->model->transData["ov_freight"] != 0.0) {
-            $display_freight = price_format($this->model->transData["ov_freight"]);
+            $display_freight = FormatService::priceFormat($this->model->transData["ov_freight"]);
             $labelRow = new HtmlTableRow(new HtmlString(''));
             $labelTd = new HtmlTd(new HtmlString(_("Shipping")));
             $contentTd = new HtmlTd(new HtmlString($display_freight));

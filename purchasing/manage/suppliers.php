@@ -167,7 +167,7 @@ function supplier_settings(&$supplier_id)
 		$_POST['dimension2_id']  = $myrow["dimension2_id"];
 		$_POST['curr_code']  = $myrow["curr_code"];
 		$_POST['payment_terms']  = $myrow["payment_terms"];
-		$_POST['credit_limit']  = price_format($myrow["credit_limit"]);
+		$_POST['credit_limit']  = FormatService::priceFormat($myrow["credit_limit"]);
 		$_POST['tax_group_id'] = $myrow["tax_group_id"];
 		$_POST['tax_included'] = $myrow["tax_included"];
 		$_POST['payable_account']  = $myrow["payable_account"];
@@ -187,7 +187,7 @@ function supplier_settings(&$supplier_id)
 			$_POST['sales_type'] = -1;
 			$_POST['gst_no'] = $_POST['bank_account'] = '';
 			$_POST['payment_terms']  = '';
-			$_POST['credit_limit'] = price_format(0);
+			$_POST['credit_limit'] = FormatService::priceFormat(0);
 
 			$company_record = get_company_prefs();
 			$_POST['curr_code']  = $company_record["curr_default"];

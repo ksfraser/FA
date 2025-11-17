@@ -242,7 +242,7 @@ function check_trans()
 
 	if ($limit !== null && floatcmp($limit, -$amnt_chg) < 0)
 	{
-		display_error(sprintf(_("The total bank amount exceeds allowed limit (%s)."), price_format($limit-$_SESSION['pay_items']->original_amount)));
+		display_error(sprintf(_("The total bank amount exceeds allowed limit (%s)."), FormatService::priceFormat($limit-$_SESSION['pay_items']->original_amount)));
 		set_focus('code_id');
 		$input_error = 1;
 	}
@@ -398,7 +398,7 @@ if (isset($_POST['go']))
 {
 	display_quick_entries($_SESSION['pay_items'], $_POST['person_id'], RequestService::inputNumStatic('totamount'), 
 		$_SESSION['pay_items']->trans_type==ST_BANKPAYMENT ? QE_PAYMENT : QE_DEPOSIT);
-	$_POST['totamount'] = price_format(0); $Ajax->activate('totamount');
+	$_POST['totamount'] = FormatService::priceFormat(0); $Ajax->activate('totamount');
 	line_start_focus();
 }
 //-----------------------------------------------------------------------------------------------

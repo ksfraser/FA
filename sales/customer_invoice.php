@@ -242,7 +242,7 @@ function set_delivery_shipping_sum($delivery_notes)
 
         $shipping += $myrow['ov_freight'];
     }
-    $_POST['ChargeFreightCost'] = price_format($shipping);
+    $_POST['ChargeFreightCost'] = FormatService::priceFormat($shipping);
 }
 
 
@@ -283,7 +283,7 @@ function copy_from_cart()
 	if (!$_SESSION['Items']->is_prepaid())
 	{
 		$_POST['ship_via'] = $cart->ship_via;
-		$_POST['ChargeFreightCost'] = price_format($cart->freight_cost);
+		$_POST['ChargeFreightCost'] = FormatService::priceFormat($cart->freight_cost);
 	}
 	$_POST['dimension_id'] = $cart->dimension_id;
 	$_POST['dimension2_id'] = $cart->dimension2_id;
@@ -328,7 +328,7 @@ function check_data()
 	if(!$prepaid) 
 	{
 		if ($_POST['ChargeFreightCost'] == "") {
-			$_POST['ChargeFreightCost'] = price_format(0);
+			$_POST['ChargeFreightCost'] = FormatService::priceFormat(0);
 		}
 
 		if (!check_num('ChargeFreightCost', 0)) {
@@ -599,13 +599,13 @@ was not fully delivered the first time ?? */
 
 if (!isset($_POST['ChargeFreightCost']) || $_POST['ChargeFreightCost'] == "") {
 	if ($_SESSION['Items']->any_already_delivered() == 1) {
-		$_POST['ChargeFreightCost'] = price_format(0);
+		$_POST['ChargeFreightCost'] = FormatService::priceFormat(0);
 	} else {
-		$_POST['ChargeFreightCost'] = price_format($_SESSION['Items']->freight_cost);
+		$_POST['ChargeFreightCost'] = FormatService::priceFormat($_SESSION['Items']->freight_cost);
 	}
 
 	if (!check_num('ChargeFreightCost')) {
-		$_POST['ChargeFreightCost'] = price_format(0);
+		$_POST['ChargeFreightCost'] = FormatService::priceFormat(0);
 	}
 }
 
@@ -627,14 +627,14 @@ label_cell('', 'colspan=2');
 end_row();
 $inv_items_total = $_SESSION['Items']->get_items_total_dispatch();
 
-$display_sub_total = price_format($inv_items_total + RequestService::inputNumStatic('ChargeFreightCost'));
+$display_sub_total = FormatService::priceFormat($inv_items_total + RequestService::inputNumStatic('ChargeFreightCost'));
 
 label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right","align=right", $is_batch_invoice ? 2 : 0);
 
 $taxes = $_SESSION['Items']->get_taxes(RequestService::inputNumStatic('ChargeFreightCost'));
 $tax_total = display_edit_tax_items($taxes, $colspan, $_SESSION['Items']->tax_included, $is_batch_invoice ? 2 : 0);
 
-$display_total = price_format(($inv_items_total + RequestService::inputNumStatic('ChargeFreightCost') + $tax_total));
+$display_total = FormatService::priceFormat(($inv_items_total + RequestService::inputNumStatic('ChargeFreightCost') + $tax_total));
 
 label_row(_("Invoice Total"), $display_total, "colspan=$colspan align=right","align=right", $is_batch_invoice ? 2 : 0);
 
@@ -657,9 +657,9 @@ if ($prepaid)
 		}
 	}
 	label_row(_("Payments received:"), implode(',', $list));
-	label_row(_("Invoiced here:"), price_format($_SESSION['Items']->prep_amount), 'class=label');
+	label_row(_("Invoiced here:"), FormatService::priceFormat($_SESSION['Items']->prep_amount), 'class=label');
 	label_row($_SESSION['Items']->payment_terms['days_before_due'] == -1 ? _("Left to be invoiced:") : _("Invoiced so far:"),
-		price_format($_SESSION['Items']->get_trans_total()-max($_SESSION['Items']->prep_amount, $allocs)), 'class=label');
+		FormatService::priceFormat($_SESSION['Items']->get_trans_total()-max($_SESSION['Items']->prep_amount, $allocs)), 'class=label');
 }
 
 textarea_row(_("Memo:"), 'Comments', null, 50, 4);

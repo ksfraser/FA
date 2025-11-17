@@ -116,7 +116,7 @@ function copy_from_cn()
 	$cart = &$_SESSION['Items'];
 	$_POST['CreditText'] = $cart->Comments;
 	$_POST['OrderDate'] = $cart->document_date;
-	$_POST['ChargeFreightCost'] = price_format($cart->freight_cost);
+	$_POST['ChargeFreightCost'] = FormatService::priceFormat($cart->freight_cost);
 	$_POST['Location'] = $cart->Location;
 	$_POST['sales_type_id'] = $cart->sales_type;
 	if ($cart->trans_no == 0)
