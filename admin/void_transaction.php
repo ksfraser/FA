@@ -20,6 +20,10 @@ include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/admin/db/transactions_db.inc");
 
 include_once($path_to_root . "/admin/db/voiding_db.inc");
+
+// Modern OOP Services
+require_once($path_to_root . "/includes/Services/DateService.php");
+use FA\Services\DateService;
 $js = "";
 if (user_use_date_picker())
 	$js .= get_js_date_picker();
@@ -267,7 +271,8 @@ function check_valid_entries()
 		set_focus('trans_no');
 		return false;
 	}
-	if (!is_date($_POST['date_']))
+	$dateService = new DateService();
+	if (!$dateService->isDate($_POST['date_']))
 	{
 		display_error(_("The entered date is invalid."));
 		set_focus('date_');

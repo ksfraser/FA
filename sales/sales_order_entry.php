@@ -28,6 +28,10 @@ include_once($path_to_root . "/sales/includes/sales_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 
+// Modern OOP Services
+require_once($path_to_root . "/includes/Services/BankingService.php");
+use FA\Services\BankingService;
+
 set_page_security( @$_SESSION['Items']->trans_type,
 	array(	ST_SALESORDER=>'SA_SALESORDER',
 			ST_SALESQUOTE => 'SA_SALESQUOTE',
@@ -555,7 +559,8 @@ function check_item_data()
 	}
 
 	$cost_home = get_unit_cost(get_post('stock_id')); // Added 2011-03-27 Joe Hunt
-	$cost = $cost_home / get_exchange_rate_from_home_currency($_SESSION['Items']->customer_currency, $_SESSION['Items']->document_date);
+	$bankingService = new BankingService();
+	$cost = $cost_home / $bankingService->getExchangeRateFromHomeCurrency($_SESSION['Items']->customer_currency, $_SESSION['Items']->document_date);
 	if (input_num('price') < $cost)
 	{
 		$dec = user_price_dec();
