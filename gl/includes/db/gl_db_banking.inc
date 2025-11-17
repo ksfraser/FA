@@ -12,7 +12,7 @@
 function add_exchange_variation($trans_no, $date_, $acc_id, $account,
     $currency, $person_type_id=null, $person_id = "", $memo='')
 {
-	if (is_company_currency($currency))
+	if (BankingService::isCompanyCurrencyStatic($currency))
 		return false;
 	if ($date_ == null)
 		$date_ = Today();
@@ -29,7 +29,7 @@ function add_exchange_variation($trans_no, $date_, $acc_id, $account,
 	{
 		if ($row['for_amount'] == 0)
 			continue;
-		$rate = get_exchange_rate_from_home_currency($row['bank_curr_code'], $date_);
+		$rate = BankingService::getExchangeRateFromHomeCurrencyStatic($row['bank_curr_code'], $date_);
 		$for_amount += round2($row['for_amount'] * $rate, user_price_dec());
 	}	
 	$amount = get_gl_trans_from_to("", $date_, $account);
@@ -169,7 +169,7 @@ function add_exchange_variation_all($date, $memo)
 	
 	while($row = db_fetch($res)) 
 	{
-		$exrate = get_exchange_rate_from_home_currency($row['curr_code'], $date);
+		$exrate = BankingService::getExchangeRateFromHomeCurrencyStatic($row['curr_code'], $date);
 		$foreign = round2($row['amount']*$exrate, user_price_dec());
 		$home = round2(get_account_home_balance($row['debtor_no'], PT_CUSTOMER, $row['receivables_account'], $date), user_price_dec());
 		if ($foreign != $home) 
@@ -185,7 +185,7 @@ function add_exchange_variation_all($date, $memo)
 	
 	while($row = db_fetch($res)) 
 	{
-		$exrate = get_exchange_rate_from_home_currency($row['curr_code'], $date);
+		$exrate = BankingService::getExchangeRateFromHomeCurrencyStatic($row['curr_code'], $date);
 		$foreign = round2($row['amount']*$exrate, user_price_dec());
 		$home = round2(get_account_home_balance($row['supplier_id'], PT_SUPPLIER, $row['payable_account'], $date), user_price_dec());
 		if ($foreign != $home) 
@@ -494,7 +494,7 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
 		// store tax details if the gl account is a tax account
 
 		$amount = $gl_item->amount;
-		$ex_rate = get_exchange_rate_from_home_currency($currency, $date_);
+		$ex_rate = BankingService::getExchangeRateFromHomeCurrencyStatic($currency, $date_);
 
 		add_gl_tax_details($gl_item->code_id, $trans_type, $trans_no, -$amount,
 			$ex_rate, $date_, $memo_);

@@ -19,7 +19,7 @@ function display_grn_summary(&$po)
     start_row();
 	label_cells(_("Supplier"), $po->supplier_name, "class='tableheader2'");
 
-    if (!is_company_currency($po->curr_code))
+    if (!BankingService::isCompanyCurrencyStatic($po->curr_code))
     	label_cells(_("Order Currency"), $po->curr_code, "class='tableheader2'");
 
     label_cells(_("For Purchase Order"), get_trans_view_str(ST_PURCHORDER, $po->order_no),
@@ -51,7 +51,7 @@ function edit_grn_summary(&$po)
 	table_section(1);
 		label_row(_("Supplier"), $po->supplier_name);
 
-    	if (!is_company_currency($po->curr_code))
+    	if (!BankingService::isCompanyCurrencyStatic($po->curr_code))
     		label_row(_("Order Currency"), $po->curr_code);
 
 	    label_row(_("For Purchase Order"), get_trans_view_str(ST_PURCHORDER, $po->order_no));
@@ -81,7 +81,7 @@ function edit_grn_summary(&$po)
     	if ($po->Comments != "")
     		label_row(_("Order Comments"), $po->Comments, "class='tableheader2'", "colspan=9");
 
-	    if (!is_company_currency($po->curr_code))
+	    if (!BankingService::isCompanyCurrencyStatic($po->curr_code))
 			exchange_rate_display(BankingService::getCompanyCurrency(), $po->curr_code, get_post('DefaultReceivedDate'));
 	end_outer_table(1);
 }

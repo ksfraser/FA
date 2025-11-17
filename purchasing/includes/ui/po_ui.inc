@@ -145,7 +145,7 @@ function display_po_header(&$order)
 	}
 	supplier_credit_row($order->supplier_id, $order->credit);
 
-	if (!is_company_currency($order->curr_code))
+	if (!BankingService::isCompanyCurrencyStatic($order->curr_code))
 	{
 		label_row(_("Supplier Currency:"), $order->curr_code);
 		exchange_rate_display(BankingService::getCompanyCurrency(), $order->curr_code,
@@ -304,7 +304,7 @@ function display_po_summary(&$po, $is_self=false, $editable=false)
 
     label_cells(_("Supplier"), $po->supplier_name, "class='tableheader2'");
 
-    if (!is_company_currency($po->curr_code))
+    if (!BankingService::isCompanyCurrencyStatic($po->curr_code))
     	label_cells(_("Order Currency"), $po->curr_code, "class='tableheader2'");
 
     if (!$is_self)

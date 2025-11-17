@@ -29,7 +29,7 @@ function write_supp_trans($type, $trans_no, $supplier_id, $date_, $due_date, $re
 	$curr = get_supplier_currency($supplier_id);
 	
 	if ($rate == 0)
-		$rate = get_exchange_rate_from_home_currency($curr, $date_);
+		$rate = BankingService::getExchangeRateFromHomeCurrencyStatic($curr, $date_);
 
 
 	$sql = "INSERT INTO ".TB_PREF."supp_trans (trans_no, type, supplier_id, tran_date, due_date,

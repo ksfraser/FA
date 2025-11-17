@@ -362,7 +362,7 @@ function display_order_header(&$order, $editable, $date_text)
 
 	table_section(2);
 
-	if (!is_company_currency($order->customer_currency) && in_array($order->trans_type, array(ST_SALESINVOICE, ST_CUSTDELIVERY)))
+	if (!BankingService::isCompanyCurrencyStatic($order->customer_currency) && in_array($order->trans_type, array(ST_SALESINVOICE, ST_CUSTDELIVERY)))
 	{
 		label_row(_("Customer Currency:"), $order->customer_currency);
 		exchange_rate_display(BankingService::getCompanyCurrency(), $order->customer_currency,
@@ -422,7 +422,7 @@ function display_order_header(&$order, $editable, $date_text)
 		date_row($date_text, 'OrderDate', _('Date of order receive'),
 			$order->trans_no==0, 0, 0, 0, null, true);
 		if (isset($_POST['_OrderDate_changed']) || list_updated('payment')) {
-			if (!is_company_currency($order->customer_currency) 
+			if (!BankingService::isCompanyCurrencyStatic($order->customer_currency) 
 				&& (get_base_sales_type()>0)) {
 					$change_prices = 1;
 			}

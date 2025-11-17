@@ -315,10 +315,10 @@ function exchange_rate_display($from_currency, $to_currency, $date_, $force_edit
 				}
 			}
 			if (!$rate)	{	// get and edit latest available
-				$rate = get_exchange_rate_from_home_currency($currency, $date_);
+				$rate = BankingService::getExchangeRateFromHomeCurrencyStatic($currency, $date_);
 			}
 			if ($from_currency != $comp_currency)
-				$rate = 1 / ($rate / get_exchange_rate_from_home_currency($to_currency, $date_));
+				$rate = 1 / ($rate / BankingService::getExchangeRateFromHomeCurrencyStatic($to_currency, $date_));
 			$Ajax->activate('_ex_rate_span');
 		}
 

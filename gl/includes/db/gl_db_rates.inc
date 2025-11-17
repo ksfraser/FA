@@ -60,7 +60,7 @@ function get_last_exchange_rate($curr_code, $date_)
 
 function update_exchange_rate($curr_code, $date_, $buy_rate, $sell_rate)
 {
-	if (is_company_currency($curr_code))
+	if (BankingService::isCompanyCurrencyStatic($curr_code))
 		display_db_error("Exchange rates cannot be set for company currency", "", true);
 			
 	$date = date2sql($date_);
@@ -75,7 +75,7 @@ function update_exchange_rate($curr_code, $date_, $buy_rate, $sell_rate)
 
 function add_exchange_rate($curr_code, $date_, $buy_rate, $sell_rate)
 {
-	if (is_company_currency($curr_code))
+	if (BankingService::isCompanyCurrencyStatic($curr_code))
 		display_db_error("Exchange rates cannot be set for company currency", "", true);
 
 	$date = date2sql($date_);
@@ -90,7 +90,7 @@ function add_exchange_rate($curr_code, $date_, $buy_rate, $sell_rate)
 
 function add_new_exchange_rate($curr_code, $date_, $ex_rate)
 {
-	if (is_company_currency($curr_code) || !$ex_rate)
+	if (BankingService::isCompanyCurrencyStatic($curr_code) || !$ex_rate)
 		return;
 
 	if (!get_date_exchange_rate($curr_code, $date_))

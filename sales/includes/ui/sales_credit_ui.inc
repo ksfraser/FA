@@ -83,7 +83,7 @@ function display_credit_header(&$order)
 	    label_row(_("Reference").':', $order->reference);
 
 
-	if (!is_company_currency($order->customer_currency))
+	if (!BankingService::isCompanyCurrencyStatic($order->customer_currency))
 	{
 		table_section(2);
 		
@@ -116,7 +116,7 @@ function display_credit_header(&$order)
 
 	date_row(_("Date:"), 'OrderDate', '', $order->trans_no==0, 0, 0, 0, null, true);
 	if (isset($_POST['_OrderDate_changed'])) {
-		if (!is_company_currency($order->customer_currency) 
+		if (!BankingService::isCompanyCurrencyStatic($order->customer_currency) 
 			&& (get_base_sales_type()>0)) {
 				$change_prices = 1;
 		}

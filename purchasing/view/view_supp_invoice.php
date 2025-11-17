@@ -53,7 +53,7 @@ end_row();
 start_row();
 label_cells(_("Invoice Date"), $supp_trans->tran_date, "class='tableheader2'");
 label_cells(_("Due Date"), $supp_trans->due_date, "class='tableheader2'");
-if (!is_company_currency($supplier_curr_code))
+if (!BankingService::isCompanyCurrencyStatic($supplier_curr_code))
 	label_cells(_("Currency"), $supplier_curr_code, "class='tableheader2'");
 end_row();
 comments_display_row(ST_SUPPINVOICE, $trans_no);

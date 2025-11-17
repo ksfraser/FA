@@ -272,4 +272,35 @@ class BankingService
             }
         }
     }
+    
+    // ====================================================================
+    // Static Wrappers for Backward Compatibility
+    // ====================================================================
+    
+    /**
+     * Static wrapper for isCompanyCurrency
+     */
+    public static function isCompanyCurrencyStatic(string $currency): bool
+    {
+        $service = new self();
+        return $service->isCompanyCurrency($currency);
+    }
+    
+    /**
+     * Static wrapper for getExchangeRateFromHomeCurrency
+     */
+    public static function getExchangeRateFromHomeCurrencyStatic(?string $currency_code, string $date_): float
+    {
+        $service = new self();
+        return $service->getExchangeRateFromHomeCurrency($currency_code, $date_);
+    }
+    
+    /**
+     * Static wrapper for getExchangeRateToHomeCurrency
+     */
+    public static function getExchangeRateToHomeCurrencyStatic(string $currency_code, string $date_): float
+    {
+        $service = new self();
+        return $service->getExchangeRateToHomeCurrency($currency_code, $date_);
+    }
 }

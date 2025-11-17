@@ -937,7 +937,7 @@ function cash_flow($today)
 			WHERE bank_act=".$account['id'];
 		$res = db_query($sql, "Transactions for bank account could not be calculated");
 		$bal = db_fetch($res);
-		$is_home = is_company_currency($account['bank_curr_code']);
+		$is_home = BankingService::isCompanyCurrencyStatic($account['bank_curr_code']);
 		for ($i = 1; $i <= $months; $i++)
 			$balance[$i - 1] = $bal['per0'.$i];
 		for ($i = 0; $i < $months; $i++)

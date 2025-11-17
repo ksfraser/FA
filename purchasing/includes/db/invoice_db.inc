@@ -116,9 +116,9 @@ function get_diff_in_home_currency($supplier, $old_date, $date, $amount1, $amoun
 	$dec = user_price_dec();
 	price_decimal_format($amount2, $dec);
 	$currency = get_supplier_currency($supplier);
-	$ex_rate = get_exchange_rate_to_home_currency($currency, $old_date);
+	$ex_rate = BankingService::getExchangeRateToHomeCurrencyStatic($currency, $old_date);
 	$amount1 = $amount1 / $ex_rate;
-	$ex_rate = get_exchange_rate_to_home_currency($currency, $date);
+	$ex_rate = BankingService::getExchangeRateToHomeCurrencyStatic($currency, $date);
 	$amount2 = $amount2 / $ex_rate;
 	$diff = $amount2 - $amount1;
 	//return round2($diff, $dec);
@@ -176,7 +176,7 @@ function add_supp_invoice(&$supp_trans)
 	}
 
     $date_ = $supp_trans->tran_date;
-	$ex_rate = get_exchange_rate_from_home_currency($supp_trans->currency, $date_);
+	$ex_rate = BankingService::getExchangeRateFromHomeCurrencyStatic($supp_trans->currency, $date_);
 
     /*First insert the invoice into the supp_trans table*/
 	$invoice_id = write_supp_trans($trans_type, 0, $supp_trans->supplier_id, $date_, $supp_trans->due_date,
@@ -310,7 +310,7 @@ function add_supp_invoice(&$supp_trans)
 					$dim, $dim2, $taxfree_line, $supp_trans->supplier_id);
 			else
 			{
-				$ex_rate = get_exchange_rate_from_home_currency($supp_trans->currency, $old_date);
+				$ex_rate = BankingService::getExchangeRateFromHomeCurrencyStatic($supp_trans->currency, $old_date);
 				$old_value = get_tax_free_price_for_item($entered_grn->item_code, $entered_grn->this_quantity_inv * $old_price, 
 					  $supp_trans->tax_group_id, $supp_trans->tax_included);
 

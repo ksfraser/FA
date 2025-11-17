@@ -45,7 +45,7 @@ function db_has_currency_rates($currency, $date_, $msg=false)
 {
 	$date = date2sql($date_);
 
-	if (is_company_currency($currency))
+	if (BankingService::isCompanyCurrencyStatic($currency))
 		return 1;
 	$ret = check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."exchange_rates WHERE curr_code = '$currency' && date_ <= '$date'");
 	if ($ret == 0 && $msg)

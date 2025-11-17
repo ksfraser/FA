@@ -98,7 +98,7 @@ class DataChecksService {
     public function dbHasCurrencyRates(string $currency, string $date, bool $msg = false): int {
         $dateSql = date2sql($date);
 
-        if (is_company_currency($currency)) {
+        if (BankingService::isCompanyCurrencyStatic($currency)) {
             return 1;
         }
         $ret = check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "exchange_rates WHERE curr_code = '$currency' && date_ <= '$dateSql'");

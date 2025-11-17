@@ -27,7 +27,7 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 
 	if ($currency != null)
 	{
-		$ex_rate = get_exchange_rate_to_home_currency($currency, $date);
+		$ex_rate = BankingService::getExchangeRateToHomeCurrencyStatic($currency, $date);
 		$price_in_home_currency = $price / $ex_rate;
 	}	
 	else
@@ -86,7 +86,7 @@ function add_grn(&$po)
 	begin_transaction();
 	hook_db_prewrite($po, ST_SUPPRECEIVE);
 
-	if (!is_company_currency($po->curr_code))
+	if (!BankingService::isCompanyCurrencyStatic($po->curr_code))
 	{
 		if (!$po->ex_rate)
 			$po->ex_rate = get_date_exchange_rate($po->curr_code, $date_);

@@ -201,7 +201,7 @@ $cols = array(
 );
 $table =& new_db_pager('orders_tbl', $sql, $cols);
 
-if (is_company_currency(get_post('curr_abrev')))
+if (BankingService::isCompanyCurrencyStatic(get_post('curr_abrev')))
 {
 
 	display_note(_("The selected currency is the company currency."), 2);

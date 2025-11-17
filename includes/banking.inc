@@ -29,7 +29,7 @@ function get_company_currency()
 
 function get_exchange_rate_from_home_currency($currency_code, $date_)
 {
-	if ($currency_code == BankingService::getCompanyCurrency() || $currency_code == null)
+	if ($currency_code == get_company_currency() || $currency_code == null)
 		return 1.0000;
 
 
@@ -70,7 +70,7 @@ function get_exchange_rate_from_to($from_curr_code, $to_curr_code, $date_)
 	if ($from_curr_code == $to_curr_code)
 		return 1.0000;
 
-	$home_currency = BankingService::getCompanyCurrency();
+	$home_currency = get_company_currency();
 	if ($to_curr_code == $home_currency)
 	{
 		return get_exchange_rate_to_home_currency($from_curr_code, $date_);
