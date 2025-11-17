@@ -208,7 +208,18 @@ class ErrorsService {
         }
     }
 
-    private function errorHandler(int $errno, string $errstr, string $file, int $line): bool {
+    /**
+     * PHP error handler
+     * 
+     * Captures and formats PHP errors for display
+     *
+     * @param int $errno Error number
+     * @param string $errstr Error message
+     * @param string $file File where error occurred
+     * @param int $line Line number
+     * @return bool Always returns true
+     */
+    public function errorHandler(int $errno, string $errstr, string $file, int $line): bool {
         global $SysPrefs, $cur_error_level;
 
         $excluded_warnings = array(
@@ -235,5 +246,39 @@ class ErrorsService {
             }
         }
         return true;
+    }
+
+    /**
+     * Exception handler for uncaught exceptions
+     *
+     * @param \Throwable $exception The exception to handle
+     * @return void
+     */
+    public function exceptionHandler(\Throwable $exception): void
+    {
+        $this->errorHandler(
+            E_ERROR,
+            'Exception: ' . $exception->getMessage(),
+            $exception->getFile(),
+            $exception->getLine()
+        );
+        
+        $this->endFlush();
+    }
+
+    /**
+     * Convert database error code to user-friendly message
+     * 
+     * Note: Original function name was "frindly_db_error" (typo)
+     *
+     * @param int $dbError Database error code
+     * @return string User-friendly error message
+     */
+    public function friendlyDbError(int $dbError): string
+    {
+        if ($dbError === 1451) {
+            return _("This record cannot be deleted because it is referenced by other records.");
+        }
+        return _("Database error:") . " $dbError";
     }
 }
