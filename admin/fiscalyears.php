@@ -19,6 +19,10 @@ include_once($path_to_root . "/admin/db/fiscalyears_db.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/sales/includes/db/cust_trans_db.inc");
 include_once($path_to_root . "/admin/db/maintenance_db.inc");
+
+// Modern OOP Services
+require_once($path_to_root . "/includes/Services/DateService.php");
+use FA\Services\DateService;
 $js = "";
 if (user_use_date_picker())
 	$js .= get_js_date_picker();
@@ -29,13 +33,14 @@ simple_page_mode(true);
 
 function check_data()
 {
-	if (!is_date($_POST['from_date']) || is_date_in_fiscalyears($_POST['from_date']))
+	$dateService = new DateService();
+	if (!$dateService->isDate($_POST['from_date']) || is_date_in_fiscalyears($_POST['from_date']))
 	{
 		display_error( _("Invalid BEGIN date in fiscal year."));
 		set_focus('from_date');
 		return false;
 	}
-	if (!is_date($_POST['to_date']) || is_date_in_fiscalyears($_POST['to_date']))
+	if (!$dateService->isDate($_POST['to_date']) || is_date_in_fiscalyears($_POST['to_date']))
 	{
 		display_error( _("Invalid END date in fiscal year."));
 		set_focus('to_date');

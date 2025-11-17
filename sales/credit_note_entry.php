@@ -25,6 +25,10 @@ include_once($path_to_root . "/sales/includes/ui/sales_credit_ui.inc");
 include_once($path_to_root . "/sales/includes/ui/sales_order_ui.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 
+// Modern OOP Services
+require_once($path_to_root . "/includes/Services/DateService.php");
+use FA\Services\DateService;
+
 $js = "";
 if ($SysPrefs->use_popup_windows) {
 	$js .= get_js_open_window(900, 500);
@@ -166,8 +170,9 @@ function can_process()
 			$input_error = 1;
 		}
 	}
+	$dateService = new DateService();
 
-	if (!is_date($_POST['OrderDate'])) {
+	if (!$dateService->isDate($_POST['OrderDate'])) {
 		display_error(_("The entered date for the credit note is invalid."));
 		set_focus('OrderDate');
 		$input_error = 1;

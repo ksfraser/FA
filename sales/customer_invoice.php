@@ -25,6 +25,10 @@ include_once($path_to_root . "/reporting/includes/reporting.inc");
 include_once($path_to_root . "/taxes/tax_calc.inc");
 include_once($path_to_root . "/admin/db/shipping_db.inc");
 
+// Modern OOP Services
+require_once($path_to_root . "/includes/Services/DateService.php");
+use FA\Services\DateService;
+
 $js = "";
 if ($SysPrefs->use_popup_windows) {
 	$js .= get_js_open_window(900, 500);
@@ -292,8 +296,9 @@ function check_data()
 	global $Refs;
 
 	$prepaid = $_SESSION['Items']->is_prepaid();
+	$dateService = new DateService();
 
-	if (!isset($_POST['InvoiceDate']) || !is_date($_POST['InvoiceDate'])) {
+	if (!isset($_POST['InvoiceDate']) || !$dateService->isDate($_POST['InvoiceDate'])) {
 		display_error(_("The entered invoice date is invalid."));
 		set_focus('InvoiceDate');
 		return false;
@@ -306,7 +311,7 @@ function check_data()
 	}
 
 
-	if (!$prepaid &&(!isset($_POST['due_date']) || !is_date($_POST['due_date'])))	{
+	if (!$prepaid &&(!isset($_POST['due_date']) || !$dateService->isDate($_POST['due_date'])))	{
 		display_error(_("The entered invoice due date is invalid."));
 		set_focus('due_date');
 		return false;
@@ -476,7 +481,8 @@ if ($prepaid)
 } else
 	shippers_list_cells(null, 'ship_via', $_POST['ship_via']);
 
-if (!isset($_POST['InvoiceDate']) || !is_date($_POST['InvoiceDate'])) {
+$dateService = new DateService();
+if (!isset($_POST['InvoiceDate']) || !$dateService->isDate($_POST['InvoiceDate'])) {
 	$_POST['InvoiceDate'] = new_doc_date();
 	if (!is_date_in_fiscalyear($_POST['InvoiceDate'])) {
 		$_POST['InvoiceDate'] = end_fiscalyear();
@@ -486,7 +492,7 @@ if (!isset($_POST['InvoiceDate']) || !is_date($_POST['InvoiceDate'])) {
 date_cells(_("Date"), 'InvoiceDate', '', $_SESSION['Items']->trans_no == 0, 
 	0, 0, 0, "class='tableheader2'", true);
 
-if (!isset($_POST['due_date']) || !is_date($_POST['due_date'])) {
+if (!isset($_POST['due_date']) || !$dateService->isDate($_POST['due_date'])) {
 	$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->payment, $_POST['InvoiceDate']);
 }
 

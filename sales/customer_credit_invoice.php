@@ -24,6 +24,10 @@ include_once($path_to_root . "/sales/includes/sales_db.inc");
 include_once($path_to_root . "/sales/includes/sales_ui.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 
+// Modern OOP Services
+require_once($path_to_root . "/includes/Services/DateService.php");
+use FA\Services\DateService;
+
 $js = "";
 if ($SysPrefs->use_popup_windows) {
 	$js .= get_js_open_window(900, 500);
@@ -85,8 +89,9 @@ if (isset($_GET['AddedID'])) {
 function can_process()
 {
 	global $Refs;
+	$dateService = new DateService();
 
-	if (!is_date($_POST['CreditDate'])) {
+	if (!$dateService->isDate($_POST['CreditDate'])) {
 		display_error(_("The entered date is invalid."));
 		set_focus('CreditDate');
 		return false;
