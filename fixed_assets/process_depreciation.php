@@ -35,7 +35,7 @@ function check_data()
   $myrow = get_item($_POST['stock_id']);
 
   if ($_POST['months'] > depreciation_months($myrow['depreciation_date'])) {
-    display_error(_("The number of months is greater than the timespan between the depreciation start and the end of the fiscal year."));
+    UiMessageService::displayError(_("The number of months is greater than the timespan between the depreciation start and the end of the fiscal year."));
     set_focus('months');
     return false;
   }

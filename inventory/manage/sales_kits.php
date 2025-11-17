@@ -65,13 +65,13 @@ function update_kit($selected_kit, $component_id)
 
 	if (!check_num('quantity', 0))
 	{
-		display_error(_("The quantity entered must be numeric and greater than zero."));
+		UiMessageService::displayError(_("The quantity entered must be numeric and greater than zero."));
 		set_focus('quantity');
 		return 0;
 	}
    	elseif (RequestService::getPostStatic('description') == '')
    	{
-      	display_error( _("Item code description cannot be empty."));
+      	UiMessageService::displayError( _("Item code description cannot be empty."));
 		set_focus('description');
 		return 0;
    	}
@@ -79,14 +79,14 @@ function update_kit($selected_kit, $component_id)
 	{
 		if ($selected_kit == '') { // New kit/alias definition
 			if (RequestService::getPostStatic('kit_code') == '') {
-	    	  	display_error( _("Kit/alias code cannot be empty."));
+	    	  	UiMessageService::displayError( _("Kit/alias code cannot be empty."));
 				set_focus('kit_code');
 				return 0;
 			}
 			$kit = get_item_kit(RequestService::getPostStatic('kit_code'));
     		if (db_num_rows($kit)) {
 			  	$input_error = 1;
-    	  		display_error( _("This item code is already assigned to stock item or sale kit."));
+    	  		UiMessageService::displayError( _("This item code is already assigned to stock item or sale kit."));
 				set_focus('kit_code');
 				return 0;
 			}
@@ -94,14 +94,14 @@ function update_kit($selected_kit, $component_id)
    	}
 
 	if (check_item_in_kit($component_id, $selected_kit, RequestService::getPostStatic('component'), true)) {
-		display_error(_("The selected component contains directly or on any lower level the kit under edition. Recursive kits are not allowed."));
+		UiMessageService::displayError(_("The selected component contains directly or on any lower level the kit under edition. Recursive kits are not allowed."));
 		set_focus('component');
 		return 0;
 	}
 
 		/*Now check to see that the component is not already in the kit */
 	if (check_item_in_kit($component_id, $selected_kit, RequestService::getPostStatic('component'))) {
-		display_error(_("The selected component is already in this kit. You can modify it's quantity but it cannot appear more than once in the same kit."));
+		UiMessageService::displayError(_("The selected component is already in this kit. You can modify it's quantity but it cannot appear more than once in the same kit."));
 		set_focus('component');
 		return 0;
 	}
@@ -162,7 +162,7 @@ if ($Mode == 'Delete')
 			$msg .= "'".$kit[0]."'";
 			if ($num_kits) $msg .= ',';
 		}
-		display_error($msg);
+		UiMessageService::displayError($msg);
 	} else {
 		delete_item_code($selected_id);
 		display_notification(_("The component item has been deleted from this bom"));

@@ -157,7 +157,7 @@ if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
 
 		if (!$payments || ($payments[0]['trans_type_to'] != ST_SALESORDER))
 		{
-			display_error(_("Please select correct Sales Order Prepayment to be invoiced and try again."));
+			UiMessageService::displayError(_("Please select correct Sales Order Prepayment to be invoiced and try again."));
 			display_footer_exit();
 		}
 		$order_no = $payments[0]['trans_no_to'];
@@ -179,14 +179,14 @@ if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
 }
 elseif (!processing_active()) {
 	/* This page can only be called with a delivery for invoicing or invoice no for edit */
-	display_error(_("This page can only be opened after delivery selection. Please select delivery to invoicing first."));
+	UiMessageService::displayError(_("This page can only be opened after delivery selection. Please select delivery to invoicing first."));
 
 	hyperlink_no_params("$path_to_root/sales/inquiry/sales_deliveries_view.php", _("Select Delivery to Invoice"));
 
 	end_page();
 	exit;
 } elseif (!isset($_POST['process_invoice']) && (!$_SESSION['Items']->is_prepaid() && !check_quantities())) {
-	display_error(_("Selected quantity cannot be less than quantity credited nor more than quantity not invoiced yet."));
+	UiMessageService::displayError(_("Selected quantity cannot be less than quantity credited nor more than quantity not invoiced yet."));
 }
 
 if (isset($_POST['Update'])) {
@@ -299,27 +299,27 @@ function check_data()
 	$dateService = new DateService();
 
 	if (!isset($_POST['InvoiceDate']) || !$dateService->isDate($_POST['InvoiceDate'])) {
-		display_error(_("The entered invoice date is invalid."));
+		UiMessageService::displayError(_("The entered invoice date is invalid."));
 		set_focus('InvoiceDate');
 		return false;
 	}
 
 	if (!DateService::isDateInFiscalYear($_POST['InvoiceDate'])) {
-		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('InvoiceDate');
 		return false;
 	}
 
 
 	if (!$prepaid &&(!isset($_POST['due_date']) || !$dateService->isDate($_POST['due_date'])))	{
-		display_error(_("The entered invoice due date is invalid."));
+		UiMessageService::displayError(_("The entered invoice due date is invalid."));
 		set_focus('due_date');
 		return false;
 	}
 
 	if ($_SESSION['Items']->trans_no == 0) {
 		if (!$Refs->is_valid($_POST['ref'], ST_SALESINVOICE)) {
-			display_error(_("You must enter a reference."));
+			UiMessageService::displayError(_("You must enter a reference."));
 			set_focus('ref');
 			return false;
 		}
@@ -332,23 +332,23 @@ function check_data()
 		}
 
 		if (!check_num('ChargeFreightCost', 0)) {
-			display_error(_("The entered shipping value is not numeric."));
+			UiMessageService::displayError(_("The entered shipping value is not numeric."));
 			set_focus('ChargeFreightCost');
 			return false;
 		}
 
 		if ($_SESSION['Items']->has_items_dispatch() == 0 && RequestService::inputNumStatic('ChargeFreightCost') == 0) {
-			display_error(_("There are no item quantities on this invoice."));
+			UiMessageService::displayError(_("There are no item quantities on this invoice."));
 			return false;
 		}
 
 		if (!check_quantities()) {
-			display_error(_("Selected quantity cannot be less than quantity credited nor more than quantity not invoiced yet."));
+			UiMessageService::displayError(_("Selected quantity cannot be less than quantity credited nor more than quantity not invoiced yet."));
 			return false;
 		}
 	} else {
 		if (($_SESSION['Items']->payment_terms['days_before_due'] == -1) && !count($_SESSION['Items']->prepayments)) {
-			display_error(_("There is no non-invoiced payments for this order. If you want to issue final invoice, select delayed or cash payment terms."));
+			UiMessageService::displayError(_("There is no non-invoiced payments for this order. If you want to issue final invoice, select delayed or cash payment terms."));
 			return false;
 		}
 	}
@@ -367,7 +367,7 @@ if (isset($_POST['process_invoice']) && check_data()) {
 	$invoice_no = $_SESSION['Items']->write();
 	if ($invoice_no == -1)
 	{
-		display_error(_("The entered reference is already in use."));
+		UiMessageService::displayError(_("The entered reference is already in use."));
 		set_focus('ref');
 	}
 	else
@@ -510,7 +510,7 @@ end_table();
 $row = get_customer_to_order($_SESSION['Items']->customer_id);
 if ($row['dissallow_invoices'] == 1)
 {
-	display_error(_("The selected customer account is currently on hold. Please contact the credit control personnel to discuss."));
+	UiMessageService::displayError(_("The selected customer account is currently on hold. Please contact the credit control personnel to discuss."));
 	end_form();
 	end_page();
 	exit();

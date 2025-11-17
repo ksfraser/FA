@@ -40,35 +40,35 @@ function can_process()
 {
 	if (strlen($_POST['CustName']) == 0) 
 	{
-		display_error(_("The customer name cannot be empty."));
+		UiMessageService::displayError(_("The customer name cannot be empty."));
 		set_focus('CustName');
 		return false;
 	} 
 
 	if (strlen($_POST['cust_ref']) == 0) 
 	{
-		display_error(_("The customer short name cannot be empty."));
+		UiMessageService::displayError(_("The customer short name cannot be empty."));
 		set_focus('cust_ref');
 		return false;
 	} 
 	
 	if (!check_num('credit_limit', 0))
 	{
-		display_error(_("The credit limit must be numeric and not less than zero."));
+		UiMessageService::displayError(_("The credit limit must be numeric and not less than zero."));
 		set_focus('credit_limit');
 		return false;		
 	} 
 	
 	if (!check_num('pymt_discount', 0, 100)) 
 	{
-		display_error(_("The payment discount must be numeric and is expected to be less than 100% and greater than or equal to 0."));
+		UiMessageService::displayError(_("The payment discount must be numeric and is expected to be less than 100% and greater than or equal to 0."));
 		set_focus('pymt_discount');
 		return false;		
 	} 
 	
 	if (!check_num('discount', 0, 100)) 
 	{
-		display_error(_("The discount percentage must be numeric and is expected to be less than 100% and greater than or equal to 0."));
+		UiMessageService::displayError(_("The discount percentage must be numeric and is expected to be less than 100% and greater than or equal to 0."));
 		set_focus('discount');
 		return false;		
 	} 
@@ -154,21 +154,21 @@ if (isset($_POST['delete']))
 	if (key_in_foreign_table($selected_id, 'debtor_trans', 'debtor_no'))
 	{
 		$cancel_delete = 1;
-		display_error(_("This customer cannot be deleted because there are transactions that refer to it."));
+		UiMessageService::displayError(_("This customer cannot be deleted because there are transactions that refer to it."));
 	} 
 	else 
 	{
 		if (key_in_foreign_table($selected_id, 'sales_orders', 'debtor_no'))
 		{
 			$cancel_delete = 1;
-			display_error(_("Cannot delete the customer record because orders have been created against it."));
+			UiMessageService::displayError(_("Cannot delete the customer record because orders have been created against it."));
 		} 
 		else 
 		{
 			if (key_in_foreign_table($selected_id, 'cust_branch', 'debtor_no'))
 			{
 				$cancel_delete = 1;
-				display_error(_("Cannot delete this customer because there are branch records set up against it."));
+				UiMessageService::displayError(_("Cannot delete this customer because there are branch records set up against it."));
 				//echo "<br> There are " . $myrow[0] . " branch records relating to this customer";
 			}
 		}

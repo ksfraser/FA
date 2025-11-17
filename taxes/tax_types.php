@@ -27,19 +27,19 @@ function can_process()
 	
 	if (strlen($_POST['name']) == 0)
 	{
-		display_error(_("The tax type name cannot be empty."));
+		UiMessageService::displayError(_("The tax type name cannot be empty."));
 		set_focus('name');
 		return false;
 	}
 	elseif (!check_num('rate', 0))
 	{
-		display_error( _("The default tax rate must be numeric and not less than zero."));
+		UiMessageService::displayError( _("The default tax rate must be numeric and not less than zero."));
 		set_focus('rate');
 		return false;
 	}
 
 	if (!is_tax_gl_unique(RequestService::getPostStatic('sales_gl_code'), RequestService::getPostStatic('purchasing_gl_code'), $selected_id)) {
-		display_error( _("Selected GL Accounts cannot be used by another tax type."));
+		UiMessageService::displayError( _("Selected GL Accounts cannot be used by another tax type."));
 		set_focus('sales_gl_code');
 		return false;
 	}
@@ -74,7 +74,7 @@ function can_delete($selected_id)
 {
 	if (key_in_foreign_table($selected_id, 'tax_group_items', 'tax_type_id'))
 	{
-		display_error(_("Cannot delete this tax type because tax groups been created referring to it."));
+		UiMessageService::displayError(_("Cannot delete this tax type because tax groups been created referring to it."));
 
 		return false;
 	}

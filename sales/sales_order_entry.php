@@ -107,7 +107,7 @@ page($_SESSION['page_title'], false, false, "", $js);
 
 if (isset($_GET['ModifyOrderNumber']) && is_prepaid_order_open($_GET['ModifyOrderNumber']))
 {
-	display_error(_("This order cannot be edited because there are invoices or payments related to it, and prepayment terms were used."));
+	UiMessageService::displayError(_("This order cannot be edited because there are invoices or payments related to it, and prepayment terms were used."));
 	end_page(); exit;
 }
 if (isset($_GET['ModifyOrderNumber']))
@@ -376,53 +376,53 @@ function can_process() {
 
 	if (!RequestService::getPostStatic('customer_id')) 
 	{
-		display_error(_("There is no customer selected."));
+		UiMessageService::displayError(_("There is no customer selected."));
 		set_focus('customer_id');
 		return false;
 	} 
 	
 	if (!RequestService::getPostStatic('branch_id')) 
 	{
-		display_error(_("This customer has no branch defined."));
+		UiMessageService::displayError(_("This customer has no branch defined."));
 		set_focus('branch_id');
 		return false;
 	} 
 	
 	if (!DateService::isDate($_POST['OrderDate'])) {
-		display_error(_("The entered date is invalid."));
+		UiMessageService::displayError(_("The entered date is invalid."));
 		set_focus('OrderDate');
 		return false;
 	}
 	if ($_SESSION['Items']->trans_type!=ST_SALESORDER && $_SESSION['Items']->trans_type!=ST_SALESQUOTE && !DateService::isDateInFiscalYear($_POST['OrderDate'])) {
-		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('OrderDate');
 		return false;
 	}
 	if (count($_SESSION['Items']->line_items) == 0)	{
-		display_error(_("You must enter at least one non empty item line."));
+		UiMessageService::displayError(_("You must enter at least one non empty item line."));
 		set_focus('AddItem');
 		return false;
 	}
 	if (!$SysPrefs->allow_negative_stock() && ($low_stock = $_SESSION['Items']->check_qoh()))
 	{
-		display_error(_("This document cannot be processed because there is insufficient quantity for items marked."));
+		UiMessageService::displayError(_("This document cannot be processed because there is insufficient quantity for items marked."));
 		return false;
 	}
 	if ($_SESSION['Items']->payment_terms['cash_sale'] == 0) {
 		if (!$_SESSION['Items']->is_started() && ($_SESSION['Items']->payment_terms['days_before_due'] == -1) && ((RequestService::inputNumStatic('prep_amount')<=0) ||
 			RequestService::inputNumStatic('prep_amount')>$_SESSION['Items']->get_trans_total())) {
-			display_error(_("Pre-payment required have to be positive and less than total amount."));
+			UiMessageService::displayError(_("Pre-payment required have to be positive and less than total amount."));
 			set_focus('prep_amount');
 			return false;
 		}
 		if (strlen($_POST['deliver_to']) <= 1) {
-			display_error(_("You must enter the person or company to whom delivery should be made to."));
+			UiMessageService::displayError(_("You must enter the person or company to whom delivery should be made to."));
 			set_focus('deliver_to');
 			return false;
 		}
 
 		if ($_SESSION['Items']->trans_type != ST_SALESQUOTE && strlen($_POST['delivery_address']) <= 1) {
-			display_error( _("You should enter the street address in the box provided. Orders cannot be accepted without a valid street address."));
+			UiMessageService::displayError( _("You should enter the street address in the box provided. Orders cannot be accepted without a valid street address."));
 			set_focus('delivery_address');
 			return false;
 		}
@@ -431,23 +431,23 @@ function can_process() {
 			$_POST['freight_cost'] = FormatService::priceFormat(0);
 
 		if (!check_num('freight_cost',0)) {
-			display_error(_("The shipping cost entered is expected to be numeric."));
+			UiMessageService::displayError(_("The shipping cost entered is expected to be numeric."));
 			set_focus('freight_cost');
 			return false;
 		}
 		if (!is_date($_POST['delivery_date'])) {
 			if ($_SESSION['Items']->trans_type==ST_SALESQUOTE)
-				display_error(_("The Valid date is invalid."));
+				UiMessageService::displayError(_("The Valid date is invalid."));
 			else	
-				display_error(_("The delivery date is invalid."));
+				UiMessageService::displayError(_("The delivery date is invalid."));
 			set_focus('delivery_date');
 			return false;
 		}
 		if (DateService::date1GreaterDate2Static($_POST['OrderDate'], $_POST['delivery_date'])) {
 			if ($_SESSION['Items']->trans_type==ST_SALESQUOTE)
-				display_error(_("The requested valid date is before the date of the quotation."));
+				UiMessageService::displayError(_("The requested valid date is before the date of the quotation."));
 			else	
-				display_error(_("The requested delivery date is before the date of the order."));
+				UiMessageService::displayError(_("The requested delivery date is before the date of the order."));
 			set_focus('delivery_date');
 			return false;
 		}
@@ -456,12 +456,12 @@ function can_process() {
 	{
 		if (!db_has_cash_accounts())
 		{
-			display_error(_("You need to define a cash account for your Sales Point."));
+			UiMessageService::displayError(_("You need to define a cash account for your Sales Point."));
 			return false;
 		}	
 	}	
 	if (!$Refs->is_valid($_POST['ref'], $_SESSION['Items']->trans_type)) {
-		display_error(_("You must enter a reference."));
+		UiMessageService::displayError(_("You must enter a reference."));
 		set_focus('ref');
 		return false;
 	}
@@ -469,7 +469,7 @@ function can_process() {
 		return false;
 	
    	if ($_SESSION['Items']->get_items_total() < 0) {
-		display_error("Invoice total amount cannot be less than zero.");
+		UiMessageService::displayError("Invoice total amount cannot be less than zero.");
 		return false;
 	}
 
@@ -494,12 +494,12 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
 	$ret = $_SESSION['Items']->write(1);
 	if ($ret == -1)
 	{
-		display_error(_("The entered reference is already in use."));
+		UiMessageService::displayError(_("The entered reference is already in use."));
 		$ref = $Refs->get_next($_SESSION['Items']->trans_type, null, array('date' => DateService::todayStatic()));
 		if ($ref != $_SESSION['Items']->reference)
 		{
 			unset($_POST['ref']); // force refresh reference
-			display_error(_("The reference number field has been increased. Please save the document again."));
+			UiMessageService::displayError(_("The reference number field has been increased. Please save the document again."));
 		}
 		set_focus('ref');
 	}
@@ -538,23 +538,23 @@ function check_item_data()
 	
 	$is_inventory_item = InventoryService::isInventoryItem(RequestService::getPostStatic('stock_id'));
 	if(!RequestService::getPostStatic('stock_id_text', true)) {
-		display_error( _("Item description cannot be empty."));
+		UiMessageService::displayError( _("Item description cannot be empty."));
 		set_focus('stock_id_edit');
 		return false;
 	}
 	elseif (!check_num('qty', 0) || !check_num('Disc', 0, 100)) {
-		display_error( _("The item could not be updated because you are attempting to set the quantity ordered to less than 0, or the discount percent to more than 100."));
+		UiMessageService::displayError( _("The item could not be updated because you are attempting to set the quantity ordered to less than 0, or the discount percent to more than 100."));
 		set_focus('qty');
 		return false;
 	} elseif (!check_num('price', 0) && (!$SysPrefs->allow_negative_prices() || $is_inventory_item)) {
-		display_error( _("Price for inventory item must be entered and can not be less than 0"));
+		UiMessageService::displayError( _("Price for inventory item must be entered and can not be less than 0"));
 		set_focus('price');
 		return false;
 	} elseif (isset($_POST['LineNo']) && isset($_SESSION['Items']->line_items[$_POST['LineNo']])
 	    && !check_num('qty', $_SESSION['Items']->line_items[$_POST['LineNo']]->qty_done)) {
 
 		set_focus('qty');
-		display_error(_("You attempting to make the quantity ordered a quantity less than has already been delivered. The quantity delivered cannot be modified retrospectively."));
+		UiMessageService::displayError(_("You attempting to make the quantity ordered a quantity less than has already been delivered. The quantity delivered cannot be modified retrospectively."));
 		return false;
 	}
 
@@ -598,7 +598,7 @@ function handle_delete_item($line_no)
     if ($_SESSION['Items']->some_already_delivered($line_no) == 0) {
 	    $_SESSION['Items']->remove_from_cart($line_no);
     } else {
-		display_error(_("This item cannot be deleted because some of it has already been delivered."));
+		UiMessageService::displayError(_("This item cannot be deleted because some of it has already been delivered."));
     }
     line_start_focus();
 }
@@ -789,7 +789,7 @@ if ($customer_error == "") {
 	}
 
 } else {
-	display_error($customer_error);
+	UiMessageService::displayError($customer_error);
 }
 
 end_form();

@@ -62,13 +62,13 @@ if (isset($_POST['UpdateData']))
 	if (!check_num('material_cost') || !check_num('labour_cost') ||
 		!check_num('overhead_cost'))
 	{
-		display_error( _("The entered cost is not numeric."));
+		UiMessageService::displayError( _("The entered cost is not numeric."));
 		set_focus('material_cost');
    	 	$should_update = false;
 	}
 	elseif ($old_cost == $new_cost)
 	{
-   	 	display_error( _("The new cost is the same as the old cost. Cost was not updated."));
+   	 	UiMessageService::displayError( _("The new cost is the same as the old cost. Cost was not updated."));
    	 	$should_update = false;
 	}
 

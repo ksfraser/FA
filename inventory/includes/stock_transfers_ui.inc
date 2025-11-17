@@ -19,7 +19,7 @@ function add_to_order(&$order, $new_item, $new_item_qty, $standard_cost)
 	$kit = get_item_kit($new_item);
 	foreach($kit as $item) {
 		if ($order->find_cart_item($item['stock_id']))
-			display_error(_("For Part :") . $item['stock_id'] . " " . "This item is already on this document. You can change the quantity on the existing line if necessary.");
+			UiMessageService::displayError(_("For Part :") . $item['stock_id'] . " " . "This item is already on this document. You can change the quantity on the existing line if necessary.");
 		else
 			$order->add_to_cart (count($order->line_items), $item['stock_id'], $new_item_qty * $item['quantity'], $standard_cost);
 	}

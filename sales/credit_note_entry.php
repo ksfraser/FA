@@ -146,26 +146,26 @@ function can_process()
 
 	if (!RequestService::getPostStatic('customer_id')) 
 	{
-		display_error(_("There is no customer selected."));
+		UiMessageService::displayError(_("There is no customer selected."));
 		set_focus('customer_id');
 		return false;
 	} 
 	
 	if (!RequestService::getPostStatic('branch_id')) 
 	{
-		display_error(_("This customer has no branch defined."));
+		UiMessageService::displayError(_("This customer has no branch defined."));
 		set_focus('branch_id');
 		return false;
 	} 
 	if ($_SESSION['Items']->count_items() == 0 && !RequestService::inputNumStatic('ChargeFreightCost',0))
 	{
-		display_error(_("You must enter at least one non empty item line."));
+		UiMessageService::displayError(_("You must enter at least one non empty item line."));
 		set_focus('AddItem');
 		return false;
 	}
 	if($_SESSION['Items']->trans_no == 0) {
 	    if (!$Refs->is_valid($_POST['ref'], ST_CUSTCREDIT)) {
-			display_error( _("You must enter a reference."));
+			UiMessageService::displayError( _("You must enter a reference."));
 			set_focus('ref');
 			$input_error = 1;
 		}
@@ -173,11 +173,11 @@ function can_process()
 	$dateService = new DateService();
 
 	if (!$dateService->isDate($_POST['OrderDate'])) {
-		display_error(_("The entered date for the credit note is invalid."));
+		UiMessageService::displayError(_("The entered date for the credit note is invalid."));
 		set_focus('OrderDate');
 		$input_error = 1;
 	} elseif (!DateService::isDateInFiscalYear($_POST['OrderDate'])) {
-		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('OrderDate');
 		$input_error = 1;
 	}
@@ -201,7 +201,7 @@ if (isset($_POST['ProcessCredit']) && can_process()) {
 	$credit_no = $_SESSION['Items']->write($_POST['WriteOffGLCode']);
 	if ($credit_no == -1)
 	{
-		display_error(_("The entered reference is already in use."));
+		UiMessageService::displayError(_("The entered reference is already in use."));
 		set_focus('ref');
 	}
 	else
@@ -217,17 +217,17 @@ if (isset($_POST['ProcessCredit']) && can_process()) {
 function check_item_data()
 {
 	if (!check_num('qty',0)) {
-		display_error(_("The quantity must be greater than zero."));
+		UiMessageService::displayError(_("The quantity must be greater than zero."));
 		set_focus('qty');
 		return false;
 	}
 	if (!check_num('price',0)) {
-		display_error(_("The entered price is negative or invalid."));
+		UiMessageService::displayError(_("The entered price is negative or invalid."));
 		set_focus('price');
 		return false;
 	}
 	if (!check_num('Disc', 0, 100)) {
-		display_error(_("The entered discount percent is negative, greater than 100 or invalid."));
+		UiMessageService::displayError(_("The entered discount percent is negative, greater than 100 or invalid."));
 		set_focus('Disc');
 		return false;
 	}
@@ -300,7 +300,7 @@ if ($customer_error == "") {
 	echo "</td></tr>";
 	end_table();
 } else {
-	display_error($customer_error);
+	UiMessageService::displayError($customer_error);
 }
 
 echo "<br><center><table><tr>";

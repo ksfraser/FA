@@ -112,7 +112,7 @@ function write_journal_entries(&$cart)
 		$msg = void_transaction($trans_type, $cart->order_id, Today(), _("Document reentered."));
 		if ($msg)
 		{
-			display_error($msg);
+			UiMessageService::displayError($msg);
 			return false;
 		}
 	}

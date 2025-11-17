@@ -26,8 +26,8 @@ if (isset($_POST['setprefs']))
 {
 	if (!is_numeric($_POST['query_size']) || ($_POST['query_size']<1))
 	{
-		display_error($_POST['query_size']);
-		display_error( _("Query size must be integer and greater than zero."));
+		UiMessageService::displayError($_POST['query_size']);
+		UiMessageService::displayError( _("Query size must be integer and greater than zero."));
 		set_focus('query_size');
 	} else {
 		$_POST['theme'] = clean_file_name($_POST['theme']);

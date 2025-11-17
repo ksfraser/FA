@@ -54,7 +54,7 @@ function can_process()
 {
 	if (strlen($_POST['name']) == 0) 
 	{
-		display_error( _("The tag name cannot be empty."));
+		UiMessageService::displayError( _("The tag name cannot be empty."));
 		set_focus('name');
 		return false;
 	}
@@ -91,7 +91,7 @@ function can_delete($selected_id)
 	
 	if (db_num_rows($result) > 0)	
 	{
-		display_error(_("Cannot delete this tag because records have been created referring to it."));
+		UiMessageService::displayError(_("Cannot delete this tag because records have been created referring to it."));
 		return false;
 	}
 

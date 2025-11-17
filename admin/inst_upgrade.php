@@ -32,13 +32,13 @@ if (RequestService::getPostStatic('Upgrade'))
 	$comp = RequestService::getPostStatic('select_comp');
 
     if ($comp === '')
-		display_error(_('Select company to be upgraded.'));
+		UiMessageService::displayError(_('Select company to be upgraded.'));
 	else {
 		$patch = @$installers[$site_status[$comp]['version']];
 		if ($patch)
 		{
 			if (!$patch->upgrade_company($comp, RequestService::checkValueStatic('force')))
-				display_error(implode('<hr>', $patch->errors));
+				UiMessageService::displayError(implode('<hr>', $patch->errors));
 			else
 				display_notification(_("Company upgraded successfully."));
 

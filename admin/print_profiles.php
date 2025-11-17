@@ -87,7 +87,7 @@ if ( RequestService::getPostStatic('submit'))
 	if ($_POST['profile_id'] == '' && empty($_POST['name']))
 	{
 		$error = 1;
-		display_error( _("Printing profile name cannot be empty."));
+		UiMessageService::displayError( _("Printing profile name cannot be empty."));
 		set_focus('name');
 	} 
 

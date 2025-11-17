@@ -64,14 +64,14 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if (strlen($_POST['br_name']) == 0)
 	{
 		$input_error = 1;
-		display_error(_("The Branch name cannot be empty."));
+		UiMessageService::displayError(_("The Branch name cannot be empty."));
 		set_focus('br_name');
 	}
 
 	if (strlen($_POST['br_ref']) == 0)
 	{
 		$input_error = 1;
-		display_error(_("The Branch short name cannot be empty."));
+		UiMessageService::displayError(_("The Branch short name cannot be empty."));
 		set_focus('br_ref');
 	}
 
@@ -121,14 +121,14 @@ elseif ($Mode == 'Delete')
 
 	if (branch_in_foreign_table($_POST['customer_id'], $_POST['branch_code'], 'debtor_trans'))
 	{
-		display_error(_("Cannot delete this branch because customer transactions have been created to this branch."));
+		UiMessageService::displayError(_("Cannot delete this branch because customer transactions have been created to this branch."));
 
 	}
 	else
 	{
 		if (branch_in_foreign_table($_POST['customer_id'], $_POST['branch_code'], 'sales_orders'))
 		{
-			display_error(_("Cannot delete this branch because sales orders exist for it. Purge old sales orders first."));
+			UiMessageService::displayError(_("Cannot delete this branch because sales orders exist for it. Purge old sales orders first."));
 		}
 		else
 		{

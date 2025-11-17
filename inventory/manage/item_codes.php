@@ -35,19 +35,19 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
    	if ($_POST['stock_id'] == "" || !isset($_POST['stock_id']))
    	{
       	$input_error = 1;
-      	display_error( _("There is no item selected."));
+      	UiMessageService::displayError( _("There is no item selected."));
 		set_focus('stock_id');
    	}
    	elseif (!RequestService::inputNumStatic('quantity'))
    	{
       	$input_error = 1;
-      	display_error( _("The quantity entered was not positive number."));
+      	UiMessageService::displayError( _("The quantity entered was not positive number."));
 		set_focus('quantity');
    	}
    	elseif ($_POST['description'] == '')
    	{
       	$input_error = 1;
-      	display_error( _("Item code description cannot be empty."));
+      	UiMessageService::displayError( _("Item code description cannot be empty."));
 		set_focus('description');
    	}
 	elseif($selected_id == -1)
@@ -55,7 +55,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		$kit = get_item_kit($_POST['item_code']);
     	if (db_num_rows($kit)) {
 		  	$input_error = 1;
-    	  	display_error( _("This item code is already assigned to stock item or sale kit."));
+    	  	UiMessageService::displayError( _("This item code is already assigned to stock item or sale kit."));
 			set_focus('item_code');
 		}
    	}

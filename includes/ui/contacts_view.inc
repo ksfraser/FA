@@ -125,17 +125,17 @@ class contacts extends simple_crud {
 
 	function insert_check() {
 		if (strlen($_POST['name']) == 0) {
-			display_error(_("The contact name cannot be empty."));
+			UiMessageService::displayError(_("The contact name cannot be empty."));
 			set_focus('name');
 			return false;
 		}
 		if (strlen($_POST['ref']) == 0) {
-			display_error(_("Contact reference cannot be empty."));
+			UiMessageService::displayError(_("Contact reference cannot be empty."));
 			set_focus('ref');
 			return false;
 		}
 		if (count_array(@$_POST['assgn']) == 0) {
-			display_error(_("You have to select at least one category."));
+			UiMessageService::displayError(_("You have to select at least one category."));
 			set_focus('assgn');
 			return false;
 		}

@@ -162,7 +162,7 @@ function get_next_trans_no ($trans_type){
 
 	if (!($st && $st[0] && $st[2])) {
 		// this is in fact internal error condition.
-		display_error('Internal error: invalid type passed to get_next_trans_no()');
+		UiMessageService::displayError('Internal error: invalid type passed to get_next_trans_no()');
 		return 0;
 	}
 	$sql1 = "SELECT MAX(`$st[2]`) as last_no FROM $st[0]";

@@ -228,7 +228,7 @@ function frindly_db_error($db_error)
 {
 	if ($db_error == DB_DUPLICATE_ERROR) 
 	{
-		display_error(_("The entered information is a duplicate. Please go back and enter different values."));
+		UiMessageService::displayError(_("The entered information is a duplicate. Please go back and enter different values."));
 		return true;
 	}
 	

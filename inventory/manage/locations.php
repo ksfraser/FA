@@ -43,13 +43,13 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if ((strlen(db_escape($_POST['loc_code'])) > 7) || empty($_POST['loc_code'])) //check length after conversion
 	{
 		$input_error = 1;
-		display_error( _("The location code must be five characters or less long (including converted special chars)."));
+		UiMessageService::displayError( _("The location code must be five characters or less long (including converted special chars)."));
 		set_focus('loc_code');
 	} 
 	elseif (strlen($_POST['location_name']) == 0) 
 	{
 		$input_error = 1;
-		display_error( _("The location name must be entered."));		
+		UiMessageService::displayError( _("The location name must be entered."));		
 		set_focus('location_name');
 	}
 
@@ -80,46 +80,46 @@ function can_delete($selected_id)
 {
 	if (key_in_foreign_table($selected_id, 'stock_moves', 'loc_code'))
 	{
-		display_error(_("Cannot delete this location because item movements have been created using this location."));
+		UiMessageService::displayError(_("Cannot delete this location because item movements have been created using this location."));
 		return false;
 	}
 
 	if (key_in_foreign_table($selected_id, 'workorders', 'loc_code'))
 	{
-		display_error(_("Cannot delete this location because it is used by some work orders records."));
+		UiMessageService::displayError(_("Cannot delete this location because it is used by some work orders records."));
 		return false;
 	}
 
 	if (key_in_foreign_table($selected_id, 'cust_branch', 'default_location'))
 	{
-		display_error(_("Cannot delete this location because it is used by some branch records as the default location to deliver from."));
+		UiMessageService::displayError(_("Cannot delete this location because it is used by some branch records as the default location to deliver from."));
 		return false;
 	}
 	
 	if (key_in_foreign_table($selected_id, 'bom', 'loc_code'))
 	{
-		display_error(_("Cannot delete this location because it is used by some related records in other tables."));
+		UiMessageService::displayError(_("Cannot delete this location because it is used by some related records in other tables."));
 		return false;
 	}
 	
 	if (key_in_foreign_table($selected_id, 'grn_batch', 'loc_code'))
 	{
-		display_error(_("Cannot delete this location because it is used by some related records in other tables."));
+		UiMessageService::displayError(_("Cannot delete this location because it is used by some related records in other tables."));
 		return false;
 	}
 	if (key_in_foreign_table($selected_id, 'purch_orders', 'into_stock_location'))
 	{
-		display_error(_("Cannot delete this location because it is used by some related records in other tables."));
+		UiMessageService::displayError(_("Cannot delete this location because it is used by some related records in other tables."));
 		return false;
 	}
 	if (key_in_foreign_table($selected_id, 'sales_orders', 'from_stk_loc'))
 	{
-		display_error(_("Cannot delete this location because it is used by some related records in other tables."));
+		UiMessageService::displayError(_("Cannot delete this location because it is used by some related records in other tables."));
 		return false;
 	}
 	if (key_in_foreign_table($selected_id, 'sales_pos', 'pos_location'))
 	{
-		display_error(_("Cannot delete this location because it is used by some related records in other tables."));
+		UiMessageService::displayError(_("Cannot delete this location because it is used by some related records in other tables."));
 		return false;
 	}
 	return true;

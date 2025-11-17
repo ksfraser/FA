@@ -37,7 +37,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if (strlen($_POST['name']) == 0) 
 	{
 		$input_error = 1;
-		display_error(_("The tax group name cannot be empty."));
+		UiMessageService::displayError(_("The tax group name cannot be empty."));
 		set_focus('name');
 	} 
 	if ($input_error != 1) 
@@ -80,13 +80,13 @@ function can_delete($selected_id)
 		return false;
 	if (key_in_foreign_table($selected_id, 'cust_branch', 'tax_group_id'))	
 	{
-		display_error(_("Cannot delete this tax group because customer branches been created referring to it."));
+		UiMessageService::displayError(_("Cannot delete this tax group because customer branches been created referring to it."));
 		return false;
 	}
 
 	if (key_in_foreign_table($selected_id, 'suppliers', 'tax_group_id'))
 	{
-		display_error(_("Cannot delete this tax group because suppliers been created referring to it."));
+		UiMessageService::displayError(_("Cannot delete this tax group because suppliers been created referring to it."));
 		return false;
 	}
 

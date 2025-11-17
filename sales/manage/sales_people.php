@@ -29,18 +29,18 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if (strlen($_POST['salesman_name']) == 0)
 	{
 		$input_error = 1;
-		display_error(_("The sales person name cannot be empty."));
+		UiMessageService::displayError(_("The sales person name cannot be empty."));
 		set_focus('salesman_name');
 	}
 	$pr1 = check_num('provision', 0,100);
 	if (!$pr1 || !check_num('provision2', 0, 100)) {
 		$input_error = 1;
-		display_error( _("Salesman provision cannot be less than 0 or more than 100%."));
+		UiMessageService::displayError( _("Salesman provision cannot be less than 0 or more than 100%."));
 		set_focus(!$pr1 ? 'provision' : 'provision2');
 	}
 	if (!check_num('break_pt', 0)) {
 		$input_error = 1;
-		display_error( _("Salesman provision breakpoint must be numeric and not less than 0."));
+		UiMessageService::displayError( _("Salesman provision breakpoint must be numeric and not less than 0."));
 		set_focus('break_pt');
 	}
 	if ($input_error != 1)
@@ -73,7 +73,7 @@ if ($Mode == 'Delete')
 
 	if (key_in_foreign_table($selected_id, 'cust_branch', 'salesman'))
 	{
-		display_error(_("Cannot delete this sales-person because branches are set up referring to this sales-person - first alter the branches concerned."));
+		UiMessageService::displayError(_("Cannot delete this sales-person because branches are set up referring to this sales-person - first alter the branches concerned."));
 	}
 	else
 	{

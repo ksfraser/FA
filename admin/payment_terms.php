@@ -48,13 +48,13 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if (!is_numeric($_POST['DayNumber']))
 	{
 		$input_error = 1;
-		display_error( _("The number of days or the day in the following month must be numeric."));
+		UiMessageService::displayError( _("The number of days or the day in the following month must be numeric."));
 		set_focus('DayNumber');
 	} 
 	elseif (strlen($_POST['terms']) == 0) 
 	{
 		$input_error = 1;
-		display_error( _("The Terms description must be entered."));
+		UiMessageService::displayError( _("The Terms description must be entered."));
 		set_focus('terms');
 	}
 
@@ -92,13 +92,13 @@ if ($Mode == 'Delete')
 	// PREVENT DELETES IF DEPENDENT RECORDS IN debtors_master
 	if (key_in_foreign_table($selected_id, 'debtors_master', 'payment_terms'))
 	{
-		display_error(_("Cannot delete this payment term, because customer accounts have been created referring to this term."));
+		UiMessageService::displayError(_("Cannot delete this payment term, because customer accounts have been created referring to this term."));
 	} 
 	else 
 	{
 		if (key_in_foreign_table($selected_id, 'suppliers', 'payment_terms'))
 		{
-			display_error(_("Cannot delete this payment term, because supplier accounts have been created referring to this term"));
+			UiMessageService::displayError(_("Cannot delete this payment term, because supplier accounts have been created referring to this term"));
 		} 
 		else 
 		{

@@ -74,13 +74,13 @@ function can_process()
 {
 	if (!DateService::isDate($_POST['date_']))
 	{
-		display_error(_("The entered date for the issue is invalid."));
+		UiMessageService::displayError(_("The entered date for the issue is invalid."));
 		set_focus('date_');
 		return false;
 	} 
 	elseif (!DateService::isDateInFiscalYear($_POST['date_']))
 	{
-		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('date_');
 		return false;
 	}
@@ -93,7 +93,7 @@ function can_process()
 	$failed_item = $_SESSION['issue_items']->check_qoh($_POST['Location'], $_POST['date_'], !$_POST['IssueType']);
 	if ($failed_item)
 	{
-   		display_error(_("The issue cannot be processed because it would cause negative inventory balance for marked items as of document date or later."));
+   		UiMessageService::displayError(_("The issue cannot be processed because it would cause negative inventory balance for marked items as of document date or later."));
 		return false;
 	}
 
@@ -110,7 +110,7 @@ if (isset($_POST['Process']) && can_process())
 
 	if ($failed_data != null) 
 	{
-		display_error(_("The process cannot be completed because there is an insufficient total quantity for a component.") . "<br>"
+		UiMessageService::displayError(_("The process cannot be completed because there is an insufficient total quantity for a component.") . "<br>"
 		. _("Component is :"). $failed_data[0] . "<br>"
 		. _("From location :"). $failed_data[1] . "<br>");
 	} 
@@ -127,14 +127,14 @@ function check_item_data()
 {
 	if (RequestService::inputNumStatic('qty') == 0 || !check_num('qty', 0))
 	{
-		display_error(_("The quantity entered is negative or invalid."));
+		UiMessageService::displayError(_("The quantity entered is negative or invalid."));
 		set_focus('qty');
 		return false;
 	}
 
 	if (!check_num('std_cost', 0))
 	{
-		display_error(_("The entered standard cost is negative or invalid."));
+		UiMessageService::displayError(_("The entered standard cost is negative or invalid."));
 		set_focus('std_cost');
 		return false;
 	}

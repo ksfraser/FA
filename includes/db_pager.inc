@@ -98,7 +98,7 @@ class db_pager {
 						$sql = $parts[1];
 					} else {
 						if ($SysPrefs->go_debug)
-							display_error("Invalid sql input for db_pager");
+							UiMessageService::displayError("Invalid sql input for db_pager");
 					}
 
 					$parts = preg_split('/\sWHERE(?!.*WHERE.*)\s/si', $sql, 2); // last occurence

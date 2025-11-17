@@ -31,7 +31,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if (strlen($_POST['name']) == 0) 
 	{
 		$input_error = 1;
-		display_error(_("The work centre name cannot be empty."));
+		UiMessageService::displayError(_("The work centre name cannot be empty."));
 		set_focus('name');
 	}
 
@@ -58,13 +58,13 @@ function can_delete($selected_id)
 {
 	if (key_in_foreign_table($selected_id, 'bom', 'workcentre_added'))
 	{
-		display_error(_("Cannot delete this work centre because BOMs have been created referring to it."));
+		UiMessageService::displayError(_("Cannot delete this work centre because BOMs have been created referring to it."));
 		return false;
 	}
 
 	if (key_in_foreign_table($selected_id, 'wo_requirements', 'workcentre'))	
 	{
-		display_error(_("Cannot delete this work centre because work order requirements have been created referring to it."));
+		UiMessageService::displayError(_("Cannot delete this work centre because work order requirements have been created referring to it."));
 		return false;
 	}		
 	

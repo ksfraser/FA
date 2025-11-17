@@ -93,13 +93,13 @@ function check_valid_entries()
 {
 	if (!is_numeric($_POST['FromTransNo']) OR $_POST['FromTransNo'] <= 0)
 	{
-		display_error(_("The starting transaction number is expected to be numeric and greater than zero."));
+		UiMessageService::displayError(_("The starting transaction number is expected to be numeric and greater than zero."));
 		return false;
 	}
 
 	if (!is_numeric($_POST['ToTransNo']) OR $_POST['ToTransNo'] <= 0)
 	{
-		display_error(_("The ending transaction number is expected to be numeric and greater than zero."));
+		UiMessageService::displayError(_("The ending transaction number is expected to be numeric and greater than zero."));
 		return false;
 	}
 

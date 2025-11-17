@@ -34,18 +34,18 @@ function check_data($selected_id)
 	if ($selected_id != -1) {
 		if ($_POST['name'] == "")
 		{
-			display_error(_("Database settings are not specified."));
+			UiMessageService::displayError(_("Database settings are not specified."));
 	 		return false;
 		}
 	} else {
 		if (!RequestService::getPostStatic('name') || !RequestService::getPostStatic('host') || !RequestService::getPostStatic('dbuser') || !RequestService::getPostStatic('dbname'))
 		{
-			display_error(_("Database settings are not specified."));
+			UiMessageService::displayError(_("Database settings are not specified."));
 	 		return false;
 		}
 		if ($_POST['port'] != '' && !is_numeric($_POST['port'])) 
 		{
-			display_error(_('Database port has to be numeric or empty.'));
+			UiMessageService::displayError(_('Database port has to be numeric or empty.'));
 			return false;
 		}
 	
@@ -56,12 +56,12 @@ function check_data($selected_id)
 	  		{
 				if ($_POST['tbpref'] == $con['tbpref'])
 				{
-					display_error(_("This database settings are already used by another company."));
+					UiMessageService::displayError(_("This database settings are already used by another company."));
 					return false;
 				}
 				if (($_POST['tbpref'] == 0) ^ ($con['tbpref'] == ''))
 				{
-					display_error(_("You cannot have table set without prefix together with prefixed sets in the same database."));
+					UiMessageService::displayError(_("You cannot have table set without prefix together with prefixed sets in the same database."));
 					return false;
 				}
 		  	}
@@ -121,13 +121,13 @@ function handle_submit($selected_id)
 		$conn = $db_connections[$selected_id];
 		if (($db = db_create_db($conn)) === false)
 		{
-			display_error(_("Error creating Database: ") . $conn['dbname'] . _(", Please create it manually"));
+			UiMessageService::displayError(_("Error creating Database: ") . $conn['dbname'] . _(", Please create it manually"));
 			$error = true;
 		} else {
 			if (strncmp(db_get_version(), "5.6", 3) >= 0) 
 				db_query("SET sql_mode = ''");
 			if (!db_import($path_to_root.'/sql/'.RequestService::getPostStatic('coa'), $conn, $selected_id)) {
-				display_error(_('Cannot create new company due to bugs in sql file.'));
+				UiMessageService::displayError(_('Cannot create new company due to bugs in sql file.'));
 				$error = true;
 			} 
 			else
@@ -145,11 +145,11 @@ function handle_submit($selected_id)
 	$error = write_config_db($new);
 
 	if ($error == -1)
-		display_error(_("Cannot open the configuration file - ") . $path_to_root . "/config_db.php");
+		UiMessageService::displayError(_("Cannot open the configuration file - ") . $path_to_root . "/config_db.php");
 	else if ($error == -2)
-		display_error(_("Cannot write to the configuration file - ") . $path_to_root . "/config_db.php");
+		UiMessageService::displayError(_("Cannot write to the configuration file - ") . $path_to_root . "/config_db.php");
 	else if ($error == -3)
-		display_error(_("The configuration file ") . $path_to_root . "/config_db.php" . _(" is not writable. Change its permissions so it is, then re-run the operation."));
+		UiMessageService::displayError(_("The configuration file ") . $path_to_root . "/config_db.php" . _(" is not writable. Change its permissions so it is, then re-run the operation."));
 	if ($error != 0)
 	{
 		return false;
@@ -178,14 +178,14 @@ function handle_delete($id)
 	for($i = $id; $i < count($db_connections); $i++) {
 			$comp_path = company_path($i);
 		if (!is_dir($comp_path) || !is_writable($comp_path)) {
-			display_error(_('Broken company subdirectories system. You have to remove this company manually.'));
+			UiMessageService::displayError(_('Broken company subdirectories system. You have to remove this company manually.'));
 			return;
 		}
 	}
 	// make sure config file is writable
 	if (!is_writeable($path_to_root . "/config_db.php"))
 	{
-		display_error(_("The configuration file ") . $path_to_root . "/config_db.php" . _(" is not writable. Change its permissions so it is, then re-run the operation."));
+		UiMessageService::displayError(_("The configuration file ") . $path_to_root . "/config_db.php" . _(" is not writable. Change its permissions so it is, then re-run the operation."));
 		return;
 	}
 	// rename directory to temporary name to ensure all
@@ -194,30 +194,30 @@ function handle_delete($id)
 	$cdir = company_path($id);
 	$tmpname  = company_path('/old_'.$id);
 	if (!@rename($cdir, $tmpname)) {
-		display_error(_('Cannot rename subdirectory to temporary name.'));
+		UiMessageService::displayError(_('Cannot rename subdirectory to temporary name.'));
 		return;
 	}
 	// 'shift' company directories names
 	for ($i = $id+1; $i < count($db_connections); $i++) {
 		if (!rename(company_path($i), company_path($i-1))) {
-			display_error(_("Cannot rename company subdirectory"));
+			UiMessageService::displayError(_("Cannot rename company subdirectory"));
 			return;
 		}
 	}
 	$err = remove_connection($id);
 	if ($err == 0)
-		display_error(_("Error removing Database: ") . $id . _(", please remove it manually"));
+		UiMessageService::displayError(_("Error removing Database: ") . $id . _(", please remove it manually"));
 
 	if ($def_coy == $id)
 		$def_coy = 0;
 
 	$error = write_config_db();
 	if ($error == -1)
-		display_error(_("Cannot open the configuration file - ") . $path_to_root . "/config_db.php");
+		UiMessageService::displayError(_("Cannot open the configuration file - ") . $path_to_root . "/config_db.php");
 	else if ($error == -2)
-		display_error(_("Cannot write to the configuration file - ") . $path_to_root . "/config_db.php");
+		UiMessageService::displayError(_("Cannot write to the configuration file - ") . $path_to_root . "/config_db.php");
 	else if ($error == -3)
-		display_error(_("The configuration file ") . $path_to_root . "/config_db.php" . _(" is not writable. Change its permissions so it is, then re-run the operation."));
+		UiMessageService::displayError(_("The configuration file ") . $path_to_root . "/config_db.php" . _(" is not writable. Change its permissions so it is, then re-run the operation."));
 	if ($error != 0) {
 		@rename($tmpname, $cdir);
 		return;
@@ -226,7 +226,7 @@ function handle_delete($id)
 	@flush_dir($tmpname, true);
 	if (!@rmdir($tmpname))
 	{
-		display_error(_("Cannot remove temporary renamed company data directory ") . $tmpname);
+		UiMessageService::displayError(_("Cannot remove temporary renamed company data directory ") . $tmpname);
 		return;
 	}
 	display_notification(_("Selected company has been deleted"));

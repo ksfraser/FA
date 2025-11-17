@@ -66,7 +66,7 @@ if (isset($_POST['BatchInvoice']))
 		}
 	}
     if (!$del_count) {
-		display_error(_('For batch invoicing you should
+		UiMessageService::displayError(_('For batch invoicing you should
 		    select at least one delivery. All items must be dispatched to
 		    the same customer branch.'));
     } else {

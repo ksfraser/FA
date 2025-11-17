@@ -223,7 +223,7 @@ if (RequestService::getPostStatic('Refresh')) {
 		$installed_extensions = $exts;
 	
 	if(!$result) {
-		display_error(_('Status change for some extensions failed.'));
+		UiMessageService::displayError(_('Status change for some extensions failed.'));
 		$Ajax->activate('ext_tbl'); // refresh settings display
 	}else
 		display_notification(_('Current active extensions set has been saved.'));

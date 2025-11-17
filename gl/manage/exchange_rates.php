@@ -31,19 +31,19 @@ function check_data($selected_id)
 {
 	if (!DateService::isDate($_POST['date_']))
 	{
-		display_error( _("The entered date is invalid."));
+		UiMessageService::displayError( _("The entered date is invalid."));
 		set_focus('date_');
 		return false;
 	}
 	if (RequestService::inputNumStatic('BuyRate') <= 0)
 	{
-		display_error( _("The exchange rate cannot be zero or a negative number."));
+		UiMessageService::displayError( _("The exchange rate cannot be zero or a negative number."));
 		set_focus('BuyRate');
 		return false;
 	}
 	if (!$selected_id && get_date_exchange_rate($_POST['curr_abrev'], $_POST['date_']))
 	{
-		display_error( _("The exchange rate for the date is already there."));
+		UiMessageService::displayError( _("The exchange rate for the date is already there."));
 		set_focus('date_');
 		return false;
 	}

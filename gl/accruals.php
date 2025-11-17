@@ -44,25 +44,25 @@ if (isset($_POST['go']) || isset($_POST['show']))
 	$dateService = new DateService();
 	if (!$dateService->isDate($_POST['date_']))
 	{
-		display_error(_("The entered date is invalid."));
+		UiMessageService::displayError(_("The entered date is invalid."));
 		set_focus('date_');
 		$input_error = 1;
 	}
 	elseif (!DateService::isDateInFiscalYearStatic($_POST['date_']))
 	{
-		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('date_');
 		$input_error = 1;
 	}
 	elseif (RequestService::inputNumStatic('amount', 0) == 0.0)
 	{
-		display_error(_("The amount can not be 0."));
+		UiMessageService::displayError(_("The amount can not be 0."));
 		set_focus('amount');
 		$input_error = 1;
 	}
 	elseif (RequestService::inputNumStatic('periods', 0) < 1)
 	{
-		display_error(_("The periods must be greater than 0."));
+		UiMessageService::displayError(_("The periods must be greater than 0."));
 		set_focus('periods');
 		$input_error = 1;
 	}
@@ -83,7 +83,7 @@ if (isset($_POST['go']) || isset($_POST['show']))
 			DateService::endMonthStatic(DateService::addMonthsStatic($date_, 3*$per)))));
 		if (!is_date_in_fiscalyears($lastdate, false))
 		{
-			display_error(_("Some of the period dates are outside the fiscal year or are closed for further data entry. Create a new fiscal year first!"));
+			UiMessageService::displayError(_("Some of the period dates are outside the fiscal year or are closed for further data entry. Create a new fiscal year first!"));
 			set_focus('date_');
 			$input_error = 1;
 		}

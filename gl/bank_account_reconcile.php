@@ -40,7 +40,7 @@ check_db_has_bank_accounts(_("There are no bank accounts defined in the system."
 function check_date() {
 	$dateService = new DateService();
 	if (!$dateService->isDate(RequestService::getPostStatic('reconcile_date'))) {
-		display_error(_("Invalid reconcile date format"));
+		UiMessageService::displayError(_("Invalid reconcile date format"));
 		set_focus('reconcile_date');
 		return false;
 	}

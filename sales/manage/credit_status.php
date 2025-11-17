@@ -27,7 +27,7 @@ function can_process()
 	
 	if (strlen($_POST['reason_description']) == 0) 
 	{
-		display_error(_("The credit status description cannot be empty."));
+		UiMessageService::displayError(_("The credit status description cannot be empty."));
 		set_focus('reason_description');
 		return false;
 	}	
@@ -60,7 +60,7 @@ function can_delete($selected_id)
 {
 	if (key_in_foreign_table($selected_id, 'debtors_master', 'credit_status'))
 	{
-		display_error(_("Cannot delete this credit status because customer accounts have been created referring to it."));
+		UiMessageService::displayError(_("Cannot delete this credit status because customer accounts have been created referring to it."));
 		return false;
 	}
 	

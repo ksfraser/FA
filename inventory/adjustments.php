@@ -104,7 +104,7 @@ function can_process()
 	$adj = &$_SESSION['adj_items'];
 
 	if (count($adj->line_items) == 0)	{
-		display_error(_("You must enter at least one non empty item line."));
+		UiMessageService::displayError(_("You must enter at least one non empty item line."));
 		set_focus('stock_id');
 		return false;
 	}
@@ -118,13 +118,13 @@ function can_process()
 
 	if (!$dateService->isDate($_POST['AdjDate'])) 
 	{
-		display_error(_("The entered date for the adjustment is invalid."));
+		UiMessageService::displayError(_("The entered date for the adjustment is invalid."));
 		set_focus('AdjDate');
 		return false;
 	} 
 	elseif (!DateService::isDateInFiscalYearStatic($_POST['AdjDate'])) 
 	{
-		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('AdjDate');
 		return false;
 	}
@@ -134,7 +134,7 @@ function can_process()
 
 		if ($low_stock)
 		{
-    		display_error(_("The adjustment cannot be processed because it would cause negative inventory balance for marked items as of document date or later."));
+    		UiMessageService::displayError(_("The adjustment cannot be processed because it would cause negative inventory balance for marked items as of document date or later."));
 			unset($_POST['Process']);
 			return false;
 		}
@@ -167,14 +167,14 @@ function check_item_data()
 {
 	if (RequestService::inputNumStatic('qty') == 0)
 	{
-		display_error(_("The quantity entered is invalid."));
+		UiMessageService::displayError(_("The quantity entered is invalid."));
 		set_focus('qty');
 		return false;
 	}
 
 	if (!check_num('std_cost', 0))
 	{
-		display_error(_("The entered standard cost is negative or invalid."));
+		UiMessageService::displayError(_("The entered standard cost is negative or invalid."));
 		set_focus('std_cost');
 		return false;
 	}

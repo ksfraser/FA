@@ -23,7 +23,7 @@ function can_process()
 {
 	if (strlen($_POST['shipper_name']) == 0) 
 	{
-		display_error(_("The shipping company name cannot be empty."));
+		UiMessageService::displayError(_("The shipping company name cannot be empty."));
 		set_focus('shipper_name');
 		return false;
 	}
@@ -56,7 +56,7 @@ if ($Mode == 'Delete')
 	if (key_in_foreign_table($selected_id, 'sales_orders', 'ship_via'))
 	{
 		$cancel_delete = 1;
-		display_error(_("Cannot delete this shipping company because sales orders have been created using this shipper."));
+		UiMessageService::displayError(_("Cannot delete this shipping company because sales orders have been created using this shipper."));
 	} 
 	else 
 	{
@@ -64,7 +64,7 @@ if ($Mode == 'Delete')
 		if (key_in_foreign_table($selected_id, 'debtor_trans', 'ship_via'))
 		{
 			$cancel_delete = 1;
-			display_error(_("Cannot delete this shipping company because invoices have been created using this shipping company."));
+			UiMessageService::displayError(_("Cannot delete this shipping company because invoices have been created using this shipping company."));
 		} 
 		else 
 		{

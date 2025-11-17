@@ -132,12 +132,12 @@ function check_data()
 	global $installed_languages;
 
 	if (RequestService::getPostStatic('code') == '' || RequestService::getPostStatic('name') == '' || RequestService::getPostStatic('encoding') == '') {
-		display_error(_("Language name, code nor encoding cannot be empty"));
+		UiMessageService::displayError(_("Language name, code nor encoding cannot be empty"));
 		return false;
 	}
 	$id = array_search_value($_POST['code'], $installed_languages, 'code');
 	if ($id !== null && $installed_languages[$id]['package'] != null) {
-		display_error(_('Standard package for this language is already installed. If you want to install this language manually, uninstall standard language package first.'));
+		UiMessageService::displayError(_('Standard package for this language is already installed. If you want to install this language manually, uninstall standard language package first.'));
 		return false;
 	}
 	return true;

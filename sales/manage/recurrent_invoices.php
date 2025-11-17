@@ -38,44 +38,44 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	{
 		$input_error = 1;
 		if (RequestService::getPostStatic('debtor_no'))
-			display_error(_("This customer has no branches. Please define at least one branch for this customer first."));
+			UiMessageService::displayError(_("This customer has no branches. Please define at least one branch for this customer first."));
 		else
-			display_error(_("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
+			UiMessageService::displayError(_("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
 		set_focus('debtor_no');
 	}
 	if (strlen($_POST['description']) == 0) 
 	{
 		$input_error = 1;
-		display_error(_("The invoice description cannot be empty."));
+		UiMessageService::displayError(_("The invoice description cannot be empty."));
 		set_focus('description');
 	}
 	if (!check_recurrent_invoice_description($_POST['description'], $selected_id))
 	{
 		$input_error = 1;
-		display_error(_("This recurrent invoice description is already in use."));
+		UiMessageService::displayError(_("This recurrent invoice description is already in use."));
 		set_focus('description');
 	}
 	if (!DateService::isDate($_POST['begin']))
 	{
 		$input_error = 1;
-		display_error(_("The entered date is invalid."));
+		UiMessageService::displayError(_("The entered date is invalid."));
 		set_focus('begin');
 	}
 	if (!DateService::isDate($_POST['end']))
 	{
 		$input_error = 1;
-		display_error(_("The entered date is invalid."));
+		UiMessageService::displayError(_("The entered date is invalid."));
 		set_focus('end');
 	}
 	if (isset($_POST['last_sent']) && !DateService::isDate($_POST['last_sent'])) {
 		$input_error = 1;
-		display_error(_("The entered date is invalid."));
+		UiMessageService::displayError(_("The entered date is invalid."));
 		set_focus('last_sent');
 	}
 	if (!$_POST['days'] && !$_POST['monthly'])
 	{
 		$input_error = 1;
-		display_error(_("No recurence interval has been entered."));
+		UiMessageService::displayError(_("No recurence interval has been entered."));
 		set_focus('days');
 	}
 

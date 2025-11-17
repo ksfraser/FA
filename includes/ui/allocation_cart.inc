@@ -377,7 +377,7 @@ function check_allocations()
 		if (!isset($_POST['amount'.$counter])) continue;
 		if (!check_num('amount' . $counter, 0))
 		{
-			display_error(_("The entry for one or more amounts is invalid or negative."));
+			UiMessageService::displayError(_("The entry for one or more amounts is invalid or negative."));
 			set_focus('amount'.$counter);
 			return false;
 		 }
@@ -388,7 +388,7 @@ function check_allocations()
 		 $allocated = RequestService::inputNumStatic('amount' . $counter);
 		 if ($allocated && ($allocated > RequestService::inputNumStatic('un_allocated' . $counter)))
 		 {
-			display_error(_("At least one transaction is overallocated."));
+			UiMessageService::displayError(_("At least one transaction is overallocated."));
 			set_focus('amount'.$counter);
 			return false;
 		 }
@@ -400,7 +400,7 @@ function check_allocations()
 				$trans = get_customer_trans($_SESSION['alloc']->allocs[$counter]->type_no, $_SESSION['alloc']->allocs[$counter]->type,$_SESSION['alloc']->person_id);
 
 			if ($trans['debtor_no'] != $_SESSION['alloc']->person_id) {
-				display_error(_("Allocated transaction allocated is not related to company selected."));
+				UiMessageService::displayError(_("Allocated transaction allocated is not related to company selected."));
 				set_focus('amount'.$counter);
 				return false;
 			}
@@ -410,7 +410,7 @@ function check_allocations()
             else
                 $trans = get_supp_trans($_SESSION['alloc']->allocs[$counter]->type_no, $_SESSION['alloc']->allocs[$counter]->type,  $_SESSION['alloc']->person_id);			
 			if ($trans['supplier_id'] != $_SESSION['alloc']->person_id) {
-				display_error(_("Allocated transaction allocated is not related to company selected."));
+				UiMessageService::displayError(_("Allocated transaction allocated is not related to company selected."));
 				set_focus('amount'.$counter);
 				return false;
 			}
@@ -425,7 +425,7 @@ function check_allocations()
 
 	if ($total_allocated - ($amount + RequestService::inputNumStatic('discount'))  > $SysPrefs->allocation_settled_allowance())
 	{
-		display_error(_("These allocations cannot be processed because the amount allocated is more than the total amount left to allocate."));
+		UiMessageService::displayError(_("These allocations cannot be processed because the amount allocated is more than the total amount left to allocate."));
 		return false;
 	}
 

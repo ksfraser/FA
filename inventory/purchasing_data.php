@@ -45,25 +45,25 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
    	if ($_POST['stock_id'] == "" || !isset($_POST['stock_id']))
    	{
       	$input_error = 1;
-      	display_error( _("There is no item selected."));
+      	UiMessageService::displayError( _("There is no item selected."));
 		set_focus('stock_id');
    	}
    	elseif (!check_num('price', 0))
    	{
       	$input_error = 1;
-      	display_error( _("The price entered was not numeric."));
+      	UiMessageService::displayError( _("The price entered was not numeric."));
 	set_focus('price');
    	}
    	elseif (!check_num('conversion_factor'))
    	{
       	$input_error = 1;
-      	display_error( _("The conversion factor entered was not numeric. The conversion factor is the number by which the price must be divided by to get the unit price in our unit of measure."));
+      	UiMessageService::displayError( _("The conversion factor entered was not numeric. The conversion factor is the number by which the price must be divided by to get the unit price in our unit of measure."));
 		set_focus('conversion_factor');
    	}
    	elseif ($Mode == 'ADD_ITEM' && get_item_purchasing_data($_POST['supplier_id'], $_POST['stock_id']))
    	{
       	$input_error = 1;
-      	display_error( _("The purchasing data for this supplier has already been added."));
+      	UiMessageService::displayError( _("The purchasing data for this supplier has already been added."));
 		set_focus('supplier_id');
 	}
 	if ($input_error == 0)
@@ -132,7 +132,7 @@ $mb_flag = get_mb_flag($_POST['stock_id']);
 
 if ($mb_flag == -1)
 {
-	display_error(_("Entered item is not defined. Please re-enter."));
+	UiMessageService::displayError(_("Entered item is not defined. Please re-enter."));
   	$Ajax->activate('price_table');
 	set_focus('stock_id');
 }

@@ -92,30 +92,30 @@ function can_process()
 	$dateService = new DateService();
 
 	if (!$dateService->isDate($_POST['CreditDate'])) {
-		display_error(_("The entered date is invalid."));
+		UiMessageService::displayError(_("The entered date is invalid."));
 		set_focus('CreditDate');
 		return false;
 	} elseif (!DateService::isDateInFiscalYear($_POST['CreditDate']))	{
-		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('CreditDate');
 		return false;
 	}
 
     if ($_SESSION['Items']->trans_no==0) {
 		if (!$Refs->is_valid($_POST['ref'], ST_CUSTCREDIT)) {
-			display_error(_("You must enter a reference."));
+			UiMessageService::displayError(_("You must enter a reference."));
 			set_focus('ref');
 			return false;
 		}
 
     }
 	if (!check_num('ChargeFreightCost', 0)) {
-		display_error(_("The entered shipping cost is invalid or less than zero."));
+		UiMessageService::displayError(_("The entered shipping cost is invalid or less than zero."));
 		set_focus('ChargeFreightCost');
 		return false;
 	}
 	if (!check_quantities()) {
-		display_error(_("Selected quantity cannot be less than zero nor more than quantity not credited yet."));
+		UiMessageService::displayError(_("Selected quantity cannot be less than zero nor more than quantity not credited yet."));
 		return false;
 	}
 	return true;
@@ -137,7 +137,7 @@ if (isset($_GET['InvoiceNumber']) && $_GET['InvoiceNumber'] > 0) {
 	/* This page can only be called with an invoice number for crediting*/
 	die (_("This page can only be opened if an invoice has been selected for crediting."));
 } elseif (!check_quantities()) {
-	display_error(_("Selected quantity cannot be less than zero nor more than quantity not credited yet."));
+	UiMessageService::displayError(_("Selected quantity cannot be less than zero nor more than quantity not credited yet."));
 }
 
 function check_quantities()
@@ -206,7 +206,7 @@ if (isset($_POST['ProcessCredit']) && can_process()) {
 	$credit_no = $_SESSION['Items']->write($_POST['WriteOffGLCode']);
 	if ($credit_no == -1)
 	{
-		display_error(_("The entered reference is already in use."));
+		UiMessageService::displayError(_("The entered reference is already in use."));
 		set_focus('ref');
 	} elseif($credit_no) {
 		processing_end();

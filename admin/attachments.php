@@ -85,19 +85,19 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 	if (($_POST['filterType'] == ST_ITEM || $_POST['filterType'] == ST_FIXEDASSET) && $Mode == 'ADD_ITEM')
 		$_POST['trans_no'] = get_item_code_id($_POST['trans_no']);
 	if (!transaction_exists($_POST['filterType'], $_POST['trans_no']))
-		display_error(_("Selected transaction does not exists."));
+		UiMessageService::displayError(_("Selected transaction does not exists."));
 	elseif ($Mode == 'ADD_ITEM' && !in_array(strtoupper(substr($filename, strlen($filename) - 3)), array('JPG','PNG','GIF', 'PDF', 'DOC', 'ODT')))
 	{
-		display_error(_('Only graphics,pdf,doc and odt files are supported.'));
+		UiMessageService::displayError(_('Only graphics,pdf,doc and odt files are supported.'));
 	} elseif ($Mode == 'ADD_ITEM' && !isset($_FILES['filename']))
-		display_error(_("Select attachment file."));
+		UiMessageService::displayError(_("Select attachment file."));
 	elseif ($Mode == 'ADD_ITEM' && ($_FILES['filename']['error'] > 0)) {
     	if ($_FILES['filename']['error'] == UPLOAD_ERR_INI_SIZE) 
-		  	display_error(_("The file size is over the maximum allowed."));
+		  	UiMessageService::displayError(_("The file size is over the maximum allowed."));
     	else
-		  	display_error(_("Select attachment file."));
+		  	UiMessageService::displayError(_("Select attachment file."));
   	} elseif ( strlen($filename) > 60) {
-		display_error(_("File name exceeds maximum of 60 chars. Please change filename and try again."));
+		UiMessageService::displayError(_("File name exceeds maximum of 60 chars. Please change filename and try again."));
 	} else {
 		//$content = base64_encode(file_get_contents($_FILES['filename']['tmp_name']));
 		$tmpname = $_FILES['filename']['tmp_name'];

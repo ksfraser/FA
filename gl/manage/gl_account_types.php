@@ -29,27 +29,27 @@ function can_process($selected_id)
 {
 	if (strlen(trim($_POST['id'])) == 0) 
 	{
-	    display_error( _("The account group id cannot be empty."));
+	    UiMessageService::displayError( _("The account group id cannot be empty."));
 	    set_focus('id');
 	    return false;
 	}
 	if (strlen(trim($_POST['name'])) == 0) 
 	{
-		display_error( _("The account group name cannot be empty."));
+		UiMessageService::displayError( _("The account group name cannot be empty."));
 		set_focus('name');
 		return false;
 	}
 	$type = get_account_type(trim($_POST['id']));
 	if ($type && ($type['id'] != $selected_id)) 
 	{
-		display_error( _("This account group id is already in use."));
+		UiMessageService::displayError( _("This account group id is already in use."));
 		set_focus('id');
 		return false;
 	}
 
 	if ($_POST['id'] === $_POST['parent']) 
 	{
-		display_error(_("You cannot set an account group to be a subgroup of itself."));
+		UiMessageService::displayError(_("You cannot set an account group to be a subgroup of itself."));
 		return false;
 	}
 
@@ -88,13 +88,13 @@ function can_delete($type)
 
 	if (key_in_foreign_table($type, 'chart_master', 'account_type'))
 	{
-		display_error(_("Cannot delete this account group because GL accounts have been created referring to it."));
+		UiMessageService::displayError(_("Cannot delete this account group because GL accounts have been created referring to it."));
 		return false;
 	}
 
 	if (key_in_foreign_table($type, 'chart_types', 'parent'))
 	{
-		display_error(_("Cannot delete this account group because GL account groups have been created referring to it."));
+		UiMessageService::displayError(_("Cannot delete this account group because GL account groups have been created referring to it."));
 		return false;
 	}
 

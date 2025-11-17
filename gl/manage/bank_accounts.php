@@ -46,13 +46,13 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if (strlen($_POST['bank_account_name']) == 0) 
 	{
 		$input_error = 1;
-		display_error(_("The bank account name cannot be empty."));
+		UiMessageService::displayError(_("The bank account name cannot be empty."));
 		set_focus('bank_account_name');
 	} 
 	if ($Mode=='ADD_ITEM' && (gl_account_in_bank_accounts(RequestService::getPostStatic('account_code')) 
 			|| key_in_foreign_table(RequestService::getPostStatic('account_code'), 'gl_trans', 'account'))) {
 		$input_error = 1;
-		display_error(_("The GL account selected is already in use or has transactions. Select another empty GL account."));
+		UiMessageService::displayError(_("The GL account selected is already in use or has transactions. Select another empty GL account."));
 		set_focus('account_code');
 	}
 	if ($input_error != 1)
@@ -92,13 +92,13 @@ elseif( $Mode == 'Delete')
 	if (key_in_foreign_table($bank_id, 'bank_trans', 'bank_act') || key_in_foreign_table(RequestService::getPostStatic('account_code'), 'gl_trans', 'account'))
 	{
 		$cancel_delete = 1;
-		display_error(_("Cannot delete this bank account because transactions have been created using this account."));
+		UiMessageService::displayError(_("Cannot delete this bank account because transactions have been created using this account."));
 	}
 
 	if (key_in_foreign_table($bank_id, 'sales_pos', 'pos_account'))
 	{
 		$cancel_delete = 1;
-		display_error(_("Cannot delete this bank account because POS definitions have been created using this account."));
+		UiMessageService::displayError(_("Cannot delete this bank account because POS definitions have been created using this account."));
 	}
 	if (!$cancel_delete) 
 	{

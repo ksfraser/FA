@@ -128,11 +128,11 @@ if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
 	$filename .= "/".item_img_name($stock_id).(substr(trim($_FILES['pic']['name']), strrpos($_FILES['pic']['name'], '.')));
 
   if ($_FILES['pic']['error'] == UPLOAD_ERR_INI_SIZE) {
-    display_error(_('The file size is over the maximum allowed.'));
+    UiMessageService::displayError(_('The file size is over the maximum allowed.'));
 		$upload_file ='No';
   }
   elseif ($_FILES['pic']['error'] > 0) {
-		display_error(_('Error uploading file.'));
+		UiMessageService::displayError(_('Error uploading file.'));
 		$upload_file ='No';
   }
 	
@@ -164,7 +164,7 @@ if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
 	} 
 	elseif (!del_image($stock_id))
 	{
-		display_error(_('The existing image could not be removed'));
+		UiMessageService::displayError(_('The existing image could not be removed'));
 		$upload_file ='No';
 	}
 
@@ -172,7 +172,7 @@ if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
 	{
 		$result  =  move_uploaded_file($_FILES['pic']['tmp_name'], $filename);
 		if ($msg = check_image_file($filename)) {
-			display_error($msg);
+			UiMessageService::displayError($msg);
 			unlink($filename);
 			$upload_file ='No';
 		}
@@ -219,13 +219,13 @@ if (isset($_POST['addupdate']))
 	if (strlen($_POST['description']) == 0) 
 	{
 		$input_error = 1;
-		display_error( _('The item name must be entered.'));
+		UiMessageService::displayError( _('The item name must be entered.'));
 		set_focus('description');
 	} 
 	elseif (strlen($_POST['NewStockID']) == 0) 
 	{
 		$input_error = 1;
-		display_error( _('The item code cannot be empty'));
+		UiMessageService::displayError( _('The item code cannot be empty'));
 		set_focus('NewStockID');
 	}
 	elseif (strstr($_POST['NewStockID'], " ") || strstr($_POST['NewStockID'],"'") || 
@@ -233,14 +233,14 @@ if (isset($_POST['addupdate']))
 		strstr($_POST['NewStockID'], "&") || strstr($_POST['NewStockID'], "\t")) 
 	{
 		$input_error = 1;
-		display_error( _('The item code cannot contain any of the following characters -  & + OR a space OR quotes'));
+		UiMessageService::displayError( _('The item code cannot contain any of the following characters -  & + OR a space OR quotes'));
 		set_focus('NewStockID');
 
 	}
 	elseif ($new_item && db_num_rows(get_item_kit($_POST['NewStockID'])))
 	{
 		  	$input_error = 1;
-      		display_error( _("This item code is already assigned to stock item or sale kit."));
+      		UiMessageService::displayError( _("This item code is already assigned to stock item or sale kit."));
 			set_focus('NewStockID');
 	}
 	
@@ -322,7 +322,7 @@ function check_usage($stock_id, $dispmsg=true)
 	$msg = item_in_foreign_codes($stock_id);
 
 	if ($msg != '')	{
-		if($dispmsg) display_error($msg);
+		if($dispmsg) UiMessageService::displayError($msg);
 		return false;
 	}
 	return true;

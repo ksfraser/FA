@@ -62,7 +62,7 @@ $wo_details = get_work_order($_POST['selected_id'], true);
 
 if ($wo_details === false)
 {
-	display_error(_("The order number sent is not valid."));
+	UiMessageService::displayError(_("The order number sent is not valid."));
 	exit;
 }
 
@@ -80,33 +80,33 @@ function can_process($wo_details)
 
 	if (!check_num('quantity', 0))
 	{
-		display_error(_("The quantity entered is not a valid number or less then zero."));
+		UiMessageService::displayError(_("The quantity entered is not a valid number or less then zero."));
 		set_focus('quantity');
 		return false;
 	}
 
 	if (!DateService::isDate($_POST['date_']))
 	{
-		display_error(_("The entered date is invalid."));
+		UiMessageService::displayError(_("The entered date is invalid."));
 		set_focus('date_');
 		return false;
 	}
 	elseif (!DateService::isDateInFiscalYear($_POST['date_']))
 	{
-		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('date_');
 		return false;
 	}
 	if (DateService::dateDiff(DateService::sql2dateStatic($wo_details["released_date"]), $_POST['date_'], "d") > 0)
 	{
-		display_error(_("The production date cannot be before the release date of the work order."));
+		UiMessageService::displayError(_("The production date cannot be before the release date of the work order."));
 		set_focus('date_');
 		return false;
 	}
 	// don't produce more that required. Otherwise change the Work Order.
 	if (RequestService::inputNumStatic('quantity') > ($wo_details["units_reqd"] - $wo_details["units_issued"]))
 	{
-		display_error(_("The production exceeds the quantity needed. Please change the Work Order."));
+		UiMessageService::displayError(_("The production exceeds the quantity needed. Please change the Work Order."));
 		set_focus('quantity');
 		return false;
 	}
@@ -115,7 +115,7 @@ function can_process($wo_details)
 	{
 		if (check_negative_stock($wo_details["stock_id"], -RequestService::inputNumStatic('quantity'), $wo_details["loc_code"], $_POST['date_']))
 		{
-			display_error(_("The unassembling cannot be processed because there is insufficient stock."));
+			UiMessageService::displayError(_("The unassembling cannot be processed because there is insufficient stock."));
 			set_focus('quantity');
 			return false;
 		}
@@ -133,7 +133,7 @@ function can_process($wo_details)
 
 			if (check_negative_stock($row["stock_id"], -$row['units_req'] * RequestService::inputNumStatic('quantity'), $row["loc_code"], $_POST['date_']))
 			{
-    			display_error( _("The production cannot be processed because a required item would cause a negative inventory balance :") .
+    			UiMessageService::displayError( _("The production cannot be processed because a required item would cause a negative inventory balance :") .
     				" " . $row['stock_id'] . " - " .  $row['description']);
     			$err = true;
 			}

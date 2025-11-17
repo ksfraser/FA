@@ -57,6 +57,6 @@ $rep_file = find_custom_file("/reporting/rep$rep.php");
 if ($rep_file) {
 	require($rep_file);
 } else
-	display_error("Cannot find report file '$rep'");
+	UiMessageService::displayError("Cannot find report file '$rep'");
 exit();
 

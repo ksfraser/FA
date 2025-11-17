@@ -304,7 +304,7 @@ function check_page_security($page_security)
 	}
 	
 	if ($msg){
-		display_error($msg);
+		UiMessageService::displayError($msg);
 		end_page(@$_REQUEST['popup']);
 		kill_login();
 		exit;
@@ -323,7 +323,7 @@ function check_page_security($page_security)
 	if (!$SysPrefs->db_ok 
 		&& !in_array($page_security, array('SA_SOFTWAREUPGRADE', 'SA_OPEN', 'SA_BACKUP')))
 	{
-		display_error(_('System is blocked after source upgrade until database is updated on System/Software Upgrade page'));
+		UiMessageService::displayError(_('System is blocked after source upgrade until database is updated on System/Software Upgrade page'));
 		end_page();
 		exit;
 	}

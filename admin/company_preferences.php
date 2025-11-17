@@ -28,54 +28,54 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 
 	if (!check_num('login_tout', 10))
 	{
-		display_error(_("Login timeout must be positive number not less than 10."));
+		UiMessageService::displayError(_("Login timeout must be positive number not less than 10."));
 		set_focus('login_tout');
 		$input_error = 1;
 	}
 	if (strlen($_POST['coy_name'])==0)
 	{
 		$input_error = 1;
-		display_error(_("The company name must be entered."));
+		UiMessageService::displayError(_("The company name must be entered."));
 		set_focus('coy_name');
 	}
 	if (!check_num('tax_prd', 1))
 	{
-		display_error(_("Tax Periods must be positive number."));
+		UiMessageService::displayError(_("Tax Periods must be positive number."));
 		set_focus('tax_prd');
 		$input_error = 1;
 	}
 	if (!check_num('tax_last', 1))
 	{
-		display_error(_("Tax Last Periods must be positive number."));
+		UiMessageService::displayError(_("Tax Last Periods must be positive number."));
 		set_focus('tax_last');
 		$input_error = 1;
 	}
 	if (!check_num('round_to', 1))
 	{
-		display_error(_("Round Calculated field must be a positive number."));
+		UiMessageService::displayError(_("Round Calculated field must be a positive number."));
 		set_focus('round_to');
 		$input_error = 1;
 	}
 	if (!check_num('max_days_in_docs', 1))
 	{
-		display_error(_("Max day range in Documents must be a positive number."));
+		UiMessageService::displayError(_("Max day range in Documents must be a positive number."));
 		set_focus('max_days_in_docs');
 		$input_error = 1;
 	}
 	if ($_POST['add_pct'] != "" && !is_numeric($_POST['add_pct']))
 	{
-		display_error(_("Add Price from Std Cost field must be number."));
+		UiMessageService::displayError(_("Add Price from Std Cost field must be number."));
 		set_focus('add_pct');
 		$input_error = 1;
 	}	
 	if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
 	{
     if ($_FILES['pic']['error'] == UPLOAD_ERR_INI_SIZE) {
-			display_error(_('The file size is over the maximum allowed.'));
+			UiMessageService::displayError(_('The file size is over the maximum allowed.'));
 			$input_error = 1;
     }
     elseif ($_FILES['pic']['error'] > 0) {
-			display_error(_('Error uploading logo file.'));
+			UiMessageService::displayError(_('Error uploading logo file.'));
 			$input_error = 1;
     }
 		$result = $_FILES['pic']['error'];
@@ -89,17 +89,17 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 		 //But check for the worst
 		if (!in_array( substr($filename,-4), array('.jpg','.JPG','.png','.PNG')))
 		{
-			display_error(_('Only jpg and png files are supported - a file extension of .jpg or .png is expected'));
+			UiMessageService::displayError(_('Only jpg and png files are supported - a file extension of .jpg or .png is expected'));
 			$input_error = 1;
 		}
 		elseif ( $_FILES['pic']['size'] > ($SysPrefs->max_image_size * 1024))
 		{ //File Size Check
-			display_error(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . $SysPrefs->max_image_size);
+			UiMessageService::displayError(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . $SysPrefs->max_image_size);
 			$input_error = 1;
 		}
 		elseif ( $_FILES['pic']['type'] == "text/plain" )
 		{  //File type Check
-			display_error( _('Only graphics files can be uploaded'));
+			UiMessageService::displayError( _('Only graphics files can be uploaded'));
 			$input_error = 1;
 		}
 		elseif (file_exists($filename))
@@ -107,7 +107,7 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 			$result = unlink($filename);
 			if (!$result)
 			{
-				display_error(_('The existing image could not be removed'));
+				UiMessageService::displayError(_('The existing image could not be removed'));
 				$input_error = 1;
 			}
 		}
@@ -116,12 +116,12 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 			$result  =  move_uploaded_file($_FILES['pic']['tmp_name'], $filename);
 			$_POST['coy_logo'] = clean_file_name($_FILES['pic']['name']);
 			if(!$result) {
-				display_error(_('Error uploading logo file'));
+				UiMessageService::displayError(_('Error uploading logo file'));
 				$input_error = 1;
 			} else {
 				$msg = check_image_file($filename);
 				if ( $msg) {
-					display_error( $msg);
+					UiMessageService::displayError( $msg);
 					unlink($filename);
 					$input_error = 1;
 				}
@@ -136,7 +136,7 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 			$result = unlink($filename);
 			if (!$result)
 			{
-				display_error(_('The existing image could not be removed'));
+				UiMessageService::displayError(_('The existing image could not be removed'));
 				$input_error = 1;
 			}
 		}

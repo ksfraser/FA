@@ -59,7 +59,7 @@ class DataChecksService {
      */
     public function checkDbHasCustomers(string $msg): void {
         if (!$this->dbHasCustomers()) {
-            display_error($msg, true);
+            UiMessageService::displayError($msg, true);
             end_page();
             exit;
         }
@@ -81,7 +81,7 @@ class DataChecksService {
      */
     public function checkDbHasCurrencies(string $msg): void {
         if (!$this->dbHasCurrencies()) {
-            display_error($msg, true);
+            UiMessageService::displayError($msg, true);
             end_page();
             exit;
         }
@@ -103,7 +103,7 @@ class DataChecksService {
         }
         $ret = check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "exchange_rates WHERE curr_code = '$currency' && date_ <= '$dateSql'");
         if ($ret == 0 && $msg) {
-            display_error(sprintf(_("Cannot retrieve exchange rate for currency %s as of %s. Please add exchange rate manually on Exchange Rates page."),
+            UiMessageService::displayError(sprintf(_("Cannot retrieve exchange rate for currency %s as of %s. Please add exchange rate manually on Exchange Rates page."),
                 $currency, $date), true);
         }
         return $ret;
@@ -125,7 +125,7 @@ class DataChecksService {
      */
     public function checkDbHasSalesTypes(string $msg): void {
         if (!$this->dbHasSalesTypes()) {
-            display_error($msg, true);
+            UiMessageService::displayError($msg, true);
             end_page();
             exit;
         }
@@ -150,7 +150,7 @@ class DataChecksService {
      */
     public function checkDbHasItemTaxTypes(string $msg): void {
         if (!$this->dbHasItemTaxTypes()) {
-            display_error($msg, true);
+            UiMessageService::displayError($msg, true);
             end_page();
             exit;
         }
@@ -172,7 +172,7 @@ class DataChecksService {
      */
     public function checkDbHasTaxTypes(string $msg): void {
         if (!$this->dbHasTaxTypes()) {
-            \display_error($msg, true);
+            \UiMessageService::displayError($msg, true);
             \end_page();
             exit;
         }
@@ -194,7 +194,7 @@ class DataChecksService {
      */
     public function checkDbHasTaxGroups(string $msg): void {
         if (!$this->dbHasTaxGroups()) {
-            \display_error($msg, true);
+            \UiMessageService::displayError($msg, true);
             \end_page();
             exit;
         }
@@ -228,7 +228,7 @@ class DataChecksService {
      */
     public function checkDbHasCustomerBranches(string $msg): void {
         if (!$this->dbHasCustomerBranches()) {
-            \display_error($msg, true);
+            \UiMessageService::displayError($msg, true);
             \end_page();
             exit;
         }
@@ -250,7 +250,7 @@ class DataChecksService {
      */
     public function checkDbHasSalesPeople(string $msg): void {
         if (!$this->dbHasSalesPeople()) {
-            \display_error($msg, true);
+            \UiMessageService::displayError($msg, true);
             \end_page();
             exit;
         }
@@ -272,7 +272,7 @@ class DataChecksService {
      */
     public function checkDbHasSalesAreas(string $msg): void {
         if (!$this->dbHasSalesAreas()) {
-            \display_error($msg, true);
+            \UiMessageService::displayError($msg, true);
             \end_page();
             exit;
         }
@@ -294,7 +294,7 @@ class DataChecksService {
      */
     public function checkDbHasShippers(string $msg): void {
         if (!$this->dbHasShippers()) {
-            \display_error($msg, true);
+            \UiMessageService::displayError($msg, true);
             \end_page();
             exit;
         }
@@ -325,7 +325,7 @@ class DataChecksService {
      */
     public function checkDbHasWorkorders(string $msg): void {
         if (!$this->dbHasWorkorders()) {
-            \display_error($msg, true);
+            \UiMessageService::displayError($msg, true);
             \end_page();
             exit;
         }
@@ -356,7 +356,7 @@ class DataChecksService {
      */
     public function checkDbHasDimensions(string $msg): void {
         if (!$this->dbHasDimensions()) {
-            \display_error($msg, true);
+            \UiMessageService::displayError($msg, true);
             \end_page();
             exit;
         }
@@ -378,7 +378,7 @@ class DataChecksService {
      */
     public function checkDbHasSuppliers(string $msg): void {
         if (!$this->dbHasSuppliers()) {
-            \display_error($msg, true);
+            \UiMessageService::displayError($msg, true);
             \end_page();
             exit;
         }
@@ -400,7 +400,7 @@ class DataChecksService {
      */
     public function checkDbHasStockItems(string $msg): void {
         if (!$this->dbHasStockItems()) {
-            \display_error($msg, true);
+            \UiMessageService::displayError($msg, true);
             \end_page();
             exit;
         }
@@ -422,7 +422,7 @@ class DataChecksService {
      */
     public function checkDbHasBomStockItems(string $msg): void {
         if (!$this->dbHasBomStockItems()) {
-            \display_error($msg, true);
+            \UiMessageService::displayError($msg, true);
             \end_page();
             exit;
         }
@@ -444,7 +444,7 @@ class DataChecksService {
      */
     public function checkDbHasManufacturableItems(string $msg): void {
         if (!$this->dbHasManufacturableItems()) {
-            \display_error($msg, true);
+            \UiMessageService::displayError($msg, true);
             \end_page();
             exit;
         }
@@ -466,7 +466,7 @@ class DataChecksService {
      */
     public function checkDbHasPurchasableItems(string $msg): void {
         if (!$this->dbHasPurchasableItems()) {
-            \display_error($msg, true);
+            \UiMessageService::displayError($msg, true);
             \end_page();
             exit;
         }
@@ -488,7 +488,7 @@ class DataChecksService {
      */
     public function checkDbHasCostableItems(string $msg): void {
         if (!$this->dbHasCostableItems()) {
-            \display_error($msg, true);
+            \UiMessageService::displayError($msg, true);
             \end_page();
             exit;
         }
@@ -501,7 +501,7 @@ class DataChecksService {
      */
     public function checkDbHasFixedAssetClasses(string $msg): void {
         if (!$this->dbHasFixedAssetClasses()) {
-            \display_error($msg, true);
+            \UiMessageService::displayError($msg, true);
             \end_page();
             exit;
         }
@@ -542,7 +542,7 @@ class DataChecksService {
      */
     public function checkDbHasDepreciableFixedAssets(string $msg): void {
         if (!$this->dbHasDepreciableFixedAssets()) {
-            \display_error($msg, true);
+            \UiMessageService::displayError($msg, true);
             \end_page();
             exit;
         }
@@ -564,7 +564,7 @@ class DataChecksService {
      */
     public function checkDbHasFixedAssets(string $msg): void {
         if (!$this->dbHasFixedAssets()) {
-            \display_error($msg, true);
+            \UiMessageService::displayError($msg, true);
             \end_page();
             exit;
         }
@@ -590,7 +590,7 @@ class DataChecksService {
      */
     public function checkDbHasPurchasableFixedAssets(string $msg): void {
         if (!$this->dbHasPurchasableFixedAssets()) {
-            \display_error($msg, true);
+            \UiMessageService::displayError($msg, true);
             \end_page();
             exit;
         }
@@ -618,7 +618,7 @@ class DataChecksService {
      */
     public function checkDbHasDisposableFixedAssets(string $msg): void {
         if (!$this->dbHasDisposableFixedAssets()) {
-            \display_error($msg, true);
+            \UiMessageService::displayError($msg, true);
             \end_page();
             exit;
         }
@@ -640,7 +640,7 @@ class DataChecksService {
      */
     public function checkDbHasFixedAssetCategories(string $msg): void {
         if (!$this->dbHasFixedAssetCategories()) {
-            \display_error($msg, true);
+            \UiMessageService::displayError($msg, true);
             \end_page();
             exit;
         }
@@ -662,7 +662,7 @@ class DataChecksService {
      */
     public function checkDbHasStockCategories(string $msg): void {
         if (!$this->dbHasStockCategories()) {
-            \display_error($msg, true);
+            \UiMessageService::displayError($msg, true);
             \end_page();
             exit;
         }
@@ -684,7 +684,7 @@ class DataChecksService {
      */
     public function checkDbHasWorkcentres(string $msg): void {
         if (!$this->dbHasWorkcentres()) {
-            \display_error($msg, true);
+            \UiMessageService::displayError($msg, true);
             \end_page();
             exit;
         }
@@ -706,7 +706,7 @@ class DataChecksService {
      */
     public function checkDbHasLocations(string $msg): void {
         if (!$this->dbHasLocations()) {
-            \display_error($msg, true);
+            \UiMessageService::displayError($msg, true);
             \end_page();
             exit;
         }
@@ -728,7 +728,7 @@ class DataChecksService {
      */
     public function checkDbHasBankAccounts(string $msg): void {
         if (!$this->dbHasBankAccounts()) {
-            \display_error($msg, true);
+            \UiMessageService::displayError($msg, true);
             \end_page();
             exit;
         }
@@ -769,7 +769,7 @@ class DataChecksService {
      */
     public function checkDbHasGlAccountGroups(string $msg): void {
         if (!$this->dbHasGlAccountGroups()) {
-            \display_error($msg, true);
+            \UiMessageService::displayError($msg, true);
             \end_page();
             exit;
         }
@@ -802,7 +802,7 @@ class DataChecksService {
      */
     public function checkDbHasTags(int $type, string $msg): void {
         if (!$this->dbHasTags($type)) {
-            \display_error($msg, true);
+            \UiMessageService::displayError($msg, true);
             \end_page();
             exit;
         }
@@ -878,7 +878,7 @@ class DataChecksService {
         if (($typeNo > 0) && \is_closed_trans($type, $typeNo)) {
             if (!$msg)
                 $msg = sprintf(\_("%s #%s is closed for further edition."), $GLOBALS['systypes_array'][$type], $typeNo);
-            \display_error($msg, true);
+            \UiMessageService::displayError($msg, true);
             \display_footer_exit();
         }
     }
@@ -896,7 +896,7 @@ class DataChecksService {
             GROUP BY line.order_no";
 
         if (!\check_empty_result($sql)) {
-            \display_error($msg, true);
+            \UiMessageService::displayError($msg, true);
             \end_page();
             exit;
         }
@@ -909,7 +909,7 @@ class DataChecksService {
      */
     public function checkDeferredIncomeAct(string $msg): void {
         if (!\get_company_pref('deferred_income_act')) {
-            \display_error($msg, true);
+            \UiMessageService::displayError($msg, true);
             \display_footer_exit();
         }
     }
@@ -948,10 +948,10 @@ class DataChecksService {
      */
     public function checkReference(string $reference, int $transType, int $transNo = 0, $context = null, $line = null): bool {
         if (!$GLOBALS['Refs']->is_valid($reference, $transType, $context, $line)) {
-            \display_error(_("The entered reference is invalid."));
+            \UiMessageService::displayError(_("The entered reference is invalid."));
             return false;
         } elseif (!$GLOBALS['Refs']->is_new_reference($reference, $transType, $transNo)) {
-            \display_error(_("The entered reference is already in use."));
+            \UiMessageService::displayError(_("The entered reference is already in use."));
             return false;
         }
         return true;
@@ -966,7 +966,7 @@ class DataChecksService {
      */
     public function checkSysPref(string $name, string $msg, string $empty = ''): void {
         if (\get_company_pref($name) === $empty) {
-            \display_error(\menu_link("/admin/gl_setup.php", $msg), true);
+            \UiMessageService::displayError(\menu_link("/admin/gl_setup.php", $msg), true);
             \display_footer_exit();
         }
     }

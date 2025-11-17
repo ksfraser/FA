@@ -131,7 +131,7 @@ if (isset($_POST['AddGLCodeToTrans'])) {
 	$result = get_gl_account_info($_POST['gl_code']);
 	if (db_num_rows($result) == 0)
 	{
-		display_error(_("The account code entered is not a valid code, this line cannot be added to the transaction."));
+		UiMessageService::displayError(_("The account code entered is not a valid code, this line cannot be added to the transaction."));
 		set_focus('gl_code');
 		$input_error = true;
 	}
@@ -141,14 +141,14 @@ if (isset($_POST['AddGLCodeToTrans'])) {
 		$gl_act_name = $myrow[1];
 		if (!check_num('amount'))
 		{
-			display_error(_("The amount entered is not numeric. This line cannot be added to the transaction."));
+			UiMessageService::displayError(_("The amount entered is not numeric. This line cannot be added to the transaction."));
 			set_focus('amount');
 			$input_error = true;
 		}
 	}
 
 	if (!is_tax_gl_unique(RequestService::getPostStatic('gl_code'))) {
-   		display_error(_("Cannot post to GL account used by more than one tax type."));
+   		UiMessageService::displayError(_("Cannot post to GL account used by more than one tax type."));
 		set_focus('gl_code');
    		$input_error = true;
 	}
@@ -172,14 +172,14 @@ function check_data()
 
 	if (!RequestService::getPostStatic('supplier_id')) 
 	{
-		display_error(_("There is no supplier selected."));
+		UiMessageService::displayError(_("There is no supplier selected."));
 		set_focus('supplier_id');
 		return false;
 	} 
 
 	if (!$_SESSION['supp_trans']->is_valid_trans_to_post())
 	{
-		display_error(_("The credit note cannot be processed because the there are no items or values on the invoice.  Credit notes are expected to have a charge."));
+		UiMessageService::displayError(_("The credit note cannot be processed because the there are no items or values on the invoice.  Credit notes are expected to have a charge."));
 		set_focus('');
 		return false;
 	}
@@ -193,33 +193,33 @@ function check_data()
 
 	if (!$dateService->isDate($_SESSION['supp_trans']->tran_date))
 	{
-		display_error(_("The credit note as entered cannot be processed because the date entered is not valid."));
+		UiMessageService::displayError(_("The credit note as entered cannot be processed because the date entered is not valid."));
 		set_focus('tran_date');
 		return false;
 	} 
 	elseif (!DateService::isDateInFiscalYear($_SESSION['supp_trans']->tran_date)) 
 	{
-		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('tran_date');
 		return false;
 	}
 	if (!$dateService->isDate( $_SESSION['supp_trans']->due_date))
 	{
-		display_error(_("The invoice as entered cannot be processed because the due date is in an incorrect format."));
+		UiMessageService::displayError(_("The invoice as entered cannot be processed because the due date is in an incorrect format."));
 		set_focus('due_date');
 		return false;
 	}
 
 	if (trim(RequestService::getPostStatic('supp_reference')) == false)
 	{
-		display_error(_("You must enter a supplier's invoice reference."));
+		UiMessageService::displayError(_("You must enter a supplier's invoice reference."));
 		set_focus('supp_reference');
 		return false;
 	}
 
 	if (is_reference_already_there($_SESSION['supp_trans']->supplier_id, $_POST['supp_reference'], $_SESSION['supp_trans']->trans_no))
 	{ 	/*Transaction reference already entered */
-		display_error(_("This invoice number has already been entered. It cannot be entered again.") . " (" . $_POST['supp_reference'] . ")");
+		UiMessageService::displayError(_("This invoice number has already been entered. It cannot be entered again.") . " (" . $_POST['supp_reference'] . ")");
 		set_focus('supp_reference');
 		return false;
 	}
@@ -231,7 +231,7 @@ function check_data()
 				if (check_negative_stock($item->item_code, -$item->this_quantity_inv, null, $_SESSION['supp_trans']->tran_date))
 				{
 					$stock = get_item($item->item_code);
-					display_error(_("The return cannot be processed because there is an insufficient quantity for item:") .
+					UiMessageService::displayError(_("The return cannot be processed because there is an insufficient quantity for item:") .
 						" " . $stock['stock_id'] . " - " . $stock['description'] . " - " .
 						_("Quantity On Hand") . " = " . FormatService::numberFormat2(get_qoh_on_date($stock['stock_id'], null, 
 						$_SESSION['supp_trans']->tran_date), get_qty_dec($stock['stock_id'])));
@@ -272,14 +272,14 @@ function check_item_data($n)
 
 	if (!check_num('This_QuantityCredited'.$n, 0))
 	{
-		display_error(_("The quantity to credit must be numeric and greater than zero."));
+		UiMessageService::displayError(_("The quantity to credit must be numeric and greater than zero."));
 		set_focus('This_QuantityCredited'.$n);
 		return false;
 	}
 
 	if (!check_num('ChgPrice'.$n, 0))
 	{
-		display_error(_("The price is either not numeric or negative."));
+		UiMessageService::displayError(_("The price is either not numeric or negative."));
 		set_focus('ChgPrice'.$n);
 		return false;
 	}
@@ -360,7 +360,7 @@ start_form();
 
 invoice_header($_SESSION['supp_trans']);
 if ($_POST['supplier_id']=='') 
-	display_error('No supplier found for entered search text');
+	UiMessageService::displayError('No supplier found for entered search text');
 else {
 	display_grn_items($_SESSION['supp_trans'], 1);
 

@@ -70,20 +70,20 @@ function can_process()
 
 	if (strlen($_POST['description']) == 0) 
 	{
-		display_error( _("The Quick Entry description cannot be empty."));
+		UiMessageService::displayError( _("The Quick Entry description cannot be empty."));
 		set_focus('description');
 		return false;
 	}
 	$bal_type = RequestService::getPostStatic('bal_type');
 	if ($bal_type == 1 && $_POST['type'] != QE_JOURNAL)
 	{
-		display_error( _("You can only use Balance Based together with Journal Entries."));
+		UiMessageService::displayError( _("You can only use Balance Based together with Journal Entries."));
 		set_focus('base_desc');
 		return false;
 	}
 	if (!$bal_type && strlen($_POST['base_desc']) == 0) 
 	{
-		display_error( _("The base amount description cannot be empty."));
+		UiMessageService::displayError( _("The base amount description cannot be empty."));
 		set_focus('base_desc');
 		return false;
 	}
@@ -118,7 +118,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 if ($Mode2=='ADD_ITEM2' || $Mode2=='UPDATE_ITEM2') 
 {
 	if (!RequestService::getPostStatic('dest_id')) {
-   		display_error(_("You must select GL account."));
+   		UiMessageService::displayError(_("You must select GL account."));
 		set_focus('dest_id');
 	}
 	elseif ($selected_id2 != -1) 
@@ -148,7 +148,7 @@ if ($Mode == 'Delete')
 	}
 	else
 	{
-		display_error( _("The Quick Entry has Quick Entry Lines. Cannot be deleted."));
+		UiMessageService::displayError( _("The Quick Entry has Quick Entry Lines. Cannot be deleted."));
 		set_focus('description');
 	}
 }

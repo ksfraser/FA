@@ -28,13 +28,13 @@ function can_process()
 
 	if (strlen(trim($_POST['id'])) == 0) 
 	{
-		display_error( _("The account class ID cannot be empty."));
+		UiMessageService::displayError( _("The account class ID cannot be empty."));
 		set_focus('id');
 		return false;
 	}
 	if (strlen(trim($_POST['name'])) == 0) 
 	{
-		display_error( _("The account class name cannot be empty."));
+		UiMessageService::displayError( _("The account class name cannot be empty."));
 		set_focus('name');
 		return false;
 	}
@@ -74,7 +74,7 @@ function can_delete($selected_id)
 		return false;
 	if (key_in_foreign_table($selected_id, 'chart_types', 'class_id'))	
 	{
-		display_error(_("Cannot delete this account class because GL account types have been created referring to it."));
+		UiMessageService::displayError(_("Cannot delete this account class because GL account types have been created referring to it."));
 		return false;
 	}
 

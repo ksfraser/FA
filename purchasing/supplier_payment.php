@@ -85,7 +85,7 @@ if (!isset($_POST['bank_account'])) { // first page call
 			}
 			unset($inv);
 		} else
-			display_error(_("Invalid purchase invoice number."));
+			UiMessageService::displayError(_("Invalid purchase invoice number."));
 	}
 }
 if (isset($_GET['AddedID'])) {
@@ -132,7 +132,7 @@ function check_inputs()
 
 	if (!RequestService::getPostStatic('supplier_id')) 
 	{
-		display_error(_("There is no supplier selected."));
+		UiMessageService::displayError(_("There is no supplier selected."));
 		set_focus('supplier_id');
 		return false;
 	} 
@@ -144,13 +144,13 @@ function check_inputs()
 
 	if (!check_num('amount', 0))
 	{
-		display_error(_("The entered amount is invalid or less than zero."));
+		UiMessageService::displayError(_("The entered amount is invalid or less than zero."));
 		set_focus('amount');
 		return false;
 	}
 
 	if (isset($_POST['charge']) && !check_num('charge', 0)) {
-		display_error(_("The entered amount is invalid or less than zero."));
+		UiMessageService::displayError(_("The entered amount is invalid or less than zero."));
 		set_focus('charge');
 		return false;
 	}
@@ -158,7 +158,7 @@ function check_inputs()
 	if (isset($_POST['charge']) && RequestService::inputNumStatic('charge') > 0) {
 		$charge_acct = get_bank_charge_account($_POST['bank_account']);
 		if (get_gl_account($charge_acct) == false) {
-			display_error(_("The Bank Charge Account has not been set in System and General GL Setup."));
+			UiMessageService::displayError(_("The Bank Charge Account has not been set in System and General GL Setup."));
 			set_focus('charge');
 			return false;
 		}	
@@ -171,7 +171,7 @@ function check_inputs()
 
 	if (!check_num('discount', 0))
 	{
-		display_error(_("The entered discount is invalid or less than zero."));
+		UiMessageService::displayError(_("The entered discount is invalid or less than zero."));
 		set_focus('amount');
 		return false;
 	}
@@ -179,14 +179,14 @@ function check_inputs()
 	//if (RequestService::inputNumStatic('amount') - RequestService::inputNumStatic('discount') <= 0) 
 	if (RequestService::inputNumStatic('amount') <= 0) 
 	{
-		display_error(_("The total of the amount and the discount is zero or negative. Please enter positive values."));
+		UiMessageService::displayError(_("The total of the amount and the discount is zero or negative. Please enter positive values."));
 		set_focus('amount');
 		return false;
 	}
 
 	if (isset($_POST['bank_amount']) && RequestService::inputNumStatic('bank_amount')<=0)
 	{
-		display_error(_("The entered bank amount is zero or negative."));
+		UiMessageService::displayError(_("The entered bank amount is zero or negative."));
 		set_focus('bank_amount');
 		return false;
 	}
@@ -195,13 +195,13 @@ function check_inputs()
 
    	if (!$dateService->isDate($_POST['DatePaid']))
    	{
-		display_error(_("The entered date is invalid."));
+		UiMessageService::displayError(_("The entered date is invalid."));
 		set_focus('DatePaid');
 		return false;
 	} 
 	elseif (!DateService::isDateInFiscalYear($_POST['DatePaid'])) 
 	{
-		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('DatePaid');
 		return false;
 	}
@@ -210,7 +210,7 @@ function check_inputs()
 
 	if (($limit !== null) && (floatcmp($limit, RequestService::inputNumStatic('amount')) < 0))
 	{
-		display_error(sprintf(_("The total bank amount exceeds allowed limit (%s)."), FormatService::priceFormat($limit)));
+		UiMessageService::displayError(sprintf(_("The total bank amount exceeds allowed limit (%s)."), FormatService::priceFormat($limit)));
 		set_focus('amount');
 		return false;
 	}

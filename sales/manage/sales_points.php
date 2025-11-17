@@ -25,7 +25,7 @@ function can_process()
 {
 	if (strlen($_POST['name']) == 0)
 	{
-		display_error(_("The POS name cannot be empty."));
+		UiMessageService::displayError(_("The POS name cannot be empty."));
 		set_focus('pos_name');
 		return false;
 	}
@@ -59,7 +59,7 @@ if ($Mode == 'Delete')
 {
 	if (key_in_foreign_table($selected_id, 'users', 'pos'))
 	{
-		display_error(_("Cannot delete this POS because it is used in users setup."));
+		UiMessageService::displayError(_("Cannot delete this POS because it is used in users setup."));
 	} else {
 		delete_sales_point($selected_id);
 		display_notification(_('Selected point of sale has been deleted'));

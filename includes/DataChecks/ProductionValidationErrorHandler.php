@@ -23,7 +23,7 @@ class ProductionValidationErrorHandler implements ValidationErrorHandlerInterfac
      */
     public function handleValidationError(string $message, bool $fatal = true): void
     {
-        \display_error($message, true);
+        \UiMessageService::displayError($message, true);
         \end_page();
         
         if ($fatal) {

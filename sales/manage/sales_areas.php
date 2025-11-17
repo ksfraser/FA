@@ -27,7 +27,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if (strlen($_POST['description']) == 0) 
 	{
 		$input_error = 1;
-		display_error(_("The area description cannot be empty."));
+		UiMessageService::displayError(_("The area description cannot be empty."));
 		set_focus('description');
 	}
 
@@ -59,7 +59,7 @@ if ($Mode == 'Delete')
 	if (key_in_foreign_table($selected_id, 'cust_branch', 'area'))
 	{
 		$cancel_delete = 1;
-		display_error(_("Cannot delete this area because customer branches have been created using this area."));
+		UiMessageService::displayError(_("Cannot delete this area because customer branches have been created using this area."));
 	} 
 	if ($cancel_delete == 0) 
 	{

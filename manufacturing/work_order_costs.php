@@ -61,7 +61,7 @@ $wo_details = get_work_order($_POST['selected_id'], true);
 
 if ($wo_details === false)
 {
-	display_error(_("The order number sent is not valid."));
+	UiMessageService::displayError(_("The order number sent is not valid."));
 	exit;
 }
 
@@ -71,26 +71,26 @@ function can_process($wo_details)
 {
 	if (RequestService::inputNumStatic('costs')<=0)
 	{
-		display_error(_("The amount entered is not a valid number or less then zero."));
+		UiMessageService::displayError(_("The amount entered is not a valid number or less then zero."));
 		set_focus('costs');
 		return false;
 	}
 
 	if (!DateService::isDate($_POST['date_']))
 	{
-		display_error(_("The entered date is invalid."));
+		UiMessageService::displayError(_("The entered date is invalid."));
 		set_focus('date_');
 		return false;
 	}
 	elseif (!DateService::isDateInFiscalYear($_POST['date_']))
 	{
-		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('date_');
 		return false;
 	}
 	if (DateService::dateDiff(DateService::sql2dateStatic($wo_details["released_date"]), $_POST['date_'], "d") > 0)
 	{
-		display_error(_("The additional cost date cannot be before the release date of the work order."));
+		UiMessageService::displayError(_("The additional cost date cannot be before the release date of the work order."));
 		set_focus('date_');
 		return false;
 	}

@@ -30,28 +30,28 @@ function can_process()
 
 	if (!$Auth_Result)
    	{
-  		display_error( _("Invalid password entered."));
+  		UiMessageService::displayError( _("Invalid password entered."));
 		set_focus('cur_password');
    		return false;
    	}
 	
    	if (strlen($_POST['password']) < 4)
    	{
-  		display_error( _("The password entered must be at least 4 characters long."));
+  		UiMessageService::displayError( _("The password entered must be at least 4 characters long."));
 		set_focus('password');
    		return false;
    	}
 
    	if (strstr($_POST['password'], $_SESSION["wa_current_user"]->username) != false)
    	{
-   		display_error( _("The password cannot contain the user login."));
+   		UiMessageService::displayError( _("The password cannot contain the user login."));
 		set_focus('password');
    		return false;
    	}
 
    	if ($_POST['password'] != $_POST['passwordConfirm'])
    	{
-   		display_error( _("The passwords entered are not the same."));
+   		UiMessageService::displayError( _("The passwords entered are not the same."));
 		set_focus('password');
    		return false;
    	}

@@ -92,7 +92,7 @@ elseif (isset($_GET['ModifyGL']))
 	check_is_editable($_GET['trans_type'], $_GET['trans_no']);
 
 	if (!isset($_GET['trans_type']) || $_GET['trans_type']!= 0) {
-		display_error(_("You can edit directly only journal entries created via Journal Entry page."));
+		UiMessageService::displayError(_("You can edit directly only journal entries created via Journal Entry page."));
 		hyperlink_params("$path_to_root/gl/gl_journal.php", _("Entry &New Journal Entry"), "NewJournal=Yes");
 		display_footer_exit();
 	}
@@ -204,13 +204,13 @@ if (isset($_POST['Process']))
 	$input_error = 0;
 
 	if ($_SESSION['journal_items']->count_gl_items() < 1) {
-		display_error(_("You must enter at least one journal line."));
+		UiMessageService::displayError(_("You must enter at least one journal line."));
 		set_focus('code_id');
 		$input_error = 1;
 	}
 	if (abs($_SESSION['journal_items']->gl_items_total()) > 0.001)
 	{
-		display_error(_("The journal must balance (debits equal to credits) before it can be processed."));
+		UiMessageService::displayError(_("The journal must balance (debits equal to credits) before it can be processed."));
 		set_focus('code_id');
 		$input_error = 1;
 	}
@@ -218,25 +218,25 @@ if (isset($_POST['Process']))
 
 	if (!$dateService->isDate($_POST['date_'])) 
 	{
-		display_error(_("The entered date is invalid."));
+		UiMessageService::displayError(_("The entered date is invalid."));
 		set_focus('date_');
 		$input_error = 1;
 	} 
 	elseif (!DateService::isDateInFiscalYearStatic($_POST['date_'])) 
 	{
-		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('date_');
 		$input_error = 1;
 	} 
 	if (!$dateService->isDate($_POST['event_date'])) 
 	{
-		display_error(_("The entered date is invalid."));
+		UiMessageService::displayError(_("The entered date is invalid."));
 		set_focus('event_date');
 		$input_error = 1;
 	}
 	if (!$dateService->isDate($_POST['doc_date'])) 
 	{
-		display_error(_("The entered date is invalid."));
+		UiMessageService::displayError(_("The entered date is invalid."));
 		set_focus('doc_date');
 		$input_error = 1;
 	}
@@ -248,7 +248,7 @@ if (isset($_POST['Process']))
 	if (RequestService::getPostStatic('currency') != get_company_pref('curr_default'))
 		if (isset($_POST['_ex_rate']) && !check_num('_ex_rate', 0.000001))
 		{
-			display_error(_("The exchange rate must be numeric and greater than zero."));
+			UiMessageService::displayError(_("The exchange rate must be numeric and greater than zero."));
 			set_focus('_ex_rate');
     		$input_error = 1;
 		}
@@ -257,13 +257,13 @@ if (isset($_POST['Process']))
 	{
 		if (!$dateService->isDate($_POST['tax_date']))
 		{
-			display_error(_("The entered date is invalid."));
+			UiMessageService::displayError(_("The entered date is invalid."));
 			set_focus('tax_date');
 			$input_error = 1;
 		} 
 		elseif (!DateService::isDateInFiscalYearStatic($_POST['tax_date']))
 		{
-			display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
+			UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
 			set_focus('tax_date');
 			$input_error = 1;
 		}
@@ -288,7 +288,7 @@ if (isset($_POST['Process']))
 			// in case no tax account used we have to guss tax register on customer/supplier used.
 			if ($net_amount && !$_SESSION['journal_items']->has_taxes() && !$_SESSION['journal_items']->has_sub_accounts())
 			{
-				display_error(_("Cannot determine tax register to be used. You have to make at least one posting either to tax or customer/supplier account to use tax register."));
+				UiMessageService::displayError(_("Cannot determine tax register to be used. You have to make at least one posting either to tax or customer/supplier account to use tax register."));
 				$_POST['tabs_gl'] = true; // force gl tab select
    				$input_error = 1;
 			}
@@ -357,13 +357,13 @@ function check_item_data()
 	global $Ajax;
 
 	if (!RequestService::getPostStatic('code_id')) {
-   		display_error(_("You must select GL account."));
+   		UiMessageService::displayError(_("You must select GL account."));
 		set_focus('code_id');
    		return false;
 	}
 	if (is_subledger_account(RequestService::getPostStatic('code_id'))) {
 		if(!RequestService::getPostStatic('person_id')) {
-	   		display_error(_("You must select subledger account."));
+	   		UiMessageService::displayError(_("You must select subledger account."));
    			$Ajax->activate('items_table');
 			set_focus('person_id');
 	   		return false;
@@ -371,46 +371,46 @@ function check_item_data()
 	}
 	if (isset($_POST['dimension_id']) && $_POST['dimension_id'] != 0 && dimension_is_closed($_POST['dimension_id'])) 
 	{
-		display_error(_("Dimension is closed."));
+		UiMessageService::displayError(_("Dimension is closed."));
 		set_focus('dimension_id');
 		return false;
 	}
 
 	if (isset($_POST['dimension2_id']) && $_POST['dimension2_id'] != 0 && dimension_is_closed($_POST['dimension2_id'])) 
 	{
-		display_error(_("Dimension is closed."));
+		UiMessageService::displayError(_("Dimension is closed."));
 		set_focus('dimension2_id');
 		return false;
 	}
 
 	if (!(RequestService::inputNumStatic('AmountDebit')!=0 ^ RequestService::inputNumStatic('AmountCredit')!=0) )
 	{
-		display_error(_("You must enter either a debit amount or a credit amount."));
+		UiMessageService::displayError(_("You must enter either a debit amount or a credit amount."));
 		set_focus('AmountDebit');
     		return false;
   	}
 
 	if (strlen($_POST['AmountDebit']) && !check_num('AmountDebit', 0)) 
 	{
-    		display_error(_("The debit amount entered is not a valid number or is less than zero."));
+    		UiMessageService::displayError(_("The debit amount entered is not a valid number or is less than zero."));
 		set_focus('AmountDebit');
     		return false;
   	} elseif (strlen($_POST['AmountCredit']) && !check_num('AmountCredit', 0))
 	{
-    		display_error(_("The credit amount entered is not a valid number or is less than zero."));
+    		UiMessageService::displayError(_("The credit amount entered is not a valid number or is less than zero."));
 		set_focus('AmountCredit');
     		return false;
   	}
 	
 	if (!is_tax_gl_unique(RequestService::getPostStatic('code_id'))) {
-   		display_error(_("Cannot post to GL account used by more than one tax type."));
+   		UiMessageService::displayError(_("Cannot post to GL account used by more than one tax type."));
 		set_focus('code_id');
    		return false;
 	}
 
 	if (!$_SESSION["wa_current_user"]->can_access('SA_BANKJOURNAL') && is_bank_account($_POST['code_id'])) 
 	{
-		display_error(_("You cannot make a journal entry for a bank account. Please use one of the banking functions for bank transactions."));
+		UiMessageService::displayError(_("You cannot make a journal entry for a bank account. Please use one of the banking functions for bank transactions."));
 		set_focus('code_id');
 		return false;
 	}

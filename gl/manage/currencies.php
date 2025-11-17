@@ -26,25 +26,25 @@ function check_data()
 {
 	if (strlen($_POST['Abbreviation']) == 0) 
 	{
-		display_error( _("The currency abbreviation must be entered."));
+		UiMessageService::displayError( _("The currency abbreviation must be entered."));
 		set_focus('Abbreviation');
 		return false;
 	} 
 	elseif (strlen($_POST['CurrencyName']) == 0) 
 	{
-		display_error( _("The currency name must be entered."));
+		UiMessageService::displayError( _("The currency name must be entered."));
 		set_focus('CurrencyName');
 		return false;		
 	} 
 	elseif (strlen($_POST['Symbol']) == 0) 
 	{
-		display_error( _("The currency symbol must be entered."));
+		UiMessageService::displayError( _("The currency symbol must be entered."));
 		set_focus('Symbol');
 		return false;		
 	} 
 	elseif (strlen($_POST['hundreds_name']) == 0) 
 	{
-		display_error( _("The hundredths name must be entered."));
+		UiMessageService::displayError( _("The hundredths name must be entered."));
 		set_focus('hundreds_name');
 		return false;		
 	}  	
@@ -89,26 +89,26 @@ function check_can_delete($curr)
 	// PREVENT DELETES IF DEPENDENT RECORDS IN debtors_master
 	if (key_in_foreign_table($curr, 'debtors_master', 'curr_code'))
 	{
-		display_error(_("Cannot delete this currency, because customer accounts have been created referring to this currency."));
+		UiMessageService::displayError(_("Cannot delete this currency, because customer accounts have been created referring to this currency."));
 		return false;
 	}
 
 	if (key_in_foreign_table($curr, 'suppliers', 'curr_code'))
 	{
-		display_error(_("Cannot delete this currency, because supplier accounts have been created referring to this currency."));
+		UiMessageService::displayError(_("Cannot delete this currency, because supplier accounts have been created referring to this currency."));
 		return false;
 	}
 
 	if ($curr == get_company_pref('curr_default'))
 	{
-		display_error(_("Cannot delete this currency, because the company preferences uses this currency."));
+		UiMessageService::displayError(_("Cannot delete this currency, because the company preferences uses this currency."));
 		return false;
 	}
 	
 	// see if there are any bank accounts that use this currency
 	if (key_in_foreign_table($curr, 'bank_accounts', 'bank_curr_code'))
 	{
-		display_error(_("Cannot delete this currency, because thre are bank accounts that use this currency."));
+		UiMessageService::displayError(_("Cannot delete this currency, because thre are bank accounts that use this currency."));
 		return false;
 	}
 	

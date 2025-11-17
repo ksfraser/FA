@@ -92,7 +92,7 @@ function on_submit($selected_parent, $selected_component=-1)
 {
 	if (!check_num('quantity', 0))
 	{
-		display_error(_("The quantity entered must be numeric and greater than zero."));
+		UiMessageService::displayError(_("The quantity entered must be numeric and greater than zero."));
 		set_focus('quantity');
 		return;
 	}
@@ -127,13 +127,13 @@ function on_submit($selected_parent, $selected_component=-1)
 			else
 			{
 				/*The component must already be on the bom */
-				display_error(_("The selected component is already on this bom. You can modify it's quantity but it cannot appear more than once on the same bom."));
+				UiMessageService::displayError(_("The selected component is already on this bom. You can modify it's quantity but it cannot appear more than once on the same bom."));
 			}
 
 		} //end of if its not a recursive bom
 		else
 		{
-			display_error(_("The selected component is a parent of the current item. Recursive BOMs are not allowed."));
+			UiMessageService::displayError(_("The selected component is a parent of the current item. Recursive BOMs are not allowed."));
 		}
 	}
 }

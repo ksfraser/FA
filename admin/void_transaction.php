@@ -226,7 +226,7 @@ function voiding_controls()
     {
  		if (!exist_transaction($_POST['filterType'],$_POST['trans_no']))
  		{
-			display_error(_("The entered transaction does not exist or cannot be voided."));
+			UiMessageService::displayError(_("The entered transaction does not exist or cannot be voided."));
 			unset($_POST['trans_no']);
 			unset($_POST['memo_']);
 			unset($_POST['date_']);
@@ -241,7 +241,7 @@ function voiding_controls()
                         if (InventoryService::isInventoryItem($myrow["item_code"])) {
                             if (check_negative_stock($myrow["item_code"], -$myrow["qty_recd"], null, $_POST['date_'])) {
                                 $stock = get_item($myrow["item_code"]);
-                                display_error(_("The void cannot be processed because there is an insufficient quantity for item:") .
+                                UiMessageService::displayError(_("The void cannot be processed because there is an insufficient quantity for item:") .
                                     " " . $stock['stock_id'] . " - " . $stock['description'] . " - " .
                                     _("Quantity On Hand") . " = " . FormatService::numberFormat2(get_qoh_on_date($stock['stock_id'], null, 
                                     $_POST['date_']), get_qty_dec($stock['stock_id'])));
@@ -267,27 +267,27 @@ function check_valid_entries()
 {
 	if (is_closed_trans($_POST['filterType'],$_POST['trans_no']))
 	{
-		display_error(_("The selected transaction was closed for edition and cannot be voided."));
+		UiMessageService::displayError(_("The selected transaction was closed for edition and cannot be voided."));
 		set_focus('trans_no');
 		return false;
 	}
 	$dateService = new DateService();
 	if (!$dateService->isDate($_POST['date_']))
 	{
-		display_error(_("The entered date is invalid."));
+		UiMessageService::displayError(_("The entered date is invalid."));
 		set_focus('date_');
 		return false;
 	}
 	if (!DateService::isDateInFiscalYearStatic($_POST['date_']))
 	{
-		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('date_');
 		return false;
 	}
 
 	if (!is_numeric($_POST['trans_no']) OR $_POST['trans_no'] <= 0)
 	{
-		display_error(_("The transaction number is expected to be numeric and greater than zero."));
+		UiMessageService::displayError(_("The transaction number is expected to be numeric and greater than zero."));
 		set_focus('trans_no');
 		return false;
 	}
@@ -304,7 +304,7 @@ function handle_void_transaction()
 		$void_entry = get_voided_entry($_POST['filterType'], $_POST['trans_no']);
 		if ($void_entry != null) 
 		{
-			display_error(_("The selected transaction has already been voided."), true);
+			UiMessageService::displayError(_("The selected transaction has already been voided."), true);
 			unset($_POST['trans_no']);
 			unset($_POST['memo_']);
 			unset($_POST['date_']);
@@ -322,7 +322,7 @@ function handle_void_transaction()
 			unset($_POST['memo_']);
 		}
 		else {
-			display_error($msg);
+			UiMessageService::displayError($msg);
 			set_focus('trans_no');
 
 		}

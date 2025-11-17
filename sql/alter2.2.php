@@ -54,7 +54,7 @@ class fa2_2 extends fa_patch  {
 			."dflt_adjustment_act = '" . $prefs['default_adj_act'] . "',"
 			."dflt_assembly_act = '" . $prefs['default_assembly_act']."'";
 		if (db_query($sql)==false) {
-			display_error("Cannot update category default GL accounts"
+			UiMessageService::displayError("Cannot update category default GL accounts"
 			.':<br>'. db_error_msg($db));
 			return false;
 		}
@@ -72,7 +72,7 @@ class fa2_2 extends fa_patch  {
 					$res2 = db_query("INSERT INTO ".TB_PREF."refs VALUES("
 						. $row['id'].",".$typeno.",'".$row['ref']."')");
 					if (!$res2) {
-						display_error(_("Cannot copy references from $tbl")
+						UiMessageService::displayError(_("Cannot copy references from $tbl")
 							.':<br>'. db_error_msg($db));
 						return false;
 					}
@@ -83,7 +83,7 @@ class fa2_2 extends fa_patch  {
 		if (!($ret = db_query("SELECT MAX(`order_no`) FROM `".TB_PREF."sales_orders`")) ||
 			!db_num_rows($ret))
 		{
-				display_error(_('Cannot query max sales order number.'));
+				UiMessageService::displayError(_('Cannot query max sales order number.'));
 				return false;
 		} 
 		$row = db_fetch($ret);
@@ -94,7 +94,7 @@ class fa2_2 extends fa_patch  {
 			WHERE `type_id`=30";
 		if(!db_query($sql))
 		{
-			display_error(_('Cannot store next sales order reference.'));
+			UiMessageService::displayError(_('Cannot store next sales order reference.'));
 			return false;
 		}
 		return convert_roles($pref);
@@ -218,7 +218,7 @@ function fix_extensions() {
 		return true; // already converted
 	
 	if (!is_writable($path_to_root.'/modules/installed_modules.php')) {
-		display_error(_('Cannot upgrade extensions system: file /modules/installed_modules.php is not writeable'));
+		UiMessageService::displayError(_('Cannot upgrade extensions system: file /modules/installed_modules.php is not writeable'));
 		return false;
 	}
 	

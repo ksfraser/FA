@@ -79,7 +79,7 @@ class FrontReport extends Cpdf
 		
 		if (!$_SESSION["wa_current_user"]->can_access_page($page_security))
 		{
-			display_error(_("The security settings on your account do not permit you to print this report"));
+			UiMessageService::displayError(_("The security settings on your account do not permit you to print this report"));
 			end_page();
 			exit;
 		}
@@ -1068,7 +1068,7 @@ class FrontReport extends Cpdf
 						$printer['port'], $printer['timeout']);
 					$error = $prn->print_file($fname);
 					if ($error)
-						display_error($error);
+						UiMessageService::displayError($error);
 					else
 						display_notification(_('Report has been sent to network printer ').$printer['name']);
 				}

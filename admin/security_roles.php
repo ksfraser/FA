@@ -60,20 +60,20 @@ if (RequestService::getPostStatic('addupdate'))
 	if ($_POST['description'] == '')
    	{
       	$input_error = 1;
-      	display_error( _("Role description cannot be empty."));
+      	UiMessageService::displayError( _("Role description cannot be empty."));
 		set_focus('description');
    	}
    	elseif ($_POST['name'] == '')
    	{
       	$input_error = 1;
-      	display_error( _("Role name cannot be empty."));
+      	UiMessageService::displayError( _("Role name cannot be empty."));
 		set_focus('name');
    	}
 		// prevent accidental editor lockup by removing SA_SECROLES
 	if (RequestService::getPostStatic('role') == $_SESSION['wa_current_user']->access) {
 		if (!isset($_POST['Area'.$security_areas['SA_SECROLES'][0]])
 			|| !isset($_POST['Section'.SS_SETUP])) {
-			display_error(_("Access level edition in Company setup section have to be enabled for your account."));
+			UiMessageService::displayError(_("Access level edition in Company setup section have to be enabled for your account."));
 	      	$input_error = 1;
 	      	set_focus(!isset($_POST['Section'.SS_SETUP]) 
 	      		? 'Section'.SS_SETUP : 'Area'.$security_areas['SA_SECROLES'][0]);
@@ -123,7 +123,7 @@ if (RequestService::getPostStatic('addupdate'))
 if (RequestService::getPostStatic('delete'))
 {
 	if (check_role_used(RequestService::getPostStatic('role'))) {
-		display_error(_("This role is currently assigned to some users and cannot be deleted"));
+		UiMessageService::displayError(_("This role is currently assigned to some users and cannot be deleted"));
  	} else {
 		delete_security_role(RequestService::getPostStatic('role'));
 		display_notification(_("Security role has been sucessfully deleted."));

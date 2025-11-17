@@ -36,25 +36,25 @@ function check_data()
 	$dateService = new DateService();
 	if (!$dateService->isDate($_POST['from_date']) || is_date_in_fiscalyears($_POST['from_date']))
 	{
-		display_error( _("Invalid BEGIN date in fiscal year."));
+		UiMessageService::displayError( _("Invalid BEGIN date in fiscal year."));
 		set_focus('from_date');
 		return false;
 	}
 	if (!$dateService->isDate($_POST['to_date']) || is_date_in_fiscalyears($_POST['to_date']))
 	{
-		display_error( _("Invalid END date in fiscal year."));
+		UiMessageService::displayError( _("Invalid END date in fiscal year."));
 		set_focus('to_date');
 		return false;
 	}
 	if (!check_begin_end_date($_POST['from_date'], $_POST['to_date']))
 	{
-		display_error( _("Invalid BEGIN or END date in fiscal year."));
+		UiMessageService::displayError( _("Invalid BEGIN or END date in fiscal year."));
 		set_focus('from_date');
 		return false;
 	}
 	if (DateService::date1GreaterDate2Static($_POST['from_date'], $_POST['to_date']))
 	{
-		display_error( _("BEGIN date bigger than END date."));
+		UiMessageService::displayError( _("BEGIN date bigger than END date."));
 		set_focus('from_date');
 		return false;
 	}
@@ -72,7 +72,7 @@ function handle_submit()
 		{
 			if (check_years_before($_POST['from_date'], false))
 			{
-				display_error( _("Cannot CLOSE this year because there are open fiscal years before"));
+				UiMessageService::displayError( _("Cannot CLOSE this year because there are open fiscal years before"));
 				set_focus('closed');
 				return false;
 			}	
@@ -104,12 +104,12 @@ function check_can_delete($selected_id)
 	// PREVENT DELETES IF DEPENDENT RECORDS IN gl_trans
 	if (check_years_before(DateService::sql2dateStatic($myrow['begin']), true))
 	{
-		display_error(_("Cannot delete this fiscal year because there are fiscal years before."));
+		UiMessageService::displayError(_("Cannot delete this fiscal year because there are fiscal years before."));
 		return false;
 	}
 	if ($myrow['closed'] == 0)
 	{
-		display_error(_("Cannot delete this fiscal year because the fiscal year is not closed."));
+		UiMessageService::displayError(_("Cannot delete this fiscal year because the fiscal year is not closed."));
 		return false;
 	}
 	return true;

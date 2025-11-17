@@ -176,25 +176,25 @@ function check_valid_entries($trans_no)
 	
 	if (!$dateService->isDate($_POST['DatePaid'])) 
 	{
-		display_error(_("The entered date is invalid."));
+		UiMessageService::displayError(_("The entered date is invalid."));
 		set_focus('DatePaid');
 		return false;
 	}
 	if (!DateService::isDateInFiscalYearStatic($_POST['DatePaid']))
 	{
-		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('DatePaid');
 		return false;
 	}
 
 	if (!check_num('amount', 0)) 
 	{
-		display_error(_("The entered amount is invalid or less than zero."));
+		UiMessageService::displayError(_("The entered amount is invalid or less than zero."));
 		set_focus('amount');
 		return false;
 	}
 	if (RequestService::inputNumStatic('amount') == 0) {
-		display_error(_("The total bank amount cannot be 0."));
+		UiMessageService::displayError(_("The total bank amount cannot be 0."));
 		set_focus('amount');
 		return false;
 	}
@@ -210,12 +210,12 @@ function check_valid_entries($trans_no)
 
 	if ($problemTransaction != null	) {
 		if (!array_key_exists('trans_no', $problemTransaction)) {
-			display_error(sprintf(
+			UiMessageService::displayError(sprintf(
 				_("This bank transfer change would result in exceeding authorized overdraft limit (%s) of the account '%s'"),
 				FormatService::priceFormat(-$problemTransaction['amount']), $problemTransaction['bank_account_name']
 			));
 		} else {
-			display_error(sprintf(
+			UiMessageService::displayError(sprintf(
 				_("This bank transfer change would result in exceeding authorized overdraft limit on '%s' for transaction: %s #%s on %s."),
 				$problemTransaction['bank_account_name'], $systypes_array[$problemTransaction['type']],
 				$problemTransaction['trans_no'], DateService::sql2dateStatic($problemTransaction['trans_date'])
@@ -227,12 +227,12 @@ function check_valid_entries($trans_no)
 	} else {
 		if (null != ($problemTransaction = check_bank_account_history(-$amnt_tr, $_POST['FromBankAccount'], $_POST['DatePaid']))) {
 			if (!array_key_exists('trans_no', $problemTransaction)) {
-				display_error(sprintf(
+				UiMessageService::displayError(sprintf(
 					_("This bank transfer would result in exceeding authorized overdraft limit of the account (%s)"),
 					FormatService::priceFormat(-$problemTransaction['amount'])
 				));
 			} else {
-				display_error(sprintf(
+				UiMessageService::displayError(sprintf(
 					_("This bank transfer would result in exceeding authorized overdraft limit for transaction: %s #%s on %s."),
 					$systypes_array[$problemTransaction['type']], $problemTransaction['trans_no'], DateService::sql2dateStatic($problemTransaction['trans_date'])
 				));
@@ -244,12 +244,12 @@ function check_valid_entries($trans_no)
 
 	if (isset($_POST['charge']) && !check_num('charge', 0)) 
 	{
-		display_error(_("The entered amount is invalid or less than zero."));
+		UiMessageService::displayError(_("The entered amount is invalid or less than zero."));
 		set_focus('charge');
 		return false;
 	}
 	if (isset($_POST['charge']) && RequestService::inputNumStatic('charge') > 0 && get_bank_charge_account($_POST['FromBankAccount']) == '') {
-		display_error(_("The Bank Charge Account has not been set in System and General GL Setup."));
+		UiMessageService::displayError(_("The Bank Charge Account has not been set in System and General GL Setup."));
 		set_focus('charge');
 		return false;
 	}
@@ -261,19 +261,19 @@ function check_valid_entries($trans_no)
 
 	if ($_POST['FromBankAccount'] == $_POST['ToBankAccount']) 
 	{
-		display_error(_("The source and destination bank accouts cannot be the same."));
+		UiMessageService::displayError(_("The source and destination bank accouts cannot be the same."));
 		set_focus('ToBankAccount');
 		return false;
 	}
 
 	if (isset($_POST['target_amount']) && !check_num('target_amount', 0)) 
 	{
-		display_error(_("The entered amount is invalid or less than zero."));
+		UiMessageService::displayError(_("The entered amount is invalid or less than zero."));
 		set_focus('target_amount');
 		return false;
 	}
 	if (isset($_POST['target_amount']) && RequestService::inputNumStatic('target_amount') == 0) {
-		display_error(_("The incomming bank amount cannot be 0."));
+		UiMessageService::displayError(_("The incomming bank amount cannot be 0."));
 		set_focus('target_amount');
 		return false;
 	}

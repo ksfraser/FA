@@ -57,19 +57,19 @@ if (isset($_POST['add']) || isset($_POST['update']))
 	if (strlen(trim($_POST['account_code'])) == 0) 
 	{
 		$input_error = 1;
-		display_error( _("The account code must be entered."));
+		UiMessageService::displayError( _("The account code must be entered."));
 		set_focus('account_code');
 	} 
 	elseif (strlen(trim($_POST['account_name'])) == 0) 
 	{
 		$input_error = 1;
-		display_error( _("The account name cannot be empty."));
+		UiMessageService::displayError( _("The account name cannot be empty."));
 		set_focus('account_name');
 	} 
 	elseif (!$SysPrefs->accounts_alpha() && !preg_match("/^[0-9.]+$/",$_POST['account_code'])) // we only allow 0-9 and a dot
 	{
 	    $input_error = 1;
-	    display_error( _("The account code must be numeric."));
+	    UiMessageService::displayError( _("The account code must be numeric."));
 		set_focus('account_code');
 	}
 	if ($input_error != 1)
@@ -84,7 +84,7 @@ if (isset($_POST['add']) || isset($_POST['update']))
 		{
 			if (RequestService::getPostStatic('inactive') == 1 && is_bank_account($_POST['account_code']))
 			{
-				display_error(_("The account belongs to a bank account and cannot be inactivated."));
+				UiMessageService::displayError(_("The account belongs to a bank account and cannot be inactivated."));
 			}
     		elseif (update_gl_account($_POST['account_code'], $_POST['account_name'], 
 				$_POST['account_type'], $_POST['account_code2'])) {
@@ -106,7 +106,7 @@ if (isset($_POST['add']) || isset($_POST['update']))
 					$selected_account = $_POST['AccountList'] = $_POST['account_code'];
 				}
 			else
-                 display_error(_("Account not added, possible duplicate Account Code."));
+                 UiMessageService::displayError(_("Account not added, possible duplicate Account Code."));
 		}
 		$Ajax->activate('_page_body');
 	}
@@ -121,54 +121,54 @@ function can_delete($selected_account)
 
 	if (key_in_foreign_table($selected_account, 'gl_trans', 'account'))
 	{
-		display_error(_("Cannot delete this account because transactions have been created using this account."));
+		UiMessageService::displayError(_("Cannot delete this account because transactions have been created using this account."));
 		return false;
 	}
 
 	if (gl_account_in_company_defaults($selected_account))
 	{
-		display_error(_("Cannot delete this account because it is used as one of the company default GL accounts."));
+		UiMessageService::displayError(_("Cannot delete this account because it is used as one of the company default GL accounts."));
 		return false;
 	}
 
 	if (key_in_foreign_table($selected_account, 'bank_accounts', 'account_code'))
 	{
-		display_error(_("Cannot delete this account because it is used by a bank account."));
+		UiMessageService::displayError(_("Cannot delete this account because it is used by a bank account."));
 		return false;
 	}
 
 	if (gl_account_in_stock_category($selected_account))
 	{
-		display_error(_("Cannot delete this account because it is used by one or more Item Categories."));
+		UiMessageService::displayError(_("Cannot delete this account because it is used by one or more Item Categories."));
 		return false;
 	}
 
 	if (gl_account_in_stock_master($selected_account))
 	{
-		display_error(_("Cannot delete this account because it is used by one or more Items."));
+		UiMessageService::displayError(_("Cannot delete this account because it is used by one or more Items."));
 		return false;
 	}
 
 	if (gl_account_in_tax_types($selected_account))
 	{
-		display_error(_("Cannot delete this account because it is used by one or more Taxes."));
+		UiMessageService::displayError(_("Cannot delete this account because it is used by one or more Taxes."));
 		return false;
 	}
 
 	if (gl_account_in_cust_branch($selected_account))
 	{
-		display_error(_("Cannot delete this account because it is used by one or more Customer Branches."));
+		UiMessageService::displayError(_("Cannot delete this account because it is used by one or more Customer Branches."));
 		return false;
 	}
 	if (gl_account_in_suppliers($selected_account))
 	{
-		display_error(_("Cannot delete this account because it is used by one or more suppliers."));
+		UiMessageService::displayError(_("Cannot delete this account because it is used by one or more suppliers."));
 		return false;
 	}
 
 	if (gl_account_in_quick_entry_lines($selected_account))
 	{
-		display_error(_("Cannot delete this account because it is used by one or more Quick Entry Lines."));
+		UiMessageService::displayError(_("Cannot delete this account because it is used by one or more Quick Entry Lines."));
 		return false;
 	}
 

@@ -75,7 +75,7 @@ if (!isset($_POST['bank_account'])) { // first page call
 			}
 			unset($inv);
 		} else
-			display_error(_("Invalid sales invoice number."));
+			UiMessageService::displayError(_("Invalid sales invoice number."));
 	}
 }
 
@@ -148,25 +148,25 @@ function can_process()
 
 	if (!RequestService::getPostStatic('customer_id'))
 	{
-		display_error(_("There is no customer selected."));
+		UiMessageService::displayError(_("There is no customer selected."));
 		set_focus('customer_id');
 		return false;
 	} 
 	
 	if (!RequestService::getPostStatic('BranchID'))
 	{
-		display_error(_("This customer has no branch defined."));
+		UiMessageService::displayError(_("This customer has no branch defined."));
 		set_focus('BranchID');
 		return false;
 	} 
 	
 	$dateService = new DateService();
 	if (!isset($_POST['DateBanked']) || !$dateService->isDate($_POST['DateBanked'])) {
-		display_error(_("The entered date is invalid. Please enter a valid date for the payment."));
+		UiMessageService::displayError(_("The entered date is invalid. Please enter a valid date for the payment."));
 		set_focus('DateBanked');
 		return false;
 	} elseif (!DateService::isDateInFiscalYear($_POST['DateBanked'])) {
-		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('DateBanked');
 		return false;
 	}
@@ -177,20 +177,20 @@ function can_process()
 	}
 
 	if (!check_num('amount', 0)) {
-		display_error(_("The entered amount is invalid or negative and cannot be processed."));
+		UiMessageService::displayError(_("The entered amount is invalid or negative and cannot be processed."));
 		set_focus('amount');
 		return false;
 	}
 
 	if (isset($_POST['charge']) && (!check_num('charge', 0) || $_POST['charge'] == $_POST['amount'])) {
-		display_error(_("The entered amount is invalid or negative and cannot be processed."));
+		UiMessageService::displayError(_("The entered amount is invalid or negative and cannot be processed."));
 		set_focus('charge');
 		return false;
 	}
 	if (isset($_POST['charge']) && RequestService::inputNumStatic('charge') > 0) {
 		$charge_acct = get_bank_charge_account($_POST['bank_account']);
 		if (get_gl_account($charge_acct) == false) {
-			display_error(_("The Bank Charge Account has not been set in System and General GL Setup."));
+			UiMessageService::displayError(_("The Bank Charge Account has not been set in System and General GL Setup."));
 			set_focus('charge');
 			return false;
 		}	
@@ -202,20 +202,20 @@ function can_process()
 	}
 
 	if (!check_num('discount')) {
-		display_error(_("The entered discount is not a valid number."));
+		UiMessageService::displayError(_("The entered discount is not a valid number."));
 		set_focus('discount');
 		return false;
 	}
 
 	if (RequestService::inputNumStatic('amount') <= 0) {
-		display_error(_("The balance of the amount and discount is zero or negative. Please enter valid amounts."));
+		UiMessageService::displayError(_("The balance of the amount and discount is zero or negative. Please enter valid amounts."));
 		set_focus('discount');
 		return false;
 	}
 
 	if (isset($_POST['bank_amount']) && RequestService::inputNumStatic('bank_amount')<=0)
 	{
-		display_error(_("The entered payment amount is zero or negative."));
+		UiMessageService::displayError(_("The entered payment amount is zero or negative."));
 		set_focus('bank_amount');
 		return false;
 	}

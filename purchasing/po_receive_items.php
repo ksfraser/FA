@@ -172,19 +172,19 @@ function can_process()
 	
 	if (count($_SESSION['PO']->line_items) <= 0)
 	{
-        display_error(_("There is nothing to process. Please enter valid quantities greater than zero."));
+        UiMessageService::displayError(_("There is nothing to process. Please enter valid quantities greater than zero."));
     	return false;
 	}
 	$dateService = new DateService();
 
 	if (!$dateService->isDate($_POST['DefaultReceivedDate']))
 	{
-		display_error(_("The entered date is invalid."));
+		UiMessageService::displayError(_("The entered date is invalid."));
 		set_focus('DefaultReceivedDate');
 		return false;
 	}
 	if (!DateService::isDateInFiscalYear($_POST['DefaultReceivedDate'])) {
-		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('DefaultReceivedDate');
 		return false;
 	}
@@ -219,12 +219,12 @@ function can_process()
 
     if ($something_received == 0)
     { 	/*Then dont bother proceeding cos nothing to do ! */
-        display_error(_("There is nothing to process. Please enter valid quantities greater than zero."));
+        UiMessageService::displayError(_("There is nothing to process. Please enter valid quantities greater than zero."));
     	return false;
     }
     elseif ($delivery_qty_too_large == 1)
     {
-    	display_error(_("Entered quantities cannot be greater than the quantity entered on the purchase order including the allowed over-receive percentage") . " (" . $SysPrefs->over_receive_allowance() ."%)."
+    	UiMessageService::displayError(_("Entered quantities cannot be greater than the quantity entered on the purchase order including the allowed over-receive percentage") . " (" . $SysPrefs->over_receive_allowance() ."%)."
     		. "<br>" .
     	 	_("Modify the ordered items on the purchase order if you wish to increase the quantities."));
     	return false;
@@ -244,7 +244,7 @@ function process_receive_po()
 
 	if (check_po_changed())
 	{
-		display_error(_("This order has been changed or invoiced since this delivery was started to be actioned. Processing halted. To enter a delivery against this purchase order, it must be re-selected and re-read again to update the changes made by the other user."));
+		UiMessageService::displayError(_("This order has been changed or invoiced since this delivery was started to be actioned. Processing halted. To enter a delivery against this purchase order, it must be re-selected and re-read again to update the changes made by the other user."));
 
 		hyperlink_no_params("$path_to_root/purchasing/inquiry/po_search.php",
 		 _("Select a different purchase order for receiving goods against"));

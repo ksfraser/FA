@@ -136,7 +136,7 @@ if (isset($_POST['AddGLCodeToTrans'])){
 	$result = get_gl_account_info($_POST['gl_code']);
 	if (db_num_rows($result) == 0)
 	{
-		display_error(_("The account code entered is not a valid code, this line cannot be added to the transaction."));
+		UiMessageService::displayError(_("The account code entered is not a valid code, this line cannot be added to the transaction."));
 		set_focus('gl_code');
 		$input_error = true;
 	}
@@ -146,14 +146,14 @@ if (isset($_POST['AddGLCodeToTrans'])){
 		$gl_act_name = $myrow[1];
 		if (!check_num('amount'))
 		{
-			display_error(_("The amount entered is not numeric. This line cannot be added to the transaction."));
+			UiMessageService::displayError(_("The amount entered is not numeric. This line cannot be added to the transaction."));
 			set_focus('amount');
 			$input_error = true;
 		}
 	}
 
 	if (!is_tax_gl_unique(RequestService::getPostStatic('gl_code'))) {
-   		display_error(_("Cannot post to GL account used by more than one tax type."));
+   		UiMessageService::displayError(_("Cannot post to GL account used by more than one tax type."));
 		set_focus('gl_code');
    		$input_error = true;
 	}
@@ -176,14 +176,14 @@ function check_data()
 
 	if (!RequestService::getPostStatic('supplier_id')) 
 	{
-		display_error(_("There is no supplier selected."));
+		UiMessageService::displayError(_("There is no supplier selected."));
 		set_focus('supplier_id');
 		return false;
 	} 
 
 	if (!$_SESSION['supp_trans']->is_valid_trans_to_post())
 	{
-		display_error(_("The invoice cannot be processed because the there are no items or values on the invoice.  Invoices are expected to have a charge."));
+		UiMessageService::displayError(_("The invoice cannot be processed because the there are no items or values on the invoice.  Invoices are expected to have a charge."));
 		return false;
 	}
 
@@ -196,33 +196,33 @@ function check_data()
 
 	if (!$dateService->isDate( $_SESSION['supp_trans']->tran_date))
 	{
-		display_error(_("The invoice as entered cannot be processed because the invoice date is in an incorrect format."));
+		UiMessageService::displayError(_("The invoice as entered cannot be processed because the invoice date is in an incorrect format."));
 		set_focus('trans_date');
 		return false;
 	} 
 	elseif (!DateService::isDateInFiscalYear($_SESSION['supp_trans']->tran_date)) 
 	{
-		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('trans_date');
 		return false;
 	}
 	if (!$dateService->isDate( $_SESSION['supp_trans']->due_date))
 	{
-		display_error(_("The invoice as entered cannot be processed because the due date is in an incorrect format."));
+		UiMessageService::displayError(_("The invoice as entered cannot be processed because the due date is in an incorrect format."));
 		set_focus('due_date');
 		return false;
 	}
 
 	if (trim(RequestService::getPostStatic('supp_reference')) == false)
 	{
-		display_error(_("You must enter a supplier's invoice reference."));
+		UiMessageService::displayError(_("You must enter a supplier's invoice reference."));
 		set_focus('supp_reference');
 		return false;
 	}
 
 	if (is_reference_already_there($_SESSION['supp_trans']->supplier_id, $_POST['supp_reference'], $_SESSION['supp_trans']->trans_no))
 	{ 	/*Transaction reference already entered */
-		display_error(_("This invoice number has already been entered. It cannot be entered again.") . " (" . $_POST['supp_reference'] . ")");
+		UiMessageService::displayError(_("This invoice number has already been entered. It cannot be entered again.") . " (" . $_POST['supp_reference'] . ")");
 		set_focus('supp_reference');
 		return false;
 	}
@@ -260,14 +260,14 @@ function check_item_data($n)
 
 	if (!check_num('this_quantity_inv'.$n, 0) || RequestService::inputNumStatic('this_quantity_inv'.$n)==0)
 	{
-		display_error( _("The quantity to invoice must be numeric and greater than zero."));
+		UiMessageService::displayError( _("The quantity to invoice must be numeric and greater than zero."));
 		set_focus('this_quantity_inv'.$n);
 		return false;
 	}
 
 	if (!check_num('ChgPrice'.$n))
 	{
-		display_error( _("The price is not numeric."));
+		UiMessageService::displayError( _("The price is not numeric."));
 		set_focus('ChgPrice'.$n);
 		return false;
 	}
@@ -280,7 +280,7 @@ function check_item_data($n)
 				RequestService::inputNumStatic('ChgPrice'.$n)/$_POST['order_price'.$n] >
 			    (1 + ($margin/ 100)))
 		    {
-			display_error(_("The price being invoiced is more than the purchase order price by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") .
+			UiMessageService::displayError(_("The price being invoiced is more than the purchase order price by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") .
 			_("The over-charge percentage allowance is :") . $margin . "%");
 			set_focus('ChgPrice'.$n);
 			return false;
@@ -294,7 +294,7 @@ function check_item_data($n)
 		if (RequestService::inputNumStatic('this_quantity_inv'.$n) / ($_POST['qty_recd'.$n] - $_POST['prev_quantity_inv'.$n]) >
 			(1+ ($margin / 100)))
 		{
-			display_error( _("The quantity being invoiced is more than the outstanding quantity by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.")
+			UiMessageService::displayError( _("The quantity being invoiced is more than the outstanding quantity by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.")
 			. _("The over-charge percentage allowance is :") . $margin . "%");
 			set_focus('this_quantity_inv'.$n);
 			return false;
@@ -394,7 +394,7 @@ start_form();
 invoice_header($_SESSION['supp_trans']);
 
 if ($_POST['supplier_id']=='') 
-		display_error(_("There is no supplier selected."));
+		UiMessageService::displayError(_("There is no supplier selected."));
 else {
 	display_grn_items($_SESSION['supp_trans'], 1);
 

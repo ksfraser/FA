@@ -19,7 +19,7 @@ function check_db_has_customers($msg)
 	global $path_to_root;
     if (!db_has_customers()) 
     {
-    	display_error($msg, true);
+    	UiMessageService::displayError($msg, true);
     	end_page();
     	exit;	
     }	
@@ -35,7 +35,7 @@ function check_db_has_currencies($msg)
 	global $path_to_root;
     if (!db_has_currencies()) 
     {
-    	display_error($msg, true);
+    	UiMessageService::displayError($msg, true);
     	end_page();
     	exit;
     }
@@ -49,7 +49,7 @@ function db_has_currency_rates($currency, $date_, $msg=false)
 		return 1;
 	$ret = check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."exchange_rates WHERE curr_code = '$currency' && date_ <= '$date'");
 	if ($ret == 0 && $msg)
-		display_error(sprintf(_("Cannot retrieve exchange rate for currency %s as of %s. Please add exchange rate manually on Exchange Rates page."),
+		UiMessageService::displayError(sprintf(_("Cannot retrieve exchange rate for currency %s as of %s. Please add exchange rate manually on Exchange Rates page."),
 					 $currency, $date_), true);
 	return $ret;
 }
@@ -64,7 +64,7 @@ function check_db_has_sales_types($msg)
 	global $path_to_root;
     if (!db_has_sales_types()) 
     {
-    	display_error($msg, true);
+    	UiMessageService::displayError($msg, true);
     	end_page();
     	exit;	
     }	
@@ -80,7 +80,7 @@ function check_db_has_item_tax_types($msg)
 	global $path_to_root;
     if (!db_has_item_tax_types()) 
     {
-    	display_error($msg, true);
+    	UiMessageService::displayError($msg, true);
     	end_page();
     	exit;	
     }	
@@ -96,7 +96,7 @@ function check_db_has_tax_types($msg)
 	global $path_to_root;
     if (!db_has_tax_types()) 
     {
-    	display_error($msg, true);
+    	UiMessageService::displayError($msg, true);
     	end_page();
     	exit;	
     }	
@@ -112,7 +112,7 @@ function check_db_has_tax_groups($msg)
 	global $path_to_root;
     if (!db_has_tax_groups()) 
     {
-    	display_error($msg, true);
+    	UiMessageService::displayError($msg, true);
     	end_page();
     	exit;	
     }	
@@ -135,7 +135,7 @@ function check_db_has_customer_branches($msg)
 	global $path_to_root;
     if (!db_has_customer_branches()) 
     {
-    	display_error($msg, true);
+    	UiMessageService::displayError($msg, true);
     	end_page();
     	exit;	
     }	
@@ -151,7 +151,7 @@ function check_db_has_sales_people($msg)
 	global $path_to_root;
     if (!db_has_sales_people()) 
     {
-    	display_error($msg, true);
+    	UiMessageService::displayError($msg, true);
     	end_page();
     	exit;
     }
@@ -167,7 +167,7 @@ function check_db_has_sales_areas($msg)
 	global $path_to_root;
     if (!db_has_sales_areas()) 
     {
-    	display_error($msg, true);
+    	UiMessageService::displayError($msg, true);
     	end_page();
     	exit;	
     }	
@@ -183,7 +183,7 @@ function check_db_has_shippers($msg)
 	global $path_to_root;
     if (!db_has_shippers()) 
     {
-    	display_error($msg, true);
+    	UiMessageService::displayError($msg, true);
     	end_page();
     	exit;	
     }	
@@ -204,7 +204,7 @@ function check_db_has_workorders($msg)
 	global $path_to_root;
     if (!db_has_workorders()) 
     {
-    	display_error($msg, true);
+    	UiMessageService::displayError($msg, true);
     	end_page();
     	exit;	
     }	
@@ -225,7 +225,7 @@ function check_db_has_dimensions($msg)
 	global $path_to_root;
     if (!db_has_dimensions()) 
     {
-    	display_error($msg, true);
+    	UiMessageService::displayError($msg, true);
     	end_page();
     	exit;	
     }	
@@ -242,7 +242,7 @@ function check_db_has_suppliers($msg)
 	global $path_to_root;
     if (!db_has_suppliers()) 
     {
-    	display_error($msg, true);
+    	UiMessageService::displayError($msg, true);
     	end_page();
     	exit;	
     }	
@@ -259,7 +259,7 @@ function check_db_has_stock_items($msg)
 	global $path_to_root;
     if (!db_has_stock_items()) 
     {
-    	display_error($msg, true);
+    	UiMessageService::displayError($msg, true);
     	end_page();
     	exit;	
     }	
@@ -275,7 +275,7 @@ function check_db_has_bom_stock_items($msg)
 	global $path_to_root;
     if (!db_has_bom_stock_items()) 
     {
-    	display_error($msg, true);
+    	UiMessageService::displayError($msg, true);
     	end_page();
     	exit;	
     }	
@@ -291,7 +291,7 @@ function check_db_has_manufacturable_items($msg)
 	global $path_to_root;
     if (!db_has_manufacturable_items()) 
     {
-    	display_error($msg, true);
+    	UiMessageService::displayError($msg, true);
     	end_page();
     	exit;	
     }	
@@ -307,7 +307,7 @@ function check_db_has_purchasable_items($msg)
 	global $path_to_root;
     if (!db_has_purchasable_items()) 
     {
-    	display_error($msg, true);
+    	UiMessageService::displayError($msg, true);
     	end_page();
     	exit;	
     }	
@@ -323,7 +323,7 @@ function check_db_has_costable_items($msg)
 	global $path_to_root;
     if (!db_has_costable_items()) 
     {
-    	display_error($msg, true);
+    	UiMessageService::displayError($msg, true);
     	end_page();
     	exit;	
     }	
@@ -334,7 +334,7 @@ function check_db_has_fixed_asset_classes($msg)
 	global $path_to_root;
     if (!db_has_fixed_asset_classes()) 
     {
-    	display_error($msg, true);
+    	UiMessageService::displayError($msg, true);
     	end_page();
     	exit;
     }
@@ -366,7 +366,7 @@ function check_db_has_depreciable_fixed_assets($msg)
 
 	if (!db_has_depreciable_fixed_assets()) 
 	{
-		display_error($msg, true);
+		UiMessageService::displayError($msg, true);
 		end_page();
 	exit;
 	}
@@ -383,7 +383,7 @@ function check_db_has_fixed_assets($msg)
 
 	if (!db_has_fixed_assets()) 
 	{
-		display_error($msg, true);
+		UiMessageService::displayError($msg, true);
 		end_page();
 		exit;
 	}
@@ -404,7 +404,7 @@ function check_db_has_purchasable_fixed_assets($msg)
 
 	if (!db_has_purchasable_fixed_assets()) 
 	{
-		display_error($msg, true);
+		UiMessageService::displayError($msg, true);
 		end_page();
 	 	exit;
     }
@@ -427,7 +427,7 @@ function check_db_has_disposable_fixed_assets($msg)
 
 	if (!db_has_disposable_fixed_assets()) 
 	{
-		display_error($msg, true);
+		UiMessageService::displayError($msg, true);
 		end_page();
 		exit;
 	}
@@ -443,7 +443,7 @@ function check_db_has_fixed_asset_categories($msg)
 	global $path_to_root;
     if (!db_has_fixed_asset_categories()) 
     {
-    	display_error($msg, true);
+    	UiMessageService::displayError($msg, true);
     	end_page();
     	exit;
     }
@@ -459,7 +459,7 @@ function check_db_has_stock_categories($msg)
 	global $path_to_root;
     if (!db_has_stock_categories()) 
     {
-    	display_error($msg, true);
+    	UiMessageService::displayError($msg, true);
     	end_page();
     	exit;
     }
@@ -475,7 +475,7 @@ function check_db_has_workcentres($msg)
 	global $path_to_root;
     if (!db_has_workcentres()) 
     {
-    	display_error($msg, true);
+    	UiMessageService::displayError($msg, true);
     	end_page();
     	exit;	
     }	
@@ -491,7 +491,7 @@ function check_db_has_locations($msg)
 	global $path_to_root;
     if (!db_has_locations()) 
     {
-    	display_error($msg, true);
+    	UiMessageService::displayError($msg, true);
     	end_page();
     	exit;	
     }	
@@ -508,7 +508,7 @@ function check_db_has_bank_accounts($msg)
 
     if (!db_has_bank_accounts()) 
     {
-    	display_error($msg, true);
+    	UiMessageService::displayError($msg, true);
     	end_page();
     	exit;	
     }	
@@ -535,7 +535,7 @@ function check_db_has_gl_account_groups($msg)
 	global $path_to_root;
     if (!db_has_gl_account_groups()) 
     {
-    	display_error($msg, true);
+    	UiMessageService::displayError($msg, true);
     	end_page();
     	exit;	
     }	
@@ -556,7 +556,7 @@ function check_db_has_tags($type, $msg)
 	global $path_to_root;
     if (!db_has_tags($type)) 
     {
-    	display_error($msg, true);
+    	UiMessageService::displayError($msg, true);
     	end_page();
     	exit;	
     }	
@@ -611,7 +611,7 @@ function check_is_closed($type, $type_no, $msg=null)
     {
     	if (!$msg)
     		$msg = sprintf(_("%s #%s is closed for further edition."), $systypes_array[$type], $type_no);
-	   	display_error($msg, true);
+	   	UiMessageService::displayError($msg, true);
 		display_footer_exit();
 	}
 }
@@ -626,7 +626,7 @@ function check_db_has_template_orders($msg)
 
     if (!check_empty_result($sql))
     {
-    	display_error($msg, true);
+    	UiMessageService::displayError($msg, true);
     	end_page();
     	exit;
     }
@@ -638,7 +638,7 @@ function check_deferred_income_act($msg)
 
     if (!get_company_pref('deferred_income_act')) 
     {
-    	display_error($msg, true);
+    	UiMessageService::displayError($msg, true);
 		display_footer_exit();
     }
 }
@@ -667,11 +667,11 @@ function check_reference($reference, $trans_type, $trans_no=0, $context=null, $l
 
 	if (!$Refs->is_valid($reference, $trans_type, $context, $line))
 	{
-		display_error(_("The entered reference is invalid.")); return false;
+		UiMessageService::displayError(_("The entered reference is invalid.")); return false;
 	}
 	elseif (!$Refs->is_new_reference($reference, $trans_type, $trans_no))
 	{
-		display_error( _("The entered reference is already in use.")); return false;
+		UiMessageService::displayError( _("The entered reference is already in use.")); return false;
 	}
 	return true;
 }
@@ -682,7 +682,7 @@ function check_sys_pref($name, $msg, $empty = '')
 
 	if (get_company_pref($name) === $empty)
 	{
-		display_error(menu_link("/admin/gl_setup.php", $msg), true);
+		UiMessageService::displayError(menu_link("/admin/gl_setup.php", $msg), true);
 		display_footer_exit();
 	}
 }

@@ -187,7 +187,7 @@ function get_control_file($file, $index = false) {
 				if ($index !== true) {
 					if ($index === false) break;
 					if (!isset($pkg[$index])) {
-						display_error(sprintf(_("No key field '%s' in file '%s'"), $index, $file));
+						UiMessageService::displayError(sprintf(_("No key field '%s' in file '%s'"), $index, $file));
 						return null;
 					}
 					$repo[$pkg[$index]] = $pkg;
@@ -200,11 +200,11 @@ function get_control_file($file, $index = false) {
 		} elseif (preg_match('/([^:]*):\s*(.*)/', $line, $m)) {
 			$key = $m[1]; $value = $m[2];
 			if (!strlen($key)) {
-				display_error("Empty key in line $line");
+				UiMessageService::displayError("Empty key in line $line");
 				return null;
 			}
 		} else {
-			display_error("File parse error in line $line");
+			UiMessageService::displayError("File parse error in line $line");
 			return null;
 		}
 		
@@ -292,7 +292,7 @@ function get_pkg_or_list($type = null, $pkgname = null, $filter=array(), $outkey
 		if (!file_exists($loclist)) {
 			if (!url_copy($repo.'/Release.gz', $loclist))
 			{
-				display_error(_("Cannot download repo index file." ));
+				UiMessageService::displayError(_("Cannot download repo index file." ));
 				return null;
 			}
 			$refresh = false;
@@ -301,18 +301,18 @@ function get_pkg_or_list($type = null, $pkgname = null, $filter=array(), $outkey
 		$data = file_get_contents($loclist);
 		$cert = file_get_contents(PUBKEY_PATH.'/FA.pem');
 		if (!function_exists('openssl_verify')) {
-			display_error(_("OpenSSL have to be available on your server to use extension repository system."));
+			UiMessageService::displayError(_("OpenSSL have to be available on your server to use extension repository system."));
 			return null;
 		}	
 		if (openssl_verify($data, $sig, $cert) <= 0) {
 			if ($refresh) {
 				if (!@unlink($loclist))
 				{
-					display_error(sprintf(_("Cannot delete outdated '%s' file."), $loclist));
+					UiMessageService::displayError(sprintf(_("Cannot delete outdated '%s' file."), $loclist));
 					return null;
 				}
 			} else {
-				display_error(_('Release file in repository is invalid, or public key is outdated.'));
+				UiMessageService::displayError(_('Release file in repository is invalid, or public key is outdated.'));
 				return null;
 			}
 		} else
@@ -337,7 +337,7 @@ function get_pkg_or_list($type = null, $pkgname = null, $filter=array(), $outkey
 		do{
 			if (!file_exists($locindex)) { 
 				if (!url_copy($remoteindex, $locindex)) {
-					display_error(sprintf(_("Cannot download '%s' file." ), $fname));
+					UiMessageService::displayError(sprintf(_("Cannot download '%s' file." ), $fname));
 					return null;
 				}
 				$refresh = false;
@@ -345,11 +345,11 @@ function get_pkg_or_list($type = null, $pkgname = null, $filter=array(), $outkey
 			if ($parms['SHA1sum'] != sha1_file($locindex)) {	// check subdir index consistency
 				if ($refresh) {
 					if (!@unlink($locindex)) {
-						display_error(sprintf(_("Cannot delete outdated '%s' file."), $locindex));
+						UiMessageService::displayError(sprintf(_("Cannot delete outdated '%s' file."), $locindex));
 						return null;
 					}
 				} else {
-					display_error(sprintf( _("Security alert: broken index file in repository '%s'. Please inform repository administrator about this issue."),
+					UiMessageService::displayError(sprintf( _("Security alert: broken index file in repository '%s'. Please inform repository administrator about this issue."),
 						$fname));
 					return null;
 				}
@@ -379,13 +379,13 @@ function get_pkg_or_list($type = null, $pkgname = null, $filter=array(), $outkey
 					if ($download) {
 						$locname = $target_dir.$pkg['Filename'].'.pkg';
 						if (!url_copy($pkgfullname, $locname)) {
-							display_error(sprintf(_("Cannot download '%s' file." ), $pkgfullname));
+							UiMessageService::displayError(sprintf(_("Cannot download '%s' file." ), $pkgfullname));
 							return null;
 						}
 						 // checking sha1 hash is expensive proces, so chekc the package
 						 // consistency just before downloading
 						if ($pkg['SHA1sum'] != sha1_file($locname)) {
-							display_error(sprintf( _("Security alert: broken package '%s' in repository. Please inform repository administrator about this issue."),
+							UiMessageService::displayError(sprintf( _("Security alert: broken package '%s' in repository. Please inform repository administrator about this issue."),
 								$pkgfullname));
 							return null;
 						}
@@ -639,11 +639,11 @@ function install_language($pkg_name)
 			unlink(VARLIB_PATH."/".$pkg['Filename'].'.pkg');
 			$Ajax->activate('lang_tbl');
 		} else {
-			display_error(implode('<br>', $package->error));
+			UiMessageService::displayError(implode('<br>', $package->error));
 			return false;
 		}
 	} else {
-		display_error(sprintf(_("Package '%s' not found."), $pkg_name));
+		UiMessageService::displayError(sprintf(_("Package '%s' not found."), $pkg_name));
 		return false;
 	}
 	return true;
@@ -694,11 +694,11 @@ function install_extension($pkg_name)
 			$Ajax->activate('ext_tbl');
 			return $ret;
 		} else {
-			display_error(implode('<br>', $package->error));
+			UiMessageService::displayError(implode('<br>', $package->error));
 			return false;
 		}
 	} else {
-		display_error(sprintf(_("Package '%s' not found."), $pkg_name));
+		UiMessageService::displayError(sprintf(_("Package '%s' not found."), $pkg_name));
 		return false;
 	}
 	return true;

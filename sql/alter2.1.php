@@ -34,7 +34,7 @@ class fa2_1 extends fa_patch {
 	*/
 		$sql = "SELECT id, account_code FROM ".TB_PREF."bank_accounts";
 		if(!($res = db_query($sql))) {
-			display_error(_("Cannot retrieve bank accounts codes")
+			UiMessageService::displayError(_("Cannot retrieve bank accounts codes")
 				.':<br>'. db_error_msg($db));
 			return false;
 		}
@@ -42,7 +42,7 @@ class fa2_1 extends fa_patch {
 			$sql = "UPDATE ".TB_PREF."bank_trans SET bank_act='"
 				.$acc['id']."' WHERE bank_act=".$acc['account_code'];
 			if (db_query($sql)==false) {
-			display_error(_("Cannot update bank transactions")
+			UiMessageService::displayError(_("Cannot update bank transactions")
 				.':<br>'. db_error_msg($db));
 				return false;
 			}
@@ -51,7 +51,7 @@ class fa2_1 extends fa_patch {
 		$sql = "SELECT `stock_id`,`description`,`category_id` FROM ".TB_PREF."stock_master";
 		$result = db_query($sql);
 		if (!$result) {
-			display_error(_("Cannot select stock identificators")
+			UiMessageService::displayError(_("Cannot select stock identificators")
 				.':<br>'. db_error_msg($db));
 			return false;
 		} else {
@@ -62,7 +62,7 @@ class fa2_1 extends fa_patch {
 					.$row['description']."','".$row['category_id']."')";
 				$res2 = db_query($sql);
 				if (!$res2) {
-					display_error(_("Cannot insert stock id into item_codes")
+					UiMessageService::displayError(_("Cannot insert stock id into item_codes")
 						.':<br>'. db_error_msg($db));
 					return false;
 				}
@@ -141,7 +141,7 @@ class fa2_1 extends fa_patch {
 
 		if (check_table($pref, 'debtor_trans_tax_details') 
 			|| check_table($pref, 'supp_invoice_tax_items')) {
-			display_error(_("Seems that system upgrade to version 2.1 has 
+			UiMessageService::displayError(_("Seems that system upgrade to version 2.1 has 
 			been performed for this company already.<br> If something has gone 
 			wrong and you want to retry upgrade process you MUST perform 
 			database restore from last backup file first."));

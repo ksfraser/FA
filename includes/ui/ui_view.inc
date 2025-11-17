@@ -633,7 +633,7 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 
 	if (!isset($id) || $id == null || $id == "")
 	{
-		display_error( _("No Quick Entries are defined."));
+		UiMessageService::displayError( _("No Quick Entries are defined."));
 		set_focus('totamount');
 	}
 	else
@@ -648,12 +648,12 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 
 		if ($qe_lines === 0)
 		{
-			display_error( _("No Quick Entry lines are defined."));
+			UiMessageService::displayError( _("No Quick Entry lines are defined."));
 			set_focus('totamount');
 			return 0;
 		} elseif ($qe_lines === -1)
 		{
-			display_error(_("Cannot post to GL account used by more than one tax type."));
+			UiMessageService::displayError(_("Cannot post to GL account used by more than one tax type."));
 			return 0;
 		}
 		foreach($qe_lines as $qe_line)
@@ -1518,7 +1518,7 @@ function display_backtrace($cond=true, $msg='') {
 		else
 			$str = '';
 		$str .= get_backtrace(true);
-   		display_error($str);
+   		UiMessageService::displayError($str);
 	}
 }
 
@@ -1555,7 +1555,7 @@ function payment_link($name, $options)
         $result = db_query($sql, "could not retrieve $name bank account number");
         $row = db_fetch($result);
         if ($row == false) {
-        	display_error(sprintf(_("Could not retrieve %s bank account number"), $name));
+        	UiMessageService::displayError(sprintf(_("Could not retrieve %s bank account number"), $name));
         	return false;
         }
         $account = $row['bank_account_number'];
@@ -1570,7 +1570,7 @@ function payment_link($name, $options)
         $result = db_query($sql, "could not retrieve exchange rate for $curr_code - $date");
         $row = db_fetch($result);
         if ($row == false) {
-        	display_error(sprintf(_("Could not retrieve exchange rate for %s - %s"), $curr_code, $date));
+        	UiMessageService::displayError(sprintf(_("Could not retrieve exchange rate for %s - %s"), $curr_code, $date));
         	return false;
         }
         $exchange_rate = $row['rate_buy'];

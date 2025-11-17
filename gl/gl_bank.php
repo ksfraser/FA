@@ -225,13 +225,13 @@ function check_trans()
 	$input_error = 0;
 
 	if ($_SESSION['pay_items']->count_gl_items() < 1) {
-		display_error(_("You must enter at least one payment line."));
+		UiMessageService::displayError(_("You must enter at least one payment line."));
 		set_focus('code_id');
 		$input_error = 1;
 	}
 
 	if ($_SESSION['pay_items']->gl_items_total() == 0.0) {
-		display_error(_("The total bank amount cannot be 0."));
+		UiMessageService::displayError(_("The total bank amount cannot be 0."));
 		set_focus('code_id');
 		$input_error = 1;
 	}
@@ -242,14 +242,14 @@ function check_trans()
 
 	if ($limit !== null && floatcmp($limit, -$amnt_chg) < 0)
 	{
-		display_error(sprintf(_("The total bank amount exceeds allowed limit (%s)."), FormatService::priceFormat($limit-$_SESSION['pay_items']->original_amount)));
+		UiMessageService::displayError(sprintf(_("The total bank amount exceeds allowed limit (%s)."), FormatService::priceFormat($limit-$_SESSION['pay_items']->original_amount)));
 		set_focus('code_id');
 		$input_error = 1;
 	}
 	if ($trans = check_bank_account_history($amnt_chg, $_POST['bank_account'], $_POST['date_'])) {
 
 		if (isset($trans['trans_no'])) {
-			display_error(sprintf(_("The bank transaction would result in exceed of authorized overdraft limit for transaction: %s #%s on %s."),
+			UiMessageService::displayError(sprintf(_("The bank transaction would result in exceed of authorized overdraft limit for transaction: %s #%s on %s."),
 				$systypes_array[$trans['type']], $trans['trans_no'], DateService::sql2dateStatic($trans['trans_date'])));
 			set_focus('amount');
 			$input_error = 1;
@@ -263,23 +263,23 @@ function check_trans()
 	$dateService = new DateService();
 	if (!$dateService->isDate($_POST['date_']))
 	{
-		display_error(_("The entered date for the payment is invalid."));
+		UiMessageService::displayError(_("The entered date for the payment is invalid."));
 		set_focus('date_');
 		$input_error = 1;
 	}
 	elseif (!DateService::isDateInFiscalYearStatic($_POST['date_']))
 	{
-		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('date_');
 		$input_error = 1;
 	} 
 
 	if (RequestService::getPostStatic('PayType')==PT_CUSTOMER && (!RequestService::getPostStatic('person_id') || !RequestService::getPostStatic('PersonDetailID'))) {
-		display_error(_("You have to select customer and customer branch."));
+		UiMessageService::displayError(_("You have to select customer and customer branch."));
 		set_focus('person_id');
 		$input_error = 1;
 	} elseif (RequestService::getPostStatic('PayType')==PT_SUPPLIER && (!RequestService::getPostStatic('person_id'))) {
-		display_error(_("You have to select supplier."));
+		UiMessageService::displayError(_("You have to select supplier."));
 		set_focus('person_id');
 		$input_error = 1;
 	}
@@ -287,7 +287,7 @@ function check_trans()
 		$input_error = 1;
 
 	if (isset($_POST['settled_amount']) && in_array(RequestService::getPostStatic('PayType'), array(PT_SUPPLIER, PT_CUSTOMER)) && (RequestService::inputNumStatic('settled_amount') <= 0)) {
-		display_error(_("Settled amount have to be positive number."));
+		UiMessageService::displayError(_("Settled amount have to be positive number."));
 		set_focus('person_id');
 		$input_error = 1;
 	}
@@ -333,13 +333,13 @@ function check_item_data()
 {
 	if (!check_num('amount', 0))
 	{
-		display_error( _("The amount entered is not a valid number or is less than zero."));
+		UiMessageService::displayError( _("The amount entered is not a valid number or is less than zero."));
 		set_focus('amount');
 		return false;
 	}
 	if (isset($_POST['_ex_rate']) && RequestService::inputNumStatic('_ex_rate') <= 0)
 	{
-		display_error( _("The exchange rate cannot be zero or a negative number."));
+		UiMessageService::displayError( _("The exchange rate cannot be zero or a negative number."));
 		set_focus('_ex_rate');
 		return false;
 	}

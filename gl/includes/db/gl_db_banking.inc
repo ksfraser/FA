@@ -522,7 +522,7 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
 		$msg = void_transaction($trans_type, $old_trans, $date_, _("Document reentered."));
 		if ($msg)
 		{
-			display_error($msg);
+			UiMessageService::displayError($msg);
 			return false;
 		}
 	}

@@ -151,7 +151,7 @@ function write_extensions($extensions=null, $company = -1)
 	// Check if the file is writable first.
 	if (!$zp = @fopen($filename, 'w'))
 	{
-		display_error(sprintf(_("Cannot open the extension setup file '%s' for writing."),
+		UiMessageService::displayError(sprintf(_("Cannot open the extension setup file '%s' for writing."),
 			 $filename));
 		return false;
 	}
@@ -159,7 +159,7 @@ function write_extensions($extensions=null, $company = -1)
 	{
 		if (!fwrite($zp, $msg))
 		{
-			display_error(sprintf(_("Cannot write to the extensions setup file '%s'."),
+			UiMessageService::displayError(sprintf(_("Cannot write to the extensions setup file '%s'."),
 				$filename));
 			fclose($zp);
 			return false;
@@ -232,14 +232,14 @@ function write_lang()
 	{
 		if (!$zp = fopen($filename, 'w'))
 		{
-			display_error(_("Cannot open the languages file - ") . $filename);
+			UiMessageService::displayError(_("Cannot open the languages file - ") . $filename);
 			return false;
 		}
 		else
 		{
 			if (!fwrite($zp, $msg))
 			{
-				display_error(_("Cannot write to the language file - ") . $filename);
+				UiMessageService::displayError(_("Cannot write to the language file - ") . $filename);
 				fclose($zp);
 				return false;
 			}
@@ -250,7 +250,7 @@ function write_lang()
 	}
 	else
 	{
-		display_error(_("The language files folder ") . $path . _(" is not writable. Change its permissions so it is, then re-run the operation."));
+		UiMessageService::displayError(_("The language files folder ") . $path . _(" is not writable. Change its permissions so it is, then re-run the operation."));
 		return false;
 	}
 	return true;
@@ -406,7 +406,7 @@ function db_import($filename, $connection, $force=true, $init=true, $protect=fal
 			if ($return_errors)
 				return $msg;
 			else
-				display_error($msg);
+				UiMessageService::displayError($msg);
 			return false;
 		}
 		 else	// backup restore during upgrade failure
@@ -486,7 +486,7 @@ function db_import($filename, $connection, $force=true, $init=true, $protect=fal
 
 		// display first failure message; the rest are probably derivative 
 		$err = $sql_errors[0];
-		display_error(sprintf(_("SQL script execution failed in line %d: %s"),
+		UiMessageService::displayError(sprintf(_("SQL script execution failed in line %d: %s"),
 			$err[1], $err[0]));
 		return false;
 	} else

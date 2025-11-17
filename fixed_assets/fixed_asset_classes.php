@@ -28,7 +28,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	//initialise no input errors assumed initially before we test
 	$input_error = 0;
   if (RequestService::inputNumStatic('depreciation_rate') > 100) {
-    display_error(_("The depreciation rate can't be greater than 100%"));
+    UiMessageService::displayError(_("The depreciation rate can't be greater than 100%"));
     $input_error = 1;
   }
 	
@@ -57,7 +57,7 @@ function can_delete($selected_id)
 {
 	if (key_in_foreign_table($selected_id, 'stock_master', 'fa_class_id'))
 	{
-		display_error(_("Cannot delete this class because it is used by some fixed asset items."));
+		UiMessageService::displayError(_("Cannot delete this class because it is used by some fixed asset items."));
 		return false;
 	}
 	return true;

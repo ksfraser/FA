@@ -28,7 +28,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if (empty($_POST['name']))
 	{
 		$error = 1;
-		display_error( _("Printer name cannot be empty."));
+		UiMessageService::displayError( _("Printer name cannot be empty."));
 		set_focus('name');
 	} 
 	elseif (empty($_POST['host'])) 
@@ -38,7 +38,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	elseif (!check_num('tout', 0, 60)) 
 	{
 		$error = 1;
-		display_error( _("Timeout cannot be less than zero nor longer than 60 (sec)."));
+		UiMessageService::displayError( _("Timeout cannot be less than zero nor longer than 60 (sec)."));
 		set_focus('tout');
 	} 
 
@@ -61,7 +61,7 @@ if ($Mode == 'Delete')
 
 	if (key_in_foreign_table($selected_id, 'print_profiles', 'printer'))
 	{
-		display_error(_("Cannot delete this printer definition, because print profile have been created using it."));
+		UiMessageService::displayError(_("Cannot delete this printer definition, because print profile have been created using it."));
 	} 
 	else 
 	{

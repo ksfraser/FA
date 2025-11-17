@@ -18,7 +18,7 @@ include_once($path_to_root . "/admin/db/maintenance_db.inc");
 
 if (RequestService::getPostStatic('view')) {
 	if (!RequestService::getPostStatic('backups')) {
-		display_error(_('Select backup file first.'));
+		UiMessageService::displayError(_('Select backup file first.'));
 	} else {
 		$filename = $SysPrefs->backup_dir() . clean_file_name(RequestService::getPostStatic('backups'));
 		if (in_ajax()) 
@@ -44,7 +44,7 @@ if (RequestService::getPostStatic('download')) {
 		download_file($SysPrefs->backup_dir().clean_file_name(RequestService::getPostStatic('backups')));
 		exit;
 	} else
-		display_error(_("Select backup file first."));
+		UiMessageService::displayError(_("Select backup file first."));
 }
 
 page(_($help_context = "Backup and Restore Database"), false, false, '', '');
@@ -73,7 +73,7 @@ function generate_backup($conn, $ext='no', $comm='')
 		display_notification(_("Backup successfully generated."). ' '
 			. _("Filename") . ": " . $filename);
 	else
-		display_error(_("Database backup failed."));
+		UiMessageService::displayError(_("Database backup failed."));
 
 	return $filename;
 }
@@ -122,7 +122,7 @@ function download_file($filename)
 {
     if (empty($filename) || !file_exists($filename))
     {
-		display_error(_('Select backup file first.'));
+		UiMessageService::displayError(_('Select backup file first.'));
         return false;
     }
     $saveasname = basename($filename);
@@ -150,7 +150,7 @@ if (RequestService::getPostStatic('restore')) {
 			display_notification(_("Restore backup completed."));
 		$SysPrefs->refresh(); // re-read system setup
 	} else
-		display_error(_("Select backup file first."));
+		UiMessageService::displayError(_("Select backup file first."));
 }
 
 if (RequestService::getPostStatic('deldump')) {
@@ -161,9 +161,9 @@ if (RequestService::getPostStatic('deldump')) {
 			$Ajax->activate('backups');
 		}
 		else
-			display_error(_("Can't delete backup file."));
+			UiMessageService::displayError(_("Can't delete backup file."));
 	} else
-		display_error(_("Select backup file first."));
+		UiMessageService::displayError(_("Select backup file first."));
 }
 
 if (RequestService::getPostStatic('upload'))
@@ -173,17 +173,17 @@ if (RequestService::getPostStatic('upload'))
 
 	if ($fname) {
 		if (!preg_match("/\.sql(\.zip|\.gz)?$/", $fname))
-			display_error(_("You can only upload *.sql backup files"));
+			UiMessageService::displayError(_("You can only upload *.sql backup files"));
 		elseif ($fname != clean_file_name($fname))
-			display_error(_("Filename contains forbidden chars. Please rename file and try again."));
+			UiMessageService::displayError(_("Filename contains forbidden chars. Please rename file and try again."));
 		elseif (is_uploaded_file($tmpname)) {
 			rename($tmpname, $SysPrefs->backup_dir() . $fname);
 			display_notification(_("File uploaded to backup directory"));
 			$Ajax->activate('backups');
 		} else
-			display_error(_("File was not uploaded into the system."));
+			UiMessageService::displayError(_("File was not uploaded into the system."));
 	} else
-		display_error(_("Select backup file first."));
+		UiMessageService::displayError(_("Select backup file first."));
 
 }
 //-------------------------------------------------------------------------------

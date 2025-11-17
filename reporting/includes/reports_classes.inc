@@ -152,7 +152,7 @@ class BoxReports
 				$st .= $ctrl;
 				$st .= "<br><br>";
 			} else {
-				display_error(_('Unknown report parameter type:').$type);
+				UiMessageService::displayError(_('Unknown report parameter type:').$type);
 			}
 			$cnt++;
 		}

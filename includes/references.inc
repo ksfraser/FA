@@ -163,7 +163,7 @@ class references
 
 		$out .= $template;	// add postfix
 		if (!preg_match('/^([^\{]*)?\{([^\}]*)\}(.*)/', $out, $match)) {	// parse index
-			display_error(_("Missing numeric placeholder in refline definition."));
+			UiMessageService::displayError(_("Missing numeric placeholder in refline definition."));
 			return $out;
 		}
 

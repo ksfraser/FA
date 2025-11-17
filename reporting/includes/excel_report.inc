@@ -72,7 +72,7 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 
 		if (!$_SESSION["wa_current_user"]->can_access_page($page_security))
 		{
-			display_error(_("The security settings on your account do not permit you to print this report"));
+			UiMessageService::displayError(_("The security settings on your account do not permit you to print this report"));
 			end_page();
 			exit;
 		}

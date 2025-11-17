@@ -373,7 +373,7 @@ class tar_file extends archive
 		if ($fp = $this->open_archive())
 		{
 			$pwd = getcwd();
-			// display_error($pwd.':'.$this->options['basedir']);
+			// UiMessageService::displayError($pwd.':'.$this->options['basedir']);
 			chdir($this->options['basedir']);
 			if ($this->options['inmemory'] == 1)
 				$this->files = array();

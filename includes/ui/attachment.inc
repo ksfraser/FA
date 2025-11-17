@@ -210,7 +210,7 @@ class attachments extends simple_crud {
 			if (file_exists($filename)){
 				$result = unlink($filename);
 				if (!$result) 	{
-					display_error(_('The existing Docs could not be removed'));
+					UiMessageService::displayError(_('The existing Docs could not be removed'));
 					$upload_file ='No';
 				}
 			}	
@@ -261,7 +261,7 @@ class attachments extends simple_crud {
 			if (file_exists($filename)){
 				$result = unlink($filename);
 				if (!$result) 	{
-					display_error(_('The existing Docs could not be removed'));
+					UiMessageService::displayError(_('The existing Docs could not be removed'));
 					$upload_file ='No';
 				}
 			}
@@ -287,7 +287,7 @@ class attachments extends simple_crud {
 
 	function insert_check() {
 		if (strlen($_POST['description']) == 0) {
-			display_error(_("Description cannot be empty."));
+			UiMessageService::displayError(_("Description cannot be empty."));
 			set_focus('description');
 			return false;
 		}

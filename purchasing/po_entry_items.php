@@ -182,7 +182,7 @@ function handle_delete_item($line_no)
 	} 
 	else 
 	{
-		display_error(_("This item cannot be deleted because some of it has already been received."));
+		UiMessageService::displayError(_("This item cannot be deleted because some of it has already been received."));
 	}	
     line_start_focus();
 }
@@ -197,7 +197,7 @@ function handle_cancel_po()
 	if(($_SESSION['PO']->order_no != 0) && 
 		$_SESSION['PO']->any_already_received() == 1)
 	{
-		display_error(_("This order cannot be cancelled because some of it has already been received.") 
+		UiMessageService::displayError(_("This order cannot be cancelled because some of it has already been received.") 
 			. "<br>" . _("The line item quantities may be modified to quantities more than already received. prices cannot be altered for lines that have already been received and quantities cannot be reduced below the quantity already received."));
 		return;
 	}
@@ -232,7 +232,7 @@ function handle_cancel_po()
 function check_data()
 {
 	if(!RequestService::getPostStatic('stock_id_text', true)) {
-		display_error( _("Item description cannot be empty."));
+		UiMessageService::displayError( _("Item description cannot be empty."));
 		set_focus('stock_id_edit');
 		return false;
 	}
@@ -242,20 +242,20 @@ function check_data()
     if (!check_num('qty',$min))
     {
     	$min = FormatService::numberFormat2($min, $dec);
-	   	display_error(_("The quantity of the order item must be numeric and not less than ").$min);
+	   	UiMessageService::displayError(_("The quantity of the order item must be numeric and not less than ").$min);
 		set_focus('qty');
 	   	return false;
     }
 
     if (!check_num('price', 0))
     {
-	   	display_error(_("The price entered must be numeric and not less than zero."));
+	   	UiMessageService::displayError(_("The price entered must be numeric and not less than zero."));
 		set_focus('price');
 	   	return false;	   
     }
     $dateService = new DateService();
     if ($_SESSION['PO']->trans_type == ST_PURCHORDER && !$dateService->isDate($_POST['req_del_date'])){
-    		display_error(_("The date entered is in an invalid format."));
+    		UiMessageService::displayError(_("The date entered is in an invalid format."));
 		set_focus('req_del_date');
    		return false;    	 
     }
@@ -274,7 +274,7 @@ function handle_update_item()
 		if ($_SESSION['PO']->line_items[$_POST['line_no']]->qty_inv > RequestService::inputNumStatic('qty') ||
 			$_SESSION['PO']->line_items[$_POST['line_no']]->qty_received > RequestService::inputNumStatic('qty'))
 		{
-			display_error(_("You are attempting to make the quantity ordered a quantity less than has already been invoiced or received.  This is prohibited.") .
+			UiMessageService::displayError(_("You are attempting to make the quantity ordered a quantity less than has already been invoiced or received.  This is prohibited.") .
 				"<br>" . _("The quantity received can only be modified by entering a negative receipt and the quantity invoiced can only be reduced by entering a credit note against this item."));
 			set_focus('qty');
 			return;
@@ -329,7 +329,7 @@ function handle_add_new_item()
 	   		} 
 	   		else 
 	   		{
-			     display_error(_("The selected item does not exist or it is a kit part and therefore cannot be purchased."));
+			     UiMessageService::displayError(_("The selected item does not exist or it is a kit part and therefore cannot be purchased."));
 		   	}
 
 		} /* end of if not already on the order and allow input was true*/
@@ -343,7 +343,7 @@ function can_commit()
 {
 	if (!RequestService::getPostStatic('supplier_id')) 
 	{
-		display_error(_("There is no supplier selected."));
+		UiMessageService::displayError(_("There is no supplier selected."));
 		set_focus('supplier_id');
 		return false;
 	} 
@@ -351,20 +351,20 @@ function can_commit()
 
 	if (!$dateService->isDate($_POST['OrderDate'])) 
 	{
-		display_error(_("The entered order date is invalid."));
+		UiMessageService::displayError(_("The entered order date is invalid."));
 		set_focus('OrderDate');
 		return false;
 	} 
 	if (($_SESSION['PO']->trans_type == ST_SUPPRECEIVE || $_SESSION['PO']->trans_type == ST_SUPPINVOICE) 
 		&& !DateService::isDateInFiscalYear($_POST['OrderDate'])) {
-		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('OrderDate');
 		return false;
 	}
 
 	if (($_SESSION['PO']->trans_type==ST_SUPPINVOICE) && !$dateService->isDate($_POST['due_date'])) 
 	{
-		display_error(_("The entered due date is invalid."));
+		UiMessageService::displayError(_("The entered due date is invalid."));
 		set_focus('due_date');
 		return false;
 	} 
@@ -380,26 +380,26 @@ function can_commit()
 
 	if ($_SESSION['PO']->trans_type == ST_SUPPINVOICE && trim(RequestService::getPostStatic('supp_ref')) == false)
 	{
-		display_error(_("You must enter a supplier's invoice reference."));
+		UiMessageService::displayError(_("You must enter a supplier's invoice reference."));
 		set_focus('supp_ref');
 		return false;
 	}
 	if ($_SESSION['PO']->trans_type==ST_SUPPINVOICE 
 		&& is_reference_already_there($_SESSION['PO']->supplier_id, RequestService::getPostStatic('supp_ref'), $_SESSION['PO']->order_no))
 	{
-		display_error(_("This invoice number has already been entered. It cannot be entered again.") . " (" . RequestService::getPostStatic('supp_ref') . ")");
+		UiMessageService::displayError(_("This invoice number has already been entered. It cannot be entered again.") . " (" . RequestService::getPostStatic('supp_ref') . ")");
 		set_focus('supp_ref');
 		return false;
 	}
 	if ($_SESSION['PO']->trans_type == ST_PURCHORDER && RequestService::getPostStatic('delivery_address') == '')
 	{
-		display_error(_("There is no delivery address specified."));
+		UiMessageService::displayError(_("There is no delivery address specified."));
 		set_focus('delivery_address');
 		return false;
 	} 
 	if (RequestService::getPostStatic('StkLocation') == '')
 	{
-		display_error(_("There is no location specified to move any items into."));
+		UiMessageService::displayError(_("There is no location specified to move any items into."));
 		set_focus('StkLocation');
 		return false;
 	} 
@@ -412,7 +412,7 @@ function can_commit()
 	}
 	if (floatcmp(RequestService::inputNumStatic('prep_amount'), $_SESSION['PO']->get_trans_total()) > 0)
 	{
-		display_error(_("Required prepayment is greater than total invoice value."));
+		UiMessageService::displayError(_("Required prepayment is greater than total invoice value."));
 		set_focus('prep_amount');
 		return false;
 	}

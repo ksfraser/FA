@@ -27,12 +27,12 @@ class ReferenceValidator
         global $Refs;
 
         if (!$Refs->is_valid($reference, $transType, $context, $line)) {
-            \display_error(\_("The entered reference is invalid."));
+            \UiMessageService::displayError(\_("The entered reference is invalid."));
             return false;
         }
 
         if (!$Refs->is_new_reference($reference, $transType, $transNo)) {
-            \display_error(\_("The entered reference is already in use."));
+            \UiMessageService::displayError(\_("The entered reference is already in use."));
             return false;
         }
 

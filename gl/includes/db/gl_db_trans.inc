@@ -551,7 +551,7 @@ function get_tax_summary($from, $to, $also_zero_purchases=false)
 			AND taxrec.tran_date <= '$todate'
 		GROUP BY ttype.id";
 
-		// display_error($sql);
+		// UiMessageService::displayError($sql);
     return db_query($sql,"Cannot retrieve tax summary");
 }
 

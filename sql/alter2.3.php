@@ -40,7 +40,7 @@ class fa2_3 extends fa_patch {
 
 			$result = db_query($sql);
 			if (!$result) {
-				display_error("Cannot read customers"
+				UiMessageService::displayError("Cannot read customers"
 				.':<br>'. db_error_msg($db));
 				return false;
 			}
@@ -50,7 +50,7 @@ class fa2_3 extends fa_patch {
 					."payment_terms = '" .$cust['payment_terms']
 					."' WHERE debtor_no='".$cust['debtor_no']."'";
 				if (db_query($sql)==false) {
-					display_error("Cannot update cust trans payment"
+					UiMessageService::displayError("Cannot update cust trans payment"
 					.':<br>'. db_error_msg($db));
 					return false;
 				}
@@ -58,17 +58,17 @@ class fa2_3 extends fa_patch {
 					."payment_terms = '" .$cust['payment_terms']
 					."' WHERE debtor_no='".$cust['debtor_no']."'";
 				if (db_query($sql)==false) {
-					display_error("Cannot update sales order payment"
+					UiMessageService::displayError("Cannot update sales order payment"
 					.':<br>'. db_error_msg($db));
 					return false;
 				}
 			}
 			if (!$this->update_totals()) {
-				display_error("Cannot update order totals");
+				UiMessageService::displayError("Cannot update order totals");
 				return false;
 			}
 			if (!$this->update_line_relations()) {
-				display_error("Cannot update sales document links");
+				UiMessageService::displayError("Cannot update sales document links");
 				return false;
 			}
 			//remove obsolete and temporary columns.
@@ -84,7 +84,7 @@ class fa2_3 extends fa_patch {
 			foreach($dropcol as $table => $columns)
 				foreach($columns as $col) {
 					if (db_query("ALTER TABLE `".TB_PREF."{$table}` DROP `$col`")==false) {
-						display_error("Cannot drop {$table}.{$col} column:<br>".db_error_msg($db));
+						UiMessageService::displayError("Cannot drop {$table}.{$col} column:<br>".db_error_msg($db));
 						return false;
 					}
 				}

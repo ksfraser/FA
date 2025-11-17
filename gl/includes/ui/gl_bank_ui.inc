@@ -79,7 +79,7 @@ function display_bank_header(&$order)
         		if ($payment)
         		{
         			$customer_error = true;
-					display_error(_("This customer account is on hold."));
+					UiMessageService::displayError(_("This customer account is on hold."));
         		}
         		else
 					display_warning(_("This customer account is on hold."));

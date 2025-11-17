@@ -121,7 +121,7 @@ function install_connect_db() {
 
 	$db = db_create_db($conn);
 	if (!$db) {
-		display_error(_("Cannot connect to database. User or password is invalid or you have no permittions to create database."));
+		UiMessageService::displayError(_("Cannot connect to database. User or password is invalid or you have no permittions to create database."));
 	} else {
 		if (strncmp(db_get_version(), "5.6", 3) >= 0) 
 			db_query("SET sql_mode = ''");
@@ -162,20 +162,20 @@ function do_install() {
 			'user_id' => $con['admin']));
 
 		if (!copy($path_to_root. "/config.default.php", $path_to_root. "/config.php")) {
-			display_error(_("Cannot save system configuration file 'config.php'."));
+			UiMessageService::displayError(_("Cannot save system configuration file 'config.php'."));
 			return false;
 		}
 
 		$err = write_config_db($table_prefix != "");
 
 		if ($err == -1) {
-			display_error(_("Cannot open 'config_db.php' configuration file."));
+			UiMessageService::displayError(_("Cannot open 'config_db.php' configuration file."));
 			return false;
 		} else if ($err == -2) {
-			display_error(_("Cannot write to the 'config_db.php' configuration file."));
+			UiMessageService::displayError(_("Cannot write to the 'config_db.php' configuration file."));
 			return false;
 		} else if ($err == -3) {
-			display_error(_("Configuration file 'config_db.php' is not writable. Change its permissions so it is, then re-run installation step."));
+			UiMessageService::displayError(_("Configuration file 'config_db.php' is not writable. Change its permissions so it is, then re-run installation step."));
 			return false;
 		}
 		// update default language
@@ -215,19 +215,19 @@ elseif (isset($_POST['continue'])) {
 }
 elseif (isset($_POST['db_test'])) {
 	if (RequestService::getPostStatic('host')=='') {
-		display_error(_('Host name cannot be empty.'));
+		UiMessageService::displayError(_('Host name cannot be empty.'));
 		set_focus('host');
 	}
 	elseif ($_POST['port'] != '' && !is_numeric($_POST['port'])) {
-		display_error(_('Database port have to be numeric or empty.'));
+		UiMessageService::displayError(_('Database port have to be numeric or empty.'));
 		set_focus('port');
 	}
 	elseif ($_POST['dbuser']=='') {
-		display_error(_('Database user name cannot be empty.'));
+		UiMessageService::displayError(_('Database user name cannot be empty.'));
 		set_focus('dbuser');
 	}
 	elseif ($_POST['dbname']=='') {
-		display_error(_('Database name cannot be empty.'));
+		UiMessageService::displayError(_('Database name cannot be empty.'));
 		set_focus('dbname');
 	}
 	else {
@@ -282,19 +282,19 @@ elseif(RequestService::getPostStatic('install_coas'))
 } elseif (isset($_POST['set_admin'])) {
 	// check company settings
 	if (RequestService::getPostStatic('name')=='') {
-		display_error(_('Company name cannot be empty.'));
+		UiMessageService::displayError(_('Company name cannot be empty.'));
 		set_focus('name');
 	}
 	elseif (RequestService::getPostStatic('admin')=='') {
-		display_error(_('Company admin name cannot be empty.'));
+		UiMessageService::displayError(_('Company admin name cannot be empty.'));
 		set_focus('admin');
 	}
 	elseif (RequestService::getPostStatic('pass')=='') {
-		display_error(_('Company admin password cannot be empty.'));
+		UiMessageService::displayError(_('Company admin password cannot be empty.'));
 		set_focus('pass');
 	}
 	elseif (RequestService::getPostStatic('pass')!=RequestService::getPostStatic('repass')) {
-		display_error(_('Company admin passwords differ.'));
+		UiMessageService::displayError(_('Company admin passwords differ.'));
 		unset($_POST['pass'],$_POST['repass']);
 		set_focus('pass');
 	}
@@ -335,7 +335,7 @@ start_form();
 				display_notification(_('All application preliminary requirements seems to be correct. Please press Continue button below.'));
 				submit_center('continue', _('Continue >>'));
 			} else {
-				display_error(_('Application cannot be installed. Please fix problems listed below in red, and press Refresh button.'));
+				UiMessageService::displayError(_('Application cannot be installed. Please fix problems listed below in red, and press Refresh button.'));
 				submit_center('refresh', _('Refresh'));
 			}
 			div_end();

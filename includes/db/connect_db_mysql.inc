@@ -153,7 +153,7 @@ function db_escape($value = "", $nullify = false)
 			}
 		} else if (!is_numeric($value)) {
 			//value is not a string nor numeric
-			display_error("ERROR: incorrect data type send to sql query");
+			UiMessageService::displayError("ERROR: incorrect data type send to sql query");
 			echo '<br><br>';
 			exit();
 		}

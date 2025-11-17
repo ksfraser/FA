@@ -135,7 +135,7 @@ if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 } elseif ( !processing_active() ) {
 	/* This page can only be called with an order number for invoicing*/
 
-	display_error(_("This page can only be opened if an order or delivery note has been selected. Please select it first."));
+	UiMessageService::displayError(_("This page can only be opened if an order or delivery note has been selected. Please select it first."));
 
 	hyperlink_params("$path_to_root/sales/inquiry/sales_orders_view.php", _("Select a Sales Order to Delivery"), "OutstandingOnly=1");
 
@@ -146,10 +146,10 @@ if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 	check_edit_conflicts(RequestService::getPostStatic('cart_id'));
 
 	if (!check_quantities()) {
-		display_error(_("Selected quantity cannot be less than quantity invoiced nor more than quantity	not dispatched on sales order."));
+		UiMessageService::displayError(_("Selected quantity cannot be less than quantity invoiced nor more than quantity	not dispatched on sales order."));
 
 	} elseif(!check_num('ChargeFreightCost', 0)) {
-		display_error(_("Freight cost cannot be less than zero"));
+		UiMessageService::displayError(_("Freight cost cannot be less than zero"));
 		set_focus('ChargeFreightCost');
 	}
 }
@@ -162,26 +162,26 @@ function check_data()
 	$dateService = new DateService();
 
 	if (!isset($_POST['DispatchDate']) || !$dateService->isDate($_POST['DispatchDate']))	{
-		display_error(_("The entered date of delivery is invalid."));
+		UiMessageService::displayError(_("The entered date of delivery is invalid."));
 		set_focus('DispatchDate');
 		return false;
 	}
 
 	if (!DateService::isDateInFiscalYear($_POST['DispatchDate'])) {
-		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('DispatchDate');
 		return false;
 	}
 
 	if (!isset($_POST['due_date']) || !$dateService->isDate($_POST['due_date']))	{
-		display_error(_("The entered dead-line for invoice is invalid."));
+		UiMessageService::displayError(_("The entered dead-line for invoice is invalid."));
 		set_focus('due_date');
 		return false;
 	}
 
 	if ($_SESSION['Items']->trans_no==0) {
 		if (!$Refs->is_valid($_POST['ref'], ST_CUSTDELIVERY)) {
-			display_error(_("You must enter a reference."));
+			UiMessageService::displayError(_("You must enter a reference."));
 			set_focus('ref');
 			return false;
 		}
@@ -191,13 +191,13 @@ function check_data()
 	}
 
 	if (!check_num('ChargeFreightCost',0)) {
-		display_error(_("The entered shipping value is not numeric."));
+		UiMessageService::displayError(_("The entered shipping value is not numeric."));
 		set_focus('ChargeFreightCost');
 		return false;
 	}
 
 	if ($_SESSION['Items']->has_items_dispatch() == 0 && RequestService::inputNumStatic('ChargeFreightCost') == 0) {
-		display_error(_("There are no item quantities on this delivery note."));
+		UiMessageService::displayError(_("There are no item quantities on this delivery note."));
 		return false;
 	}
 
@@ -209,7 +209,7 @@ function check_data()
 
 	if (!$SysPrefs->allow_negative_stock() && ($low_stock = $_SESSION['Items']->check_qoh()))
 	{
-		display_error(_("This document cannot be processed because there is insufficient quantity for items marked."));
+		UiMessageService::displayError(_("This document cannot be processed because there is insufficient quantity for items marked."));
 		return false;
 	}
 
@@ -302,7 +302,7 @@ if (isset($_POST['process_delivery']) && check_data()) {
 
 	if ($delivery_no == -1)
 	{
-		display_error(_("The entered reference is already in use."));
+		UiMessageService::displayError(_("The entered reference is already in use."));
 		set_focus('ref');
 	}
 	else
@@ -414,7 +414,7 @@ end_table(1); // outer table
 $row = get_customer_to_order($_SESSION['Items']->customer_id);
 if ($row['dissallow_invoices'] == 1)
 {
-	display_error(_("The selected customer account is currently on hold. Please contact the credit control personnel to discuss."));
+	UiMessageService::displayError(_("The selected customer account is currently on hold. Please contact the credit control personnel to discuss."));
 	end_form();
 	end_page();
 	exit();

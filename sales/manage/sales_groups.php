@@ -27,7 +27,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if (strlen($_POST['description']) == 0) 
 	{
 		$input_error = 1;
-		display_error(_("The sales group description cannot be empty."));
+		UiMessageService::displayError(_("The sales group description cannot be empty."));
 		set_focus('description');
 	}
 
@@ -59,7 +59,7 @@ if ($Mode == 'Delete')
 	if (key_in_foreign_table($selected_id, 'cust_branch', 'group_no'))
 	{
 		$cancel_delete = 1;
-		display_error(_("Cannot delete this group because customers have been created using this group."));
+		UiMessageService::displayError(_("Cannot delete this group because customers have been created using this group."));
 	} 
 	if ($cancel_delete == 0) 
 	{

@@ -31,56 +31,56 @@ function can_process()
 {
     if (!check_num('past_due_days', 0, 100))
     {
-        display_error(_("The past due days interval allowance must be between 0 and 100."));
+        UiMessageService::displayError(_("The past due days interval allowance must be between 0 and 100."));
         set_focus('past_due_days');
         return false;
     }
 
     if (!check_num('default_quote_valid_days', 0))
     {
-        display_error(_("Quote Valid Days is not valid number."));
+        UiMessageService::displayError(_("Quote Valid Days is not valid number."));
         set_focus('default_quote_valid_days');
         return false;
     }
 
     if (!check_num('default_delivery_required', 0))
     {
-        display_error(_("Delivery Required By is not valid number."));
+        UiMessageService::displayError(_("Delivery Required By is not valid number."));
         set_focus('default_delivery_required');
         return false;
     }
 
     if (!check_num('default_receival_required', 0))
     {
-        display_error(_("Receival Required By is not valid number."));
+        UiMessageService::displayError(_("Receival Required By is not valid number."));
         set_focus('default_receival_required');
         return false;
     }
 
     if (!check_num('default_workorder_required', 0))
     {
-        display_error(_("Work Order Required By After is not valid number."));
+        UiMessageService::displayError(_("Work Order Required By After is not valid number."));
         set_focus('default_workorder_required');
         return false;
     }	
 
     if (!check_num('po_over_receive', 0, 100))
 	{
-		display_error(_("The delivery over-receive allowance must be between 0 and 100."));
+		UiMessageService::displayError(_("The delivery over-receive allowance must be between 0 and 100."));
 		set_focus('po_over_receive');
 		return false;
 	}
 
 	if (!check_num('po_over_charge', 0, 100))
 	{
-		display_error(_("The invoice over-charge allowance must be between 0 and 100."));
+		UiMessageService::displayError(_("The invoice over-charge allowance must be between 0 and 100."));
 		set_focus('po_over_charge');
 		return false;
 	}
 
 	if (!check_num('past_due_days', 0, 100))
 	{
-		display_error(_("The past due days interval allowance must be between 0 and 100."));
+		UiMessageService::displayError(_("The past due days interval allowance must be between 0 and 100."));
 		set_focus('past_due_days');
 		return false;
 	}
@@ -91,14 +91,14 @@ function can_process()
 		$post_grn_act = 0;
 	if (($post_grn_act != $grn_act) && db_num_rows(get_grn_items(0, '', true)))
 	{
-		display_error(_("Before GRN Clearing Account can be changed all GRNs have to be invoiced"));
+		UiMessageService::displayError(_("Before GRN Clearing Account can be changed all GRNs have to be invoiced"));
 		$_POST['grn_clearing_act'] = $grn_act;
 		set_focus('grn_clearing_account');
 		return false;
 	}
 	if (!is_account_balancesheet(RequestService::getPostStatic('retained_earnings_act')) || is_account_balancesheet(RequestService::getPostStatic('profit_loss_year_act')))
 	{
-		display_error(_("The Retained Earnings Account should be a Balance Account or the Profit and Loss Year Account should be an Expense Account (preferred the last one in the Expense Class)"));
+		UiMessageService::displayError(_("The Retained Earnings Account should be a Balance Account or the Profit and Loss Year Account should be an Expense Account (preferred the last one in the Expense Class)"));
 		return false;
 	}
 	return true;

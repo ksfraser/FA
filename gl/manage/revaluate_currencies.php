@@ -43,13 +43,13 @@ function check_data()
 {
 	if (!DateService::isDate($_POST['date']))
 	{
-		display_error( _("The entered date is invalid."));
+		UiMessageService::displayError( _("The entered date is invalid."));
 		set_focus('date');
 		return false;
 	}
 	if (!DateService::isDateInFiscalYearStatic($_POST['date']))
 	{
-		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('date');
 		return false;
 	}

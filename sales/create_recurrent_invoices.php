@@ -90,7 +90,7 @@ function calculate_next($myrow)
 $id = find_submit("confirmed");
 if ($id != -1 && DateService::isDateClosedStatic($_POST['trans_date']))
 {
-	display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
+	UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
 	set_focus('trans_date');
 	$_POST['create'.$id] = 1;	//re-display current page
 	$id = -1;
@@ -168,13 +168,13 @@ if ($id != -1)
 	$to = DateService::addDaysStatic($to, $myrow['days']);
 
 	if (!DateService::isDateInFiscalYear($date))
-		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
 	elseif (!DateService::date1GreaterDate2Static(DateService::addDaysStatic(DateService::todayStatic(), 1), $to))
-		display_error(_("Recurrent invoice cannot be generated before last day of covered period."));
+		UiMessageService::displayError(_("Recurrent invoice cannot be generated before last day of covered period."));
 	elseif (check_recurrent_invoice_prices($id))
-		display_error(_("Recurrent invoices cannot be generated because some items have no price defined in customer currency."));
+		UiMessageService::displayError(_("Recurrent invoices cannot be generated because some items have no price defined in customer currency."));
 	elseif (!check_sales_order_type($myrow['order_no']))
-		display_error(_("Recurrent invoices cannot be generated because selected sales order template uses prepayment sales terms. Change payment terms and try again."));
+		UiMessageService::displayError(_("Recurrent invoices cannot be generated because selected sales order template uses prepayment sales terms. Change payment terms and try again."));
 	else {
 		$count = recurrent_invoice_count($id);
 

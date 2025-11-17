@@ -194,7 +194,7 @@ function display_po_header(&$order)
         }
         else
         { /*The default location of the user is crook */
-    	  	display_error(_("The default stock location set up for this user is not a currently defined stock location. Your system administrator needs to amend your user record."));
+    	  	UiMessageService::displayError(_("The default stock location set up for this user is not a currently defined stock location. Your system administrator needs to amend your user record."));
         }
     }
 

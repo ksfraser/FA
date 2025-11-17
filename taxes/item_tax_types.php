@@ -32,7 +32,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if (strlen($_POST['name']) == 0) 
 	{
 		$input_error = 1;
-		display_error(_("The item tax type description cannot be empty."));
+		UiMessageService::displayError(_("The item tax type description cannot be empty."));
 		set_focus('name');
 	}
 
@@ -74,12 +74,12 @@ function can_delete($selected_id)
 {
 	if (key_in_foreign_table($selected_id, 'stock_master', 'tax_type_id'))
 	{
-		display_error(_("Cannot delete this item tax type because items have been created referring to it."));
+		UiMessageService::displayError(_("Cannot delete this item tax type because items have been created referring to it."));
 		return false;
 	}
 	if (key_in_foreign_table($selected_id, 'stock_category', 'dflt_tax_type'))
 	{
-		display_error(_("Cannot delete this item tax type because item categories have been created referring to it."));
+		UiMessageService::displayError(_("Cannot delete this item tax type because item categories have been created referring to it."));
 		return false;
 	}
 	

@@ -87,7 +87,7 @@ class BankingService
         
         $this->display = $display ?? new class implements DisplayServiceInterface {
             public function displayError(string $message, bool $exit = false): void {
-                \display_error($message, $exit);
+                \UiMessageService::displayError($message, $exit);
             }
         };
         

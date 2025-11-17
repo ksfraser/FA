@@ -74,7 +74,7 @@ abstract class record_set {
 	{
 		$params = explode(':', $check);
 		if (count($params)<3)
-			display_error(_('Invalid validator string'));
+			UiMessageService::displayError(_('Invalid validator string'));
 
 		$fieldname = array_shift($params);
 		$mode = array_shift($params);

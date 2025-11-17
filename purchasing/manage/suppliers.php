@@ -44,14 +44,14 @@ function can_process()
 
 	if (strlen($_POST['supp_name']) == 0 || $_POST['supp_name'] == "") 
 	{
-		display_error(_("The supplier name must be entered."));
+		UiMessageService::displayError(_("The supplier name must be entered."));
 		set_focus('supp_name');
 		return false;
 	}
 
 	if (strlen($_POST['supp_ref']) == 0 || $_POST['supp_ref'] == "") 
 	{
-		display_error(_("The supplier short name must be entered."));
+		UiMessageService::displayError(_("The supplier short name must be entered."));
 		set_focus('supp_ref');
 		return false;
 	}
@@ -117,7 +117,7 @@ if (isset($_POST['delete']) && $_POST['delete'] != "")
 	if (key_in_foreign_table($_POST['supplier_id'], 'supp_trans', 'supplier_id'))
 	{
 		$cancel_delete = 1;
-		display_error(_("Cannot delete this supplier because there are transactions that refer to this supplier."));
+		UiMessageService::displayError(_("Cannot delete this supplier because there are transactions that refer to this supplier."));
 
 	} 
 	else 
@@ -125,7 +125,7 @@ if (isset($_POST['delete']) && $_POST['delete'] != "")
 		if (key_in_foreign_table($_POST['supplier_id'], 'purch_orders', 'supplier_id'))
 		{
 			$cancel_delete = 1;
-			display_error(_("Cannot delete the supplier record because purchase orders have been created against this supplier."));
+			UiMessageService::displayError(_("Cannot delete the supplier record because purchase orders have been created against this supplier."));
 		}
 
 	}

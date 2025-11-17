@@ -25,14 +25,14 @@ function can_process()
 {
 	if (strlen($_POST['sales_type']) == 0)
 	{
-		display_error(_("The sales type description cannot be empty."));
+		UiMessageService::displayError(_("The sales type description cannot be empty."));
 		set_focus('sales_type');
 		return false;
 	}
 
 	if (!check_num('factor', 0))
 	{
-		display_error(_("Calculation factor must be valid positive number."));
+		UiMessageService::displayError(_("Calculation factor must be valid positive number."));
 		set_focus('factor');
 		return false;
 	}
@@ -68,14 +68,14 @@ if ($Mode == 'Delete')
 	
 	if (key_in_foreign_table($selected_id, 'debtor_trans', 'tpe'))
 	{
-		display_error(_("Cannot delete this sale type because customer transactions have been created using this sales type."));
+		UiMessageService::displayError(_("Cannot delete this sale type because customer transactions have been created using this sales type."));
 
 	}
 	else
 	{
 		if (key_in_foreign_table($selected_id, 'debtors_master', 'sales_type'))
 		{
-			display_error(_("Cannot delete this sale type because customers are currently set up to use this sales type."));
+			UiMessageService::displayError(_("Cannot delete this sale type because customers are currently set up to use this sales type."));
 		}
 		else
 		{

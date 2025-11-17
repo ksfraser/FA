@@ -28,7 +28,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if (strlen($_POST['description']) == 0) 
 	{
 		$input_error = 1;
-		display_error(_("Category description cannot be empty."));
+		UiMessageService::displayError(_("Category description cannot be empty."));
 		set_focus('description');
 	}
 
@@ -59,7 +59,7 @@ if ($Mode == 'Delete')
 	if (is_crm_category_used($selected_id))
 	{
 		$cancel_delete = 1;
-		display_error(_("Cannot delete this category because there are contacts related to it."));
+		UiMessageService::displayError(_("Cannot delete this category because there are contacts related to it."));
 	} 
 	if ($cancel_delete == 0) 
 	{

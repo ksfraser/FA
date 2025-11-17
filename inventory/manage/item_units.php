@@ -31,19 +31,19 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if (strlen($_POST['abbr']) == 0)
 	{
 		$input_error = 1;
-		display_error(_("The unit of measure code cannot be empty."));
+		UiMessageService::displayError(_("The unit of measure code cannot be empty."));
 		set_focus('abbr');
 	}
 	if (strlen(db_escape($_POST['abbr']))>(20+2))
 	{
 		$input_error = 1;
-		display_error(_("The unit of measure code is too long."));
+		UiMessageService::displayError(_("The unit of measure code is too long."));
 		set_focus('abbr');
 	}
 	if (strlen($_POST['description']) == 0)
 	{
 		$input_error = 1;
-		display_error(_("The unit of measure description cannot be empty."));
+		UiMessageService::displayError(_("The unit of measure description cannot be empty."));
 		set_focus('description');
 	}
 
@@ -66,7 +66,7 @@ if ($Mode == 'Delete')
 
 	if (item_unit_used($selected_id))
 	{
-		display_error(_("Cannot delete this unit of measure because items have been created using this unit."));
+		UiMessageService::displayError(_("Cannot delete this unit of measure because items have been created using this unit."));
 
 	}
 	else

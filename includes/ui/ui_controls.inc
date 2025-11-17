@@ -90,7 +90,7 @@ function check_csrf_token()
 {
 	if ($_SESSION['csrf_token'] != @$_POST['_token'])
 	{
-		display_error(_("Request from outside of this page is forbidden."));
+		UiMessageService::displayError(_("Request from outside of this page is forbidden."));
 		error_log(_("CSRF attack detected from: ").@$_SERVER['HTTP_HOST'].' ('.@$_SERVER['HTTP_REFERER'].')');
 		return false;
 	}

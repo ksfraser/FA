@@ -99,7 +99,7 @@ if (isset($_POST['Process']))
 	$input_error = 0;
 
 	if (count($tr->line_items) == 0)	{
-		display_error(_("You must enter at least one non empty item line."));
+		UiMessageService::displayError(_("You must enter at least one non empty item line."));
 		set_focus('stock_id');
 		$input_error = 1;
 	}
@@ -111,19 +111,19 @@ if (isset($_POST['Process']))
 	$dateService = new DateService();
 	elseif (!$dateService->isDate($_POST['AdjDate'])) 
 	{
-		display_error(_("The entered transfer date is invalid."));
+		UiMessageService::displayError(_("The entered transfer date is invalid."));
 		set_focus('AdjDate');
 		$input_error = 1;
 	} 
 	elseif (!DateService::isDateInFiscalYear($_POST['AdjDate'])) 
 	{
-		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('AdjDate');
 		$input_error = 1;
 	} 
 	elseif ($_POST['FromStockLocation'] == $_POST['ToStockLocation'])
 	{
-		display_error(_("The locations to transfer from and to must be different."));
+		UiMessageService::displayError(_("The locations to transfer from and to must be different."));
 		set_focus('FromStockLocation');
 		$input_error = 1;
 	}
@@ -133,7 +133,7 @@ if (isset($_POST['Process']))
 
 		if ($low_stock)
 		{
-    		display_error(_("The transfer cannot be processed because it would cause negative inventory balance in source location for marked items as of document date or later."));
+    		UiMessageService::displayError(_("The transfer cannot be processed because it would cause negative inventory balance in source location for marked items as of document date or later."));
 			$input_error = 1;
 		}
 	}
@@ -163,7 +163,7 @@ function check_item_data()
 {
 	if (!check_num('qty', 0) || RequestService::inputNumStatic('qty') == 0)
 	{
-		display_error(_("The quantity entered must be a positive number."));
+		UiMessageService::displayError(_("The quantity entered must be a positive number."));
 		set_focus('qty');
 		return false;
 	}

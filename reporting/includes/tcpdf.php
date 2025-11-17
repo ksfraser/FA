@@ -1777,7 +1777,7 @@ if (!class_exists('TCPDF')) {
 		*/
 		function Error($msg) {
 			//Fatal error
-			display_error('<strong>TCPDF error: </strong>'.$msg);
+			UiMessageService::displayError('<strong>TCPDF error: </strong>'.$msg);
 			exit;
 		}
 

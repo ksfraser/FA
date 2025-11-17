@@ -136,20 +136,20 @@ function can_process()
 
 	if (!check_num('quantity', 1))
 	{
-		display_error( _("The quantity entered is invalid or less than zero."));
+		UiMessageService::displayError( _("The quantity entered is invalid or less than zero."));
 		set_focus('quantity');
 		return false;
 	}
 
 	if (!DateService::isDate($_POST['date_']))
 	{
-		display_error( _("The date entered is in an invalid format."));
+		UiMessageService::displayError( _("The date entered is in an invalid format."));
 		set_focus('date_');
 		return false;
 	}
 	elseif (!DateService::isDateInFiscalYear($_POST['date_']))
 	{
-		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('date_');
 		return false;
 	}
@@ -158,7 +158,7 @@ function can_process()
 	{
         if (!has_bom($_POST['stock_id']))
         {
-        	display_error(_("The selected item to manufacture does not have a bom."));
+        	UiMessageService::displayError(_("The selected item to manufacture does not have a bom."));
 			set_focus('stock_id');
         	return false;
         }
@@ -167,7 +167,7 @@ function can_process()
 			$_POST['Labour'] = FormatService::priceFormat(0);
     	if (!check_num('Labour', 0))
     	{
-    		display_error( _("The labour cost entered is invalid or less than zero."));
+    		UiMessageService::displayError( _("The labour cost entered is invalid or less than zero."));
 			set_focus('Labour');
     		return false;
     	}
@@ -175,7 +175,7 @@ function can_process()
 			$_POST['Costs'] = FormatService::priceFormat(0);
     	if (!check_num('Costs', 0))
     	{
-    		display_error( _("The cost entered is invalid or less than zero."));
+    		UiMessageService::displayError( _("The cost entered is invalid or less than zero."));
 			set_focus('Costs');
     		return false;
     	}
@@ -195,7 +195,7 @@ function can_process()
 
                         if (check_negative_stock($bom_item["component"], -$quantity, $bom_item["loc_code"], $_POST['date_']))
                 		{
-                			display_error(_("The work order cannot be processed because there is an insufficient quantity for component:") .
+                			UiMessageService::displayError(_("The work order cannot be processed because there is an insufficient quantity for component:") .
                 				" " . $bom_item["component"] . " - " .  $bom_item["description"] . ".  " . _("Location:") . " " . $bom_item["location_name"]);
 							set_focus('quantity');
         					return false;
@@ -208,7 +208,7 @@ function can_process()
         		// if unassembling, check item to unassemble
                 if (check_negative_stock($_POST['stock_id'], -RequestService::inputNumStatic('quantity'), $_POST['StockLocation'], $_POST['date_']))
         		{
-        			display_error(_("The selected item cannot be unassembled because there is insufficient stock."));
+        			UiMessageService::displayError(_("The selected item cannot be unassembled because there is insufficient stock."));
 					return false;
         		}
         	}
@@ -219,7 +219,7 @@ function can_process()
     	if (!is_date($_POST['RequDate']))
     	{
 			set_focus('RequDate');
-    		display_error( _("The date entered is in an invalid format."));
+    		UiMessageService::displayError( _("The date entered is in an invalid format."));
     		return false;
 		}
     	if (isset($selected_id))
@@ -227,7 +227,7 @@ function can_process()
     		if ($_POST['units_issued'] > RequestService::inputNumStatic('quantity'))
     		{
 				set_focus('quantity');
-    			display_error(_("The quantity cannot be changed to be less than the quantity already manufactured for this order."));
+    			UiMessageService::displayError(_("The quantity cannot be changed to be less than the quantity already manufactured for this order."));
         		return false;
     		}
     	}
@@ -276,7 +276,7 @@ if (isset($_POST['delete']))
 		work_order_has_issues($selected_id)	||
 		work_order_has_payments($selected_id))
 	{
-		display_error(_("This work order cannot be deleted because it has already been processed."));
+		UiMessageService::displayError(_("This work order cannot be deleted because it has already been processed."));
 		$cancel_delete = true;
 	}
 
@@ -327,7 +327,7 @@ if (isset($selected_id))
 	if ($myrow["closed"] == 1)
 	{
 		echo "<center>";
-		display_error(_("This work order is closed and cannot be edited."));
+		UiMessageService::displayError(_("This work order is closed and cannot be edited."));
 		safe_exit();
 	}
 

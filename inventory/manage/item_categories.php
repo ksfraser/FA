@@ -45,7 +45,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if (strlen($_POST['description']) == 0) 
 	{
 		$input_error = 1;
-		display_error(_("The item category description cannot be empty."));
+		UiMessageService::displayError(_("The item category description cannot be empty."));
 		set_focus('description');
 	}
 
@@ -83,7 +83,7 @@ if ($Mode == 'Delete')
 	// PREVENT DELETES IF DEPENDENT RECORDS IN 'stock_master'
 	if (key_in_foreign_table($selected_id, 'stock_master', 'category_id'))
 	{
-		display_error(_("Cannot delete this item category because items have been created using this item category."));
+		UiMessageService::displayError(_("Cannot delete this item category because items have been created using this item category."));
 	} 
 	else 
 	{

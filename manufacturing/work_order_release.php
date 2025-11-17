@@ -45,7 +45,7 @@ function can_process($myrow)
 {
 	if ($myrow['released'])
 	{
-		display_error(_("This work order has already been released."));
+		UiMessageService::displayError(_("This work order has already been released."));
 		set_focus('released');
 		return false;
 	}
@@ -56,7 +56,7 @@ function can_process($myrow)
 
     if (!has_bom($myrow['stock_id']) && $myrow['type'] != WO_ADVANCED)
 	{
-		display_error(_("This Work Order cannot be released. The selected item to manufacture does not have a bom."));
+		UiMessageService::displayError(_("This Work Order cannot be released. The selected item to manufacture does not have a bom."));
 		set_focus('stock_id');
 		return false;
 	}

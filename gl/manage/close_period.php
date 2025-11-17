@@ -38,24 +38,24 @@ function check_data()
 	
 	if (!DateService::isDate($_POST['date']) || DateService::date1GreaterDate2Static($_POST['date'], DateService::todayStatic()))
 	{
-		display_error( _("The entered date is invalid."));
+		UiMessageService::displayError( _("The entered date is invalid."));
 		set_focus('date');
 		return false;
 	}
 	if (!is_date_in_fiscalyears($_POST['date'], false))
 	{
-		display_error(_("Selected date is not in fiscal year or the year is closed."));
+		UiMessageService::displayError(_("Selected date is not in fiscal year or the year is closed."));
 		set_focus('date');
 		return false;
 	}
 	if (DateService::date1GreaterDate2Static(DateService::sql2dateStatic(get_company_pref('gl_closing_date')), $_POST['date']))
 	{
 		if (!$SysPrefs->allow_gl_reopen) {
-			display_error(_("The entered date is earlier than date already selected as closing date."));
+			UiMessageService::displayError(_("The entered date is earlier than date already selected as closing date."));
 			set_focus('date');
 			return false;
 		} elseif (!user_check_access('SA_GLREOPEN')) {
-			display_error(_("You are not allowed to reopen already closed transactions."));
+			UiMessageService::displayError(_("You are not allowed to reopen already closed transactions."));
 			set_focus('date');
 			return false;
 		}

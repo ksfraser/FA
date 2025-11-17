@@ -119,21 +119,21 @@ function can_process()
 
 	if (strlen($_POST['name']) == 0) 
 	{
-		display_error( _("The dimension name must be entered."));
+		UiMessageService::displayError( _("The dimension name must be entered."));
 		set_focus('name');
 		return false;
 	}
 
 	if (!DateService::isDate($_POST['date_']))
 	{
-		display_error( _("The date entered is in an invalid format."));
+		UiMessageService::displayError( _("The date entered is in an invalid format."));
 		set_focus('date_');
 		return false;
 	}
 
 	if (!DateService::isDate($_POST['due_date']))
 	{
-		display_error( _("The required by date entered is in an invalid format."));
+		UiMessageService::displayError( _("The required by date entered is in an invalid format."));
 		set_focus('due_date');
 		return false;
 	}
@@ -178,7 +178,7 @@ if (isset($_POST['delete']))
 	// can't delete it there are productions or issues
 	if (dimension_has_payments($selected_id) || dimension_has_deposits($selected_id))
 	{
-		display_error(_("This dimension cannot be deleted because it has already been processed."));
+		UiMessageService::displayError(_("This dimension cannot be deleted because it has already been processed."));
 		set_focus('ref');
 		$cancel_delete = true;
 	}
@@ -222,14 +222,14 @@ if ($selected_id != -1)
 
 	if ($myrow === false) 
 	{
-		display_error(_("The dimension sent is not valid."));
+		UiMessageService::displayError(_("The dimension sent is not valid."));
 		display_footer_exit();
 	}
 
 	// if it's a closed dimension can't edit it
 	//if ($myrow["closed"] == 1) 
 	//{
-	//	display_error(_("This dimension is closed and cannot be edited."));
+	//	UiMessageService::displayError(_("This dimension is closed and cannot be edited."));
 	//	display_footer_exit();
 	//}
 

@@ -28,7 +28,7 @@ function can_process($new)
 
 	if (strlen($_POST['user_id']) < 4)
 	{
-		display_error( _("The user login entered must be at least 4 characters long."));
+		UiMessageService::displayError( _("The user login entered must be at least 4 characters long."));
 		set_focus('user_id');
 		return false;
 	}
@@ -37,14 +37,14 @@ function can_process($new)
 	{
     	if (strlen($_POST['password']) < 4)
     	{
-    		display_error( _("The password entered must be at least 4 characters long."));
+    		UiMessageService::displayError( _("The password entered must be at least 4 characters long."));
 			set_focus('password');
     		return false;
     	}
 
     	if (strstr($_POST['password'], $_POST['user_id']) != false)
     	{
-    		display_error( _("The password cannot contain the user login."));
+    		UiMessageService::displayError( _("The password cannot contain the user login."));
 			set_focus('password');
     		return false;
     	}
@@ -97,7 +97,7 @@ if ($Mode == 'Delete' && check_csrf_token())
     if (key_in_foreign_table($selected_id, 'audit_trail', 'user'))
     {
         $cancel_delete = 1;
-        display_error(_("Cannot delete this user because entries are associated with this user."));
+        UiMessageService::displayError(_("Cannot delete this user because entries are associated with this user."));
     }
     if ($cancel_delete == 0) 
     {
