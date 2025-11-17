@@ -21,6 +21,10 @@ include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
 include_once($path_to_root . "/includes/banking.inc");
 
+// Modern OOP Services
+require_once($path_to_root . "/includes/Services/DateService.php");
+use FA\Services\DateService;
+
 $js = "";
 if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(800, 500);
@@ -34,7 +38,8 @@ page(_($help_context = "Reconcile Bank Account"), false, false, "", $js);
 check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
 
 function check_date() {
-	if (!is_date(get_post('reconcile_date'))) {
+	$dateService = new DateService();
+	if (!$dateService->isDate(get_post('reconcile_date'))) {
 		display_error(_("Invalid reconcile date format"));
 		set_focus('reconcile_date');
 		return false;

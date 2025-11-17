@@ -17,6 +17,10 @@ include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 include_once($path_to_root . "/purchasing/includes/db/suppliers_db.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 
+// Modern OOP Services
+require_once($path_to_root . "/includes/Services/DateService.php");
+use FA\Services\DateService;
+
 set_page_security( @$_SESSION['PO']->trans_type,
 	array(	ST_PURCHORDER => 'SA_PURCHASEORDER',
 			ST_SUPPRECEIVE => 'SA_GRN',
@@ -249,7 +253,8 @@ function check_data()
 		set_focus('price');
 	   	return false;	   
     }
-    if ($_SESSION['PO']->trans_type == ST_PURCHORDER && !is_date($_POST['req_del_date'])){
+    $dateService = new DateService();
+    if ($_SESSION['PO']->trans_type == ST_PURCHORDER && !$dateService->isDate($_POST['req_del_date'])){
     		display_error(_("The date entered is in an invalid format."));
 		set_focus('req_del_date');
    		return false;    	 
@@ -342,8 +347,9 @@ function can_commit()
 		set_focus('supplier_id');
 		return false;
 	} 
+	$dateService = new DateService();
 
-	if (!is_date($_POST['OrderDate'])) 
+	if (!$dateService->isDate($_POST['OrderDate'])) 
 	{
 		display_error(_("The entered order date is invalid."));
 		set_focus('OrderDate');
@@ -356,7 +362,7 @@ function can_commit()
 		return false;
 	}
 
-	if (($_SESSION['PO']->trans_type==ST_SUPPINVOICE) && !is_date($_POST['due_date'])) 
+	if (($_SESSION['PO']->trans_type==ST_SUPPINVOICE) && !$dateService->isDate($_POST['due_date'])) 
 	{
 		display_error(_("The entered due date is invalid."));
 		set_focus('due_date');

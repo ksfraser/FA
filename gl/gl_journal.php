@@ -22,6 +22,10 @@ include_once($path_to_root . "/gl/includes/ui/gl_journal_ui.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
 include_once($path_to_root . "/gl/includes/gl_ui.inc");
 
+// Modern OOP Services
+require_once($path_to_root . "/includes/Services/DateService.php");
+use FA\Services\DateService;
+
 $js = '';
 if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(800, 500);
@@ -210,8 +214,9 @@ if (isset($_POST['Process']))
 		set_focus('code_id');
 		$input_error = 1;
 	}
+	$dateService = new DateService();
 
-	if (!is_date($_POST['date_'])) 
+	if (!$dateService->isDate($_POST['date_'])) 
 	{
 		display_error(_("The entered date is invalid."));
 		set_focus('date_');
@@ -223,13 +228,13 @@ if (isset($_POST['Process']))
 		set_focus('date_');
 		$input_error = 1;
 	} 
-	if (!is_date($_POST['event_date'])) 
+	if (!$dateService->isDate($_POST['event_date'])) 
 	{
 		display_error(_("The entered date is invalid."));
 		set_focus('event_date');
 		$input_error = 1;
 	}
-	if (!is_date($_POST['doc_date'])) 
+	if (!$dateService->isDate($_POST['doc_date'])) 
 	{
 		display_error(_("The entered date is invalid."));
 		set_focus('doc_date');
@@ -250,7 +255,7 @@ if (isset($_POST['Process']))
 
 	if (get_post('_tabs_sel') == 'tax')
 	{
-		if (!is_date($_POST['tax_date']))
+		if (!$dateService->isDate($_POST['tax_date']))
 		{
 			display_error(_("The entered date is invalid."));
 			set_focus('tax_date');

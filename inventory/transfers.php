@@ -20,6 +20,10 @@ include_once($path_to_root . "/includes/data_checks.inc");
 
 include_once($path_to_root . "/inventory/includes/stock_transfers_ui.inc");
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
+
+// Modern OOP Services
+require_once($path_to_root . "/includes/Services/DateService.php");
+use FA\Services\DateService;
 $js = "";
 if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(800, 500);
@@ -104,7 +108,8 @@ if (isset($_POST['Process']))
 		set_focus('ref');
 		$input_error = 1;
 	} 
-	elseif (!is_date($_POST['AdjDate'])) 
+	$dateService = new DateService();
+	elseif (!$dateService->isDate($_POST['AdjDate'])) 
 	{
 		display_error(_("The entered transfer date is invalid."));
 		set_focus('AdjDate');

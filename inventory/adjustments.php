@@ -21,6 +21,10 @@ include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/fixed_assets/includes/fixed_assets_db.inc");
 include_once($path_to_root . "/inventory/includes/item_adjustments_ui.inc");
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
+
+// Modern OOP Services
+require_once($path_to_root . "/includes/Services/DateService.php");
+use FA\Services\DateService;
 $js = "";
 if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(800, 500);
@@ -111,8 +115,9 @@ function can_process()
 		set_focus('ref');
 		return false;
 	}
+	$dateService = new DateService();
 
-	if (!is_date($_POST['AdjDate'])) 
+	if (!$dateService->isDate($_POST['AdjDate'])) 
 	{
 		display_error(_("The entered date for the adjustment is invalid."));
 		set_focus('AdjDate');

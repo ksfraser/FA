@@ -17,6 +17,10 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
 include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 
+// Modern OOP Services
+require_once($path_to_root . "/includes/Services/DateService.php");
+use FA\Services\DateService;
+
 $js = "";
 if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 500);
@@ -171,8 +175,9 @@ function can_process()
         display_error(_("There is nothing to process. Please enter valid quantities greater than zero."));
     	return false;
 	}
+	$dateService = new DateService();
 
-	if (!is_date($_POST['DefaultReceivedDate']))
+	if (!$dateService->isDate($_POST['DefaultReceivedDate']))
 	{
 		display_error(_("The entered date is invalid."));
 		set_focus('DefaultReceivedDate');
