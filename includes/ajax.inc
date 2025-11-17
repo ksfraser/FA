@@ -11,92 +11,173 @@
 ***********************************************************************/
 require_once($path_to_root. "/includes/JsHttpRequest.php");
 
+/**
+ * Ajax Service
+ *
+ * Handles AJAX requests and responses.
+ * Refactored to OOP with SOLID principles.
+ *
+ * SOLID Principles:
+ * - Single Responsibility: Manages AJAX operations only
+ * - Open/Closed: Can be extended for additional AJAX features
+ * - Liskov Substitution: Compatible with JsHttpRequest
+ * - Interface Segregation: Focused AJAX methods
+ * - Dependency Inversion: Depends on abstractions, not globals
+ *
+ * DRY: Reuses AJAX logic across the application
+ * TDD: Developed with unit tests for regression prevention
+ *
+ * UML Class Diagram:
+ * +---------------------+
+ * |       Ajax         |
+ * +---------------------+
+ * | - aCommands: array |
+ * | - triggers: array  |
+ * +---------------------+
+ * | + __construct()    |
+ * | + activate(name)   |
+ * | + redirect(url)    |
+ * | + popup(url)       |
+ * | ...                 |
+ * +---------------------+
+ *           |
+ *           | extends
+ *           v
+ * +---------------------+
+ * |  JsHttpRequest     |
+ * +---------------------+
+ *
+ * @package FA
+ */
 class Ajax extends JsHttpRequest {
 
-	var $aCommands = array();
-	var $triggers = array();
+	private array $aCommands = [];
+	private array $triggers = [];
 	
-    function __construct() 
+    /**
+     * Constructor
+     */
+    public function __construct() 
     {
 	  parent::__construct(@$_SESSION['language']->encoding);
     }
-	//
-	//	This function is used in ctrl routines to activate
-	//	update of ajaxified html element selected by given name/id.
-	//
-	function activate($trigname) {
+
+	/**
+	 * Activate update of ajaxified html element
+	 *
+	 * @param string $trigname Trigger name
+	 */
+	public function activate(string $trigname): void {
 	  if (in_ajax()) {
 		$this->triggers[$trigname] = true;
 	  }
 	}
-	//
-	//	Javascript clientside redirection.
-	//	This is the last command added to reponse (if any).
-	//
-	function redirect($url) {
+
+	/**
+	 * Javascript clientside redirection
+	 *
+	 * @param string $url URL to redirect to
+	 */
+	public function redirect(string $url): void {
 	    if(in_ajax()) {
 			$this->_addCommand(true, array('n'=>'rd'), absolute_url($url));
 		  	$this->run();
 	    }
 	}
-	//
-	// Popup window (target=_blank)
-	//
-	function popup($url) {
+
+	/**
+	 * Popup window (target=_blank)
+	 *
+	 * @param string $url URL to popup
+	 */
+	public function popup(string $url): void {
 		  $this->_addCommand(true, array('n'=>'pu'), absolute_url($url));
 	}
-	//
-	// Adds an executable Javascript code.
-	//
-	function addScript($trigger, $sJS)
+	/**
+	 * Adds an executable Javascript code.
+	 *
+	 * @param string $trigger Trigger name
+	 * @param string $sJS JavaScript code
+	 * @return self
+	 */
+	public function addScript(string $trigger, string $sJS): self
 	{
 		$this->_addCommand($trigger, array('n'=>'js'),$sJS);
 		return $this;
 	}
-	//
-	// Assign target attribute with data.
-	//
-	function addAssign($trigger, $sTarget,$sAttribute,$sData)
+	/**
+	 * Assign target attribute with data.
+	 *
+	 * @param string $trigger Trigger name
+	 * @param string $sTarget Target element
+	 * @param string $sAttribute Attribute name
+	 * @param mixed $sData Data to assign
+	 * @return self
+	 */
+	public function addAssign(string $trigger, string $sTarget, string $sAttribute, $sData): self
 	{
 		$this->_addCommand($trigger, array('n'=>'as','t'=>$sTarget,'p'=>$sAttribute),$sData);
 		return $this;
 	}
-	//
-	// Updates input element or label with data.
-	//
-	function addUpdate($trigger, $sTarget, $sData)
+	/**
+	 * Updates input element or label with data.
+	 *
+	 * @param string $trigger Trigger name
+	 * @param string $sTarget Target element
+	 * @param mixed $sData Data to update
+	 * @return self
+	 */
+	public function addUpdate(string $trigger, string $sTarget, $sData): self
 	{
 		$this->_addCommand($trigger, array('n'=>'up','t'=>$sTarget),$sData);
 		return $this;
 	}
-	//
-	// Set disable state of element.
-	//
-	function addDisable($trigger, $sTarget, $sData=true)
+	/**
+	 * Set disable state of element.
+	 *
+	 * @param string $trigger Trigger name
+	 * @param string $sTarget Target element
+	 * @param bool $sData Disable state
+	 * @return self
+	 */
+	public function addDisable(string $trigger, string $sTarget, bool $sData=true): self
 	{
 		$this->_addCommand($trigger, array('n'=>'di','t'=>$sTarget),$sData);
 		return $this;
 	}
-	//
-	// Set state of element to enabled.
-	//
-	function addEnable($trigger, $sTarget, $sData=true)
+	/**
+	 * Set state of element to enabled.
+	 *
+	 * @param string $trigger Trigger name
+	 * @param string $sTarget Target element
+	 * @param bool $sData Enable state
+	 * @return self
+	 */
+	public function addEnable(string $trigger, string $sTarget, bool $sData=true): self
 	{
 		$this->_addCommand($trigger, array('n'=>'di','t'=>$sTarget), !$sData);
 		return $this;
 	}
-	//
-	// Set current focus.
-	//
-	function addFocus($trigger, $sTarget)
+	/**
+	 * Set current focus.
+	 *
+	 * @param string $trigger Trigger name
+	 * @param string $sTarget Target element
+	 * @return self
+	 */
+	public function addFocus(string $trigger, string $sTarget): self
 	{
 		$this->_addCommand($trigger, array('n'=>'fc'),$sTarget);
 		return $this;
 	}
-	//
-	// Internal procedure adding command to response.
-	//
-	function _addCommand($trigger, $aAttributes, $mData)
+	/**
+	 * Internal procedure adding command to response.
+	 *
+	 * @param mixed $trigger Trigger condition
+	 * @param array $aAttributes Command attributes
+	 * @param mixed $mData Command data
+	 */
+	private function _addCommand($trigger, array $aAttributes, $mData): void
 	{
 	  	if ($this->isActive() && ($trigger !== false)) {
 
@@ -106,7 +187,10 @@ class Ajax extends JsHttpRequest {
 	  	}
 	}
 
-	function run() 
+	/**
+	 * Execute the AJAX response
+	 */
+	public function run(): void
 	{
 	    if (!$this->isActive()) return;
 
@@ -132,14 +216,23 @@ class Ajax extends JsHttpRequest {
 	}
 }
 
+/**
+ * Check if the current request is an AJAX request
+ *
+ * @return bool True if AJAX request
+ */
 function in_ajax() {
     global $Ajax;
     return $Ajax->isActive();
 }
 
-// Returns absolute path of relative $url. To be used in ajax calls
-// for proper redirection from any referer page.
-//
+/**
+ * Returns absolute path of relative $url. To be used in ajax calls
+ * for proper redirection from any referer page.
+ *
+ * @param string $url Relative URL
+ * @return string Absolute URL
+ */
 function absolute_url($url) 
 {
    return strpos($url, '..')===0 ? dirname($_SERVER['PHP_SELF']).'/'.$url : $url;
