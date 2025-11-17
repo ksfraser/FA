@@ -9,6 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+require_once($path_to_root . "/includes/DateService.php");
 $page_security = 'SA_SRECURRENT';
 $path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
@@ -54,19 +55,19 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		display_error(_("This recurrent invoice description is already in use."));
 		set_focus('description');
 	}
-	if (!is_date($_POST['begin']))
+	if (!DateService::isDate($_POST['begin']))
 	{
 		$input_error = 1;
 		display_error(_("The entered date is invalid."));
 		set_focus('begin');
 	}
-	if (!is_date($_POST['end']))
+	if (!DateService::isDate($_POST['end']))
 	{
 		$input_error = 1;
 		display_error(_("The entered date is invalid."));
 		set_focus('end');
 	}
-	if (isset($_POST['last_sent']) && !is_date($_POST['last_sent'])) {
+	if (isset($_POST['last_sent']) && !DateService::isDate($_POST['last_sent'])) {
 		$input_error = 1;
 		display_error(_("The entered date is invalid."));
 		set_focus('last_sent');

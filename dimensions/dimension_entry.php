@@ -9,6 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+require_once($path_to_root . "/includes/DateService.php");
 $page_security = 'SA_DIMENSION';
 $path_to_root = "..";
 include_once($path_to_root . "/includes/session.inc");
@@ -123,14 +124,14 @@ function can_process()
 		return false;
 	}
 
-	if (!is_date($_POST['date_']))
+	if (!DateService::isDate($_POST['date_']))
 	{
 		display_error( _("The date entered is in an invalid format."));
 		set_focus('date_');
 		return false;
 	}
 
-	if (!is_date($_POST['due_date']))
+	if (!DateService::isDate($_POST['due_date']))
 	{
 		display_error( _("The required by date entered is in an invalid format."));
 		set_focus('due_date');

@@ -9,6 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+require_once($path_to_root . "/includes/DateService.php");
 include_once($path_to_root . "/includes/db/class.reflines_db.inc");
 include_once($path_to_root . "/admin/db/fiscalyears_db.inc");
 include_once($path_to_root . "/includes/types.inc");
@@ -291,7 +292,7 @@ class references
 
  		$context['pos'] = $_SESSION["wa_current_user"]->pos;
 
-		if (is_date(@$context['date']))
+		if (DateService::isDate(@$context['date']))
 		{
 			list($year4, $month, $day) = explode("-", date2sql($context['date']));
 			$year2 = substr($year4, 2);

@@ -9,6 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+require_once($path_to_root . "/includes/DateService.php");
 //-----------------------------------------------------------------------------
 //
 //	Entry/Modify Sales Quotations
@@ -388,7 +389,7 @@ function can_process() {
 		return false;
 	} 
 	
-	if (!is_date($_POST['OrderDate'])) {
+	if (!DateService::isDate($_POST['OrderDate'])) {
 		display_error(_("The entered date is invalid."));
 		set_focus('OrderDate');
 		return false;

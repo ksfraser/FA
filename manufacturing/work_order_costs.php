@@ -9,6 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+require_once($path_to_root . "/includes/DateService.php");
 $page_security = 'SA_WORKORDERCOST';
 $path_to_root = "..";
 include_once($path_to_root . "/includes/session.inc");
@@ -75,7 +76,7 @@ function can_process($wo_details)
 		return false;
 	}
 
-	if (!is_date($_POST['date_']))
+	if (!DateService::isDate($_POST['date_']))
 	{
 		display_error(_("The entered date is invalid."));
 		set_focus('date_');

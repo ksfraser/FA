@@ -9,6 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+require_once($path_to_root . "/includes/DateService.php");
 $page_security = 'SA_EXCHANGERATE';
 $path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
@@ -40,7 +41,7 @@ if (isset($_GET['BA']))
 //---------------------------------------------------------------------------------------------
 function check_data()
 {
-	if (!is_date($_POST['date']))
+	if (!DateService::isDate($_POST['date']))
 	{
 		display_error( _("The entered date is invalid."));
 		set_focus('date');

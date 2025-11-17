@@ -9,6 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+require_once($path_to_root . "/includes/InventoryService.php");
 $page_security = 'SA_SALESANALYTIC';
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
@@ -188,7 +189,7 @@ function print_inventory_sales()
 			$rep->TextCol(1, 3, $trans['description'].($trans['inactive']==1 ? " ("._("Inactive").")" : ""), -1);
 		$rep->AmountCol(3, 4, $trans['qty'], get_qty_dec($trans['stock_id']));
 		$rep->AmountCol(4, 5, $trans['amt'], $dec);
-		if (is_service($trans['mb_flag']))
+		if (InventoryService::isService($trans['mb_flag']))
 			$rep->TextCol(5, 6, "---");
 		else	
 			$rep->AmountCol(5, 6, $trans['cost'], $dec);

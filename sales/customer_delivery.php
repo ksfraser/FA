@@ -442,7 +442,7 @@ foreach ($_SESSION['Items']->line_items as $line=>$ln_itm) {
 	}
 	// if it's a non-stock item (eg. service) don't show qoh
 	$row_classes = null;
-	if (has_stock_holding($ln_itm->mb_flag) && $ln_itm->qty_dispatched) {
+	if (InventoryService::hasStockHolding($ln_itm->mb_flag) && $ln_itm->qty_dispatched) {
 		// It's a stock : call get_dispatchable_quantity hook  to get which quantity to preset in the
 		// quantity input box. This allows for example a hook to modify the default quantity to what's dispatchable
 		// (if there is not enough in hand), check at other location or other order people etc ...

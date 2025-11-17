@@ -9,6 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+require_once($path_to_root . "/includes/DateService.php");
 $page_security = 'SA_WORKORDERENTRY';
 $path_to_root = "..";
 
@@ -140,7 +141,7 @@ function can_process()
 		return false;
 	}
 
-	if (!is_date($_POST['date_']))
+	if (!DateService::isDate($_POST['date_']))
 	{
 		display_error( _("The date entered is in an invalid format."));
 		set_focus('date_');
@@ -186,13 +187,11 @@ function can_process()
         		// check bom if assembling
                 $result = get_bom($_POST['stock_id']);
 
-            	while ($bom_item = db_fetch($result))
-            	{
+			while ($bom_item = db_fetch($result))
+			{
 
-            		if (has_stock_holding($bom_item["ResourceType"]))
-            		{
-
-                		$quantity = $bom_item["quantity"] * input_num('quantity');
+				if (InventoryService::hasStockHolding($bom_item["ResourceType"]))
+				{                		$quantity = $bom_item["quantity"] * input_num('quantity');
 
                         if (check_negative_stock($bom_item["component"], -$quantity, $bom_item["loc_code"], $_POST['date_']))
                 		{

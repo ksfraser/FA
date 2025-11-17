@@ -9,6 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+require_once($path_to_root . "/includes/DateService.php");
 //--------------------------------------------------------------------------------------------------
 
 function copy_from_trans(&$supp_trans)
@@ -599,7 +600,7 @@ function get_duedate_from_terms(&$trans)
 {
 	$date = get_class($trans) == 'purch_order' ? $trans->orig_order_date : $trans->tran_date;
 
-	if (!is_date($date))
+	if (!DateService::isDate($date))
 	{
 		$date = Today();
 	}

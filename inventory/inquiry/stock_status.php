@@ -9,6 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+require_once($path_to_root . "/includes/InventoryService.php");
 $page_security = 'SA_ITEMSSTATVIEW';
 $path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
@@ -55,7 +56,7 @@ $mb_flag = get_mb_flag($_POST['stock_id']);
 $kitset_or_service = false;
 
 div_start('status_tbl');
-if (is_service($mb_flag))
+if (InventoryService::isService($mb_flag))
 {
 	display_note(_("This is a service and cannot have a stock holding, only the total quantity on outstanding sales orders is shown."), 0, 1);
 	$kitset_or_service = true;

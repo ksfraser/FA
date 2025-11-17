@@ -9,6 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+require_once($path_to_root . "/includes/DateService.php");
 //----------------------------------------------------------------------------------------
 function add_sales_order(&$order)
 {
@@ -386,7 +387,7 @@ function close_sales_order($order_no)
 
 function get_invoice_duedate($terms, $invdate)
 {
-	if (!is_date($invdate))
+	if (!DateService::isDate($invdate))
 	{
 		return new_doc_date();
 	}

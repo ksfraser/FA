@@ -9,6 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+require_once($path_to_root . "/includes/DateService.php");
 $page_security = 'SA_EXCHANGERATE';
 $path_to_root = "../..";
 include($path_to_root . "/includes/db_pager.inc");
@@ -28,7 +29,7 @@ simple_page_mode(false);
 //---------------------------------------------------------------------------------------------
 function check_data($selected_id)
 {
-	if (!is_date($_POST['date_']))
+	if (!DateService::isDate($_POST['date_']))
 	{
 		display_error( _("The entered date is invalid."));
 		set_focus('date_');

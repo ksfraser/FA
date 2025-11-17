@@ -9,6 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+require_once($path_to_root . "/includes/DateService.php");
 
 $page_security = 'SA_GLCLOSE';
 $path_to_root = "../..";
@@ -29,7 +30,7 @@ function check_data()
 {
 	global $SysPrefs;
 	
-	if (!is_date($_POST['date']) || date1_greater_date2($_POST['date'], Today()))
+	if (!DateService::isDate($_POST['date']) || date1_greater_date2($_POST['date'], Today()))
 	{
 		display_error( _("The entered date is invalid."));
 		set_focus('date');

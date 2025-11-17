@@ -9,6 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+require_once($path_to_root . "/includes/InventoryService.php");
 $page_security = 'SA_ITEMCATEGORY';
 $path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
@@ -227,7 +228,7 @@ check_row(_("Exclude from purchases:"), 'no_purchase');
 
 gl_all_accounts_list_row(_("Sales Account:"), 'sales_account', $_POST['sales_account']);
 
-if (is_service($_POST['mb_flag']))
+if (InventoryService::isService($_POST['mb_flag']))
 {
 	gl_all_accounts_list_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
 	hidden('inventory_account', $_POST['inventory_account']);
