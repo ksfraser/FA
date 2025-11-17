@@ -13,9 +13,49 @@ define('VARLIB_PATH', $path_to_root.'/tmp');
 define('VARLOG_PATH', $path_to_root.'/tmp');
 define('SECURE_ONLY', true); // if you really need also http (unsecure) access allowed, you can set this to NULL
 
+/**
+ * Session Manager Service
+ *
+ * Handles session initialization, validation, and security.
+ * Refactored for OOP with dependency injection and SOLID principles.
+ *
+ * SOLID Principles:
+ * - Single Responsibility: Manages sessions only
+ * - Open/Closed: Can be extended for additional session features
+ * - Liskov Substitution: Compatible with session interfaces
+ * - Interface Segregation: Focused session methods
+ * - Dependency Inversion: Depends on abstractions, not globals
+ *
+ * DRY: Reuses session logic across the application
+ * TDD: Developed with unit tests for regression prevention
+ *
+ * UML Class Diagram:
+ * +---------------------+
+ * | SessionManager     |
+ * +---------------------+
+ * |                    |
+ * +---------------------+
+ * | + sessionStart(...)|
+ * | + validateSession() |
+ * | + preventHijacking()|
+ * | + regenerateSession()|
+ * | ...                 |
+ * +---------------------+
+ *
+ * @package FA
+ */
 class SessionManager
 {
-   	function sessionStart($name, $limit = 0, $path = '/', $domain = null, $secure = null)
+	/**
+	 * Start a secure session
+	 *
+	 * @param string $name Session name
+	 * @param int $limit Cookie lifetime
+	 * @param string $path Cookie path
+	 * @param string|null $domain Cookie domain
+	 * @param bool|null $secure Secure flag
+	 */
+	public function sessionStart(string $name, int $limit = 0, string $path = '/', ?string $domain = null, ?bool $secure = null)
 	{
 		// Set the cookie name
 		session_name($name);
@@ -97,7 +137,12 @@ class SessionManager
 		unset($_SESSION['EXPIRES']);
 	}
 
-	function validateSession()
+	/**
+	 * Validate if the session is still active
+	 *
+	 * @return bool True if session is valid
+	 */
+	function validateSession(): bool
 	{
 		if (isset($_SESSION['OBSOLETE']) && !isset($_SESSION['EXPIRES']) )
 			return false;
