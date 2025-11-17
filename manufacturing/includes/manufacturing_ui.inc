@@ -9,6 +9,10 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+// Modern OOP Services
+require_once(dirname(__FILE__) . "/../../includes/Services/InventoryService.php");
+use FA\Services\InventoryService;
+
 include_once($path_to_root . "/includes/ui.inc");
 
 //--------------------------------------------------------------------------------------
@@ -113,8 +117,9 @@ function display_wo_requirements($woid, $quantity, $show_qoh=false, $date=null)
 
 			$qoh = 0;
 			$show_qoh = true;
+			$inventoryService = new InventoryService();
 			// if it's a non-stock item (eg. service) don't show qoh
-			if (!has_stock_holding($myrow["mb_flag"]))
+			if (!$inventoryService->hasStockHolding($myrow["mb_flag"]))
 				$show_qoh = false;
 
 			if ($show_qoh)

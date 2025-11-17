@@ -9,6 +9,10 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+// Modern OOP Services
+require_once(dirname(__FILE__) . "/../../includes/Services/InventoryService.php");
+use FA\Services\InventoryService;
+
 include_once($path_to_root . "/includes/prefs/sysprefs.inc");
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 
@@ -100,11 +104,12 @@ class items_cart
 		global $SysPrefs;
 
 		$low_stock = array();
+		$inventoryService = new InventoryService();
 
     	if (!$SysPrefs->allow_negative_stock())
     	{
 			foreach ($this->line_items as $line_no => $line_item)
-				if (has_stock_holding($line_item->mb_flag) || is_fixed_asset($line_item->mb_flag))
+				if ($inventoryService->hasStockHolding($line_item->mb_flag) || $inventoryService->isFixedAsset($line_item->mb_flag))
 				{
 					$quantity = $line_item->quantity;
 					if ($reverse)
