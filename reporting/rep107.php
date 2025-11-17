@@ -9,7 +9,6 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-require_once($path_to_root . "/includes/InventoryService.php");
 $page_security = $_POST['PARAM_0'] == $_POST['PARAM_1'] ?
 	'SA_SALESTRANSVIEW' : 'SA_SALESBULKREP';
 // ----------------------------------------------------------------
@@ -21,6 +20,7 @@ $page_security = $_POST['PARAM_0'] == $_POST['PARAM_1'] ?
 $path_to_root="..";
 
 include_once($path_to_root . "/includes/session.inc");
+require_once($path_to_root . "/includes/InventoryService.php");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");

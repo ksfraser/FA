@@ -9,13 +9,13 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-require_once($path_to_root . "/includes/DateService.php");
 $page_security = 'SA_MANUFISSUE';
 $path_to_root = "..";
 
 include_once($path_to_root . "/includes/ui/items_cart.inc");
 
 include_once($path_to_root . "/includes/session.inc");
+require_once($path_to_root . "/includes/DateService.php");
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");

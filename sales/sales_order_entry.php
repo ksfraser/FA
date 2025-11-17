@@ -9,7 +9,6 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-require_once($path_to_root . "/includes/DateService.php");
 //-----------------------------------------------------------------------------
 //
 //	Entry/Modify Sales Quotations
@@ -23,6 +22,7 @@ $page_security = 'SA_SALESORDER';
 
 include_once($path_to_root . "/sales/includes/cart_class.inc");
 include_once($path_to_root . "/includes/session.inc");
+require_once($path_to_root . "/includes/DateService.php");
 include_once($path_to_root . "/sales/includes/sales_ui.inc");
 include_once($path_to_root . "/sales/includes/ui/sales_order_ui.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
@@ -30,7 +30,6 @@ include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 
 // Modern OOP Services
-require_once($path_to_root . "/includes/BankingService.php");
 use FA\Services\BankingService;
 
 set_page_security( @$_SESSION['Items']->trans_type,
