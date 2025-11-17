@@ -20,6 +20,10 @@ include_once($path_to_root . "/includes/data_checks.inc");
 
 include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
 include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
+
+// Modern OOP Services
+require_once($path_to_root . "/includes/Services/DateService.php");
+use FA\Services\DateService;
 $js = "";
 if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 500);
@@ -185,8 +189,9 @@ function check_data()
 		set_focus('reference');
 		return false;
 	}
+	$dateService = new DateService();
 
-	if (!is_date($_SESSION['supp_trans']->tran_date))
+	if (!$dateService->isDate($_SESSION['supp_trans']->tran_date))
 	{
 		display_error(_("The credit note as entered cannot be processed because the date entered is not valid."));
 		set_focus('tran_date');
@@ -198,7 +203,7 @@ function check_data()
 		set_focus('tran_date');
 		return false;
 	}
-	if (!is_date( $_SESSION['supp_trans']->due_date))
+	if (!$dateService->isDate( $_SESSION['supp_trans']->due_date))
 	{
 		display_error(_("The invoice as entered cannot be processed because the due date is in an incorrect format."));
 		set_focus('due_date');

@@ -20,6 +20,10 @@ include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 
+// Modern OOP Services
+require_once($path_to_root . "/includes/Services/DateService.php");
+use FA\Services\DateService;
+
 $js = "";
 if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 500);
@@ -186,9 +190,10 @@ function check_inputs()
 		set_focus('bank_amount');
 		return false;
 	}
+	$dateService = new DateService();
 
 
-   	if (!is_date($_POST['DatePaid']))
+   	if (!$dateService->isDate($_POST['DatePaid']))
    	{
 		display_error(_("The entered date is invalid."));
 		set_focus('DatePaid');

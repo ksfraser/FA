@@ -9,6 +9,10 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+// Modern OOP Services
+require_once(dirname(__FILE__) . "/../../../includes/Services/InventoryService.php");
+use FA\Services\InventoryService;
+
 function work_order_produce($woid, $ref, $quantity, $date_, $memo, $close_wo)
 {
 	global $Refs;
@@ -49,9 +53,10 @@ function work_order_produce($woid, $ref, $quantity, $date_, $memo, $close_wo)
 		// sum collected BOM material & labour costs (no way for separate overhead here for now - needs flag in bom or stock_master)
 		$bom = get_wo_requirements($woid);
 		$m_cost = $l_cost = 0;
+		$inventoryService = new InventoryService();
 		while ($component = db_fetch($bom))
 		{
-			if (!is_service($component["mb_flag"]))
+			if (!$inventoryService->isService($component["mb_flag"]))
 				$m_cost += $component['unit_cost']*$component['units_issued'];
 			else
 				$l_cost += $component['unit_cost']*$component['units_issued'];
@@ -61,7 +66,7 @@ function work_order_produce($woid, $ref, $quantity, $date_, $memo, $close_wo)
 		$issues = get_additional_issues($woid);
 		while ($issue = db_fetch($issues))
 		{
-			if (!is_service($issue["mb_flag"]))
+			if (!$inventoryService->isService($issue["mb_flag"]))
 				$m_cost += $issue['unit_cost']*$issue['qty_issued'];
 			else
 				$l_cost += $issue['unit_cost']*$issue['qty_issued'];

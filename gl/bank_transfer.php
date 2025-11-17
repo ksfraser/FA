@@ -20,6 +20,10 @@ include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
 include_once($path_to_root . "/gl/includes/gl_ui.inc");
 
+// Modern OOP Services
+require_once($path_to_root . "/includes/Services/DateService.php");
+use FA\Services\DateService;
+
 $js = "";
 if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(800, 500);
@@ -168,8 +172,9 @@ function gl_payment_controls($trans_no)
 function check_valid_entries($trans_no)
 {
 	global $Refs, $systypes_array;
+	$dateService = new DateService();
 	
-	if (!is_date($_POST['DatePaid'])) 
+	if (!$dateService->isDate($_POST['DatePaid'])) 
 	{
 		display_error(_("The entered date is invalid."));
 		set_focus('DatePaid');

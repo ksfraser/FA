@@ -9,6 +9,9 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+// Modern OOP Services
+require_once(dirname(__FILE__) . "/../../../includes/Services/InventoryService.php");
+use FA\Services\InventoryService;
 
 function add_wo_costing($workorder_id, $cost_type, $trans_type, $trans_no, $factor=1)
 {
@@ -189,8 +192,9 @@ function work_order_production_gl($woid, $stock_id, $quantity, $date_, $rcv_no)
 		// insert a -ve stock move for each item
 		add_stock_move(ST_MANURECEIVE, $bom_item["stock_id"], $rcv_no,
 			$bom_item["loc_code"], $date_, "", -$bom_item["units_req"] * $quantity, $bom_item["ComponentCost"], 0);
+		$inventoryService = new InventoryService();
 
-		if (!is_service($bom_item["mb_flag"]))
+		if (!$inventoryService->isService($bom_item["mb_flag"]))
 			$ivaccount = $bom_item["inventory_account"];
 		else
 			$ivaccount = $bom_item["cogs_account"];

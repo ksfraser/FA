@@ -24,6 +24,10 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 include_once($path_to_root . "/gl/includes/gl_ui.inc");
 include_once($path_to_root . "/admin/db/attachments_db.inc");
 
+// Modern OOP Services
+require_once($path_to_root . "/includes/Services/DateService.php");
+use FA\Services\DateService;
+
 $js = '';
 if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(800, 500);
@@ -256,7 +260,8 @@ function check_trans()
 		set_focus('ref');
 		$input_error = 1;
 	}
-	if (!is_date($_POST['date_']))
+	$dateService = new DateService();
+	if (!$dateService->isDate($_POST['date_']))
 	{
 		display_error(_("The entered date for the payment is invalid."));
 		set_focus('date_');
