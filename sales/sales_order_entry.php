@@ -511,7 +511,7 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
 		}
 		$trans_no = key($_SESSION['Items']->trans_no);
 		$trans_type = $_SESSION['Items']->trans_type;
-		new_doc_date($_SESSION['Items']->document_date);
+		DateService::newDocDateStatic($_SESSION['Items']->document_date);
 		processing_end();
 		if ($modified) {
 			if ($trans_type == ST_SALESQUOTE)
@@ -684,7 +684,7 @@ function create_cart($type, $trans_no)
 		$doc = new Cart(ST_SALESORDER, array($trans_no));
 		$doc->trans_type = $type;
 		$doc->trans_no = 0;
-		$doc->document_date = new_doc_date();
+		$doc->document_date = DateService::newDocDateStatic();
 		if ($type == ST_SALESINVOICE) {
 			$doc->due_date = get_invoice_duedate($doc->payment, $doc->document_date);
 			$doc->pos = get_sales_point(user_pos());

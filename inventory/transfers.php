@@ -84,7 +84,7 @@ function handle_new_order()
 
 	$_SESSION['transfer_items'] = new items_cart(ST_LOCTRANSFER);
   $_SESSION['transfer_items']->fixed_asset = isset($_GET['FixedAsset']);
-	$_POST['AdjDate'] = new_doc_date();
+	$_POST['AdjDate'] = DateService::newDocDateStatic();
 	if (!DateService::isDateInFiscalYear($_POST['AdjDate']))
 		$_POST['AdjDate'] = DateService::endFiscalYear();
 	$_SESSION['transfer_items']->tran_date = $_POST['AdjDate'];	
@@ -150,7 +150,7 @@ if (isset($_POST['Process']))
 	$trans_no = add_stock_transfer($_SESSION['transfer_items']->line_items,
 		$_POST['FromStockLocation'], $_POST['ToStockLocation'],
 		$_POST['AdjDate'], $_POST['ref'], $_POST['memo_']);
-	new_doc_date($_POST['AdjDate']);
+	DateService::newDocDateStatic($_POST['AdjDate']);
 	$_SESSION['transfer_items']->clear_items();
 	unset($_SESSION['transfer_items']);
 

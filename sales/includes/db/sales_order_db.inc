@@ -389,7 +389,7 @@ function get_invoice_duedate($terms, $invdate)
 {
 	if (!DateService::isDate($invdate))
 	{
-		return new_doc_date();
+		return DateService::newDocDateStatic();
 	}
 	
 	$myrow = get_payment_terms($terms);

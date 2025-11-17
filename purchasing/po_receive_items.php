@@ -268,7 +268,7 @@ function process_receive_po()
 
 	$grn_no = add_grn($grn);
 
-	new_doc_date($_POST['DefaultReceivedDate']);
+	DateService::newDocDateStatic($_POST['DefaultReceivedDate']);
 	unset($_SESSION['PO']->line_items);
 	unset($_SESSION['PO']);
 
@@ -301,7 +301,7 @@ if (isset($_POST['Update']) || isset($_POST['ProcessGoodsReceived']))
 			$_POST[$line->line_no] = number_format2(0, get_qty_dec($line->stock_id));
 
 		if (!isset($_POST['DefaultReceivedDate']) || $_POST['DefaultReceivedDate'] == "")
-			$_POST['DefaultReceivedDate'] = new_doc_date();
+			$_POST['DefaultReceivedDate'] = DateService::newDocDateStatic();
 
 		$_SESSION['PO']->line_items[$line->line_no]->receive_qty = input_num($line->line_no);
 

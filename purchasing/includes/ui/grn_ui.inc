@@ -69,7 +69,7 @@ function edit_grn_summary(&$po)
         locations_list_row(_("Deliver Into Location"), "Location", $_POST['Location']);
 
     	if (!isset($_POST['DefaultReceivedDate']))
-     	  	$_POST['DefaultReceivedDate'] = new_doc_date();
+     	  	$_POST['DefaultReceivedDate'] = DateService::newDocDateStatic();
 
     	date_row(_("Date Items Received"), 'DefaultReceivedDate', '', true, 0, 0, 0, '', true);
 

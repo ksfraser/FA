@@ -101,7 +101,7 @@ class DateService
 
     public function newDocDate(?string $date = null): string
     {
-        return \new_doc_date($date);
+        return \DateService::newDocDateStatic($date);
     }
 
     public function isDateInFiscalYear(string $date, bool $convert = false): bool
@@ -327,7 +327,7 @@ class DateService
      */
     public static function sql2dateStatic(string $date): string
     {
-        return \DateService::sql2dateStatic($date);
+        return \sql2date($date);
     }
     
     /**
@@ -335,6 +335,14 @@ class DateService
      */
     public static function date2sqlStatic(string $date): string
     {
-        return \DateService::date2sqlStatic($date);
+        return \date2sql($date);
+    }
+    
+    /**
+     * Static wrapper for new_doc_date
+     */
+    public static function newDocDateStatic(?string $date = null): string
+    {
+        return \DateService::newDocDateStatic($date);
     }
 }

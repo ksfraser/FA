@@ -156,7 +156,7 @@ function set_tpl_flag($reconcile_id)
 }
 
 if (!isset($_POST['reconcile_date'])) { // init page
-	$_POST['reconcile_date'] = new_doc_date();
+	$_POST['reconcile_date'] = DateService::newDocDateStatic();
 //	$_POST['bank_date'] = DateService::date2sqlStatic(DateService::todayStatic());
 }
 

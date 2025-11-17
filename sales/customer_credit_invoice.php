@@ -202,7 +202,7 @@ if (isset($_POST['ProcessCredit']) && can_process()) {
 
 	copy_to_cart();
 	if ($new_credit) 
-		new_doc_date($_SESSION['Items']->document_date);
+		DateService::newDocDateStatic($_SESSION['Items']->document_date);
 	$credit_no = $_SESSION['Items']->write($_POST['WriteOffGLCode']);
 	if ($credit_no == -1)
 	{

@@ -73,7 +73,7 @@ function create_new_po($trans_type, $trans_no)
 		unset ($_SESSION['PO']->line_items, $_SESSION['PO']);
 
 	$cart = new purch_order;
-	$_POST['OrderDate'] = new_doc_date();
+	$_POST['OrderDate'] = DateService::newDocDateStatic();
 	if (!\FA\Services\DateService::isDateInFiscalYear($_POST['OrderDate']))
 		$_POST['OrderDate'] = DateService::endFiscalYear();
 	$cart->due_date = $cart->orig_order_date = $_POST['OrderDate'];

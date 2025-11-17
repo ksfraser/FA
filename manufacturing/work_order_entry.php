@@ -116,7 +116,7 @@ function safe_exit()
 //-------------------------------------------------------------------------------------
 if (!isset($_POST['date_']))
 {
-	$_POST['date_'] = new_doc_date();
+	$_POST['date_'] = DateService::newDocDateStatic();
 	if (!DateService::isDateInFiscalYearStatic($_POST['date_']))
 		$_POST['date_'] = DateService::endFiscalYear();
 }
@@ -248,7 +248,7 @@ if (isset($_POST['ADD_ITEM']) && can_process())
 		$_POST['stock_id'],  $_POST['type'], $_POST['date_'],
 		$_POST['RequDate'], $_POST['memo_'], input_num('Costs'), $_POST['cr_acc'], input_num('Labour'), $_POST['cr_lab_acc']);
 
-	new_doc_date($_POST['date_']);
+	DateService::newDocDateStatic($_POST['date_']);
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=$id&type=".$_POST['type']."&date=".$_POST['date_']);
 }
 
@@ -259,7 +259,7 @@ if (isset($_POST['UPDATE_ITEM']) && can_process())
 
 	update_work_order($selected_id, $_POST['StockLocation'], input_num('quantity'),
 		$_POST['stock_id'],  $_POST['date_'], $_POST['RequDate'], $_POST['memo_']);
-	new_doc_date($_POST['date_']);
+	DateService::newDocDateStatic($_POST['date_']);
 	meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$selected_id");
 }
 

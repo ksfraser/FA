@@ -116,7 +116,7 @@ function gl_payment_controls($trans_no)
     bank_accounts_list_row(_("To Account:"), 'ToBankAccount', null, true);
 
 	if (!isset($_POST['DatePaid'])) { // init page
-		$_POST['DatePaid'] = new_doc_date();
+		$_POST['DatePaid'] = DateService::newDocDateStatic();
 		if (!DateService::isDateInFiscalYearStatic($_POST['DatePaid']))
 			$_POST['DatePaid'] = DateService::endFiscalYear();
 	}
@@ -296,7 +296,7 @@ function bank_transfer_handle_submit()
 		$trans_no = update_bank_transfer($trans_no, $_POST['FromBankAccount'], $_POST['ToBankAccount'], $_POST['DatePaid'],	input_num('amount'), 
 			$_POST['ref'], $_POST['memo_'], $_POST['dimension_id'], $_POST['dimension2_id'], input_num('charge'), input_num('target_amount'));
 	} else {
-		new_doc_date($_POST['DatePaid']);
+		DateService::newDocDateStatic($_POST['DatePaid']);
 		$trans_no = add_bank_transfer($_POST['FromBankAccount'], $_POST['ToBankAccount'], $_POST['DatePaid'], input_num('amount'), $_POST['ref'], 
 			$_POST['memo_'], $_POST['dimension_id'], $_POST['dimension2_id'], input_num('charge'), input_num('target_amount'));
 	}

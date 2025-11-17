@@ -89,7 +89,7 @@ function handle_new_order()
 
     $_SESSION['adj_items'] = new items_cart(ST_INVADJUST);
     $_SESSION['adj_items']->fixed_asset = isset($_GET['FixedAsset']);
-	$_POST['AdjDate'] = new_doc_date();
+	$_POST['AdjDate'] = DateService::newDocDateStatic();
 	if (!DateService::isDateInFiscalYear($_POST['AdjDate']))
 		$_POST['AdjDate'] = DateService::endFiscalYear();
 	$_SESSION['adj_items']->tran_date = $_POST['AdjDate'];	
@@ -150,7 +150,7 @@ if (isset($_POST['Process']) && can_process()){
 
 	$trans_no = add_stock_adjustment($_SESSION['adj_items']->line_items,
 		$_POST['StockLocation'], $_POST['AdjDate'],	$_POST['ref'], $_POST['memo_']);
-	new_doc_date($_POST['AdjDate']);
+	DateService::newDocDateStatic($_POST['AdjDate']);
 	$_SESSION['adj_items']->clear_items();
 	unset($_SESSION['adj_items']);
 

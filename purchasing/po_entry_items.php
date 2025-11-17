@@ -427,7 +427,7 @@ function handle_commit_order()
 	if (can_commit()) {
 
 		copy_to_cart();
-		new_doc_date($cart->orig_order_date);
+		DateService::newDocDateStatic($cart->orig_order_date);
 		if ($cart->order_no == 0) { // new po/grn/invoice
 			$trans_no = add_direct_supp_trans($cart);
 			if ($trans_no) {

@@ -362,7 +362,7 @@ if (isset($_POST['process_invoice']) && check_data()) {
 	copy_to_cart();
 
 	if ($newinvoice) 
-		new_doc_date($_SESSION['Items']->document_date);
+		DateService::newDocDateStatic($_SESSION['Items']->document_date);
 
 	$invoice_no = $_SESSION['Items']->write();
 	if ($invoice_no == -1)
@@ -483,7 +483,7 @@ if ($prepaid)
 
 $dateService = new DateService();
 if (!isset($_POST['InvoiceDate']) || !$dateService->isDate($_POST['InvoiceDate'])) {
-	$_POST['InvoiceDate'] = new_doc_date();
+	$_POST['InvoiceDate'] = DateService::newDocDateStatic();
 	if (!DateService::isDateInFiscalYear($_POST['InvoiceDate'])) {
 		$_POST['InvoiceDate'] = DateService::endFiscalYear();
 	}

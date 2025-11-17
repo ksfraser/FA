@@ -206,7 +206,7 @@ if (isset($_POST['ProcessCredit']) && can_process()) {
 	}
 	else
 	{
-		new_doc_date($_SESSION['Items']->document_date);
+		DateService::newDocDateStatic($_SESSION['Items']->document_date);
 		processing_end();
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=$credit_no");
 	}

@@ -149,7 +149,7 @@ class Cart
 		if ($type == ST_CUSTCREDIT)
 		    $this->src_date = $this->document_date;
 
-		$this->document_date = new_doc_date();
+		$this->document_date = DateService::newDocDateStatic();
 
 		for($line_no = 0; $line_no < count($this->line_items); $line_no++) {
 			$line = &$this->line_items[$line_no];
@@ -251,7 +251,7 @@ class Cart
 			  $this->customer_id = get_global_customer();
 			else
 			  $this->customer_id = '';
-			$this->document_date = new_doc_date();
+			$this->document_date = DateService::newDocDateStatic();
 			if (!DateService::isDateInFiscalYear($this->document_date))
 				$this->document_date = DateService::endFiscalYear();
 			$this->reference = $Refs->get_next($this->trans_type, null, array('date' => Today(),

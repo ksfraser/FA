@@ -161,7 +161,7 @@ function create_cart($type=0, $trans_no=0)
 		$cart->tax_info = $tax_info;
 
 	} else {
-		$cart->tran_date = $cart->doc_date = $cart->event_date = new_doc_date();
+		$cart->tran_date = $cart->doc_date = $cart->event_date = DateService::newDocDateStatic();
 		if (!DateService::isDateInFiscalYearStatic($cart->tran_date))
 			$cart->tran_date = DateService::endFiscalYear();
 		$cart->reference = $Refs->get_next(ST_JOURNAL, null, $cart->tran_date);
@@ -342,7 +342,7 @@ if (isset($_POST['Process']))
         }
 
 	$cart->clear_items();
-	new_doc_date($_POST['date_']);
+	DateService::newDocDateStatic($_POST['date_']);
 	unset($_SESSION['journal_items']);
 	if($new)
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");

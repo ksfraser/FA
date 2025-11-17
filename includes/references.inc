@@ -91,7 +91,7 @@ class references
 
 		// date based placeholders are always allowed, so default for non-array context is date
 		if (!isset($context))
-			$context = new_doc_date();
+			$context = DateService::newDocDateStatic();
 
 		if (is_string($context))
 			$context = array('date' => $context);

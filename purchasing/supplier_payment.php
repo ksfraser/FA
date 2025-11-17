@@ -52,7 +52,7 @@ if (!isset($_POST['supplier_id']))
 
 if (!isset($_POST['DatePaid']))
 {
-	$_POST['DatePaid'] = new_doc_date();
+	$_POST['DatePaid'] = DateService::newDocDateStatic();
 	if (!DateService::isDateInFiscalYear($_POST['DatePaid']))
 		$_POST['DatePaid'] = DateService::endFiscalYear();
 }
@@ -239,7 +239,7 @@ function handle_add_payment()
 	$payment_id = write_supp_payment(0, $_POST['supplier_id'], $_POST['bank_account'],
 		$_POST['DatePaid'], $_POST['ref'], input_num('amount'),	input_num('discount'), $_POST['memo_'], 
 		input_num('charge'), input_num('bank_amount', input_num('amount')), $_POST['dimension_id'], $_POST['dimension2_id']);
-	new_doc_date($_POST['DatePaid']);
+	DateService::newDocDateStatic($_POST['DatePaid']);
 
 	$_SESSION['alloc']->trans_no = $payment_id;
 	$_SESSION['alloc']->date_ = $_POST['DatePaid'];

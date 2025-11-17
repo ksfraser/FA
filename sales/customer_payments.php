@@ -95,7 +95,7 @@ if (!isset($_POST['customer_id'])) {
 	$_POST['bank_account'] = $dflt_act['id'];
 }
 if (!isset($_POST['DateBanked'])) {
-	$_POST['DateBanked'] = new_doc_date();
+	$_POST['DateBanked'] = DateService::newDocDateStatic();
 	if (!DateService::isDateInFiscalYear($_POST['DateBanked'])) {
 		$_POST['DateBanked'] = DateService::endFiscalYear();
 	}
@@ -242,7 +242,7 @@ if (isset($_POST['_customer_id_button'])) {
 
 if (get_post('AddPaymentItem') && can_process()) {
 
-	new_doc_date($_POST['DateBanked']);
+	DateService::newDocDateStatic($_POST['DateBanked']);
 
 	$new_pmt = !$_SESSION['alloc']->trans_no;
 	//Chaitanya : 13-OCT-2011 - To support Edit feature

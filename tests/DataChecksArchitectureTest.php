@@ -77,7 +77,7 @@ class DataChecksArchitectureTest extends TestCase
     /**
      * Test: Facade pattern provides convenient API
      */
-    public function testFacadeProvides ConvenientAPI(): void
+    public function testFacadeProvidesConvenientAPI(): void
     {
         $this->db->setQueryResult('debtors_master', true);
         

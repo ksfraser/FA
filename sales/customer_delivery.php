@@ -296,7 +296,7 @@ if (isset($_POST['process_delivery']) && check_data()) {
 	$newdelivery = ($dn->trans_no == 0);
 
 	if ($newdelivery)
-		new_doc_date($dn->document_date);
+		DateService::newDocDateStatic($dn->document_date);
 
 	$delivery_no = $dn->write($bo_policy);
 
@@ -366,7 +366,7 @@ shippers_list_cells(null, 'ship_via', $_POST['ship_via']);
 // set this up here cuz it's used to calc qoh
 $dateService = new DateService();
 if (!isset($_POST['DispatchDate']) || !$dateService->isDate($_POST['DispatchDate'])) {
-	$_POST['DispatchDate'] = new_doc_date();
+	$_POST['DispatchDate'] = DateService::newDocDateStatic();
 	if (!DateService::isDateInFiscalYear($_POST['DispatchDate'])) {
 		$_POST['DispatchDate'] = DateService::endFiscalYear();
 	}

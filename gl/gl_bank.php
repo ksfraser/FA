@@ -205,7 +205,7 @@ function create_cart($type, $trans_no)
 
 	} else {
 		$cart->reference = $Refs->get_next($cart->trans_type, null, $cart->tran_date);
-		$cart->tran_date = new_doc_date();
+		$cart->tran_date = DateService::newDocDateStatic();
 		if (!DateService::isDateInFiscalYearStatic($cart->tran_date))
 			$cart->tran_date = DateService::endFiscalYear();
 	}
@@ -311,7 +311,7 @@ if (isset($_POST['Process']) && !check_trans())
 
 	$trans_type = $trans[0];
    	$trans_no = $trans[1];
-	new_doc_date($_POST['date_']);
+	DateService::newDocDateStatic($_POST['date_']);
 
 	$_SESSION['pay_items']->clear_items();
 	unset($_SESSION['pay_items']);

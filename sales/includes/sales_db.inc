@@ -74,7 +74,7 @@ function round_to_nearest($price, $round_to)
 function get_price ($stock_id, $currency, $sales_type_id, $factor=null, $date=null)
 {
 	if ($date == null)
-	    $date = new_doc_date();
+	    $date = DateService::newDocDateStatic();
 
 	if ($factor === null) 
 	{
