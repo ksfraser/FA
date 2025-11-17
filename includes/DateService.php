@@ -257,4 +257,12 @@ class DateService
         $service = new self();
         return $service->getCurrentFiscalYear();
     }
+    
+    /**
+     * Static wrapper for addYears
+     */
+    public static function addYearsStatic(string $date, int $years): string
+    {
+        return \add_years($date, $years);
+    }
 }
