@@ -3,9 +3,9 @@
 ## Current Status
 **Branch**: `refactor/replace-legacy-calls`  
 **Started**: November 17, 2025  
-**Files Modified**: 19  
-**Legacy Calls Replaced**: 30  
-**Commits**: 5
+**Files Modified**: 35  
+**Legacy Calls Replaced**: 55  
+**Commits**: 9
 
 ---
 
@@ -59,8 +59,8 @@
 | Service | Functions Available | Calls Replaced | Status |
 |---------|---------------------|----------------|--------|
 | BankingService | 8 | 1 | 🟢 Active |
-| DateService | 27 | 21 | 🟢 Active |
-| InventoryService | 5 | 8 | 🟢 Active |
+| DateService | 27 | 43 | 🟢 Active |
+| InventoryService | 5 | 11 | 🟢 Active |
 | TaxCalculationService | 4 | 0 | ⚪ Not Started |
 | AccessLevelsService | 7 | 0 | ⚪ Not Started |
 | ReferencesService | 2 | 0 | ⚪ Not Started |
