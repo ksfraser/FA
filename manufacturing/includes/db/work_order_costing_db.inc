@@ -184,7 +184,7 @@ function work_order_production_gl($woid, $stock_id, $quantity, $date_, $rcv_no)
 	$total_cost = 0;
 	while ($bom_item = db_fetch($result))
 	{
-		if ($SysPrefs->loc_notification() == 1 && is_inventory_item($bom_item['stock_id']))
+		if ($SysPrefs->loc_notification() == 1 && InventoryService::isInventoryItem($bom_item['stock_id']))
 		{
 			$line = new line_details($bom_item['stock_id'], $bom_item["units_req"] * $quantity, 0, 0, 0, 0, $bom_item['description']);
 			$loc = calculate_reorder_level($bom_item["loc_code"], $line, $st_ids, $st_names, $st_num, $st_reorder); 

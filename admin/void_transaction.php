@@ -238,7 +238,7 @@ function voiding_controls()
                 $result = get_grn_items($_POST['trans_no']);
                 if (db_num_rows($result) > 0) {
                     while ($myrow = db_fetch($result)) {
-                        if (is_inventory_item($myrow["item_code"])) {
+                        if (InventoryService::isInventoryItem($myrow["item_code"])) {
                             if (check_negative_stock($myrow["item_code"], -$myrow["qty_recd"], null, $_POST['date_'])) {
                                 $stock = get_item($myrow["item_code"]);
                                 display_error(_("The void cannot be processed because there is an insufficient quantity for item:") .

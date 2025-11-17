@@ -103,4 +103,15 @@ class InventoryService
     {
         return $this->isPurchased($mb_flag) || $this->isManufactured($mb_flag);
     }
+
+    /**
+     * Check if item is an inventory item (not a service)
+     *
+     * @param string $stock_id Stock ID
+     * @return bool True if inventory item
+     */
+    public static function isInventoryItem(string $stock_id): bool
+    {
+        return \is_inventory_item($stock_id);
+    }
 }

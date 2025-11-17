@@ -285,7 +285,7 @@ function add_supp_invoice(&$supp_trans)
 			($supplier['dimension2_id'] ? $supplier['dimension2_id'] : $stock_gl_code['dimension2_id']);
     	if ($trans_type == ST_SUPPCREDIT)
 		{
-			$iv_act = (is_inventory_item($entered_grn->item_code) ? $stock_gl_code["inventory_account"] : 
+			$iv_act = (InventoryService::isInventoryItem($entered_grn->item_code) ? $stock_gl_code["inventory_account"] : 
 				($supplier["purchase_account"] ? $supplier["purchase_account"] : $stock_gl_code["cogs_account"]));
 			$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_, $iv_act,
 				$dim, $dim2, $taxfree_line, $supp_trans->supplier_id);
@@ -293,7 +293,7 @@ function add_supp_invoice(&$supp_trans)
     	else
     	{
     		// -------------- if price changed since po received.
-			$iv_act = is_inventory_item($entered_grn->item_code) ? ($clearing_act ? $clearing_act : $stock_gl_code["inventory_account"]) : 
+			$iv_act = InventoryService::isInventoryItem($entered_grn->item_code) ? ($clearing_act ? $clearing_act : $stock_gl_code["inventory_account"]) : 
 				($supplier["purchase_account"] ? $supplier["purchase_account"] : $stock_gl_code["cogs_account"]);
     		$old = update_supp_received_items_for_invoice($entered_grn->id, $entered_grn->po_detail_item,
     			$entered_grn->this_quantity_inv, $entered_grn->chg_price);
@@ -305,7 +305,7 @@ function add_supp_invoice(&$supp_trans)
 			$old_price = $old[2];
 
 			$old_date = sql2date($old[1]);
-			if (!is_inventory_item($entered_grn->item_code))
+			if (!InventoryService::isInventoryItem($entered_grn->item_code))
 				$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_, $iv_act,
 					$dim, $dim2, $taxfree_line, $supp_trans->supplier_id);
 			else
@@ -692,7 +692,7 @@ function remove_not_invoice_item($id)
 
     $clearing_act = get_company_pref('grn_clearing_act');
     if ($clearing_act) {    // otherwise GRN clearing account is not used
-        if (is_inventory_item($myrow['item_code']))
+        if (InventoryService::isInventoryItem($myrow['item_code']))
         {
             $total = 0;
             $stock_gl_code = get_stock_gl_code($myrow['item_code']);

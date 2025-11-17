@@ -37,7 +37,7 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 
 	// Handle if inventory will become negative
     // Skip negative inventory adjustment for case of adjust_only
-    if (is_inventory_item($stock_id) && !$adj_only) 
+    if (InventoryService::isInventoryItem($stock_id) && !$adj_only) 
         handle_negative_inventory($stock_id, $qty, $price_in_home_currency, $date);
 	
 	$sql = "SELECT mb_flag, material_cost FROM ".TB_PREF."stock_master WHERE stock_id=".db_escape($stock_id);
@@ -110,7 +110,7 @@ function add_grn(&$po)
 			/*Update sales_order_details for the new quantity received and the standard cost used for postings to GL 
 			  and recorded in the stock movements for FIFO/LIFO stocks valuations*/
 			//------------------- update average material cost and clearing account --------------------------------
-			if (is_inventory_item($order_line->stock_id))
+			if (InventoryService::isInventoryItem($order_line->stock_id))
 			{
 				if ($clearing_act)
 					$total += add_gl_trans_supplier(ST_SUPPRECEIVE, $grn, $date_, $stock_gl_code["inventory_account"],

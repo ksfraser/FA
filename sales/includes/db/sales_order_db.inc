@@ -56,7 +56,7 @@ function add_sales_order(&$order)
 	}
 	foreach ($order->line_items as $line)
 	{
-		if ($SysPrefs->loc_notification() == 1 && is_inventory_item($line->stock_id))
+		if ($SysPrefs->loc_notification() == 1 && InventoryService::isInventoryItem($line->stock_id))
 			$loc = calculate_reorder_level($order->Location, $line, $st_ids, $st_names, $st_num, $st_reorder); 
 
 		$sql = "INSERT INTO ".TB_PREF."sales_order_details (order_no, trans_type, stk_code, description, unit_price, quantity, discount_percent) VALUES (";
@@ -179,7 +179,7 @@ function update_sales_order($order)
 	}
 	foreach ($order->line_items as $line)
 	{
-		if ($SysPrefs->loc_notification() == 1 && is_inventory_item($line->stock_id))
+		if ($SysPrefs->loc_notification() == 1 && InventoryService::isInventoryItem($line->stock_id))
 			$loc = calculate_reorder_level($order->Location, $line, $st_ids, $st_names, $st_num, $st_reorder); 
 
 		if (!$line->id) //new line

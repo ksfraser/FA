@@ -126,7 +126,7 @@ function write_sales_delivery(&$delivery,$bo_policy)
 			}
 			/* insert gl_trans to credit stock and debit cost of sales at standard cost*/
 			
-			if (is_inventory_item($delivery_line->stock_id)) {
+			if (InventoryService::isInventoryItem($delivery_line->stock_id)) {
 				// Fixed Assets
 				if ($delivery->fixed_asset) {
 				    $fa_purchase_cost = get_purchase_cost($delivery_line->stock_id);

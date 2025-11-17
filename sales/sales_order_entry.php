@@ -536,7 +536,7 @@ function check_item_data()
 {
 	global $SysPrefs;
 	
-	$is_inventory_item = is_inventory_item(get_post('stock_id'));
+	$is_inventory_item = InventoryService::isInventoryItem(get_post('stock_id'));
 	if(!get_post('stock_id_text', true)) {
 		display_error( _("Item description cannot be empty."));
 		set_focus('stock_id_edit');

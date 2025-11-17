@@ -226,7 +226,7 @@ function check_data()
 
 	if (!$SysPrefs->allow_negative_stock()) {
 		foreach ($_SESSION['supp_trans']->grn_items as $n => $item) {
-			if (is_inventory_item($item->item_code))
+			if (InventoryService::isInventoryItem($item->item_code))
 			{
 				if (check_negative_stock($item->item_code, -$item->this_quantity_inv, null, $_SESSION['supp_trans']->tran_date))
 				{

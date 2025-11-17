@@ -594,9 +594,9 @@ $tabs = (get_post('fixed_asset'))
 		'sales_pricing' => array(_('S&ales Pricing'), (user_check_access('SA_SALESPRICE') ? $stock_id : null)),
 		'purchase_pricing' => array(_('&Purchasing Pricing'), (user_check_access('SA_PURCHASEPRICING') ? $stock_id : null)),
 		'standard_cost' => array(_('Standard &Costs'), (user_check_access('SA_STANDARDCOST') ? $stock_id : null)),
-		'reorder_level' => array(_('&Reorder Levels'), (is_inventory_item($stock_id) && 
+		'reorder_level' => array(_('&Reorder Levels'), (InventoryService::isInventoryItem($stock_id) && 
 			user_check_access('SA_REORDER') ? $stock_id : null)),
-		'movement' => array(_('&Transactions'), (user_check_access('SA_ITEMSTRANSVIEW') && is_inventory_item($stock_id) ? 
+		'movement' => array(_('&Transactions'), (user_check_access('SA_ITEMSTRANSVIEW') && InventoryService::isInventoryItem($stock_id) ? 
 			$stock_id : null)),
 		'status' => array(_('&Status'), (user_check_access('SA_ITEMSSTATVIEW') ? $stock_id : null)),
 		'attachments' => array(_('Attachments'), (user_check_access('SA_ATTACHDOCUMENT') ? get_item_code_id($stock_id) : null)),
@@ -625,14 +625,14 @@ tabbed_content_start('tabs', $tabs);
 			include_once($path_to_root."/inventory/cost_update.php");
 			break;
 		case 'reorder_level':
-			if (!is_inventory_item($stock_id))
+			if (!InventoryService::isInventoryItem($stock_id))
 				break;
 			$_GET['page_level'] = 1;
 			$_GET['stock_id'] = $stock_id;
 			include_once($path_to_root."/inventory/reorder_level.php");
 			break;
 		case 'movement':
-			if (!is_inventory_item($stock_id))
+			if (!InventoryService::isInventoryItem($stock_id))
 				break;
 			$_GET['stock_id'] = $stock_id;
 			include_once($path_to_root."/inventory/inquiry/stock_movements.php");

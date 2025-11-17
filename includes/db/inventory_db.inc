@@ -282,7 +282,7 @@ function adjust_deliveries($stock_id, $material_cost, $to)
 {
 	global $Refs;
 
-	if (!is_inventory_item($stock_id))
+	if (!InventoryService::isInventoryItem($stock_id))
 		return;
 	
 	$move_id = last_negative_stock_trans_id($stock_id, $to);
@@ -467,7 +467,7 @@ function void_stock_move($type, $type_no)
     while ($row = db_fetch($result))
     {
 		//Skip cost averaging of service items and if it is a location move
-		if (is_inventory_item($row["stock_id"]) && $type != ST_LOCTRANSFER)
+		if (InventoryService::isInventoryItem($row["stock_id"]) && $type != ST_LOCTRANSFER)
 		{
 			// The cost has to be adjusted.
 			// Transaction rates are stored either as price or standard_cost depending on types
