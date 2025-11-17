@@ -9,6 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+require_once(dirname(__FILE__) . "/../../includes/DateService.php");
+
 function get_qoh_on_date($stock_id, $location=null, $date_=null)
 {
     if ($date_ == null)
@@ -317,7 +319,7 @@ function adjust_deliveries($stock_id, $material_cost, $to)
 
 		$cart = new items_cart(ST_COSTUPDATE);
 		$cart->tran_date = $cart->doc_date = $cart->event_date = $to;
-		if (!is_date_in_fiscalyear($cart->tran_date))
+		if (!\FA\Services\DateService::isDateInFiscalYear($cart->tran_date))
 			$cart->tran_date = end_fiscalyear();
 		$cart->reference = $Refs->get_next(ST_COSTUPDATE, null, $cart->tran_date, $to);
 

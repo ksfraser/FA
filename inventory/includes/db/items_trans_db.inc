@@ -11,7 +11,9 @@
 ***********************************************************************/
 // Modern OOP Services
 require_once(dirname(__FILE__) . "/../../../includes/InventoryService.php");
+require_once(dirname(__FILE__) . "/../../../includes/DateService.php");
 use FA\Services\InventoryService;
+use FA\Services\DateService;
 
 //-------------------------------------------------------------------------------------------------------------
 
@@ -44,7 +46,7 @@ function stock_cost_update($stock_id, $material_cost, $labour_cost, $overhead_co
 	$qoh = get_qoh_on_date($stock_id);
 
    	$date_ = Today();
-	if (!is_date_in_fiscalyear($date_))
+	if (!DateService::isDateInFiscalYear($date_))
 		$date_ = end_fiscalyear();
 
 	if ($qoh > 0)
@@ -60,7 +62,7 @@ function stock_cost_update($stock_id, $material_cost, $labour_cost, $overhead_co
 
 			$cart = new items_cart(ST_COSTUPDATE);
 			$cart->tran_date = $cart->doc_date = $cart->event_date = $date_;
-			if (!is_date_in_fiscalyear($cart->tran_date))
+			if (!DateService::isDateInFiscalYear($cart->tran_date))
 				$cart->tran_date = end_fiscalyear();
 			$cart->reference = $Refs->get_next(ST_COSTUPDATE, $refline, $cart->tran_date, $date_);
  

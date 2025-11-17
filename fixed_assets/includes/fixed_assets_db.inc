@@ -9,6 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+require_once(dirname(__FILE__) . "/../../includes/DateService.php");
 
 function process_fixed_asset_depreciation($stock_id, $gl_rows, $refline, $memo_)
 {
@@ -20,7 +21,7 @@ function process_fixed_asset_depreciation($stock_id, $gl_rows, $refline, $memo_)
   begin_transaction();
 
   $date_ = Today();
-  if (!is_date_in_fiscalyear($date_))
+  if (!\FA\Services\DateService::isDateInFiscalYear($date_))
     $date_ = end_fiscalyear();
 
   $stock_gl_code = get_stock_gl_code($stock_id);

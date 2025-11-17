@@ -9,6 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+require_once(dirname(__FILE__) . "/../includes/DateService.php");
 //$colors = array('#008cc9','#4db625','#ef5500','#eef100','#05c6e6', '#5ee66a'); // Current in Use 	 
 $colors = Chart::$palette;
 $align = $_SESSION['language']->dir == 'rtl' ? 'right' : 'left';
@@ -908,7 +909,7 @@ function cash_flow($today)
 		$pg->type = $_POST['select_g5'];
 	if (isset($_POST['per_g5']))
 		$months = $_POST['per_g5'];
-	if (!is_date_in_fiscalyear($today))
+	if (!\FA\Services\DateService::isDateInFiscalYear($today))
 		$today = end_fiscalyear();
 	$today1 = begin_month($today);
 	$today1 = add_months($today, -$months+1);
@@ -1492,7 +1493,7 @@ function get_database_size()
 function calc_today()
 {
 	$today = Today();
-	if (!is_date_in_fiscalyear($today))
+	if (!\FA\Services\DateService::isDateInFiscalYear($today))
 		$today = end_fiscalyear();
 	return $today;
 }

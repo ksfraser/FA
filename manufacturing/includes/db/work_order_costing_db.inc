@@ -11,7 +11,9 @@
 ***********************************************************************/
 // Modern OOP Services
 require_once(dirname(__FILE__) . "/../../../includes/InventoryService.php");
+require_once(dirname(__FILE__) . "/../../../includes/DateService.php");
 use FA\Services\InventoryService;
+use FA\Services\DateService;
 
 function add_wo_costing($workorder_id, $cost_type, $trans_type, $trans_no, $factor=1)
 {
@@ -92,7 +94,7 @@ function update_material_cost($stock_id, $qty, $unit_cost, $date)
 		$cart = new items_cart(ST_COSTUPDATE);
 		$cart->tran_date = $cart->doc_date = $cart->event_date = $date;
 
-		if (!is_date_in_fiscalyear($cart->tran_date))
+		if (!DateService::isDateInFiscalYear($cart->tran_date))
 			$cart->tran_date = end_fiscalyear();
 
 		$cart->reference = $Refs->get_next(ST_COSTUPDATE, null, $cart->tran_date);
