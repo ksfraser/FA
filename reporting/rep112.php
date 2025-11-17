@@ -132,8 +132,8 @@ function print_receipts()
 			{
 				$rep->TextCol(0, 1,	$systypes_array[$myrow2['type']], -2);
 				$rep->TextCol(1, 2,	$myrow2['reference'], -2);
-				$rep->TextCol(2, 3,	sql2date($myrow2['tran_date']), -2);
-				$rep->TextCol(3, 4,	sql2date($myrow2['due_date']), -2);
+				$rep->TextCol(2, 3,	DateService::sql2dateStatic($myrow2['tran_date']), -2);
+				$rep->TextCol(3, 4,	DateService::sql2dateStatic($myrow2['due_date']), -2);
 				$rep->AmountCol(4, 5, $myrow2['Total'], $dec, -2);
 				$rep->AmountCol(5, 6, $myrow2['Total'] - $myrow2['alloc'], $dec, -2);
 				$rep->AmountCol(6, 7, $myrow2['amt'], $dec, -2);

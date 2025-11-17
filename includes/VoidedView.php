@@ -61,7 +61,7 @@ class VoidedView
         $cell->addAttribute(new HtmlAttribute('align', 'center'));
 
         $content = "<font color=red>$label</font><br>";
-        $content .= "<font color=red>" . _("Date Voided:") . " " . sql2date($voidEntry["date_"]) . "</font><br>";
+        $content .= "<font color=red>" . _("Date Voided:") . " " . DateService::sql2dateStatic($voidEntry["date_"]) . "</font><br>";
         if (strlen($voidEntry["memo_"]) > 0) {
             $content .= "<center><font color=red>" . _("Memo:") . " " . $voidEntry["memo_"] . "</font></center><br>";
         }

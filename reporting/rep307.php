@@ -50,12 +50,12 @@ function trans_qty($stock_id, $location, $from_date, $to_date, $inward = true)
 	if ($from_date == null)
 		$from_date = DateService::todayStatic();
 
-	$from_date = date2sql($from_date);	
+	$from_date = DateService::date2sqlStatic($from_date);	
 
 	if ($to_date == null)
 		$to_date = DateService::todayStatic();
 
-	$to_date = date2sql($to_date);
+	$to_date = DateService::date2sqlStatic($to_date);
 
 	$sql = "SELECT ".($inward ? '' : '-')."SUM(qty) FROM ".TB_PREF."stock_moves
 		WHERE stock_id=".db_escape($stock_id)."

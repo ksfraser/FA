@@ -96,7 +96,7 @@ class DataChecksService {
      * @return int Result
      */
     public function dbHasCurrencyRates(string $currency, string $date, bool $msg = false): int {
-        $dateSql = date2sql($date);
+        $dateSql = DateService::date2sqlStatic($date);
 
         if (BankingService::isCompanyCurrencyStatic($currency)) {
             return 1;
@@ -523,8 +523,8 @@ class DataChecksService {
      */
     public function dbHasDepreciableFixedAssets(): bool {
         $year = \DateService::getCurrentFiscalYearStatic();
-        $begin = \date2sql(\DateService::addMonthsStatic(\sql2date($year['begin']), -1));
-        $end = \date2sql(\DateService::addMonthsStatic(\sql2date($year['end']), -1));
+        $begin = \DateService::date2sqlStatic(\DateService::addMonthsStatic(\DateService::sql2dateStatic($year['begin']), -1));
+        $end = \DateService::date2sqlStatic(\DateService::addMonthsStatic(\DateService::sql2dateStatic($year['end']), -1));
 
         return \check_empty_result("SELECT COUNT(*) FROM ".\TB_PREF."stock_master 
             WHERE mb_flag='F'

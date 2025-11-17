@@ -100,7 +100,7 @@ while ($myrow = db_fetch($result))
 
 	$running_total += $myrow["amount"];
 
-	$trandate = sql2date($myrow["trans_date"]);
+	$trandate = DateService::sql2dateStatic($myrow["trans_date"]);
 	label_cell($systypes_array[$myrow["type"]]);
 	label_cell(get_trans_view_str($myrow["type"],$myrow["trans_no"]));
 	label_cell(get_trans_view_str($myrow["type"],$myrow["trans_no"],$myrow['ref']));

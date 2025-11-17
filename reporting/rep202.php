@@ -32,7 +32,7 @@ print_aged_supplier_analysis();
 
 function get_invoices($supplier_id, $to, $all=true)
 {
-	$todate = date2sql($to);
+	$todate = DateService::date2sqlStatic($to);
 	$PastDueDays1 = get_company_pref('past_due_days');
 	$PastDueDays2 = 2 * $PastDueDays1;
 
@@ -211,7 +211,7 @@ function print_aged_supplier_analysis()
 				$rep->NewLine(1, 2);
         		$rep->TextCol(0, 1, $systypes_array[$trans['type']], -2);
 				$rep->TextCol(1, 2,	$trans['reference'], -2);
-				$rep->TextCol(2, 3,	sql2date($trans['tran_date']), -2);
+				$rep->TextCol(2, 3,	DateService::sql2dateStatic($trans['tran_date']), -2);
 				foreach ($trans as $i => $value)
 					$trans[$i] = (float)$trans[$i] * $rate;
 				$str = array($trans["Balance"] - $trans["Due"],

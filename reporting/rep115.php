@@ -33,7 +33,7 @@ print_customer_balances();
 function get_open_balance($debtorno, $to)
 {
 	if($to)
-		$to = date2sql($to);
+		$to = DateService::date2sqlStatic($to);
 	$sql = "SELECT SUM(IF(t.type = ".ST_SALESINVOICE." OR (t.type IN (".ST_JOURNAL." , ".ST_BANKPAYMENT.") AND t.ov_amount>0),
              -abs(IF(t.prep_amount, t.prep_amount, t.ov_amount + t.ov_gst + t.ov_freight + t.ov_freight_tax + t.ov_discount)), 0)) AS charges,";
 
@@ -57,8 +57,8 @@ function get_open_balance($debtorno, $to)
 
 function get_transactions($debtorno, $from, $to)
 {
-    $from = date2sql($from);
-    $to = date2sql($to);
+    $from = DateService::date2sqlStatic($from);
+    $to = DateService::date2sqlStatic($to);
 
     $sign = "IF(trans.type IN(".implode(',',  array(ST_CUSTCREDIT,ST_CUSTPAYMENT,ST_BANKDEPOSIT))."), -1, 1)";
 

@@ -50,7 +50,7 @@ function display_wo_issue($issue_no)
 	label_cell($myrow["stock_id"] . " - " . $myrow["description"]);
 	label_cell($myrow["location_name"]);
 	label_cell($myrow["WorkCentreName"]);
-	label_cell(sql2date($myrow["issue_date"]));
+	label_cell(DateService::sql2dateStatic($myrow["issue_date"]));
 	end_row();
 
     comments_display_row(ST_MANUISSUE, $issue_no);

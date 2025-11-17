@@ -123,7 +123,7 @@ function change_tpl_flag($reconcile_id)
 	if (get_post('bank_date')=='')	// new reconciliation
 		$Ajax->activate('bank_date');
 
-	$_POST['bank_date'] = date2sql(get_post('reconcile_date'));
+	$_POST['bank_date'] = DateService::date2sqlStatic(get_post('reconcile_date'));
 	$reconcile_value = check_value("rec_".$reconcile_id) 
 						? ("'".$_POST['bank_date'] ."'") : 'NULL';
 	
@@ -145,7 +145,7 @@ function set_tpl_flag($reconcile_id)
 	if (get_post('bank_date')=='')	// new reconciliation
 		$Ajax->activate('bank_date');
 
-	$_POST['bank_date'] = date2sql(get_post('reconcile_date'));
+	$_POST['bank_date'] = DateService::date2sqlStatic(get_post('reconcile_date'));
 	$reconcile_value =  ("'".$_POST['bank_date'] ."'");
 	
 	update_reconciled_values($reconcile_id, $reconcile_value, $_POST['reconcile_date'],
@@ -157,7 +157,7 @@ function set_tpl_flag($reconcile_id)
 
 if (!isset($_POST['reconcile_date'])) { // init page
 	$_POST['reconcile_date'] = new_doc_date();
-//	$_POST['bank_date'] = date2sql(DateService::todayStatic());
+//	$_POST['bank_date'] = DateService::date2sqlStatic(DateService::todayStatic());
 }
 
 if (list_updated('bank_account')) {
@@ -166,11 +166,11 @@ if (list_updated('bank_account')) {
 }
 if (list_updated('bank_date')) {
 	$_POST['reconcile_date'] = 
-		get_post('bank_date')=='' ? DateService::todayStatic() : sql2date($_POST['bank_date']);
+		get_post('bank_date')=='' ? DateService::todayStatic() : DateService::sql2dateStatic($_POST['bank_date']);
 	update_data();
 }
 if (get_post('_reconcile_date_changed')) {
-	$_POST['bank_date'] = check_date() ? date2sql(get_post('reconcile_date')) : '';
+	$_POST['bank_date'] = check_date() ? DateService::date2sqlStatic(get_post('reconcile_date')) : '';
     $Ajax->activate('bank_date');
 	update_data();
 }
@@ -214,7 +214,7 @@ if ($row = db_fetch($result)) {
 	$_POST["reconciled"] = price_format($row["end_balance"]-$row["beg_balance"]);
 	$total = $row["total"];
 	if (!isset($_POST["beg_balance"])) { // new selected account/statement
-		$_POST["last_date"] = sql2date($row["last_date"]);
+		$_POST["last_date"] = DateService::sql2dateStatic($row["last_date"]);
 		$_POST["beg_balance"] = price_format($row["beg_balance"]);
 		$_POST["end_balance"] = price_format($row["end_balance"]);
 		if (get_post('bank_date')) {

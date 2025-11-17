@@ -70,18 +70,18 @@ function create_recurrent_invoices($customer_id, $branch_id, $order_no, $tmpl_no
 function calculate_from($myrow)
 {
 	if ($myrow["last_sent"] == '0000-00-00')
-		$from = sql2date($myrow["begin"]);
+		$from = DateService::sql2dateStatic($myrow["begin"]);
 	else
-		$from = sql2date($myrow["last_sent"]);
+		$from = DateService::sql2dateStatic($myrow["last_sent"]);
 	return $from;
 }
 
 function calculate_next($myrow)
 {
 	if ($myrow["last_sent"] == '0000-00-00')
-		$next = sql2date($myrow["begin"]);
+		$next = DateService::sql2dateStatic($myrow["begin"]);
 	else
-		$next = sql2date($myrow["last_sent"]);
+		$next = DateService::sql2dateStatic($myrow["last_sent"]);
 	$next = DateService::addMonthsStatic($next, $myrow['monthly']);
 	$next = DateService::addDaysStatic($next, $myrow['days']);
 	return DateService::addDaysStatic($next,-1);
@@ -236,8 +236,8 @@ while ($myrow = db_fetch($result))
 	}
 	label_cell($myrow["days"]);
 	label_cell($myrow['monthly']);
-	label_cell(sql2date($myrow['begin']),  "align='center'");
-	label_cell(sql2date($myrow['end']),	 "align='center'");
+	label_cell(DateService::sql2dateStatic($myrow['begin']),  "align='center'");
+	label_cell(DateService::sql2dateStatic($myrow['end']),	 "align='center'");
 	label_cell(calculate_next($myrow),	"align='center'");
 	if ($myrow['overdue'])
 	{

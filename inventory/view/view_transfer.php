@@ -34,7 +34,7 @@ start_table(TABLESTYLE2, "width='90%'");
 
 start_row();
 label_cells(_("Reference"), $trans['reference'], "class='tableheader2'");
-label_cells(_("Date"), sql2date($trans['tran_date']), "class='tableheader2'");
+label_cells(_("Date"), DateService::sql2dateStatic($trans['tran_date']), "class='tableheader2'");
 end_row();
 start_row();
 label_cells(_("From Location"), $trans['from_name'], "class='tableheader2'");

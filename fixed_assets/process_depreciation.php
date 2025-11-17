@@ -144,7 +144,7 @@ function show_gl_controls() {
   $myrow = get_item($_POST['stock_id']);
 
   if (list_updated('stock_id') || !isset($_POST['months'])) {
-    //$_POST['depreciation_start'] = sql2date($myrow['depreciation_start']);
+    //$_POST['depreciation_start'] = DateService::sql2dateStatic($myrow['depreciation_start']);
     $_POST['months'] = depreciation_months($myrow['depreciation_date']);
     unset($_POST['memo_']);
   }

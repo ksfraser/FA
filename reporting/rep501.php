@@ -45,7 +45,7 @@ function getYTD($dim)
 {
 	$date = DateService::todayStatic();
 	$date = \FA\Services\DateService::beginFiscalYear($date);
-	date2sql($date);
+	DateService::date2sqlStatic($date);
 	
 	$sql = "SELECT SUM(amount) AS Balance
 		FROM

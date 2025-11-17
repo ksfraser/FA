@@ -32,8 +32,8 @@ print_grn_valuation();
 
 function getTransactions($from, $to)
 {
-	$from = date2sql($from);
-	$to = date2sql($to);
+	$from = DateService::date2sqlStatic($from);
+	$to = DateService::date2sqlStatic($to);
 
 	$sql = "SELECT grn.id batch_no,
 			grn.supplier_id, 
@@ -168,7 +168,7 @@ function print_grn_valuation()
 		if ($trans['qty_recd'] - $trans['quantity_inv'] !=0 )
 		{
 			$curr = get_supplier_currency($trans['supplier_id']);
-			$rate = BankingService::getExchangeRateFromHomeCurrency($curr, sql2date($trans['delivery_date']));
+			$rate = BankingService::getExchangeRateFromHomeCurrency($curr, DateService::sql2dateStatic($trans['delivery_date']));
 			$trans['unit_price'] *= $rate;
 			$rep->TextCol(4, 5, "--");
 			$rep->AmountCol(5, 6, $trans['qty_recd'] - $trans['quantity_inv'], $qdec);

@@ -158,7 +158,7 @@ function invoice_link($row)
 
 function check_overdue($row)
 {
-   	return DateService::date1GreaterDate2Static(DateService::todayStatic(), sql2date($row["due_date"])) && 
+   	return DateService::date1GreaterDate2Static(DateService::todayStatic(), DateService::sql2dateStatic($row["due_date"])) && 
 			$row["Outstanding"]!=0;
 }
 //------------------------------------------------------------------------------------------------

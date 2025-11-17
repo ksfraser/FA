@@ -97,7 +97,7 @@ function can_process($wo_details)
 		set_focus('date_');
 		return false;
 	}
-	if (DateService::dateDiff(sql2date($wo_details["released_date"]), $_POST['date_'], "d") > 0)
+	if (DateService::dateDiff(DateService::sql2dateStatic($wo_details["released_date"]), $_POST['date_'], "d") > 0)
 	{
 		display_error(_("The production date cannot be before the release date of the work order."));
 		set_focus('date_');

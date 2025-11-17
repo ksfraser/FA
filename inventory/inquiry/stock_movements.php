@@ -92,8 +92,8 @@ end_form();
 
 set_global_stock_item($_POST['stock_id']);
 
-$before_date = date2sql($_POST['BeforeDate']);
-$after_date = date2sql($_POST['AfterDate']);
+$before_date = DateService::date2sqlStatic($_POST['BeforeDate']);
+$after_date = DateService::date2sqlStatic($_POST['AfterDate']);
 $display_location = !$_POST['StockLocation'];
 
 $result = get_stock_movements($_POST['stock_id'], $_POST['StockLocation'],
@@ -133,7 +133,7 @@ while ($myrow = db_fetch($result))
 
 	alt_table_row_color($k);
 
-	$trandate = sql2date($myrow["tran_date"]);
+	$trandate = DateService::sql2dateStatic($myrow["tran_date"]);
 
 	if (get_post('fixed_asset') == 1 && isset($fa_systypes_array[$myrow["type"]]))
 		$type_name = $fa_systypes_array[$myrow["type"]];

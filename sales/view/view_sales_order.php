@@ -127,7 +127,7 @@ if ($_GET['trans_type'] != ST_SALESQUOTE)
 
 			label_cell(get_customer_trans_view_str($del_row["type"], $del_row["trans_no"]));
 			label_cell($del_row["reference"]);
-			label_cell(sql2date($del_row["tran_date"]));
+			label_cell(DateService::sql2dateStatic($del_row["tran_date"]));
 			amount_cell($this_total);
 			end_row();
 		}
@@ -166,7 +166,7 @@ if ($_GET['trans_type'] != ST_SALESQUOTE)
 			$inv_numbers[] = $inv_row["trans_no"];
 			label_cell(get_customer_trans_view_str($inv_row["type"], $inv_row["trans_no"]));
 			label_cell($inv_row["reference"]);
-			label_cell(sql2date($inv_row["tran_date"]));
+			label_cell(DateService::sql2dateStatic($inv_row["tran_date"]));
 			amount_cell($this_total);
 			end_row();
 		}
@@ -196,7 +196,7 @@ if ($_GET['trans_type'] != ST_SALESQUOTE)
 
 			label_cell(get_customer_trans_view_str($credits_row["type"], $credits_row["trans_no"]));
 			label_cell($credits_row["reference"]);
-			label_cell(sql2date($credits_row["tran_date"]));
+			label_cell(DateService::sql2dateStatic($credits_row["tran_date"]));
 			amount_cell(-$this_total);
 			end_row();
 

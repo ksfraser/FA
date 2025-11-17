@@ -31,8 +31,8 @@ print_inventory_sales();
 
 function getTransactions($category, $from, $to)
 {
-	$from = date2sql($from);
-	$to = date2sql($to);
+	$from = DateService::date2sqlStatic($from);
+	$to = DateService::date2sqlStatic($to);
 	$sql = "SELECT item.category_id,
 			category.description AS cat_description,
 			item.stock_id,

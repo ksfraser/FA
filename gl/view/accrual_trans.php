@@ -73,7 +73,7 @@ while ($myrow = db_fetch($result))
 {
 	alt_table_row_color($k);
 
-	$trandate = sql2date($myrow["tran_date"]);
+	$trandate = DateService::sql2dateStatic($myrow["tran_date"]);
 
 	label_cell($systypes_array[$myrow["type"]]);
 	$amount = price_format($myrow["amount"]);

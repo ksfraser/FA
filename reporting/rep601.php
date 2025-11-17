@@ -31,7 +31,7 @@ print_bank_transactions();
 
 function get_bank_balance_to($to, $account)
 {
-	$to = date2sql($to);
+	$to = DateService::date2sqlStatic($to);
 	$sql = "SELECT SUM(amount) FROM ".TB_PREF."bank_trans WHERE bank_act='$account'
 	AND trans_date < '$to'";
 	$result = db_query($sql, "The starting balance on hand could not be calculated");
@@ -41,8 +41,8 @@ function get_bank_balance_to($to, $account)
 
 function get_bank_transactions($from, $to, $account)
 {
-	$from = date2sql($from);
-	$to = date2sql($to);
+	$from = DateService::date2sqlStatic($from);
+	$to = DateService::date2sqlStatic($to);
 	$sql = "SELECT * FROM ".TB_PREF."bank_trans
 		WHERE bank_act = '$account'
 		AND trans_date >= '$from'

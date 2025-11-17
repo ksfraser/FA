@@ -121,7 +121,7 @@ function purchase_link($row)
   	if ($row['purchase_date'] === NULL)
     	return "";
 
-  	return get_supplier_trans_view_str(ST_SUPPINVOICE, $row["purchase_no"], sql2date($row["purchase_date"]));
+  	return get_supplier_trans_view_str(ST_SUPPINVOICE, $row["purchase_no"], DateService::sql2dateStatic($row["purchase_date"]));
 }
 
 function disposal_link($row)
@@ -131,9 +131,9 @@ function disposal_link($row)
 
   	switch ($row['disposal_type']) {
     	case ST_INVADJUST:
-      		return get_inventory_trans_view_str(ST_INVADJUST, $row["disposal_no"], sql2date($row["disposal_date"]));
+      		return get_inventory_trans_view_str(ST_INVADJUST, $row["disposal_no"], DateService::sql2dateStatic($row["disposal_date"]));
     	case ST_CUSTDELIVERY:
-	    	return get_customer_trans_view_str(ST_CUSTDELIVERY, $row["disposal_no"], sql2date($row["disposal_date"]));
+	    	return get_customer_trans_view_str(ST_CUSTDELIVERY, $row["disposal_no"], DateService::sql2dateStatic($row["disposal_date"]));
     	default:
       		return "";
   	}

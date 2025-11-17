@@ -83,7 +83,7 @@ if ($show_both_amounts)
 	label_cells(_("Amount"), number_format2($to_trans['amount'], user_price_dec()), "class='tableheader2'", "align=right");
 end_row();
 start_row();
-label_cells(_("Date"), sql2date($from_trans['trans_date']), "class='tableheader2'");
+label_cells(_("Date"), DateService::sql2dateStatic($from_trans['trans_date']), "class='tableheader2'");
 label_cells(_("Transfer Type"), $bank_transfer_types[$from_trans['account_type']],
 	 "class='tableheader2'");
 label_cells(_("Reference"), $from_trans['ref'], "class='tableheader2'");

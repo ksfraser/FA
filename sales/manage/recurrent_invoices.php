@@ -131,9 +131,9 @@ table_header($th);
 $k = 0;
 while ($myrow = db_fetch($result)) 
 {
-	$begin = sql2date($myrow["begin"]);
-	$end = sql2date($myrow["end"]);
-	$last_sent = $myrow["last_sent"] == '0000-00-00' ? '' : sql2date($myrow["last_sent"]);
+	$begin = DateService::sql2dateStatic($myrow["begin"]);
+	$end = DateService::sql2dateStatic($myrow["end"]);
+	$last_sent = $myrow["last_sent"] == '0000-00-00' ? '' : DateService::sql2dateStatic($myrow["last_sent"]);
 	
 	alt_table_row_color($k);
 		
@@ -181,9 +181,9 @@ if ($selected_id != -1)
 		$_POST['group_no']  = $myrow["group_no"];
 		$_POST['days']  = $myrow["days"];
 		$_POST['monthly']  = $myrow["monthly"];
-		$_POST['begin']  = sql2date($myrow["begin"]);
-		$_POST['end']  = sql2date($myrow["end"]);
-		$_POST['last_sent']  = ($myrow['last_sent']=="0000-00-00"?"":sql2date($myrow["last_sent"]));
+		$_POST['begin']  = DateService::sql2dateStatic($myrow["begin"]);
+		$_POST['end']  = DateService::sql2dateStatic($myrow["end"]);
+		$_POST['last_sent']  = ($myrow['last_sent']=="0000-00-00"?"":DateService::sql2dateStatic($myrow["last_sent"]));
 	} 
 	hidden("selected_id", $selected_id);
 }

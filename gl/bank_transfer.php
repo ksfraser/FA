@@ -83,7 +83,7 @@ function gl_payment_controls($trans_no)
 			$from_trans = $trans2;
 				$to_trans = $trans1;
 			}
-			$_POST['DatePaid'] = sql2date($to_trans['trans_date']);
+			$_POST['DatePaid'] = DateService::sql2dateStatic($to_trans['trans_date']);
 			$_POST['ref'] = $to_trans['ref'];
 			$_POST['memo_'] = get_comments_string($to_trans['type'], $trans_no);
 			$_POST['FromBankAccount'] = $from_trans['bank_act'];
@@ -218,7 +218,7 @@ function check_valid_entries($trans_no)
 			display_error(sprintf(
 				_("This bank transfer change would result in exceeding authorized overdraft limit on '%s' for transaction: %s #%s on %s."),
 				$problemTransaction['bank_account_name'], $systypes_array[$problemTransaction['type']],
-				$problemTransaction['trans_no'], sql2date($problemTransaction['trans_date'])
+				$problemTransaction['trans_no'], DateService::sql2dateStatic($problemTransaction['trans_date'])
 			));
 		}
 		set_focus('amount');
@@ -234,7 +234,7 @@ function check_valid_entries($trans_no)
 			} else {
 				display_error(sprintf(
 					_("This bank transfer would result in exceeding authorized overdraft limit for transaction: %s #%s on %s."),
-					$systypes_array[$problemTransaction['type']], $problemTransaction['trans_no'], sql2date($problemTransaction['trans_date'])
+					$systypes_array[$problemTransaction['type']], $problemTransaction['trans_no'], DateService::sql2dateStatic($problemTransaction['trans_date'])
 				));
 			}
 			set_focus('amount');

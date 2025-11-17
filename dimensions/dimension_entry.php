@@ -237,8 +237,8 @@ if ($selected_id != -1)
 	$_POST['closed'] = $myrow["closed"];
 	$_POST['name'] = $myrow["name"];
 	$_POST['type_'] = $myrow["type_"];
-	$_POST['date_'] = sql2date($myrow["date_"]);
-	$_POST['due_date'] = sql2date($myrow["due_date"]);
+	$_POST['date_'] = DateService::sql2dateStatic($myrow["date_"]);
+	$_POST['due_date'] = DateService::sql2dateStatic($myrow["due_date"]);
 	$_POST['memo_'] = get_comments_string(ST_DIMENSION, $selected_id);
 	
  	$tags_result = get_tags_associated_with_record(TAG_DIMENSION, $selected_id);

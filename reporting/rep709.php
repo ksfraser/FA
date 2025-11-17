@@ -30,8 +30,8 @@ print_tax_report();
 
 function getTaxTransactions($from, $to)
 {
-	$fromdate = date2sql($from);
-	$todate = date2sql($to);
+	$fromdate = DateService::date2sqlStatic($from);
+	$todate = DateService::date2sqlStatic($to);
 
 	$sql = "SELECT tt.name as taxname, taxrec.*, taxrec.amount*ex_rate AS amount,
 	            taxrec.net_amount*ex_rate AS net_amount,

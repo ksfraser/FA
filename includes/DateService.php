@@ -91,12 +91,12 @@ class DateService
 
     public function today(): string
     {
-        return \DateService::todayStatic();
+        return \Today();
     }
 
     public function now(): string
     {
-        return \DateService::nowStatic();
+        return \Now();
     }
 
     public function newDocDate(?string $date = null): string
@@ -176,12 +176,12 @@ class DateService
 
     public function sql2date(string $date): string
     {
-        return \sql2date($date);
+        return \DateService::sql2dateStatic($date);
     }
 
     public function date2sql(string $date): string
     {
-        return \date2sql($date);
+        return \DateService::date2sqlStatic($date);
     }
 
     public function sqlDateComp(string $date1, string $date2): int
@@ -311,7 +311,7 @@ class DateService
      */
     public static function todayStatic(): string
     {
-        return \DateService::todayStatic();
+        return \Today();
     }
     
     /**
@@ -319,6 +319,22 @@ class DateService
      */
     public static function nowStatic(): string
     {
-        return \DateService::nowStatic();
+        return \Now();
+    }
+    
+    /**
+     * Static wrapper for sql2date
+     */
+    public static function sql2dateStatic(string $date): string
+    {
+        return \DateService::sql2dateStatic($date);
+    }
+    
+    /**
+     * Static wrapper for date2sql
+     */
+    public static function date2sqlStatic(string $date): string
+    {
+        return \DateService::date2sqlStatic($date);
     }
 }

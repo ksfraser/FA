@@ -69,12 +69,12 @@ function trans_qty($stock_id, $location, $from_date, $to_date, $inward = true)
 	if ($from_date == null)
 		$from_date = DateService::todayStatic();
 
-	$from_date = date2sql($from_date);	
+	$from_date = DateService::date2sqlStatic($from_date);	
 
 	if ($to_date == null)
 		$to_date = DateService::todayStatic();
 
-	$to_date = date2sql($to_date);
+	$to_date = DateService::date2sqlStatic($to_date);
 
 	$sql = "SELECT ".($inward ? '' : '-')."SUM(qty) FROM ".TB_PREF."stock_moves
 		WHERE stock_id=".db_escape($stock_id)."
@@ -102,7 +102,7 @@ function avg_unit_cost($stock_id, $location, $to_date)
 	if ($to_date == null)
 		$to_date = DateService::todayStatic();
 
-	$to_date = date2sql($to_date);
+	$to_date = DateService::date2sqlStatic($to_date);
 
   	$sql = "SELECT move.*, supplier.supplier_id person_id, IF(ISNULL(grn.rate), credit.rate, grn.rate) ex_rate
   		FROM ".TB_PREF."stock_moves move
@@ -144,12 +144,12 @@ function trans_qty_unit_cost($stock_id, $location, $from_date, $to_date, $inward
 	if ($from_date == null)
 		$from_date = DateService::todayStatic();
 
-	$from_date = date2sql($from_date);	
+	$from_date = DateService::date2sqlStatic($from_date);	
 
 	if ($to_date == null)
 		$to_date = DateService::todayStatic();
 
-	$to_date = date2sql($to_date);
+	$to_date = DateService::date2sqlStatic($to_date);
 
   	$sql = "SELECT move.*, supplier.supplier_id person_id, IF(ISNULL(grn.rate), credit.rate, grn.rate) ex_rate
   		FROM ".TB_PREF."stock_moves move

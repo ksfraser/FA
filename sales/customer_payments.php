@@ -62,7 +62,7 @@ if (!isset($_POST['bank_account'])) { // first page call
 			$_SESSION['alloc']->set_person($inv['debtor_no'], PT_CUSTOMER);
 			$_SESSION['alloc']->read();
 			$_POST['BranchID'] = $inv['branch_code'];
-			$_POST['DateBanked'] = sql2date($inv['tran_date']);
+			$_POST['DateBanked'] = DateService::sql2dateStatic($inv['tran_date']);
 			foreach($_SESSION['alloc']->allocs as $line => $trans) {
 				if ($trans->type == $type && $trans->type_no == $_GET['SInvoice']) {
 					$un_allocated = $trans->amount - $trans->amount_allocated;
@@ -292,7 +292,7 @@ if (isset($_GET['trans_no']) && $_GET['trans_no'] > 0 )
 	$_POST['ref'] =  $myrow["reference"];
 	$charge = get_cust_bank_charge(ST_CUSTPAYMENT, $_POST['trans_no']);
 	$_POST['charge'] =  price_format($charge);
-	$_POST['DateBanked'] =  sql2date($myrow['tran_date']);
+	$_POST['DateBanked'] =  DateService::sql2dateStatic($myrow['tran_date']);
 	$_POST["amount"] = price_format($myrow['Total'] - $myrow['ov_discount']);
 	$_POST["bank_amount"] = price_format($myrow['bank_amount']+$charge);
 	$_POST["discount"] = price_format($myrow['ov_discount']);

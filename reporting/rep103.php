@@ -85,7 +85,7 @@ function get_contacts_for_branch($branch)
 
 function getTransactions($debtorno, $branchcode, $date)
 {
-	$date = date2sql($date);
+	$date = DateService::date2sqlStatic($date);
 
 	$sql = "SELECT SUM((ov_amount+ov_freight+ov_discount)*rate) AS Turnover
 		FROM ".TB_PREF."debtor_trans

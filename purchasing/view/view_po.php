@@ -124,7 +124,7 @@ if (db_num_rows($grns_result) > 0)
 
     	label_cell(get_trans_view_str(ST_SUPPRECEIVE,$myrow["id"]));
     	label_cell($myrow["reference"]);
-    	label_cell(sql2date($myrow["delivery_date"]));
+    	label_cell(DateService::sql2dateStatic($myrow["delivery_date"]));
     	end_row();
     }
     end_table();
@@ -150,7 +150,7 @@ if (db_num_rows($invoice_result) > 0)
     	alt_table_row_color($k);
 
     	label_cell(get_trans_view_str($myrow["type"],$myrow["trans_no"]));
-    	label_cell(sql2date($myrow["tran_date"]));
+    	label_cell(DateService::sql2dateStatic($myrow["tran_date"]));
     	amount_cell($myrow["Total"]);
     	end_row();
     }

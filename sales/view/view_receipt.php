@@ -40,7 +40,7 @@ start_table(TABLESTYLE, "width='80%'");
 start_row();
 label_cells(_("From Customer"), $receipt['DebtorName'], "class='tableheader2'");
 label_cells(_("Reference"), $receipt['reference'], "class='tableheader2'");
-label_cells(_("Date of Deposit"), sql2date($receipt['tran_date']), "class='tableheader2'");
+label_cells(_("Date of Deposit"), DateService::sql2dateStatic($receipt['tran_date']), "class='tableheader2'");
 end_row();
 start_row();
 label_cells(_("Customer Currency"), $receipt['curr_code'], "class='tableheader2'");

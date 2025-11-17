@@ -94,8 +94,8 @@ if (db_has_gl_accounts())
 	$year = $_POST['fyear'];
 	if (get_post('update') == '') {
 		$fyear = get_fiscalyear($year);
-		$_POST['begin'] = sql2date($fyear['begin']);
-		$_POST['end'] = sql2date($fyear['end']);
+		$_POST['begin'] = DateService::sql2dateStatic($fyear['begin']);
+		$_POST['end'] = DateService::sql2dateStatic($fyear['end']);
 	}
 	hidden('begin');
 	hidden('end');

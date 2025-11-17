@@ -53,7 +53,7 @@ function getAverageCost($stock_id, $location, $to_date)
 	if ($to_date == null)
 		$to_date = DateService::todayStatic();
 
-	$to_date = date2sql($to_date);
+	$to_date = DateService::date2sqlStatic($to_date);
 
   	$sql = "SELECT move.*, supplier.supplier_id person_id, IF(ISNULL(grn.rate), credit.rate, grn.rate) ex_rate
   		FROM ".TB_PREF."stock_moves move
@@ -89,7 +89,7 @@ function getAverageCost($stock_id, $location, $to_date)
 
 function getTransactions($category, $location, $date)
 {
-	$date = date2sql($date);
+	$date = DateService::date2sqlStatic($date);
 
 	$dec = user_qty_dec();
 	$sql = "SELECT item.category_id,

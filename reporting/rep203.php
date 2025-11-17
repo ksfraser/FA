@@ -29,7 +29,7 @@ print_payment_report();
 
 function getTransactions($supplier, $date)
 {
-	$date = date2sql($date);
+	$date = DateService::date2sqlStatic($date);
 	$dec = user_price_dec();
 
 	$sql = "SELECT  supp_reference, tran_date, due_date, trans_no, type, rate,

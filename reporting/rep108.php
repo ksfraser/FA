@@ -142,9 +142,9 @@ function print_statements()
 
 			$rep->TextCol(0, 1, $systypes_array[$myrow2['type']], -2);
 			$rep->TextCol(1, 2,	$myrow2['reference'], -2);
-			$rep->TextCol(2, 3,	sql2date($myrow2['tran_date']), -2);
+			$rep->TextCol(2, 3,	DateService::sql2dateStatic($myrow2['tran_date']), -2);
 			if ($myrow2['type'] == ST_SALESINVOICE)
-				$rep->TextCol(3, 4,	sql2date($myrow2['due_date']), -2);
+				$rep->TextCol(3, 4,	DateService::sql2dateStatic($myrow2['due_date']), -2);
 			if ($myrow2['type'] == ST_SALESINVOICE || $myrow2['type'] == ST_BANKPAYMENT || ($myrow2['type'] == ST_JOURNAL && 
 				$myrow2["TotalAmount"] > 0))
 				$rep->TextCol(4, 5,	$DisplayTotal, -2);
@@ -177,7 +177,7 @@ function print_statements()
 		if ($email == 1)
 		{
             if (($CustomerRecord["Balance"]) != ($CustomerRecord["Balance"] - $CustomerRecord["Due"]))
-                $rep->End($email, _("Statement") . " " . _("as of") . " " . sql2date($date) . " " . _("from") . " " . htmlspecialchars_decode(get_company_pref('coy_name')));
+                $rep->End($email, _("Statement") . " " . _("as of") . " " . DateService::sql2dateStatic($date) . " " . _("from") . " " . htmlspecialchars_decode(get_company_pref('coy_name')));
             else
                 display_notification(sprintf(_("Customer %s has no overdue debits. No e-mail is sent."), $myrow["DebtorName"]));       
         }

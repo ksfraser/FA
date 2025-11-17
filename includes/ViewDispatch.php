@@ -183,7 +183,7 @@ class ViewDispatch
         $td10 = new HtmlTd(new HtmlString(_("Dispatch Date")));
         $td10->addAttribute(new HtmlAttribute('class', 'tableheader2'));
         $row4->addNested($td10);
-        $td11 = new HtmlTd(new HtmlString(sql2date($this->model->transData["tran_date"])));
+        $td11 = new HtmlTd(new HtmlString(DateService::sql2dateStatic($this->model->transData["tran_date"])));
         $td11->addAttribute(new HtmlAttribute('class', 'tableheader2'));
         $td11->addAttribute(new HtmlAttribute('nowrap', ''));
         $row4->addNested($td11);
@@ -193,7 +193,7 @@ class ViewDispatch
         $table4->addNested($row4);
 
         $row5 = new HtmlTableRow(new HtmlString(''));
-        $td13 = new HtmlTd(new HtmlString(sql2date($this->model->transData["due_date"])));
+        $td13 = new HtmlTd(new HtmlString(DateService::sql2dateStatic($this->model->transData["due_date"])));
         $td13->addAttribute(new HtmlAttribute('class', 'tableheader2'));
         $td13->addAttribute(new HtmlAttribute('nowrap', ''));
         $row5->addNested($td13);

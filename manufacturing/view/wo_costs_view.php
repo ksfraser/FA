@@ -42,7 +42,7 @@ function print_gl_rows($result, $title)
 		table_section_title($title, 7);
 		while($myrow = db_fetch($result)) {
 			start_row();
-			label_cell(sql2date($myrow["tran_date"]));
+			label_cell(DateService::sql2dateStatic($myrow["tran_date"]));
 			label_cell(get_trans_view_str($myrow['type'],$myrow["type_no"], $systypes_array[$myrow['type']]. ' '.$myrow['type_no']));
 		    label_cell($myrow['account']);
 			label_cell($myrow['account_name']);

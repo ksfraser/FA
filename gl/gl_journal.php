@@ -114,9 +114,9 @@ function create_cart($type=0, $trans_no=0)
 
 	if ($trans_no) {
 		$header = get_journal($type, $trans_no);
-		$cart->event_date = sql2date($header['event_date']);
-		$cart->doc_date = sql2date($header['doc_date']);
-		$cart->tran_date = sql2date($header['tran_date']);
+		$cart->event_date = DateService::sql2dateStatic($header['event_date']);
+		$cart->doc_date = DateService::sql2dateStatic($header['doc_date']);
+		$cart->tran_date = DateService::sql2dateStatic($header['tran_date']);
 		$cart->currency = $header['currency'];
 		$cart->rate = $header['rate'];
 		$cart->source_ref = $header['source_ref'];
@@ -143,7 +143,7 @@ function create_cart($type=0, $trans_no=0)
 		{
 			$tax_id = $detail['tax_type_id'];
 			$tax_info['net_amount'][$tax_id] = $detail['net_amount']; // we can two records for the same tax_id, but in this case net_amount is the same
-			$tax_info['tax_date'] = sql2date($detail['tran_date']);
+			$tax_info['tax_date'] = DateService::sql2dateStatic($detail['tran_date']);
 			//$tax_info['tax_group'] = $detail['tax_group_id'];
 
 		}

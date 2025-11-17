@@ -82,7 +82,7 @@ class ViewCreditNote
         $td1 = new HtmlTd(new HtmlString(_("Ref")));
         $td1->addAttribute(new HtmlAttribute('class', 'tableheader2'));
         $row1->addNested($td1);
-        $td2 = new HtmlTd(new HtmlString(sql2date($this->model->transData["tran_date"])));
+        $td2 = new HtmlTd(new HtmlString(DateService::sql2dateStatic($this->model->transData["tran_date"])));
         $td2->addAttribute(new HtmlAttribute('class', 'tableheader2'));
         $row1->addNested($td2);
         $td3 = new HtmlTd(new HtmlString($this->model->transData["curr_code"]));

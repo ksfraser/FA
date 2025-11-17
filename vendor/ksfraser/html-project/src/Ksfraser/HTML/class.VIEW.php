@@ -190,7 +190,7 @@ class VIEW extends origin
 					}
 					else if( $this->col_type[$col] == "date" )
 					{
-						label_cell( sql2date( $myrow[$col] ) );
+						label_cell( DateService::sql2dateStatic( $myrow[$col] ) );
 					}
 					else if( $this->col_type[$col] == "edit" )
 					{

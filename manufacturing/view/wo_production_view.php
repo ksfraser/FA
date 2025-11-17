@@ -50,7 +50,7 @@ function display_wo_production($prod_id)
 	label_cell(get_trans_view_str(ST_WORKORDER,$myrow["workorder_id"]));
 	label_cell($myrow["stock_id"] . " - " . $myrow["StockDescription"]);
 	qty_cell($myrow["quantity"], false, get_qty_dec($myrow["stock_id"]));
-	label_cell(sql2date($myrow["date_"]));
+	label_cell(DateService::sql2dateStatic($myrow["date_"]));
 	end_row();
 
     comments_display_row(ST_MANURECEIVE, $prod_id);

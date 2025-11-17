@@ -42,7 +42,7 @@ function get_supplier_details_for_report()
 
 function getTransactions($supplier_id, $date)
 {
-	$date = date2sql($date);
+	$date = DateService::date2sqlStatic($date);
 
 	$sql = "SELECT SUM((ov_amount+ov_discount)*rate) AS Turnover
 		FROM ".TB_PREF."supp_trans

@@ -31,8 +31,8 @@ print_inventory_purchase();
 
 function getTransactions($category, $location, $fromsupp, $item, $from, $to)
 {
-	$from = date2sql($from);
-	$to = date2sql($to);
+	$from = DateService::date2sqlStatic($from);
+	$to = DateService::date2sqlStatic($to);
 	$sql = "SELECT item.category_id,
 			category.description AS cat_description,
 			item.stock_id,
@@ -229,14 +229,14 @@ function print_inventory_purchase()
 		if ($fromsupp == ALL_TEXT)
 		{
 			$rep->TextCol(1, 2, $trans['description'].($trans['inactive']==1 ? " ("._("Inactive").")" : ""), -1);
-			$rep->TextCol(2, 3, sql2date($trans['tran_date']));
+			$rep->TextCol(2, 3, DateService::sql2dateStatic($trans['tran_date']));
 			$rep->TextCol(3, 4, $trans['supp_reference']);
 			$rep->TextCol(4, 5, $trans['supplier_name']);
 		}
 		else
 		{
 			$rep->TextCol(1, 2, $trans['description'].($trans['inactive']==1 ? " ("._("Inactive").")" : ""), -1);
-			$rep->TextCol(2, 3, sql2date($trans['tran_date']));
+			$rep->TextCol(2, 3, DateService::sql2dateStatic($trans['tran_date']));
 			$rep->TextCol(3, 4, $trans['supp_reference']);
 		}	
 		$rep->AmountCol(5, 6, $trans['qty'], get_qty_dec($trans['stock_id']));

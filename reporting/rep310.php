@@ -32,8 +32,8 @@ print_inventory_purchase();
 
 function getTransactions($category, $location, $fromsupp, $item, $from, $to)
 {
-	$from = date2sql($from);
-	$to = date2sql($to);
+	$from = DateService::date2sqlStatic($from);
+	$to = DateService::date2sqlStatic($to);
 	$sql = "SELECT item.category_id,
 			category.description AS cat_description,
 			item.stock_id,
@@ -176,7 +176,7 @@ function print_inventory_purchase()
 		$stock_id = $trans['stock_id'];
 		$stock_description = $trans['description'];
 		$curr = get_supplier_currency($trans['supplier_id']);
-		$rate = BankingService::getExchangeRateFromHomeCurrency($curr, sql2date($trans['tran_date']));
+		$rate = BankingService::getExchangeRateFromHomeCurrency($curr, DateService::sql2dateStatic($trans['tran_date']));
 		$trans['price'] *= $rate;
 		//$rep->NewLine();
 		$trans['supp_reference'] = get_supp_inv_reference($trans['supplier_id'], $trans['stock_id'], $trans['tran_date']);
@@ -185,7 +185,7 @@ function print_inventory_purchase()
 		{
 			$rep->TextCol(0, 1, $trans['stock_id']);
 			$rep->TextCol(1, 2, $trans['description']. ($trans['inactive']==1 ? " ("._("Inactive").")" : ""), -1);
-			$rep->TextCol(2, 3, sql2date($trans['tran_date']));
+			$rep->TextCol(2, 3, DateService::sql2dateStatic($trans['tran_date']));
 			$rep->TextCol(3, 4, $trans['supp_reference']);
 			$rep->TextCol(4, 5, $trans['supplier_name']);
 		}
@@ -193,7 +193,7 @@ function print_inventory_purchase()
 		{
 			$rep->TextCol(0, 1, $trans['stock_id']);
 			$rep->TextCol(1, 2, $trans['description'].($trans['inactive']==1 ? " ("._("Inactive").")" : ""), -1);
-			$rep->TextCol(2, 3, sql2date($trans['tran_date']));
+			$rep->TextCol(2, 3, DateService::sql2dateStatic($trans['tran_date']));
 			$rep->TextCol(3, 4, $trans['supp_reference']);
 		}	
 		$rep->AmountCol(5, 6, $trans['qty'], get_qty_dec($trans['stock_id']));

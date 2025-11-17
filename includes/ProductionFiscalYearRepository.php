@@ -41,8 +41,8 @@ class ProductionFiscalYearRepository implements FiscalYearRepositoryInterface
             return true;
         }
 
-        $begin = \sql2date($fiscalYear['begin']);
-        $end = \sql2date($fiscalYear['end']);
+        $begin = \DateService::sql2dateStatic($fiscalYear['begin']);
+        $end = \DateService::sql2dateStatic($fiscalYear['end']);
 
         return (\DateService::date1GreaterDate2Static($date, $begin) || $date == $begin) &&
                (\DateService::date1GreaterDate2Static($end, $date) || $date == $end);
@@ -57,7 +57,7 @@ class ProductionFiscalYearRepository implements FiscalYearRepositoryInterface
      */
     public function isDateClosed(int $type, string $date): bool
     {
-        return \is_closed_trans($type, \date2sql($date));
+        return \is_closed_trans($type, \DateService::date2sqlStatic($date));
     }
 
     /**
@@ -68,7 +68,7 @@ class ProductionFiscalYearRepository implements FiscalYearRepositoryInterface
     public function getBeginFiscalYear(): string
     {
         $fiscalYear = $this->getCurrentFiscalYear();
-        return $fiscalYear ? \sql2date($fiscalYear['begin']) : '';
+        return $fiscalYear ? \DateService::sql2dateStatic($fiscalYear['begin']) : '';
     }
 
     /**
@@ -79,6 +79,6 @@ class ProductionFiscalYearRepository implements FiscalYearRepositoryInterface
     public function getEndFiscalYear(): string
     {
         $fiscalYear = $this->getCurrentFiscalYear();
-        return $fiscalYear ? \sql2date($fiscalYear['end']) : '';
+        return $fiscalYear ? \DateService::sql2dateStatic($fiscalYear['end']) : '';
     }
 }

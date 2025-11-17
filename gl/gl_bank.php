@@ -182,7 +182,7 @@ function create_cart($type, $trans_no)
 			$_POST['person_id'] = $bank_trans["person_id"];
 
 		$cart->memo_ = get_comments_string($type, $trans_no);
-		$cart->tran_date = sql2date($bank_trans['trans_date']);
+		$cart->tran_date = DateService::sql2dateStatic($bank_trans['trans_date']);
 
 		$cart->original_amount = $bank_trans['amount'];
 		$result = get_gl_trans($type, $trans_no);
@@ -250,7 +250,7 @@ function check_trans()
 
 		if (isset($trans['trans_no'])) {
 			display_error(sprintf(_("The bank transaction would result in exceed of authorized overdraft limit for transaction: %s #%s on %s."),
-				$systypes_array[$trans['type']], $trans['trans_no'], sql2date($trans['trans_date'])));
+				$systypes_array[$trans['type']], $trans['trans_no'], DateService::sql2dateStatic($trans['trans_date'])));
 			set_focus('amount');
 			$input_error = 1;
 		}	

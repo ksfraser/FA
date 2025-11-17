@@ -64,7 +64,7 @@ class AllocationsView
             $cells = [
                 $systypes_array[$allocRow['type']] ?? 'Unknown',
                 get_trans_view_str($allocRow['type'], $allocRow['trans_no']),
-                sql2date($allocRow['tran_date']),
+                DateService::sql2dateStatic($allocRow['tran_date']),
                 '', // amount_cell will be handled
                 '', // amount_cell
                 ''  // amount_cell

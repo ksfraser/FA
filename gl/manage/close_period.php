@@ -48,7 +48,7 @@ function check_data()
 		set_focus('date');
 		return false;
 	}
-	if (DateService::date1GreaterDate2Static(sql2date(get_company_pref('gl_closing_date')), $_POST['date']))
+	if (DateService::date1GreaterDate2Static(DateService::sql2dateStatic(get_company_pref('gl_closing_date')), $_POST['date']))
 	{
 		if (!$SysPrefs->allow_gl_reopen) {
 			display_error(_("The entered date is earlier than date already selected as closing date."));
@@ -74,7 +74,7 @@ function handle_submit()
 	{
 		display_notification(
 			sprintf( _("All transactions resulting in GL accounts changes up to %s has been closed for further edition."),
-			sql2date(get_company_pref('gl_closing_date'))) );
+			DateService::sql2dateStatic(get_company_pref('gl_closing_date'))) );
 	}
 
 }
@@ -102,7 +102,7 @@ br(1);
 start_form();
 start_table(TABLESTYLE2);
 if (!isset($_POST['date'])) {
-	$cdate = sql2date(get_company_pref('gl_closing_date'));
+	$cdate = DateService::sql2dateStatic(get_company_pref('gl_closing_date'));
 	$_POST['date'] = $cdate ;// ? DateService::endMonthStatic(DateService::addMonthsStatic($cdate, 1)) : DateService::todayStatic();
 }
 date_row(_("End date of closing period:"), 'date');

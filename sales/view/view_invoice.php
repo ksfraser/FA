@@ -145,11 +145,11 @@ label_cells(_("Shipping Company"), $myrow["shipper_name"], "class='tableheader2'
 label_cells(_("Sales Type"), $myrow["sales_type"], "class='tableheader2'");
 end_row();
 start_row();
-label_cells(_("Due Date"), sql2date($myrow["due_date"]), "class='tableheader2'", "nowrap");
+label_cells(_("Due Date"), DateService::sql2dateStatic($myrow["due_date"]), "class='tableheader2'", "nowrap");
 if ($myrow['prep_amount']==0)
 	label_cells(_("Deliveries"), get_customer_trans_view_str(ST_CUSTDELIVERY, 
 		get_sales_parent_numbers(ST_SALESINVOICE, $trans_id)), "class='tableheader2'");
-label_cells(_("Invoice Date"), sql2date($myrow["tran_date"]), "class='tableheader2'", "nowrap");
+label_cells(_("Invoice Date"), DateService::sql2dateStatic($myrow["tran_date"]), "class='tableheader2'", "nowrap");
 end_row();
 comments_display_row(ST_SALESINVOICE, $trans_id);
 end_table();

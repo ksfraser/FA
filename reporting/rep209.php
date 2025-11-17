@@ -145,7 +145,7 @@ function print_po()
 				$rep->TextCol(1, 2,	$myrow2['description'], -2);
 			} else
 				$rep->TextCol(0, 2,	$myrow2['description'], -2);
-			$rep->TextCol(2, 3,	sql2date($myrow2['delivery_date']), -2);
+			$rep->TextCol(2, 3,	DateService::sql2dateStatic($myrow2['delivery_date']), -2);
 			$rep->TextCol(3, 4,	$DisplayQty, -2);
 			$rep->TextCol(4, 5,	$myrow2['units'], -2);
 			$rep->TextCol(5, 6,	$DisplayPrice, -2);

@@ -61,8 +61,8 @@ label_cell($myrow["id"]);
 label_cell($myrow["reference"]);
 label_cell($myrow["name"]);
 label_cell($myrow["type_"]);
-label_cell(sql2date($myrow["date_"]));
-label_cell(sql2date($myrow["due_date"]));
+label_cell(DateService::sql2dateStatic($myrow["date_"]));
+label_cell(DateService::sql2dateStatic($myrow["due_date"]));
 end_row();
 
 comments_display_row(ST_DIMENSION, $id);

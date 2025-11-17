@@ -102,7 +102,7 @@ function check_can_delete($selected_id)
 {
 	$myrow = get_fiscalyear($selected_id);
 	// PREVENT DELETES IF DEPENDENT RECORDS IN gl_trans
-	if (check_years_before(sql2date($myrow['begin']), true))
+	if (check_years_before(DateService::sql2dateStatic($myrow['begin']), true))
 	{
 		display_error(_("Cannot delete this fiscal year because there are fiscal years before."));
 		return false;
@@ -153,8 +153,8 @@ function display_fiscalyears()
     	else
     		alt_table_row_color($k);
 
-		$from = sql2date($myrow["begin"]);
-		$to = sql2date($myrow["end"]);
+		$from = DateService::sql2dateStatic($myrow["begin"]);
+		$to = DateService::sql2dateStatic($myrow["end"]);
 		if ($myrow["closed"] == 0)
 		{
 			$closed_text = _("No");
@@ -196,8 +196,8 @@ function display_fiscalyear_edit($selected_id)
 		{
 			$myrow = get_fiscalyear($selected_id);
 
-			$_POST['from_date'] = sql2date($myrow["begin"]);
-			$_POST['to_date']  = sql2date($myrow["end"]);
+			$_POST['from_date'] = DateService::sql2dateStatic($myrow["begin"]);
+			$_POST['to_date']  = DateService::sql2dateStatic($myrow["end"]);
 			$_POST['closed']  = $myrow["closed"];
 		}
 		hidden('from_date');

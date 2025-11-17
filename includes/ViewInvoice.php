@@ -185,7 +185,7 @@ class ViewInvoice
         $td10 = new HtmlTd(new HtmlString(_("Due Date")));
         $td10->addAttribute(new HtmlAttribute('class', 'tableheader2'));
         $row4->addNested($td10);
-        $td11 = new HtmlTd(new HtmlString(sql2date($this->model->transData["due_date"])));
+        $td11 = new HtmlTd(new HtmlString(DateService::sql2dateStatic($this->model->transData["due_date"])));
         $td11->addAttribute(new HtmlAttribute('class', 'tableheader2'));
         $td11->addAttribute(new HtmlAttribute('nowrap', ''));
         $row4->addNested($td11);

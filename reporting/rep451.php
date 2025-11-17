@@ -28,7 +28,7 @@ include_once($path_to_root . "/fixed_assets/includes/fa_classes_db.inc");
 
 function find_last_location($stock_id, $end_date)
 {
-	$end_date = date2sql($end_date);
+	$end_date = DateService::date2sqlStatic($end_date);
 	$sql = "SELECT loc_code FROM ".TB_PREF."stock_moves WHERE stock_id = ".db_escape($stock_id)." AND
 		tran_date <= '$end_date' ORDER BY tran_date DESC LIMIT 1";
 	$res = db_query($sql,"No stock moves were returned");
@@ -105,7 +105,7 @@ function print_fixed_assets_valuation_report()
 		if ($location != 'all' && $location != $loc)
 			continue;
 		$purchase = get_fixed_asset_purchase($trans['stock_id']);
-		$d = sql2date($purchase['tran_date']);
+		$d = DateService::sql2dateStatic($purchase['tran_date']);
 		if (DateService::date1GreaterDate2Static($d, $date))
 			continue;
 		if ($class != 0 && $cln != $trans['description'])

@@ -230,7 +230,7 @@ function print_annual_expense_breakdown()
 	$result = db_query($sql, "could not get fiscal year");
 	$row = db_fetch($result);
 	
-	$year = sql2date($row['begin'])." - ".sql2date($row['end']);
+	$year = DateService::sql2dateStatic($row['begin'])." - ".DateService::sql2dateStatic($row['end']);
 	$yr = $row['yr'];
 	$mo = $row['mo'];
 	$da = 1;

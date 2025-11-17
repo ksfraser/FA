@@ -110,7 +110,7 @@ function is_closed($row)
 
 function is_overdue($row)
 {
-	return \FA\Services\DateService::dateDiff(DateService::todayStatic(), sql2date($row["due_date"]), "d") > 0;
+	return \FA\Services\DateService::dateDiff(DateService::todayStatic(), DateService::sql2dateStatic($row["due_date"]), "d") > 0;
 }
 
 function edit_link($row)

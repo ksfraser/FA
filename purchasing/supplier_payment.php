@@ -73,7 +73,7 @@ if (!isset($_POST['bank_account'])) { // first page call
 		if ($inv) {
 			$_SESSION['alloc']->person_id = $_POST['supplier_id'] = $inv['supplier_id'];
 			$_SESSION['alloc']->read();
-			$_POST['DatePaid'] = sql2date($inv['tran_date']);
+			$_POST['DatePaid'] = DateService::sql2dateStatic($inv['tran_date']);
 			$_POST['memo_'] = $inv['supp_reference'];
 			foreach($_SESSION['alloc']->allocs as $line => $trans) {
 				if ($trans->type == $_GET['trans_type'] && $trans->type_no == $_GET['PInvoice']) {
@@ -117,7 +117,7 @@ if (isset($_GET['AddedID'])) {
 
 function get_default_supplier_payment_bank_account($supplier_id, $date)
 {
-	$previous_payment = get_supp_payment_before($supplier_id, date2sql($date));
+	$previous_payment = get_supp_payment_before($supplier_id, DateService::date2sqlStatic($date));
 	if ($previous_payment)
 	{
 		return $previous_payment['bank_id'];

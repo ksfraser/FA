@@ -83,7 +83,7 @@ function print_gl_rows(&$rep, $result, $title)
 		while($myrow = db_fetch($result)) {
 			$rep->NewLine();
 			$rep->TextCol(0, 2, $systypes_array[$myrow['type']] . ' ' . $myrow['type_no'], -2);
-			$rep->TextCol(2, 3, sql2date($myrow["tran_date"]), -2);
+			$rep->TextCol(2, 3, DateService::sql2dateStatic($myrow["tran_date"]), -2);
 			$rep->TextCol(3, 4, $myrow['account'], -2);
 			$rep->TextCol(4, 5, $myrow['account_name'], -2);
 			if ($myrow['amount'] > 0.0)
@@ -178,8 +178,8 @@ function print_work_order_listing()
 		$rep->AmountCol(5, 6, $trans['units_reqd'], $dec);
 		$rep->AmountCol(6, 7, $trans['units_issued'], $dec);
 		$rep->TextCol(7, 8, '', -1);
-		$rep->TextCol(8, 9, sql2date($trans['date_']), -1);
-		$rep->TextCol(9, 10, sql2date($trans['required_by']), -1);
+		$rep->TextCol(8, 9, DateService::sql2dateStatic($trans['date_']), -1);
+		$rep->TextCol(9, 10, DateService::sql2dateStatic($trans['required_by']), -1);
 		$rep->TextCol(10, 11, $trans['closed'] ? ' ' : _('No'), -1);
 		if ($show_gl)
 		{

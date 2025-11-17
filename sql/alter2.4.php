@@ -245,7 +245,7 @@ class fa2_4 extends fa_patch {
 
 		$sql = "UPDATE ".TB_PREF."grn_batch SET rate=%s WHERE id=%d";
 		while ($grn = db_fetch($result))
-			db_query(sprintf($sql, BankingService::getExchangeRateFromHomeCurrencyStatic($grn['curr_code'], sql2date($grn['delivery_date'])), $grn['id']));
+			db_query(sprintf($sql, BankingService::getExchangeRateFromHomeCurrencyStatic($grn['curr_code'], DateService::sql2dateStatic($grn['delivery_date'])), $grn['id']));
 
 		return true;
 	}

@@ -234,7 +234,7 @@ function print_invoices()
 					{
 						$rep->NewLine();
 						$c = 0; $tot_pym += $invoice['prep_amount'];
-						$rep->TextCol($c++, $c,	sql2date($invoice['tran_date']));
+						$rep->TextCol($c++, $c,	DateService::sql2dateStatic($invoice['tran_date']));
 						$rep->TextCol($c++, $c,	$invoice['reference']);
 						$rep->TextCol($c++, $c, number_format2($invoice['prep_amount'], $dec));
 					}

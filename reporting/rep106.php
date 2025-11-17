@@ -32,8 +32,8 @@ print_salesman_list();
 
 function GetSalesmanTrans($from, $to)
 {
-	$fromdate = date2sql($from);
-	$todate = date2sql($to);
+	$fromdate = DateService::date2sqlStatic($from);
+	$todate = DateService::date2sqlStatic($to);
 
 	$sql = "SELECT DISTINCT trans.*,
 			ov_amount+ov_discount AS InvoiceTotal,

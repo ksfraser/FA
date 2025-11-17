@@ -30,8 +30,8 @@ print_sales_summary_report();
 
 function getTaxTransactions($from, $to, $tax_id)
 {
-	$fromdate = date2sql($from);
-	$todate = date2sql($to);
+	$fromdate = DateService::date2sqlStatic($from);
+	$todate = DateService::date2sqlStatic($to);
 
 	$sql = "SELECT d.debtor_no, d.name AS cust_name, d.tax_id, dt.type, dt.trans_no,  
 			CASE WHEN dt.type=".ST_CUSTCREDIT." THEN (ov_amount+ov_freight+ov_discount)*-1 

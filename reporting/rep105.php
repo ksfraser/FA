@@ -32,8 +32,8 @@ print_order_status_list();
 
 function GetSalesOrders($from, $to, $category=0, $location=null, $backorder=0)
 {
-	$fromdate = date2sql($from);
-	$todate = date2sql($to);
+	$fromdate = DateService::date2sqlStatic($from);
+	$todate = DateService::date2sqlStatic($to);
 
 	$sql= "SELECT sorder.order_no,
 				sorder.debtor_no,

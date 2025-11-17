@@ -179,7 +179,7 @@ function show_results()
 
     	$running_total += $myrow["amount"];
 
-    	$trandate = sql2date($myrow["tran_date"]);
+    	$trandate = DateService::sql2dateStatic($myrow["tran_date"]);
 
     	label_cell($systypes_array[$myrow["type"]]);
 		label_cell(get_gl_view_str($myrow["type"], $myrow["type_no"], $myrow["type_no"], true));

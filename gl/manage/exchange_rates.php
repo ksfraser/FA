@@ -120,7 +120,7 @@ function display_rate_edit()
 
 		$myrow = get_exchange_rate($selected_id);
 
-		$_POST['date_'] = sql2date($myrow["date_"]);
+		$_POST['date_'] = DateService::sql2dateStatic($myrow["date_"]);
 		$_POST['BuyRate'] = maxprec_format($myrow["rate_buy"]);
 
 		hidden('selected_id', $selected_id);

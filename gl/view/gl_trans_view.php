@@ -58,12 +58,12 @@ function display_gl_heading($myrow)
 	{
 	label_cell($myrow["supp_reference"], "align='center'");
 	}
-	label_cell(sql2date($myrow["doc_date"]), "align='center'");
+	label_cell(DateService::sql2dateStatic($myrow["doc_date"]), "align='center'");
 	if ($journal)
 	{
 		$header = get_journal($myrow['type'], $_GET['trans_no']);
-		label_cell($header["doc_date"] == '0000-00-00' ? '-' : sql2date($header["doc_date"]), "align='center'");
-		label_cell($header["event_date"] == '0000-00-00' ? '-' : sql2date($header["event_date"]), "align='center'");
+		label_cell($header["doc_date"] == '0000-00-00' ? '-' : DateService::sql2dateStatic($header["doc_date"]), "align='center'");
+		label_cell($header["event_date"] == '0000-00-00' ? '-' : DateService::sql2dateStatic($header["event_date"]), "align='center'");
 	} else
 		label_cell(get_counterparty_name($_GET['type_id'],$_GET['trans_no']));
 	label_cell( get_journal_number($myrow['type'], $_GET['trans_no']), "align='center'");
@@ -124,7 +124,7 @@ while ($myrow = db_fetch($result))
 	$counterpartyname = get_subaccount_name($myrow["account"], $myrow["person_id"]);
 	$counterparty_id = $counterpartyname ? sprintf(' %05d', $myrow["person_id"]) : '';
 
-    label_cell(sql2date($myrow['tran_date']));
+    label_cell(DateService::sql2dateStatic($myrow['tran_date']));
     label_cell($myrow['account'].$counterparty_id);
 	label_cell($myrow['account_name'] . ($counterpartyname ? ': '.$counterpartyname : ''));
 	if ($dim >= 1)

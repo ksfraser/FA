@@ -31,7 +31,7 @@ print_supplier_balances();
 function get_open_balance($supplier_id, $to)
 {
     if ($to)
-        $to = date2sql($to);
+        $to = DateService::date2sqlStatic($to);
 
     $sql = "SELECT SUM(IF(t.type = ".ST_SUPPINVOICE." OR (t.type IN (".ST_JOURNAL." , ".ST_BANKDEPOSIT.") AND t.ov_amount>0),
         -abs(t.ov_amount + t.ov_gst + t.ov_discount), 0)) AS charges,";
@@ -56,8 +56,8 @@ function get_open_balance($supplier_id, $to)
 
 function getTransactions($supplier_id, $from, $to)
 {
-	$from = date2sql($from);
-	$to = date2sql($to);
+	$from = DateService::date2sqlStatic($from);
+	$to = DateService::date2sqlStatic($to);
 
     $sql = "SELECT *,
 				(ov_amount + ov_gst + ov_discount) AS TotalAmount,
