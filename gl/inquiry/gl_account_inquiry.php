@@ -152,7 +152,7 @@ function show_results()
 	else
 	{
 		$begin = get_fiscalyear_begin_for_date($_POST['TransFromDate']);
-		if (date1_greater_date2($begin, $_POST['TransFromDate']))
+		if (DateService::date1GreaterDate2Static($begin, $_POST['TransFromDate']))
 			$begin = $_POST['TransFromDate'];
 		$begin = DateService::addDaysStatic($begin, -1);
 	}

@@ -106,7 +106,7 @@ function print_fixed_assets_valuation_report()
 			continue;
 		$purchase = get_fixed_asset_purchase($trans['stock_id']);
 		$d = sql2date($purchase['tran_date']);
-		if (date1_greater_date2($d, $date))
+		if (DateService::date1GreaterDate2Static($d, $date))
 			continue;
 		if ($class != 0 && $cln != $trans['description'])
 			continue;

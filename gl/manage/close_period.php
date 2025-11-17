@@ -36,7 +36,7 @@ function check_data()
 {
 	global $SysPrefs;
 	
-	if (!DateService::isDate($_POST['date']) || date1_greater_date2($_POST['date'], Today()))
+	if (!DateService::isDate($_POST['date']) || DateService::date1GreaterDate2Static($_POST['date'], Today()))
 	{
 		display_error( _("The entered date is invalid."));
 		set_focus('date');
@@ -48,7 +48,7 @@ function check_data()
 		set_focus('date');
 		return false;
 	}
-	if (date1_greater_date2(sql2date(get_company_pref('gl_closing_date')), $_POST['date']))
+	if (DateService::date1GreaterDate2Static(sql2date(get_company_pref('gl_closing_date')), $_POST['date']))
 	{
 		if (!$SysPrefs->allow_gl_reopen) {
 			display_error(_("The entered date is earlier than date already selected as closing date."));

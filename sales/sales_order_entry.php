@@ -443,7 +443,7 @@ function can_process() {
 			set_focus('delivery_date');
 			return false;
 		}
-		if (date1_greater_date2($_POST['OrderDate'], $_POST['delivery_date'])) {
+		if (DateService::date1GreaterDate2Static($_POST['OrderDate'], $_POST['delivery_date'])) {
 			if ($_SESSION['Items']->trans_type==ST_SALESQUOTE)
 				display_error(_("The requested valid date is before the date of the quotation."));
 			else	

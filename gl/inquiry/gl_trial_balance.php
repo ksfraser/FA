@@ -82,7 +82,7 @@ function display_trial_balance($type, $typename)
 	$accounts = get_gl_accounts(null, null, $type);
 
 	$begin = get_fiscalyear_begin_for_date($_POST['TransFromDate']);
-	if (date1_greater_date2($begin, $_POST['TransFromDate']))
+	if (DateService::date1GreaterDate2Static($begin, $_POST['TransFromDate']))
 		$begin = $_POST['TransFromDate'];
 	$begin = DateService::addDaysStatic($begin, -1);
 
@@ -214,7 +214,7 @@ gl_inquiry_controls();
 if (isset($_POST['TransFromDate']))
 {
 	$row = get_current_fiscalyear();
-	if (date1_greater_date2($_POST['TransFromDate'], sql2date($row['end'])))
+	if (DateService::date1GreaterDate2Static($_POST['TransFromDate'], sql2date($row['end'])))
 	{
 		display_error(_("The from date cannot be bigger than the fiscal year end."));
 		set_focus('TransFromDate');

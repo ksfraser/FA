@@ -44,8 +44,8 @@ class ProductionFiscalYearRepository implements FiscalYearRepositoryInterface
         $begin = \sql2date($fiscalYear['begin']);
         $end = \sql2date($fiscalYear['end']);
 
-        return (\date1_greater_date2($date, $begin) || $date == $begin) &&
-               (\date1_greater_date2($end, $date) || $date == $end);
+        return (\DateService::date1GreaterDate2Static($date, $begin) || $date == $begin) &&
+               (\DateService::date1GreaterDate2Static($end, $date) || $date == $end);
     }
 
     /**

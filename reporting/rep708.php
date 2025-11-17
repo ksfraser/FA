@@ -39,7 +39,7 @@ function display_type ($type, $typename, &$dec, &$rep, $from, $to, $zero, $balan
 	$accounts = get_gl_accounts(null, null, $type);	
 	
 	$begin = get_fiscalyear_begin_for_date($from);
-	if (date1_greater_date2($begin, $from))
+	if (DateService::date1GreaterDate2Static($begin, $from))
 		$begin = $from;
 	$begin = DateService::addDaysStatic($begin, -1);
 	while ($account=db_fetch($accounts))

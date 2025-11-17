@@ -31,7 +31,7 @@ if (isset($_POST['add']) || isset($_POST['delete']))
 {
 	begin_transaction();
 
-	for ($i = 0, $da = $_POST['begin']; date1_greater_date2($_POST['end'], $da); $i++)
+	for ($i = 0, $da = $_POST['begin']; DateService::date1GreaterDate2Static($_POST['end'], $da); $i++)
 	{
 		if (isset($_POST['add']))
 			add_update_gl_budget_trans($da, $_POST['account'], $_POST['dim1'], $_POST['dim2'], input_num('amount'.$i));
@@ -100,7 +100,7 @@ if (db_has_gl_accounts())
 	hidden('begin');
 	hidden('end');
 	$total = $btotal = $ltotal = 0;
-	for ($i = 0, $date_ = $_POST['begin']; date1_greater_date2($_POST['end'], $date_); $i++)
+	for ($i = 0, $date_ = $_POST['begin']; DateService::date1GreaterDate2Static($_POST['end'], $date_); $i++)
 	{
 		start_row();
 		if (get_post('update') == '')

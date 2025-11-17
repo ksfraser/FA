@@ -208,7 +208,7 @@ function is_date_in_fiscalyear($date, $convert=false)
 	$myrow = get_current_fiscalyear();
 	$begin = sql2date($myrow['begin']);
 	$end = sql2date($myrow['end']);
-	if (date1_greater_date2($begin, $date2) || date1_greater_date2($date2, $end))
+	if (DateService::date1GreaterDate2Static($begin, $date2) || DateService::date1GreaterDate2Static($date2, $end))
 	{
 		return 0;
 	}
@@ -217,7 +217,7 @@ function is_date_in_fiscalyear($date, $convert=false)
 
 function is_date_closed($date)
 {
-	return !date1_greater_date2($date, sql2date(get_company_pref('gl_closing_date')));
+	return !DateService::date1GreaterDate2Static($date, sql2date(get_company_pref('gl_closing_date')));
 }
 
 function begin_fiscalyear()

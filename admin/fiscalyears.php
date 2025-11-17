@@ -52,7 +52,7 @@ function check_data()
 		set_focus('from_date');
 		return false;
 	}
-	if (date1_greater_date2($_POST['from_date'], $_POST['to_date']))
+	if (DateService::date1GreaterDate2Static($_POST['from_date'], $_POST['to_date']))
 	{
 		display_error( _("BEGIN date bigger than END date."));
 		set_focus('from_date');
