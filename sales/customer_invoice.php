@@ -51,7 +51,7 @@ page($_SESSION['page_title'], false, false, "", $js);
 
 //-----------------------------------------------------------------------------
 
-check_edit_conflicts(get_post('cart_id'));
+check_edit_conflicts(RequestService::getPostStatic('cart_id'));
 
 if (isset($_GET['AddedID'])) {
 
@@ -385,7 +385,7 @@ if (isset($_POST['process_invoice']) && check_data()) {
 if(list_updated('payment')) {
 	$order = &$_SESSION['Items']; 
 	copy_to_cart();
-	$order->payment = get_post('payment');
+	$order->payment = RequestService::getPostStatic('payment');
 	$order->payment_terms = get_payment_terms($order->payment);
 	$_POST['due_date'] = $order->due_date = get_invoice_duedate($order->payment, $order->document_date);
 	$_POST['Comments'] = '';
@@ -451,7 +451,7 @@ if ($_SESSION['Items']->trans_no == 0) {
 	ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'", false, ST_SALESINVOICE,
 		array('customer' => $_SESSION['Items']->customer_id,
 			'branch' => $_SESSION['Items']->Branch,
-			'date' => get_post('InvoiceDate')));
+			'date' => RequestService::getPostStatic('InvoiceDate')));
 } else {
 	label_cells(_("Reference"), $_SESSION['Items']->reference, "class='tableheader2'");
 }

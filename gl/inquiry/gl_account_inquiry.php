@@ -34,7 +34,7 @@ page(_($help_context = "General Ledger Inquiry"), false, false, '', $js);
 //----------------------------------------------------------------------------------------------------
 // Ajax updates
 //
-if (get_post('Show')) 
+if (RequestService::getPostStatic('Show')) 
 {
 	$Ajax->activate('trans_tbl');
 }
@@ -236,7 +236,7 @@ gl_inquiry_controls();
 
 div_start('trans_tbl');
 
-if (get_post('Show') || get_post('account'))
+if (RequestService::getPostStatic('Show') || RequestService::getPostStatic('account'))
     show_results();
 
 div_end();

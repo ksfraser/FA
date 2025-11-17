@@ -29,7 +29,7 @@ set_page_security( @$_POST['order_view_mode'],
 			'PrepaidOrders' => 'SA_SALESINVOICE')
 );
 
-if (get_post('type'))
+if (RequestService::getPostStatic('type'))
 	$trans_type = $_POST['type'];
 elseif (isset($_GET['type']) && $_GET['type'] == ST_SALESQUOTE)
 	$trans_type = ST_SALESQUOTE;
@@ -214,9 +214,9 @@ $show_dates = !in_array($_POST['order_view_mode'], array('OutstandingOnly', 'Inv
 //---------------------------------------------------------------------------------------------
 //	Order range form
 //
-if (get_post('_OrderNumber_changed') || get_post('_OrderReference_changed')) // enable/disable selection controls
+if (RequestService::getPostStatic('_OrderNumber_changed') || RequestService::getPostStatic('_OrderReference_changed')) // enable/disable selection controls
 {
-	$disable = get_post('OrderNumber') !== '' || get_post('OrderReference') !== '';
+	$disable = RequestService::getPostStatic('OrderNumber') !== '' || RequestService::getPostStatic('OrderReference') !== '';
 
   	if ($show_dates) {
 		$Ajax->addDisable(true, 'OrdersAfterDate', $disable);
@@ -273,9 +273,9 @@ end_table(1);
 //---------------------------------------------------------------------------------------------
 //	Orders inquiry table
 //
-$sql = get_sql_for_sales_orders_view($trans_type, get_post('OrderNumber'), get_post('order_view_mode'),
-	get_post('SelectStockFromList'), get_post('OrdersAfterDate'), get_post('OrdersToDate'), get_post('OrderReference'), get_post('StockLocation'), get_post('customer_id'), check_value('show_voided'),
-	get_post('by_delivery'), get_post('no_auto'));
+$sql = get_sql_for_sales_orders_view($trans_type, RequestService::getPostStatic('OrderNumber'), RequestService::getPostStatic('order_view_mode'),
+	RequestService::getPostStatic('SelectStockFromList'), RequestService::getPostStatic('OrdersAfterDate'), RequestService::getPostStatic('OrdersToDate'), RequestService::getPostStatic('OrderReference'), RequestService::getPostStatic('StockLocation'), RequestService::getPostStatic('customer_id'), check_value('show_voided'),
+	RequestService::getPostStatic('by_delivery'), RequestService::getPostStatic('no_auto'));
 
 if ($trans_type == ST_SALESORDER)
 	$cols = array(

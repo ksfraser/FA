@@ -75,8 +75,8 @@ function display_credit_header(&$order)
 	set_global_customer($_POST['customer_id']);
 
 	if (!isset($_POST['ref']))
-		$_POST['ref'] = $Refs->get_next(ST_CUSTCREDIT, null, array('customer' => get_post('customer_id'),
-			'branch' => get_post('branch_id'), 'date' => get_post('OrderDate')));
+		$_POST['ref'] = $Refs->get_next(ST_CUSTCREDIT, null, array('customer' => RequestService::getPostStatic('customer_id'),
+			'branch' => RequestService::getPostStatic('branch_id'), 'date' => RequestService::getPostStatic('OrderDate')));
 	if ($order->trans_no==0)
 		ref_row(_("Reference").':', 'ref', _('Reference number unique for this document type'), null, '', $order->trans_type, array('date'=> @$_POST['OrderDate']));
 	else
@@ -141,7 +141,7 @@ function display_credit_header(&$order)
 		foreach ($order->line_items as $line_no=>$item) {
 			$line = &$order->line_items[$line_no];
 			$line->price = get_price($line->stock_id, $order->customer_currency,
-				$order->sales_type, $order->price_factor, get_post('OrderDate'));
+				$order->sales_type, $order->price_factor, RequestService::getPostStatic('OrderDate'));
 		}
 	    $Ajax->activate('items_table');
 	}
@@ -215,7 +215,7 @@ function display_credit_items($title, &$order)
 		$_POST['ChargeFreightCost'] = 0;
 	start_row();
 	label_cell(_("Shipping"), "colspan=$colspan align=right");
-	small_amount_cells(null, 'ChargeFreightCost', price_format(get_post('ChargeFreightCost',0)));
+	small_amount_cells(null, 'ChargeFreightCost', price_format(RequestService::getPostStatic('ChargeFreightCost',0)));
     label_cell('', 'colspan=2');
 	end_row();
 
@@ -268,7 +268,7 @@ function credit_edit_item_controls(&$order, $rowcounter, $line_no=-1)
 		$units = !$item_info ? "" : $item_info["units"];
 		$price = get_price($_POST['stock_id'],
 			$order->customer_currency, $order->sales_type,
-			$order->price_factor, get_post('OrderDate'));
+			$order->price_factor, RequestService::getPostStatic('OrderDate'));
 		$_POST['price'] = price_format($price);
 		
 		// default to the customer's discount %

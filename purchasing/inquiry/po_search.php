@@ -31,12 +31,12 @@ if (isset($_GET['order_number']))
 //-----------------------------------------------------------------------------------
 // Ajax updates
 //
-if (get_post('SearchOrders')) 
+if (RequestService::getPostStatic('SearchOrders')) 
 {
 	$Ajax->activate('orders_tbl');
-} elseif (get_post('_order_number_changed')) 
+} elseif (RequestService::getPostStatic('_order_number_changed')) 
 {
-	$disable = get_post('order_number') !== '';
+	$disable = RequestService::getPostStatic('order_number') !== '';
 
 	$Ajax->addDisable(true, 'OrdersAfterDate', $disable);
 	$Ajax->addDisable(true, 'OrdersToDate', $disable);
@@ -107,8 +107,8 @@ function check_overdue($row)
 //---------------------------------------------------------------------------------------------
 
 //figure out the sql required from the inputs available
-$sql = get_sql_for_po_search(get_post('OrdersAfterDate'), get_post('OrdersToDate'), get_post('supplier_id'), get_post('StockLocation'),
-	$_POST['order_number'], get_post('SelectStockFromList'));
+$sql = get_sql_for_po_search(RequestService::getPostStatic('OrdersAfterDate'), RequestService::getPostStatic('OrdersToDate'), RequestService::getPostStatic('supplier_id'), RequestService::getPostStatic('StockLocation'),
+	$_POST['order_number'], RequestService::getPostStatic('SelectStockFromList'));
 
 //$result = db_query($sql,"No orders were returned");
 
@@ -127,7 +127,7 @@ $cols = array(
 		array('insert'=>true, 'fun'=>'prt_link')
 );
 
-if (get_post('StockLocation') != ALL_TEXT) {
+if (RequestService::getPostStatic('StockLocation') != ALL_TEXT) {
 	$cols[_("Location")] = 'skip';
 }
 

@@ -339,7 +339,7 @@ class simple_crud_view extends user_view {
 	{
 		// Restore previous mode/key (obsolete for views stored in session)
 
-		$mod = get_post($this->name.'Mode', $this->Mode);
+		$mod = RequestService::getPostStatic($this->name.'Mode', $this->Mode);
 		if ($mod) {
 			if (is_array($mod)) {
 				$val = key($mod);
@@ -621,7 +621,7 @@ class selector_crud_view extends simple_crud_view {
 
 		$list = $this->name.'_id';
 		$this->prev_id = $this->selected_id;
-		$this->selected_id = get_post($list);
+		$this->selected_id = RequestService::getPostStatic($list);
 		if (list_updated($list)) {
 			$Ajax->activate($this->name);
 			$Ajax->activate($this->name.'_controls');
@@ -633,7 +633,7 @@ class selector_crud_view extends simple_crud_view {
 		if ($mod != $prev_mode) {
 			$Ajax->activate($this->name.'_controls');
 		}
-		if (get_post('_show_inactive_update'))
+		if (RequestService::getPostStatic('_show_inactive_update'))
 		{
 			$Ajax->activate($this->name.'_id');
 		}

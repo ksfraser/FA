@@ -195,19 +195,19 @@ set_global_customer($_POST['customer_id']);
 div_start('totals_tbl');
 if ($_POST['customer_id'] != "" && $_POST['customer_id'] != ALL_TEXT)
 {
-	$customer_record = get_customer_details(get_post('customer_id'), get_post('TransToDate'), false);
+	$customer_record = get_customer_details(RequestService::getPostStatic('customer_id'), RequestService::getPostStatic('TransToDate'), false);
     display_customer_summary($customer_record);
     echo "<br>";
 }
 div_end();
 
-if (get_post('RefreshInquiry') || list_updated('filterType'))
+if (RequestService::getPostStatic('RefreshInquiry') || list_updated('filterType'))
 {
 	$Ajax->activate('_page_body');
 }
 //------------------------------------------------------------------------------------------------
-$sql = get_sql_for_customer_inquiry(get_post('TransAfterDate'), get_post('TransToDate'),
-	get_post('customer_id'), get_post('filterType'), check_value('show_voided'), get_post('Ref'));
+$sql = get_sql_for_customer_inquiry(RequestService::getPostStatic('TransAfterDate'), RequestService::getPostStatic('TransToDate'),
+	RequestService::getPostStatic('customer_id'), RequestService::getPostStatic('filterType'), check_value('show_voided'), RequestService::getPostStatic('Ref'));
 
 //------------------------------------------------------------------------------------------------
 //db_query("set @bal:=0");

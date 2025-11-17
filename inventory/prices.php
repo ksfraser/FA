@@ -55,7 +55,7 @@ if (!isset($_POST['curr_abrev']))
 //---------------------------------------------------------------------------------------------------
 $action = $_SERVER['PHP_SELF'];
 if ($page_nested)
-	$action .= "?stock_id=".get_post('stock_id');
+	$action .= "?stock_id=".RequestService::getPostStatic('stock_id');
 start_form(false, false, $action);
 
 if (!isset($_POST['stock_id']))
@@ -195,8 +195,8 @@ currencies_list_row(_("Currency:"), 'curr_abrev', null, true);
 sales_types_list_row(_("Sales Type:"), 'sales_type_id', null, true);
 
 if (!isset($_POST['price'])) {
-	$_POST['price'] = price_format(get_kit_price(get_post('stock_id'), 
-		get_post('curr_abrev'),	get_post('sales_type_id')));
+	$_POST['price'] = price_format(get_kit_price(RequestService::getPostStatic('stock_id'), 
+		RequestService::getPostStatic('curr_abrev'),	RequestService::getPostStatic('sales_type_id')));
 }
 
 $kit = get_item_code_dflts($_POST['stock_id']);

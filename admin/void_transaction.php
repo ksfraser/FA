@@ -182,7 +182,7 @@ function voiding_controls()
     end_table(1);
     
 	$trans_ref = false;
-	$sql = get_sql_for_view_transactions(get_post('filterType'), get_post('FromTransNo'), get_post('ToTransNo'), $trans_ref);
+	$sql = get_sql_for_view_transactions(RequestService::getPostStatic('filterType'), RequestService::getPostStatic('FromTransNo'), RequestService::getPostStatic('ToTransNo'), $trans_ref);
 	if ($sql == "")
 		return;
 

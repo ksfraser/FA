@@ -27,7 +27,7 @@ function simple_page_mode2($numeric_id = true)
 	global $Ajax, $Mode2, $selected_id2;
 
 	$default = $numeric_id ? -1 : '';
-	$selected_id2 = get_post('selected_id2', $default);
+	$selected_id2 = RequestService::getPostStatic('selected_id2', $default);
 	foreach (array('ADD_ITEM2', 'UPDATE_ITEM2', 'RESET2') as $m) {
 		if (isset($_POST[$m])) {
 			$Ajax->activate('_page_body');
@@ -74,7 +74,7 @@ function can_process()
 		set_focus('description');
 		return false;
 	}
-	$bal_type = get_post('bal_type');
+	$bal_type = RequestService::getPostStatic('bal_type');
 	if ($bal_type == 1 && $_POST['type'] != QE_JOURNAL)
 	{
 		display_error( _("You can only use Balance Based together with Journal Entries."));
@@ -102,13 +102,13 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		if ($selected_id != -1) 
 		{
 			update_quick_entry($selected_id, $_POST['description'], $_POST['type'],
-				 input_num('base_amount'), $_POST['base_desc'], get_post('bal_type', 0), $_POST['usage']);
+				 input_num('base_amount'), $_POST['base_desc'], RequestService::getPostStatic('bal_type', 0), $_POST['usage']);
 			display_notification(_('Selected quick entry has been updated'));
 		} 
 		else 
 		{
 			add_quick_entry($_POST['description'], $_POST['type'], 
-				input_num('base_amount'), $_POST['base_desc'], get_post('bal_type', 0), $_POST['usage']);
+				input_num('base_amount'), $_POST['base_desc'], RequestService::getPostStatic('bal_type', 0), $_POST['usage']);
 			display_notification(_('New quick entry has been added'));
 		}
 		$Mode = 'RESET';
@@ -117,20 +117,20 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
 if ($Mode2=='ADD_ITEM2' || $Mode2=='UPDATE_ITEM2') 
 {
-	if (!get_post('dest_id')) {
+	if (!RequestService::getPostStatic('dest_id')) {
    		display_error(_("You must select GL account."));
 		set_focus('dest_id');
 	}
 	elseif ($selected_id2 != -1) 
 	{
 		update_quick_entry_line($selected_id2, $selected_id, $_POST['actn'], $_POST['dest_id'], input_num('amount', 0), 
-			$_POST['dimension_id'], $_POST['dimension2_id'], get_post('memo'));
+			$_POST['dimension_id'], $_POST['dimension2_id'], RequestService::getPostStatic('memo'));
 		display_notification(_('Selected quick entry line has been updated'));
 	} 
 	else 
 	{
 		add_quick_entry_line($selected_id, $_POST['actn'], $_POST['dest_id'], input_num('amount', 0), 
-			$_POST['dimension_id'], $_POST['dimension2_id'], get_post('memo'));
+			$_POST['dimension_id'], $_POST['dimension2_id'], RequestService::getPostStatic('memo'));
 		display_notification(_('New quick entry line has been added'));
 	}
 	$Mode2 = 'RESET2';
@@ -157,7 +157,7 @@ if (find_submit('Edit') != -1) {
 	$Mode2 = 'RESET2';
 	set_focus('description');
 }
-if (find_submit('BEd') != -1 || get_post('ADD_ITEM2')) {
+if (find_submit('BEd') != -1 || RequestService::getPostStatic('ADD_ITEM2')) {
 	set_focus('actn');
 }
 
@@ -232,7 +232,7 @@ text_row_ex(_("Usage").':', 'usage', 80, 120);
 
 quick_entry_types_list_row(_("Entry Type").':', 'type', null, true);
 
-if (get_post('type') == QE_JOURNAL)
+if (RequestService::getPostStatic('type') == QE_JOURNAL)
 {
 	yesno_list_row(_("Balance Based"), 'bal_type', null, _("Yes"), _("No"), true);
 }	
@@ -242,7 +242,7 @@ if (list_updated('bal_type') || list_updated('type'))
 	$Ajax->activate('qe');
 }
 
-if (get_post('type') == QE_JOURNAL && get_post('bal_type') == 1)
+if (RequestService::getPostStatic('type') == QE_JOURNAL && RequestService::getPostStatic('bal_type') == 1)
 {
 	yesno_list_row(_("Period"), 'base_amount', null, _("Monthly"), _("Yearly"));
 	gl_all_accounts_list_row(_("Account"), 'base_desc', null, true);

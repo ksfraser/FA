@@ -24,7 +24,7 @@ $js = get_js_select_combo_item();
 
 page(_($help_context = "Customer Branches"), true, false, "", $js);
 
-if(get_post("search")) {
+if(RequestService::getPostStatic("search")) {
   $Ajax->activate("customer_branch_tbl");
 }
 
@@ -52,7 +52,7 @@ table_header($th);
 
 $k = 0;
 $name = $_GET["client_id"];
-$result = get_branches_search($_GET["customer_id"], get_post("branch"));
+$result = get_branches_search($_GET["customer_id"], RequestService::getPostStatic("branch"));
 while ($myrow = db_fetch_assoc($result))
 {
   	alt_table_row_color($k);

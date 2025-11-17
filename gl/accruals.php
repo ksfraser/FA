@@ -70,8 +70,8 @@ if (isset($_POST['go']) || isset($_POST['show']))
 	{
 		$periods = input_num('periods');
 		$per = $periods - 1;
-		$date = $date_ = get_post('date_');
-		$freq = get_post('freq');
+		$date = $date_ = RequestService::getPostStatic('date_');
+		$freq = RequestService::getPostStatic('freq');
 		if ($freq == 3 || $freq == 4) {
 			$date_ = DateService::beginMonthStatic($date_); // avoid skip on shorter months
 			$date  = DateService::endMonthStatic($date_); // avoid skip on shorter months
@@ -95,7 +95,7 @@ if (isset($_POST['go']) || isset($_POST['show']))
 				$am0 = $am + $amount - $am * $periods;
 			else
 				$am0 = $am;
-			if (get_post('memo_') != "")
+			if (RequestService::getPostStatic('memo_') != "")
 				$memo = $_POST['memo_'];
 			else
 				$memo = sprintf(_("Accruals for %s"), $amount);
@@ -149,9 +149,9 @@ if (isset($_POST['go']) || isset($_POST['show']))
 					$cart->memo_ = $memo;
 					$cart->reference = $Refs->get_next(ST_JOURNAL, null, $date);
 					$cart->tran_date = $cart->doc_date = $cart->event_date = $date;
-					$cart->add_gl_item(get_post('acc_act'), 0, 0, -$am0, $cart->reference);
-					$cart->add_gl_item(get_post('res_act'), get_post('dimension_id'),
-						get_post('dimension2_id'), $am0, $cart->reference);
+					$cart->add_gl_item(RequestService::getPostStatic('acc_act'), 0, 0, -$am0, $cart->reference);
+					$cart->add_gl_item(RequestService::getPostStatic('res_act'), RequestService::getPostStatic('dimension_id'),
+						RequestService::getPostStatic('dimension2_id'), $am0, $cart->reference);
 					write_journal_entries($cart);
 					$cart->clear_items();
 				}
@@ -225,7 +225,7 @@ if ($dim >= 1)
 if ($dim > 1)
 	dimensions_list_row(_("Dimension")." 2", 'dimension2_id', null, true, " ", false, 2);
 
-$url = "gl/view/accrual_trans.php?act=".get_post('acc_act')."&date=".get_post('date_');
+$url = "gl/view/accrual_trans.php?act=".RequestService::getPostStatic('acc_act')."&date=".RequestService::getPostStatic('date_');
 amount_row(_("Amount"), 'amount', null, null, viewer_link(_("Search Amount"), $url, "", "", ICON_VIEW));
 
 frequency_list_row(_("Frequency"), 'freq', null);

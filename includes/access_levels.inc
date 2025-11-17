@@ -341,7 +341,7 @@ function access_post($name, $dflt=null)
 	if (!check_edit_access($name))
 		return $dflt;
 	else
-		return get_post($name, $dflt);
+		return RequestService::getPostStatic($name, $dflt);
 }
 
 /*

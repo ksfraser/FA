@@ -245,7 +245,7 @@ if (isset($_POST['Process']))
    		set_focus('ref');
    		$input_error = 1;
 	}
-	if (get_post('currency') != get_company_pref('curr_default'))
+	if (RequestService::getPostStatic('currency') != get_company_pref('curr_default'))
 		if (isset($_POST['_ex_rate']) && !check_num('_ex_rate', 0.000001))
 		{
 			display_error(_("The exchange rate must be numeric and greater than zero."));
@@ -253,7 +253,7 @@ if (isset($_POST['Process']))
     		$input_error = 1;
 		}
 
-	if (get_post('_tabs_sel') == 'tax')
+	if (RequestService::getPostStatic('_tabs_sel') == 'tax')
 	{
 		if (!$dateService->isDate($_POST['tax_date']))
 		{
@@ -356,13 +356,13 @@ function check_item_data()
 {
 	global $Ajax;
 
-	if (!get_post('code_id')) {
+	if (!RequestService::getPostStatic('code_id')) {
    		display_error(_("You must select GL account."));
 		set_focus('code_id');
    		return false;
 	}
-	if (is_subledger_account(get_post('code_id'))) {
-		if(!get_post('person_id')) {
+	if (is_subledger_account(RequestService::getPostStatic('code_id'))) {
+		if(!RequestService::getPostStatic('person_id')) {
 	   		display_error(_("You must select subledger account."));
    			$Ajax->activate('items_table');
 			set_focus('person_id');
@@ -402,7 +402,7 @@ function check_item_data()
     		return false;
   	}
 	
-	if (!is_tax_gl_unique(get_post('code_id'))) {
+	if (!is_tax_gl_unique(RequestService::getPostStatic('code_id'))) {
    		display_error(_("Cannot post to GL account used by more than one tax type."));
 		set_focus('code_id');
    		return false;
@@ -430,7 +430,7 @@ function handle_update_item()
     		$amount = -input_num('AmountCredit');
 
     	$_SESSION['journal_items']->update_gl_item($_POST['Index'], $_POST['code_id'], 
-    	    $_POST['dimension_id'], $_POST['dimension2_id'], $amount, $_POST['LineMemo'], '', get_post('person_id'));
+    	    $_POST['dimension_id'], $_POST['dimension2_id'], $amount, $_POST['LineMemo'], '', RequestService::getPostStatic('person_id'));
     	unset($_SESSION['journal_items']->tax_info);
 		line_start_focus();
     }
@@ -458,7 +458,7 @@ function handle_new_item()
 		$amount = -input_num('AmountCredit');
 	
 	$_SESSION['journal_items']->add_gl_item($_POST['code_id'], $_POST['dimension_id'],
-		$_POST['dimension2_id'], $amount, $_POST['LineMemo'], '', get_post('person_id'));
+		$_POST['dimension2_id'], $amount, $_POST['LineMemo'], '', RequestService::getPostStatic('person_id'));
   	unset($_SESSION['journal_items']->tax_info);
 	line_start_focus();
 }
@@ -513,7 +513,7 @@ if (isset($_POST['CancelItemChanges']))
 
 if (isset($_POST['go']))
 {
-	display_quick_entries($_SESSION['journal_items'], $_POST['quick'], input_num('totamount'), QE_JOURNAL, get_post('aux_info'));
+	display_quick_entries($_SESSION['journal_items'], $_POST['quick'], input_num('totamount'), QE_JOURNAL, RequestService::getPostStatic('aux_info'));
 	$_POST['totamount'] = price_format(0); $Ajax->activate('totamount');
 	line_start_focus();
 }
@@ -534,7 +534,7 @@ tabbed_content_start('tabs', array(
 		'tax' => array(_('&Tax register'), check_value('taxable_trans')),
 	));
 	
-	switch (get_post('_tabs_sel')) {
+	switch (RequestService::getPostStatic('_tabs_sel')) {
 		default:
 		case 'gl':
 			start_table(TABLESTYLE2, "width='90%'", 10);

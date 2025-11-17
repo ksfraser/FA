@@ -36,7 +36,7 @@ function display_order_header(&$order)
 
 	table_section(2, "50%");
 
-	ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_INVADJUST, null, array('location'=>get_post('StockLocation'), 'date'=>get_post('AdjDate'))),
+	ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_INVADJUST, null, array('location'=>RequestService::getPostStatic('StockLocation'), 'date'=>RequestService::getPostStatic('AdjDate'))),
 		 false, ST_INVADJUST);
 
 	end_outer_table(1); // outer table
@@ -66,7 +66,7 @@ function display_adjustment_items($title, &$order)
 	$k = 0;  //row colour counter
 
 	$low_stock = $order->check_qoh($_POST['StockLocation'], $_POST['AdjDate']);
-	$id = get_post('selected_id', find_submit('Edit'));
+	$id = RequestService::getPostStatic('selected_id', find_submit('Edit'));
 	foreach ($order->line_items as $line_no=>$stock_item)
 	{
 
@@ -171,7 +171,7 @@ function adjustment_edit_item_controls(&$order, $line_no=-1)
 
 	}
 
-   	$item_info = get_item_edit_info(get_post('stock_id'));
+   	$item_info = get_item_edit_info(RequestService::getPostStatic('stock_id'));
    	if ($item_info) {
 		$dec = $item_info['decimals'];
 		$_POST['std_cost'] = price_decimal_format($item_info["material_cost"], $dec2);
@@ -182,11 +182,11 @@ function adjustment_edit_item_controls(&$order, $line_no=-1)
 		hidden('qty', -1);
 		qty_cell(1, false, 0);
 	} else {
-		$qoh = get_qoh_on_date(get_post('stock_id'), $_POST['StockLocation']);
+		$qoh = get_qoh_on_date(RequestService::getPostStatic('stock_id'), $_POST['StockLocation']);
 		qty_cell($qoh, false, $dec);
-		label_cell( text_input('qty', get_post('qty', '0'), 15, 15, '',  'class="amount active" dec='.$dec), "nowrap align=right");
+		label_cell( text_input('qty', RequestService::getPostStatic('qty', '0'), 15, 15, '',  'class="amount active" dec='.$dec), "nowrap align=right");
 	}
-	label_cell(get_post('units'), '', 'units');
+	label_cell(RequestService::getPostStatic('units'), '', 'units');
 
 	if ($order->fixed_asset) {
 		hidden('std_cost');
@@ -194,7 +194,7 @@ function adjustment_edit_item_controls(&$order, $line_no=-1)
 		$price = get_purchase_value($_POST['stock_id']);
 		amount_cell($price, false, '', 'initial_price');
 	} else {
-		if (get_post('_qty_changed')) {
+		if (RequestService::getPostStatic('_qty_changed')) {
 			$Ajax->activate('items_table');
 			set_focus(input_num('qty') >= 0 ? 'std_cost' : 'AddItem');
 		}

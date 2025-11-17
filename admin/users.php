@@ -63,7 +63,7 @@ if (($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM') && check_csrf_token())
     	if ($selected_id != -1) 
     	{
     		update_user_prefs($selected_id,
-    			get_post(array('user_id', 'real_name', 'phone', 'email', 'role_id', 'language',
+    			RequestService::getPostStatic(array('user_id', 'real_name', 'phone', 'email', 'role_id', 'language',
 					'print_profile', 'rep_popup' => 0, 'pos')));
 
     		if ($_POST['password'] != "")
@@ -80,7 +80,7 @@ if (($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM') && check_csrf_token())
 			// use current user display preferences as start point for new user
 			$prefs = $_SESSION['wa_current_user']->prefs->get_all();
 			
-			update_user_prefs($id, array_merge($prefs, get_post(array('print_profile',
+			update_user_prefs($id, array_merge($prefs, RequestService::getPostStatic(array('print_profile',
 				'rep_popup' => 0, 'language'))));
 
 			display_notification_centered(_("A new user has been added."));
@@ -111,7 +111,7 @@ if ($Mode == 'Delete' && check_csrf_token())
 if ($Mode == 'RESET')
 {
  	$selected_id = -1;
-	$sav = get_post('show_inactive', null);
+	$sav = RequestService::getPostStatic('show_inactive', null);
 	unset($_POST);	// clean all input fields
 	$_POST['show_inactive'] = $sav;
 }

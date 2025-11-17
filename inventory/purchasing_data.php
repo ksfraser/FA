@@ -110,7 +110,7 @@ if (list_updated('stock_id'))
 
 $action = $_SERVER['PHP_SELF'];
 if ($page_nested)
-	$action .= "?stock_id=".get_post('stock_id');
+	$action .= "?stock_id=".RequestService::getPostStatic('stock_id');
 start_form(false, false, $action);
 
 if (!isset($_POST['stock_id']))

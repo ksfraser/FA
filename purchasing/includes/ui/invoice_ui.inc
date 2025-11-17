@@ -116,7 +116,7 @@ function invoice_header(&$supp_trans)
    	date_row(_("Date") . ":", 'tran_date', '', true, 0, 0, 0, "", true);
 
    	ref_row(_("Reference:"), 'reference', '', $Refs->get_next($supp_trans->trans_type, null, 
-   		array('supplier' => get_post('supplier_id'), 'date' => get_post('tran_date'))), false, $supp_trans->trans_type);
+   		array('supplier' => RequestService::getPostStatic('supplier_id'), 'date' => RequestService::getPostStatic('tran_date'))), false, $supp_trans->trans_type);
 
 	if ($supp_trans->trans_type == ST_SUPPCREDIT)
 	{
@@ -252,7 +252,7 @@ function display_gl_items(&$supp_trans, $mode=0)
 			echo "<div style='float:right;'>";
 			echo _("Quick Entry:")."&nbsp;"; 
 			echo quick_entries_list('qid', null, QE_SUPPINV, true);
-			$qid = get_quick_entry(get_post('qid'));
+			$qid = get_quick_entry(RequestService::getPostStatic('qid'));
 			if (list_updated('qid')) {
 				unset($_POST['totamount']); // enable default
 				$Ajax->activate('totamount');

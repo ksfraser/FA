@@ -35,7 +35,7 @@ $compare_types = array(
 //----------------------------------------------------------------------------------------------------
 // Ajax updates
 
-if (get_post('Show')) 
+if (RequestService::getPostStatic('Show')) 
 {
 	$Ajax->activate('pl_tbl');
 }
@@ -335,7 +335,7 @@ start_form();
 
 inquiry_controls();
 
-display_profit_and_loss(get_post('Compare'));
+display_profit_and_loss(RequestService::getPostStatic('Compare'));
 
 end_form();
 

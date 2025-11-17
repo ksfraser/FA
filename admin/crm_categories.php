@@ -36,14 +36,14 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	{
     	if ($selected_id != -1) 
     	{
-    		update_crm_category($selected_id, get_post('type'), get_post('subtype'), 
-    			get_post('name'), get_post('description'));
+    		update_crm_category($selected_id, RequestService::getPostStatic('type'), RequestService::getPostStatic('subtype'), 
+    			RequestService::getPostStatic('name'), RequestService::getPostStatic('description'));
 			$note = _('Selected contact category has been updated');
     	} 
     	else 
     	{
-    		add_crm_category(get_post('type'), get_post('subtype'), get_post('name'),
-    			get_post('description'));
+    		add_crm_category(RequestService::getPostStatic('type'), RequestService::getPostStatic('subtype'), RequestService::getPostStatic('name'),
+    			RequestService::getPostStatic('description'));
 			$note = _('New contact category has been added');
     	}
 
@@ -73,7 +73,7 @@ if ($Mode == 'Delete')
 if ($Mode == 'RESET')
 {
 	$selected_id = -1;
-	$sav = get_post('show_inactive');
+	$sav = RequestService::getPostStatic('show_inactive');
 	unset($_POST);
 	$_POST['show_inactive'] = $sav;
 }

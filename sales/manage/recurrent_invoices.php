@@ -34,10 +34,10 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
 	$input_error = 0;
 
-	if (!get_post('group_no'))
+	if (!RequestService::getPostStatic('group_no'))
 	{
 		$input_error = 1;
-		if (get_post('debtor_no'))
+		if (RequestService::getPostStatic('debtor_no'))
 			display_error(_("This customer has no branches. Please define at least one branch for this customer first."));
 		else
 			display_error(_("There are no tax groups defined in the system. At least one tax group is required before proceeding."));

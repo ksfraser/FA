@@ -63,7 +63,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
 	if ($input_error != 1)
 	{
-		$type = get_post('type');
+		$type = RequestService::getPostStatic('type');
 		$days = input_num('DayNumber');
 		$from_now = ($type != PTT_FOLLOWING);
 		if ($type == PTT_CASH)
@@ -114,7 +114,7 @@ if ($Mode == 'Delete')
 if ($Mode == 'RESET')
 {
 	$selected_id = -1;
-	$sav = get_post('show_inactive');
+	$sav = RequestService::getPostStatic('show_inactive');
 	unset($_POST);
 	$_POST['show_inactive'] = $sav;
 }
@@ -175,7 +175,7 @@ text_row(_("Terms Description:"), 'terms', null, 40, 40);
 
 payment_type_list_row(_("Payment type:"), 'type', null, true);
 
-if ( in_array(get_post('type'), array(PTT_FOLLOWING, PTT_DAYS))) 
+if ( in_array(RequestService::getPostStatic('type'), array(PTT_FOLLOWING, PTT_DAYS))) 
 	text_row_ex(_("Days (Or Day In Following Month):"), 'DayNumber', 3);
 else
 	hidden('DayNumber', 0);

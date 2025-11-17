@@ -64,7 +64,7 @@ if (isset($_POST['_DatePaid_changed'])) {
 //----------------------------------------------------------------------------------------
 
 if (!isset($_POST['bank_account'])) { // first page call
-	$_SESSION['alloc'] = new allocation(ST_SUPPAYMENT, 0, get_post('supplier_id'));
+	$_SESSION['alloc'] = new allocation(ST_SUPPAYMENT, 0, RequestService::getPostStatic('supplier_id'));
 
 	if (isset($_GET['PInvoice'])) {
 		$supp = isset($_POST['supplier_id']) ? $_POST['supplier_id'] : null;
@@ -130,7 +130,7 @@ function check_inputs()
 {
 	global $Refs;
 
-	if (!get_post('supplier_id')) 
+	if (!RequestService::getPostStatic('supplier_id')) 
 	{
 		display_error(_("There is no supplier selected."));
 		set_focus('supplier_id');
@@ -281,7 +281,7 @@ start_form();
 
 	if (list_updated('supplier_id')) {
 		$_POST['amount'] = price_format(0);
-		$_SESSION['alloc']->person_id = get_post('supplier_id');
+		$_SESSION['alloc']->person_id = RequestService::getPostStatic('supplier_id');
 		$Ajax->activate('amount');
 	} elseif (list_updated('bank_account'))
 		$Ajax->activate('alloc_tbl');
@@ -294,7 +294,7 @@ start_form();
 
 	set_global_supplier($_POST['supplier_id']);
 
-	if (!list_updated('bank_account') && !get_post('__ex_rate_changed'))
+	if (!list_updated('bank_account') && !RequestService::getPostStatic('__ex_rate_changed'))
 	{
 		$_POST['bank_account'] = get_default_supplier_payment_bank_account($_POST['supplier_id'], $_POST['DatePaid']);
 	} else
@@ -311,7 +311,7 @@ start_form();
     date_row(_("Date Paid") . ":", 'DatePaid', '', true, 0, 0, 0, null, true);
 
     ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_SUPPAYMENT, null, 
-    	array('supplier'=>get_post('supplier_id'), 'date'=>get_post('DatePaid'))), false, ST_SUPPAYMENT);
+    	array('supplier'=>RequestService::getPostStatic('supplier_id'), 'date'=>RequestService::getPostStatic('DatePaid'))), false, ST_SUPPAYMENT);
 
 
 	table_section(3);

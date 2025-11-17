@@ -17,7 +17,7 @@ include($path_to_root . "/includes/ui.inc");
 
 page(_($help_context = "Printing Profiles"));
 
-$selected_id = get_post('profile_id','');
+$selected_id = RequestService::getPostStatic('profile_id','');
 
 //-------------------------------------------------------------------------------------------------
 // Returns array of defined reports
@@ -79,7 +79,7 @@ function check_delete($name)
 	return key_in_foreign_table($name, 'users', 'print_profile');
 }
 //-------------------------------------------------------------------------------------------
-if ( get_post('submit'))
+if ( RequestService::getPostStatic('submit'))
 {
 
 	$error = 0;
@@ -93,13 +93,13 @@ if ( get_post('submit'))
 
 	if (!$error)
 	{
-		$prof = array('' => get_post('Prn')); // store default value/profile name
+		$prof = array('' => RequestService::getPostStatic('Prn')); // store default value/profile name
 		foreach (get_reports() as $rep => $descr) {
-			$val = get_post('Prn'.$rep);
+			$val = RequestService::getPostStatic('Prn'.$rep);
 			$prof[$rep] = $val;
 		}
 		if ($_POST['profile_id']=='')
-			$_POST['profile_id'] = get_post('name');
+			$_POST['profile_id'] = RequestService::getPostStatic('name');
 		
 		update_printer_profile($_POST['profile_id'], $prof);
 		if ($selected_id == '') {
@@ -111,16 +111,16 @@ if ( get_post('submit'))
 	}
 }
 
-if(get_post('delete'))
+if(RequestService::getPostStatic('delete'))
 {
- 	if (!check_delete(get_post('name'))) {
+ 	if (!check_delete(RequestService::getPostStatic('name'))) {
 		delete_printer_profile($selected_id);
 		display_notification(_('Selected printing profile has been deleted'));
 		clear_form();
  	}
 }
 
-if(get_post('_profile_id_update')) {
+if(RequestService::getPostStatic('_profile_id_update')) {
 	$Ajax->activate('_page_body');
 }
 
@@ -131,13 +131,13 @@ print_profiles_list_row(_('Select printing profile'). ':', 'profile_id', null,
 end_table();
 echo '<hr>';
 start_table();
-if (get_post('profile_id') == '')
+if (RequestService::getPostStatic('profile_id') == '')
 	text_row(_("Printing Profile Name").':', 'name', null, 30, 30);
 else
-	label_cells(_("Printing Profile Name").':', get_post('profile_id'));
+	label_cells(_("Printing Profile Name").':', RequestService::getPostStatic('profile_id'));
 end_table(1);
 
-$result = get_print_profile(get_post('profile_id'));
+$result = get_print_profile(RequestService::getPostStatic('profile_id'));
 $prints = array();
 while ($myrow = db_fetch($result)) {
 	$prints[$myrow['report']] = $myrow['printer'];
@@ -170,7 +170,7 @@ else
 	echo '<br>';
 
 div_start('controls');
-if (get_post('profile_id') == '') {
+if (RequestService::getPostStatic('profile_id') == '') {
 	submit_center('submit', _("Add New Profile"), true, '', 'default');
 } else {
 	submit_center_first('submit', _("Update Profile"), 

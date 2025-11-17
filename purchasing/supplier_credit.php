@@ -147,7 +147,7 @@ if (isset($_POST['AddGLCodeToTrans'])) {
 		}
 	}
 
-	if (!is_tax_gl_unique(get_post('gl_code'))) {
+	if (!is_tax_gl_unique(RequestService::getPostStatic('gl_code'))) {
    		display_error(_("Cannot post to GL account used by more than one tax type."));
 		set_focus('gl_code');
    		$input_error = true;
@@ -170,7 +170,7 @@ function check_data()
 {
 	global $SysPrefs;
 
-	if (!get_post('supplier_id')) 
+	if (!RequestService::getPostStatic('supplier_id')) 
 	{
 		display_error(_("There is no supplier selected."));
 		set_focus('supplier_id');
@@ -210,7 +210,7 @@ function check_data()
 		return false;
 	}
 
-	if (trim(get_post('supp_reference')) == false)
+	if (trim(RequestService::getPostStatic('supp_reference')) == false)
 	{
 		display_error(_("You must enter a supplier's invoice reference."));
 		set_focus('supp_reference');
@@ -377,7 +377,7 @@ if ($id != -1)
 	$Ajax->activate('inv_tot');
 }
 
-if (get_post('AddGLCodeToTrans'))
+if (RequestService::getPostStatic('AddGLCodeToTrans'))
 	$Ajax->activate('inv_tot');
 
 br();

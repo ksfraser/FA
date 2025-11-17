@@ -93,7 +93,7 @@ function gl_payment_controls($trans_no)
 			$_POST['dimension_id'] = $to_trans['dimension_id'];
 			$_POST['dimension2_id'] = $to_trans['dimension2_id'];
 		} else {
-			$_POST['ref'] = $Refs->get_next(ST_BANKTRANSFER, null, get_post('DatePaid'));
+			$_POST['ref'] = $Refs->get_next(ST_BANKTRANSFER, null, RequestService::getPostStatic('DatePaid'));
 			$_POST['memo_'] = '';
 			$_POST['FromBankAccount'] = 0;
 			$_POST['ToBankAccount'] = 0;
@@ -122,8 +122,8 @@ function gl_payment_controls($trans_no)
 	}
     date_row(_("Transfer Date:"), 'DatePaid', '', true, 0, 0, 0, null, true);
 
-    ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_BANKTRANSFER, null, get_post('DatePaid')), false, ST_BANKTRANSFER,
-    	array('date' => get_post('DatePaid')));
+    ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_BANKTRANSFER, null, RequestService::getPostStatic('DatePaid')), false, ST_BANKTRANSFER,
+    	array('date' => RequestService::getPostStatic('DatePaid')));
 	$dim = get_company_pref('use_dimension');
 	if ($dim > 0)
 		dimensions_list_row(_("Dimension").":", 'dimension_id', 

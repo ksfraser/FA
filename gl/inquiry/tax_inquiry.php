@@ -32,12 +32,12 @@ page(_($help_context = "Tax Inquiry"), false, false, '', $js);
 //----------------------------------------------------------------------------------------------------
 // Ajax updates
 //
-if (get_post('Show')) 
+if (RequestService::getPostStatic('Show')) 
 {
 	$Ajax->activate('trans_tbl');
 }
 
-if (get_post('TransFromDate') == "" && get_post('TransToDate') == "")
+if (RequestService::getPostStatic('TransFromDate') == "" && RequestService::getPostStatic('TransToDate') == "")
 {
 	$date = DateService::todayStatic();
 	$row = get_company_prefs();

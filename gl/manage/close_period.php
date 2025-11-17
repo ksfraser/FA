@@ -89,7 +89,7 @@ function clear_data()
 
 //---------------------------------------------------------------------------------------------
 
-if (get_post('submit'))
+if (RequestService::getPostStatic('submit'))
 	handle_submit();
 else
 	display_note(_("Using this feature you can prevent entering new transactions <br>

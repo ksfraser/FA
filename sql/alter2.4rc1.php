@@ -44,7 +44,7 @@ class fa2_4rc1 extends fa_patch {
     */
 	function prepare()
     {
-		$this->fixed_disposal_act = get_post('default_loss_on_asset_disposal_act');
+		$this->fixed_disposal_act = RequestService::getPostStatic('default_loss_on_asset_disposal_act');
 		return true;
 	}
 	//

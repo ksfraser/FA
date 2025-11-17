@@ -231,7 +231,7 @@ function handle_cancel_po()
 
 function check_data()
 {
-	if(!get_post('stock_id_text', true)) {
+	if(!RequestService::getPostStatic('stock_id_text', true)) {
 		display_error( _("Item description cannot be empty."));
 		set_focus('stock_id_edit');
 		return false;
@@ -320,7 +320,7 @@ function handle_add_new_item()
 			if ($allow_update)
 			{
 				$_SESSION['PO']->add_to_order (count($_SESSION['PO']->line_items), $_POST['stock_id'], input_num('qty'), 
-					get_post('stock_id_text'), //$myrow["description"], 
+					RequestService::getPostStatic('stock_id_text'), //$myrow["description"], 
 					input_num('price'), '', // $myrow["units"], (retrived in cart)
 					$_SESSION['PO']->trans_type == ST_PURCHORDER ? $_POST['req_del_date'] : '', 0, 0);
 
@@ -341,7 +341,7 @@ function handle_add_new_item()
 
 function can_commit()
 {
-	if (!get_post('supplier_id')) 
+	if (!RequestService::getPostStatic('supplier_id')) 
 	{
 		display_error(_("There is no supplier selected."));
 		set_focus('supplier_id');
@@ -371,33 +371,33 @@ function can_commit()
 
 	if (!$_SESSION['PO']->order_no) 
 	{
-    	if (!check_reference(get_post('ref'), $_SESSION['PO']->trans_type))
+    	if (!check_reference(RequestService::getPostStatic('ref'), $_SESSION['PO']->trans_type))
     	{
 			set_focus('ref');
     		return false;
     	}
 	}
 
-	if ($_SESSION['PO']->trans_type == ST_SUPPINVOICE && trim(get_post('supp_ref')) == false)
+	if ($_SESSION['PO']->trans_type == ST_SUPPINVOICE && trim(RequestService::getPostStatic('supp_ref')) == false)
 	{
 		display_error(_("You must enter a supplier's invoice reference."));
 		set_focus('supp_ref');
 		return false;
 	}
 	if ($_SESSION['PO']->trans_type==ST_SUPPINVOICE 
-		&& is_reference_already_there($_SESSION['PO']->supplier_id, get_post('supp_ref'), $_SESSION['PO']->order_no))
+		&& is_reference_already_there($_SESSION['PO']->supplier_id, RequestService::getPostStatic('supp_ref'), $_SESSION['PO']->order_no))
 	{
-		display_error(_("This invoice number has already been entered. It cannot be entered again.") . " (" . get_post('supp_ref') . ")");
+		display_error(_("This invoice number has already been entered. It cannot be entered again.") . " (" . RequestService::getPostStatic('supp_ref') . ")");
 		set_focus('supp_ref');
 		return false;
 	}
-	if ($_SESSION['PO']->trans_type == ST_PURCHORDER && get_post('delivery_address') == '')
+	if ($_SESSION['PO']->trans_type == ST_PURCHORDER && RequestService::getPostStatic('delivery_address') == '')
 	{
 		display_error(_("There is no delivery address specified."));
 		set_focus('delivery_address');
 		return false;
 	} 
-	if (get_post('StkLocation') == '')
+	if (RequestService::getPostStatic('StkLocation') == '')
 	{
 		display_error(_("There is no location specified to move any items into."));
 		set_focus('StkLocation');

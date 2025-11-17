@@ -33,7 +33,7 @@ $pdeb = $pcre = $cdeb = $ccre = $tdeb = $tcre = $pbal = $cbal = $tbal = 0;
 //----------------------------------------------------------------------------------------------------
 // Ajax updates
 //
-if (get_post('Show'))
+if (RequestService::getPostStatic('Show'))
 {
 	$Ajax->activate('balance_tbl');
 }

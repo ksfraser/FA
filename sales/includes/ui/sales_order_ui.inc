@@ -17,7 +17,7 @@ function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount, $des
 	// calculate item price to sum of kit element prices factor for 
 	// value distribution over all exploded kit items
 	 $std_price = get_kit_price($new_item, $order->customer_currency, 
-		$order->sales_type,	$order->price_factor, get_post('OrderDate'), true);
+		$order->sales_type,	$order->price_factor, RequestService::getPostStatic('OrderDate'), true);
 
 	if ($std_price == 0)
 		$price_factor = 0;
@@ -29,7 +29,7 @@ function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount, $des
 
 	while($item = db_fetch($kit)) {
 		$std_price = get_kit_price($item['stock_id'], $order->customer_currency, 
-			$order->sales_type,	$order->price_factor, get_post('OrderDate'), true);
+			$order->sales_type,	$order->price_factor, RequestService::getPostStatic('OrderDate'), true);
 
 		// rounding differences are included in last price item in kit
 		$item_num--;
@@ -216,7 +216,7 @@ function display_order_summary($title, &$order, $editable_items=false)
 		++$colspan;
 	start_row();
 	label_cell(_("Shipping Charge"), "colspan=$colspan align=right");
-	small_amount_cells(null, 'freight_cost', price_format(get_post('freight_cost',0)));
+	small_amount_cells(null, 'freight_cost', price_format(RequestService::getPostStatic('freight_cost',0)));
 	label_cell('', 'colspan=2');
 	end_row();
 	$display_sub_total = price_format($total + input_num('freight_cost'));
@@ -266,7 +266,7 @@ function display_order_header(&$order, $editable, $date_text)
 	{
 		customer_list_row(_("Customer:"), 'customer_id', null, false, true, false, true);
 
-		if ($order->customer_id != get_post('customer_id', -1))
+		if ($order->customer_id != RequestService::getPostStatic('customer_id', -1))
 		{
 			// customer has changed
 			$Ajax->activate('branch_id');
@@ -274,8 +274,8 @@ function display_order_header(&$order, $editable, $date_text)
 		customer_branches_list_row(_("Branch:"),
 	  	  $_POST['customer_id'], 'branch_id', null, false, true, true, true);
 
-		if( ($order->customer_id != get_post('customer_id', -1)) ||
-			($order->Branch != get_post('branch_id', -1)) ||
+		if( ($order->customer_id != RequestService::getPostStatic('customer_id', -1)) ||
+			($order->Branch != RequestService::getPostStatic('branch_id', -1)) ||
 				list_updated('customer_id')) 
 		{
 
@@ -312,7 +312,7 @@ function display_order_header(&$order, $editable, $date_text)
 								sprintf(_("Customer's payment terms '%s' cannot be selected on this POS"),
 									$order->payment_terms['terms']));
 							$order->payment = '';
-				} elseif (get_post('payment') !== $order->payment) {
+				} elseif (RequestService::getPostStatic('payment') !== $order->payment) {
 					$_POST['payment'] = $order->payment;
 					$Ajax->activate('delivery');
 					$Ajax->activate('payment');
@@ -379,7 +379,7 @@ function display_order_header(&$order, $editable, $date_text)
 		&& !$order->is_started()) {
 		 // editable payment type 
         if (isset($_POST['payment']) && $_POST['payment'] !== $order->payment) {
-			$order->payment = get_post('payment');
+			$order->payment = RequestService::getPostStatic('payment');
 			$order->payment_terms = get_payment_terms($order->payment);
 			$order->due_date = get_invoice_duedate($order->payment, $order->document_date);
 			if ($order->payment_terms['cash_sale']) {
@@ -428,9 +428,9 @@ function display_order_header(&$order, $editable, $date_text)
 			}
 			$Ajax->activate('_ex_rate');
 			if ($order->trans_type == ST_SALESINVOICE) {
-				$_POST['delivery_date'] = get_invoice_duedate(get_post('payment'), get_post('OrderDate'));
+				$_POST['delivery_date'] = get_invoice_duedate(RequestService::getPostStatic('payment'), RequestService::getPostStatic('OrderDate'));
 			} else 
-				$_POST['delivery_date'] = DateService::addDaysStatic(get_post('OrderDate'), $SysPrefs->default_delivery_required_by());
+				$_POST['delivery_date'] = DateService::addDaysStatic(RequestService::getPostStatic('OrderDate'), $SysPrefs->default_delivery_required_by());
 			$Ajax->activate('items_table');
 			$Ajax->activate('delivery_date');
 		}
@@ -461,7 +461,7 @@ function display_order_header(&$order, $editable, $date_text)
 		foreach ($order->line_items as $line_no=>$item) {
 			$line = &$order->line_items[$line_no];
 			$line->price = get_kit_price($line->stock_id, $order->customer_currency,
-				$order->sales_type, $order->price_factor, get_post('OrderDate'));
+				$order->sales_type, $order->price_factor, RequestService::getPostStatic('OrderDate'));
 		}
 	    $Ajax->activate('items_table');
 	}
@@ -523,7 +523,7 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 		$_POST['qty'] = number_format2(1, $dec);
 		$price = get_kit_price($_POST['stock_id'],
 			$order->customer_currency, $order->sales_type,
-			$order->price_factor, get_post('OrderDate'));
+			$order->price_factor, RequestService::getPostStatic('OrderDate'));
 		$_POST['price'] = price_format($price);
 		// default to the customer's discount %
 		$_POST['Disc'] = percent_format($order->default_discount * 100);

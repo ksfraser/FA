@@ -28,7 +28,7 @@ else
 
 page(_($help_context = "Items"), true, false, "", $js);
 
-if(get_post("search")) {
+if(RequestService::getPostStatic("search")) {
   $Ajax->activate("item_tbl");
 }
 
@@ -55,7 +55,7 @@ table_header($th);
 
 $k = 0;
 $name = $_GET["client_id"];
-$result = get_items_search(get_post("description"), @$_GET['type']);
+$result = get_items_search(RequestService::getPostStatic("description"), @$_GET['type']);
 
 while ($myrow = db_fetch_assoc($result))
 {

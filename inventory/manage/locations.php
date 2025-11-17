@@ -141,14 +141,14 @@ if ($Mode == 'Delete')
 if ($Mode == 'RESET')
 {
 	$selected_id = -1;
-	$sav = get_post('show_inactive');
-	$sav2 = get_post('fixed_asset');
+	$sav = RequestService::getPostStatic('show_inactive');
+	$sav2 = RequestService::getPostStatic('fixed_asset');
 	unset($_POST);
 	$_POST['show_inactive'] = $sav;
 	$_POST['fixed_asset'] = $sav2;
 }
 
-$result = get_item_locations(check_value('show_inactive'), get_post('fixed_asset', 0));
+$result = get_item_locations(check_value('show_inactive'), RequestService::getPostStatic('fixed_asset', 0));
 
 start_form();
 start_table(TABLESTYLE);

@@ -33,7 +33,7 @@ check_db_has_bank_accounts(_("There are no bank accounts defined in the system."
 //-----------------------------------------------------------------------------------
 // Ajax updates
 //
-if (get_post('Show'))
+if (RequestService::getPostStatic('Show'))
 {
 	$Ajax->activate('trans_tbl');
 }

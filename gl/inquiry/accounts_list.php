@@ -24,7 +24,7 @@ $js = get_js_select_combo_item();
 
 page(_($help_context = "GL Accounts"), true, false, "", $js);
 
-if(get_post("search")) {
+if(RequestService::getPostStatic("search")) {
   	$Ajax->activate("account_tbl");
 }
 
@@ -57,7 +57,7 @@ $k = 0;
 $name = $_GET["client_id"];
 $skip = $_GET["skip"];
 
-$result = get_chart_accounts_search(get_post("description"), $skip);
+$result = get_chart_accounts_search(RequestService::getPostStatic("description"), $skip);
 while ($myrow = db_fetch_assoc($result)) {
 	alt_table_row_color($k);
 	$value = $myrow['account_code'];

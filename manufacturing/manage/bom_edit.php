@@ -182,7 +182,7 @@ br();
 end_form();
 //--------------------------------------------------------------------------------------------------
 
-if (get_post('stock_id') != '')
+if (RequestService::getPostStatic('stock_id') != '')
 { //Parent Item selected so display bom or edit component
 	$selected_parent = $_POST['stock_id'];
 	if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
@@ -217,7 +217,7 @@ start_form();
 
 		echo "<td>";
 		echo stock_component_items_list('component', $selected_parent, null, false, true);
-		if (get_post('_component_update')) 
+		if (RequestService::getPostStatic('_component_update')) 
 		{
 			$Ajax->activate('quantity');
 		}
@@ -228,7 +228,7 @@ start_form();
 
 	locations_list_row(_("Location to Draw From:"), 'loc_code', null);
 	workcenter_list_row(_("Work Centre Added:"), 'workcentre_added', null);
-	$dec = get_qty_dec(get_post('component'));
+	$dec = get_qty_dec(RequestService::getPostStatic('component'));
 	$_POST['quantity'] = number_format2(input_num('quantity',1), $dec);
 	qty_row(_("Quantity:"), 'quantity', null, null, null, $dec);
 

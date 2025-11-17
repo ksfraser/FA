@@ -183,16 +183,16 @@ function viewing_controls()
 	if (list_updated('filterType'))
 		reset_form();
 
-	if(get_post('filterType') == ST_CUSTOMER ){
+	if(RequestService::getPostStatic('filterType') == ST_CUSTOMER ){
 		customer_list_cells(_("Select a customer: "), 'trans_no', null, false, true, true);
-	} elseif(get_post('filterType') == ST_SUPPLIER){
+	} elseif(RequestService::getPostStatic('filterType') == ST_SUPPLIER){
 		supplier_list_cells(_("Select a supplier: "), 'trans_no', null,  false, true,true);
-	} elseif(get_post('filterType') == ST_ITEM){
+	} elseif(RequestService::getPostStatic('filterType') == ST_ITEM){
 		stock_items_list_cells(_("Select an Item: "), 'trans_no', null,  false, true,true);
-	} elseif(get_post('filterType') == ST_FIXEDASSET){
+	} elseif(RequestService::getPostStatic('filterType') == ST_FIXEDASSET){
 		stock_items_list_cells(_("Select an Item: "), 'trans_no', null,  false, true,false, false,
 			array('fixed_asset' => 1));
-	} elseif(get_post('filterType') == ST_BANKACCOUNT){
+	} elseif(RequestService::getPostStatic('filterType') == ST_BANKACCOUNT){
 		bank_accounts_list_cells(_("Select a Bank Account: "), 'trans_no', null,  true);
 	}
 	
@@ -261,9 +261,9 @@ start_form(true);
 
 viewing_controls();
 
-$type = get_post('filterType');
+$type = RequestService::getPostStatic('filterType');
 
-display_rows($type, get_post('trans_no'));
+display_rows($type, RequestService::getPostStatic('trans_no'));
 
 br(2);
 

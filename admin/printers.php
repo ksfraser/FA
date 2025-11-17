@@ -44,8 +44,8 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
 	if ($error != 1)
 	{
-		write_printer_def($selected_id, get_post('name'), get_post('descr'),
-			get_post('queue'), get_post('host'), input_num('port',0),
+		write_printer_def($selected_id, RequestService::getPostStatic('name'), RequestService::getPostStatic('descr'),
+			RequestService::getPostStatic('queue'), RequestService::getPostStatic('host'), input_num('port',0),
 			input_num('tout',0));
 
 		display_notification_centered($selected_id==-1? 

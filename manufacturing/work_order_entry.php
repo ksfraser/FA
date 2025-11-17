@@ -300,7 +300,7 @@ if (isset($_POST['close']))
 }
 
 //-------------------------------------------------------------------------------------
-if (get_post('_type_update')) 
+if (RequestService::getPostStatic('_type_update')) 
 {
   $Ajax->activate('_page_body');
 }
@@ -361,12 +361,12 @@ else
 {
 	$_POST['units_issued'] = $_POST['released'] = 0;
 
-	ref_row(_("Reference:"), 'wo_ref', '', $Refs->get_next(ST_WORKORDER, null, get_post('date_')), false, ST_WORKORDER);
+	ref_row(_("Reference:"), 'wo_ref', '', $Refs->get_next(ST_WORKORDER, null, RequestService::getPostStatic('date_')), false, ST_WORKORDER);
 
 	wo_types_list_row(_("Type:"), 'type', null);
 }
 
-if (get_post('released'))
+if (RequestService::getPostStatic('released'))
 {
 	hidden('stock_id', $_POST['stock_id']);
 	hidden('StockLocation', $_POST['StockLocation']);
@@ -390,7 +390,7 @@ else
 	$_POST['quantity'] = qty_format($_POST['quantity'], $_POST['stock_id'], $dec);
 	
 
-if (get_post('type') == WO_ADVANCED)
+if (RequestService::getPostStatic('type') == WO_ADVANCED)
 {
     qty_row(_("Quantity Required:"), 'quantity', null, null, null, $dec);
     if ($_POST['released'])
@@ -407,10 +407,10 @@ else
 	if (!isset($_POST['Labour']) || list_updated('stock_id') || list_updated('type'))
 	{
 		$bank_act = get_default_bank_account();
-		$item = get_item(get_post('stock_id'));
-		$_POST['Labour'] = price_format(get_post('type') == WO_ASSEMBLY ? $item['labour_cost'] : 0);
+		$item = get_item(RequestService::getPostStatic('stock_id'));
+		$_POST['Labour'] = price_format(RequestService::getPostStatic('type') == WO_ASSEMBLY ? $item['labour_cost'] : 0);
 		$_POST['cr_lab_acc'] = $bank_act['account_code'];
-		$_POST['Costs'] = price_format(get_post('type') == WO_ASSEMBLY ? $item['overhead_cost'] : 0);
+		$_POST['Costs'] = price_format(RequestService::getPostStatic('type') == WO_ASSEMBLY ? $item['overhead_cost'] : 0);
 		$_POST['cr_acc'] = $bank_act['account_code'];
 		$Ajax->activate('_page_body');
 	}
@@ -422,7 +422,7 @@ else
 
 }
 
-if (get_post('released'))
+if (RequestService::getPostStatic('released'))
 	label_row(_("Released On:"),$_POST['released_date']);
 
 textarea_row(_("Memo:"), 'memo_', null, 40, 5);
@@ -434,7 +434,7 @@ if (isset($selected_id))
 	echo "<table align=center><tr>";
 
 	submit_cells('UPDATE_ITEM', _("Update"), '', _('Save changes to work order'), 'default');
-	if (get_post('released'))
+	if (RequestService::getPostStatic('released'))
 	{
 		submit_cells('close', _("Close This Work Order"),'','',true);
 	}

@@ -48,7 +48,7 @@ if (isset($_GET['customer_id']))
 }
 
 if (!isset($_POST['bank_account'])) { // first page call
-	$_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT, 0, get_post('customer_id'));
+	$_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT, 0, RequestService::getPostStatic('customer_id'));
 
 	if (isset($_GET['SInvoice'])) {
 		//  get date and supplier
@@ -81,7 +81,7 @@ if (!isset($_POST['bank_account'])) { // first page call
 
 if (list_updated('BranchID')) {
 	// when branch is selected via external editor also customer can change
-	$br = get_branch(get_post('BranchID'));
+	$br = get_branch(RequestService::getPostStatic('BranchID'));
 	$_POST['customer_id'] = $br['debtor_no'];
 	$_SESSION['alloc']->person_id = $br['debtor_no'];
 	$Ajax->activate('customer_id');
@@ -146,14 +146,14 @@ function can_process()
 {
 	global $Refs;
 
-	if (!get_post('customer_id'))
+	if (!RequestService::getPostStatic('customer_id'))
 	{
 		display_error(_("There is no customer selected."));
 		set_focus('customer_id');
 		return false;
 	} 
 	
-	if (!get_post('BranchID'))
+	if (!RequestService::getPostStatic('BranchID'))
 	{
 		display_error(_("This customer has no branch defined."));
 		set_focus('BranchID');
@@ -240,7 +240,7 @@ if (isset($_POST['_customer_id_button'])) {
 
 //----------------------------------------------------------------------------------------------
 
-if (get_post('AddPaymentItem') && can_process()) {
+if (RequestService::getPostStatic('AddPaymentItem') && can_process()) {
 
 	DateService::newDocDateStatic($_POST['DateBanked']);
 
@@ -272,7 +272,7 @@ function read_customer_data()
 	// If page is called first time and New entry fetch the nex reference number
 	if (!$_SESSION['alloc']->trans_no && !isset($_POST['charge'])) 
 		$_POST['ref'] = $Refs->get_next(ST_CUSTPAYMENT, null, array(
-			'customer' => get_post('customer_id'), 'date' => get_post('DateBanked')));
+			'customer' => RequestService::getPostStatic('customer_id'), 'date' => RequestService::getPostStatic('DateBanked')));
 }
 
 //----------------------------------------------------------------------------------------------

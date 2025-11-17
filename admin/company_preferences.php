@@ -149,7 +149,7 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 	if ($input_error != 1)
 	{
 		update_company_prefs(
-			get_post( array('coy_name','coy_no','gst_no','tax_prd','tax_last',
+			RequestService::getPostStatic( array('coy_name','coy_no','gst_no','tax_prd','tax_last',
 				'postal_address','phone', 'fax', 'email', 'coy_logo', 'domicile',
 				'use_dimension', 'curr_default', 'f_year', 'shortname_name_in_list',
 				'no_item_list' => 0, 'no_customer_list' => 0, 'no_supplier_list' => 0, 

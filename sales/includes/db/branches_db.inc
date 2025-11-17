@@ -165,7 +165,7 @@ function get_sql_for_customer_branches($customer_id)
 		AND b.salesman=s.salesman_code
 		AND b.debtor_no = ".db_escape($customer_id);
 
-	if (!get_post('show_inactive')) $sql .= " AND !b.inactive";
+	if (!RequestService::getPostStatic('show_inactive')) $sql .= " AND !b.inactive";
 	$sql .= " GROUP BY b.branch_code ORDER BY branch_ref";
 
 	return $sql;

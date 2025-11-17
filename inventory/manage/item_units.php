@@ -80,7 +80,7 @@ if ($Mode == 'Delete')
 if ($Mode == 'RESET')
 {
 	$selected_id = '';
-	$sav = get_post('show_inactive');
+	$sav = RequestService::getPostStatic('show_inactive');
 	unset($_POST);
 	$_POST['show_inactive'] = $sav;
 }

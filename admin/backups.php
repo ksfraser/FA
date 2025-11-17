@@ -16,11 +16,11 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/admin/db/maintenance_db.inc");
 
-if (get_post('view')) {
-	if (!get_post('backups')) {
+if (RequestService::getPostStatic('view')) {
+	if (!RequestService::getPostStatic('backups')) {
 		display_error(_('Select backup file first.'));
 	} else {
-		$filename = $SysPrefs->backup_dir() . clean_file_name(get_post('backups'));
+		$filename = $SysPrefs->backup_dir() . clean_file_name(RequestService::getPostStatic('backups'));
 		if (in_ajax()) 
 			$Ajax->popup( $filename );
 		else {
@@ -39,9 +39,9 @@ if (get_post('view')) {
 	}
 };
 
-if (get_post('download')) {
-	if (get_post('backups')) {
-		download_file($SysPrefs->backup_dir().clean_file_name(get_post('backups')));
+if (RequestService::getPostStatic('download')) {
+	if (RequestService::getPostStatic('backups')) {
+		download_file($SysPrefs->backup_dir().clean_file_name(RequestService::getPostStatic('backups')));
 		exit;
 	} else
 		display_error(_("Select backup file first."));
@@ -135,16 +135,16 @@ function download_file($filename)
 }
 
 $conn = $db_connections[user_company()];
-$backup_name = clean_file_name(get_post('backups'));
+$backup_name = clean_file_name(RequestService::getPostStatic('backups'));
 $backup_path = $SysPrefs->backup_dir() . $backup_name;
 
-if (get_post('creat')) {
-	generate_backup($conn, get_post('comp'), get_post('comments'));
+if (RequestService::getPostStatic('creat')) {
+	generate_backup($conn, RequestService::getPostStatic('comp'), RequestService::getPostStatic('comments'));
 	$Ajax->activate('backups');
 	$SysPrefs->refresh(); // re-read system setup
 };
 
-if (get_post('restore')) {
+if (RequestService::getPostStatic('restore')) {
 	if ($backup_name) {
 		if (db_import($backup_path, $conn, true, false, check_value('protect')))
 			display_notification(_("Restore backup completed."));
@@ -153,7 +153,7 @@ if (get_post('restore')) {
 		display_error(_("Select backup file first."));
 }
 
-if (get_post('deldump')) {
+if (RequestService::getPostStatic('deldump')) {
 	if ($backup_name) {
 		if (unlink($backup_path)) {
 			display_notification(_("File successfully deleted.")." "
@@ -166,7 +166,7 @@ if (get_post('deldump')) {
 		display_error(_("Select backup file first."));
 }
 
-if (get_post('upload'))
+if (RequestService::getPostStatic('upload'))
 {
 	$tmpname = $_FILES['uploadfile']['tmp_name'];
 	$fname = trim(basename($_FILES['uploadfile']['name']));

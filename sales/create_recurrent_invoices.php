@@ -111,9 +111,9 @@ if ($id != -1)
 	*/
 
 	$Ajax->activate('_page_body');
-	$from = get_post('from');
-	$to = get_post('to');
-	$memo = get_post('memo');
+	$from = RequestService::getPostStatic('from');
+	$to = RequestService::getPostStatic('to');
+	$memo = RequestService::getPostStatic('memo');
 	$date = $_POST['trans_date'];
 	$myrow = get_recurrent_invoice($id);
 

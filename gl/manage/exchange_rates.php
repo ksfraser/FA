@@ -189,9 +189,9 @@ if ($_POST['curr_abrev'] != get_global_curr_code())
 	$selected_id = "";
 }
 
-set_global_curr_code(get_post('curr_abrev'));
+set_global_curr_code(RequestService::getPostStatic('curr_abrev'));
 
-$sql = get_sql_for_exchange_rates(get_post('curr_abrev'));
+$sql = get_sql_for_exchange_rates(RequestService::getPostStatic('curr_abrev'));
 
 $cols = array(
 	_("Date to Use From") => 'date', 
@@ -201,7 +201,7 @@ $cols = array(
 );
 $table =& new_db_pager('orders_tbl', $sql, $cols);
 
-if (BankingService::isCompanyCurrencyStatic(get_post('curr_abrev')))
+if (BankingService::isCompanyCurrencyStatic(RequestService::getPostStatic('curr_abrev')))
 {
 
 	display_note(_("The selected currency is the company currency."), 2);

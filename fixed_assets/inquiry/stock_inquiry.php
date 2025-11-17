@@ -45,7 +45,7 @@ end_table();
 
 //------------------------------------------------------------------------------------------------
 
-if(get_post('RefreshInquiry'))
+if(RequestService::getPostStatic('RefreshInquiry'))
 {
 	$Ajax->activate('totals_tbl');
 }
@@ -157,7 +157,7 @@ function balance_link($row)
 
 //------------------------------------------------------------------------------------------------
 
-$sql = get_sql_for_fixed_assets(get_post('show_inactive'));
+$sql = get_sql_for_fixed_assets(RequestService::getPostStatic('show_inactive'));
 
 $cols = array(
 			//_("Type") => array('fun'=>'systype_name', 'ord'=>''), 

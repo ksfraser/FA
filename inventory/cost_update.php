@@ -38,7 +38,7 @@ page($_SESSION['page_title'], false, false, "", $js);
 
 //--------------------------------------------------------------------------------------
 
-if (get_post('fixed_asset') == 1)
+if (RequestService::getPostStatic('fixed_asset') == 1)
 	check_db_has_disposable_fixed_assets(_("There are no fixed assets defined in the system."));
 else
 	check_db_has_costable_items(_("There are no costable inventory items defined in the system (Purchased or manufactured items)."));
@@ -97,7 +97,7 @@ if (list_updated('stock_id') || $should_update) {
 
 $action = $_SERVER['PHP_SELF'];
 if ($page_nested)
-	$action .= "?stock_id=".get_post('stock_id');
+	$action .= "?stock_id=".RequestService::getPostStatic('stock_id');
 start_form(false, false, $action);
 
 hidden('fixed_asset');
@@ -108,7 +108,7 @@ if (!isset($_POST['stock_id']))
 if (!$page_nested)
 {
 	echo "<center>" . _("Item:"). "&nbsp;";
-	if (get_post('fixed_asset') == 1)
+	if (RequestService::getPostStatic('fixed_asset') == 1)
 		echo stock_disposable_fa_list('stock_id', $_POST['stock_id'], false, true);
 	else
 		echo stock_items_list('stock_id', $_POST['stock_id'], false, true);
@@ -144,7 +144,7 @@ else
 	hidden("labour_cost", 0);
 	hidden("overhead_cost", 0);
 }
-refline_list_row(_("Reference line:"), 'refline', ST_COSTUPDATE, null, false, get_post('fixed_asset'));
+refline_list_row(_("Reference line:"), 'refline', ST_COSTUPDATE, null, false, RequestService::getPostStatic('fixed_asset'));
 textarea_row(_("Memo"), 'memo_', null, 40, 4);
 
 end_table(1);

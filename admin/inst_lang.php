@@ -77,7 +77,7 @@ function display_languages()
 
 		$support = $GetText->check_support($lang, $charset);
 
-		if (function_exists('gettext') && !$support && !get_post('DisplayAll') && $lang != 'C') continue;
+		if (function_exists('gettext') && !$support && !RequestService::getPostStatic('DisplayAll') && $lang != 'C') continue;
 
 		label_cell($lang);
 		label_cell($available ? get_package_view_str($lang, $lang_name) : $lang_name);
@@ -131,7 +131,7 @@ function check_data()
 {
 	global $installed_languages;
 
-	if (get_post('code') == '' || get_post('name') == '' || get_post('encoding') == '') {
+	if (RequestService::getPostStatic('code') == '' || RequestService::getPostStatic('name') == '' || RequestService::getPostStatic('encoding') == '') {
 		display_error(_("Language name, code nor encoding cannot be empty"));
 		return false;
 	}
@@ -153,14 +153,14 @@ function handle_submit($id)
 	
 	$installed_languages[$id]['code'] = clean_file_name($_POST['code']);
 	$installed_languages[$id]['name'] = $_POST['name'];
-	$installed_languages[$id]['path'] = 'lang/' . clean_file_name(get_post('code'));
+	$installed_languages[$id]['path'] = 'lang/' . clean_file_name(RequestService::getPostStatic('code'));
 	$installed_languages[$id]['encoding'] = $_POST['encoding'];
 	$installed_languages[$id]['rtl'] = (bool)$_POST['rtl'];
 	$installed_languages[$id]['package'] = '';
 	$installed_languages[$id]['version'] = '';
 	if (!write_lang())
 		return false;
-	$directory = $path_to_root . "/lang/" . clean_file_name(get_post('code'));
+	$directory = $path_to_root . "/lang/" . clean_file_name(RequestService::getPostStatic('code'));
 	if (!file_exists($directory))
 	{
 		mkdir($directory);
@@ -272,21 +272,21 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 if ($id = find_submit('Update', false))
 	install_language($id);
 
-if (get_post('_CurDflt_update') || (get_post('Refresh') && get_post('CurDflt', -1) != -1)) {
-	$new_lang = $installed_languages[get_post('CurDflt', 0)]['code'];
+if (RequestService::getPostStatic('_CurDflt_update') || (RequestService::getPostStatic('Refresh') && RequestService::getPostStatic('CurDflt', -1) != -1)) {
+	$new_lang = $installed_languages[RequestService::getPostStatic('CurDflt', 0)]['code'];
 	if ($new_lang != $dflt_lang) {
 		$dflt_lang = $new_lang;
 		write_lang();
 		$Ajax->activate('lang_tbl');
 	}
 }
-if (get_post('_DisplayAll_update')) {
+if (RequestService::getPostStatic('_DisplayAll_update')) {
 	$Ajax->activate('lang_tbl');
 }
 	
 //---------------------------------------------------------------------------------------------
 
-if (isset($_GET['popup']) || get_post('Add') || $Mode == 'Edit' || $Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
+if (isset($_GET['popup']) || RequestService::getPostStatic('Add') || $Mode == 'Edit' || $Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 	display_language_edit($selected_id);
 } else
 	display_languages();

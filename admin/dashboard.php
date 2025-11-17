@@ -21,7 +21,7 @@
 		include_once("$path_to_root/includes/dashboard.inc"); // here are all the dashboard routines.
 	$page_security = 'SA_SETUPDISPLAY'; // A very low access level. The real access level is inside the routines.
 	$app = isset($_GET['sel_app']) ? $_GET['sel_app'] : (isset($_POST['sel_app']) ? $_POST['sel_app'] : "orders");
-	if (get_post('id'))
+	if (RequestService::getPostStatic('id'))
 	{
 		dashboard($app);
 		exit;

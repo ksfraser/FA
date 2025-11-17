@@ -33,7 +33,7 @@ if (isset($_GET['supplier_id']))
 	$_POST['supplier_id'] = $_GET['supplier_id'];
 }
 
-$supplier_id = get_post('supplier_id', ''); 
+$supplier_id = RequestService::getPostStatic('supplier_id', ''); 
 
 function can_process()
 {
@@ -282,7 +282,7 @@ function supplier_settings(&$supplier_id)
 	{
 		submit_center_first('submit', _("Update Supplier"), 
 		  _('Update supplier data'), $page_nested ? true : false);
-		submit_return('select', get_post('supplier_id'), _("Select this supplier and return to document entry."));
+		submit_return('select', RequestService::getPostStatic('supplier_id'), _("Select this supplier and return to document entry."));
 		submit_center_last('delete', _("Delete Supplier"), 
 		  _('Delete supplier data if have been never used'), true);
 	}
@@ -304,14 +304,14 @@ if (db_has_suppliers())
 	check_cells(_("Show inactive:"), 'show_inactive', null, true);
 	end_row();
 	end_table();
-	if (get_post('_show_inactive_update')) {
+	if (RequestService::getPostStatic('_show_inactive_update')) {
 		$Ajax->activate('supplier_id');
 		set_focus('supplier_id');
 	}
 } 
 else 
 {
-	hidden('supplier_id', get_post('supplier_id'));
+	hidden('supplier_id', RequestService::getPostStatic('supplier_id'));
 }
 
 if (!$supplier_id)
@@ -325,7 +325,7 @@ tabbed_content_start('tabs', array(
 		'attachments' => array(_('Attachments'), (user_check_access('SA_ATTACHDOCUMENT') ? $supplier_id : null)),
 	));
 	
-	switch (get_post('_tabs_sel')) {
+	switch (RequestService::getPostStatic('_tabs_sel')) {
 		default:
 		case 'settings':
 			supplier_settings($supplier_id); 

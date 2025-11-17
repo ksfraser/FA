@@ -214,7 +214,7 @@ elseif (isset($_POST['continue'])) {
 	$_POST['Page'] = 2;
 }
 elseif (isset($_POST['db_test'])) {
-	if (get_post('host')=='') {
+	if (RequestService::getPostStatic('host')=='') {
 		display_error(_('Host name cannot be empty.'));
 		set_focus('host');
 	}
@@ -254,7 +254,7 @@ elseif (isset($_POST['db_test'])) {
 			write_lang();
 	}
 }
-elseif(get_post('install_langs')) 
+elseif(RequestService::getPostStatic('install_langs')) 
 {
 	$ret = true;
 	if (isset($_POST['langs']))
@@ -265,7 +265,7 @@ elseif(get_post('install_langs'))
 		$_POST['Page'] = $_SESSION['inst_set']['sel_coas'] ? 4 : 5;
 	}
 }
-elseif(get_post('install_coas')) 
+elseif(RequestService::getPostStatic('install_coas')) 
 {
 	$ret = true;
 	$next_extension_id = 0;
@@ -281,19 +281,19 @@ elseif(get_post('install_coas'))
 	}
 } elseif (isset($_POST['set_admin'])) {
 	// check company settings
-	if (get_post('name')=='') {
+	if (RequestService::getPostStatic('name')=='') {
 		display_error(_('Company name cannot be empty.'));
 		set_focus('name');
 	}
-	elseif (get_post('admin')=='') {
+	elseif (RequestService::getPostStatic('admin')=='') {
 		display_error(_('Company admin name cannot be empty.'));
 		set_focus('admin');
 	}
-	elseif (get_post('pass')=='') {
+	elseif (RequestService::getPostStatic('pass')=='') {
 		display_error(_('Company admin password cannot be empty.'));
 		set_focus('pass');
 	}
-	elseif (get_post('pass')!=get_post('repass')) {
+	elseif (RequestService::getPostStatic('pass')!=RequestService::getPostStatic('repass')) {
 		display_error(_('Company admin passwords differ.'));
 		unset($_POST['pass'],$_POST['repass']);
 		set_focus('pass');
@@ -314,8 +314,8 @@ elseif(get_post('install_coas'))
 }
 
 if (list_updated('inst_lang')) {
-	$_SESSION['inst_set']['inst_lang'] = get_post('inst_lang');
-	$Ajax->setEncoding($inst_langs[get_post('inst_lang')]['encoding']);
+	$_SESSION['inst_set']['inst_lang'] = RequestService::getPostStatic('inst_lang');
+	$Ajax->setEncoding($inst_langs[RequestService::getPostStatic('inst_lang')]['encoding']);
 	$Ajax->activate('welcome');
 }
 

@@ -86,7 +86,7 @@ function can_process()
 	}
 
 	$grn_act = get_company_pref('grn_clearing_act');
-	$post_grn_act = get_post('grn_clearing_act');
+	$post_grn_act = RequestService::getPostStatic('grn_clearing_act');
 	if ($post_grn_act == null)
 		$post_grn_act = 0;
 	if (($post_grn_act != $grn_act) && db_num_rows(get_grn_items(0, '', true)))
@@ -96,7 +96,7 @@ function can_process()
 		set_focus('grn_clearing_account');
 		return false;
 	}
-	if (!is_account_balancesheet(get_post('retained_earnings_act')) || is_account_balancesheet(get_post('profit_loss_year_act')))
+	if (!is_account_balancesheet(RequestService::getPostStatic('retained_earnings_act')) || is_account_balancesheet(RequestService::getPostStatic('profit_loss_year_act')))
 	{
 		display_error(_("The Retained Earnings Account should be a Balance Account or the Profit and Loss Year Account should be an Expense Account (preferred the last one in the Expense Class)"));
 		return false;
@@ -108,7 +108,7 @@ function can_process()
 
 if (isset($_POST['submit']) && can_process())
 {
-	update_company_prefs( get_post( array( 'retained_earnings_act', 'profit_loss_year_act',
+	update_company_prefs( RequestService::getPostStatic( array( 'retained_earnings_act', 'profit_loss_year_act',
 		'debtors_act', 'pyt_discount_act', 'creditors_act', 'freight_act', 'deferred_income_act',
 		'exchange_diff_act', 'bank_charge_act', 'default_sales_act', 'default_sales_discount_act',
 		'default_prompt_payment_act', 'default_inventory_act', 'default_cogs_act', 'depreciation_period',
@@ -260,7 +260,7 @@ gl_all_accounts_list_row(_("Payable Account:"), 'creditors_act', $_POST['credito
 
 gl_all_accounts_list_row(_("Purchase Discount Account:"), 'pyt_discount_act', $_POST['pyt_discount_act']);
 
-gl_all_accounts_list_row(_("GRN Clearing Account:"), 'grn_clearing_act', get_post('grn_clearing_act'), true, false, _("No postings on GRN"));
+gl_all_accounts_list_row(_("GRN Clearing Account:"), 'grn_clearing_act', RequestService::getPostStatic('grn_clearing_act'), true, false, _("No postings on GRN"));
 
 text_row(_("Receival Required By:"), 'default_receival_required', $_POST['default_receival_required'], 6, 6, '', "", _("days"));
 

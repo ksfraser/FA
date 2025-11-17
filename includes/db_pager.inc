@@ -443,8 +443,8 @@ class db_pager {
 			$value = $row['inactive'] ? 1:0;
 
 			if (check_value('show_inactive')) {
-				if (isset($_POST['LInact'][$id]) && (get_post('_Inactive'.$id.'_update') || 
-					get_post('Update')) && (check_value('Inactive'.$id) != $value)) {
+				if (isset($_POST['LInact'][$id]) && (RequestService::getPostStatic('_Inactive'.$id.'_update') || 
+					RequestService::getPostStatic('Update')) && (check_value('Inactive'.$id) != $value)) {
 					update_record_status($id, !$value, $table, $key);
 					$value = !$value;
 				}

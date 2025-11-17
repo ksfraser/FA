@@ -36,7 +36,7 @@ if (isset($_POST['setprefs']))
 		$chg_date_format = user_date_format() != $_POST['date_format'];
 		$chg_date_sep = user_date_sep() != $_POST['date_sep'];
 
-		set_user_prefs(get_post( 
+		set_user_prefs(RequestService::getPostStatic( 
 			array('prices_dec', 'qty_dec', 'rates_dec', 'percent_dec',
 			'date_format', 'date_sep', 'tho_sep', 'dec_sep', 'print_profile', 
 			'theme', 'page_size', 'language', 'startup_tab',

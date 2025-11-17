@@ -30,7 +30,7 @@ if (isset($_GET['bank_id']))
 	$_POST['bank_id'] = $_GET['bank_id'];
 }
 
-$bank_id = get_post('bank_id', ''); 
+$bank_id = RequestService::getPostStatic('bank_id', ''); 
 if ($selected_id != -1)
 	$bank_id = $selected_id;
 
@@ -49,8 +49,8 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		display_error(_("The bank account name cannot be empty."));
 		set_focus('bank_account_name');
 	} 
-	if ($Mode=='ADD_ITEM' && (gl_account_in_bank_accounts(get_post('account_code')) 
-			|| key_in_foreign_table(get_post('account_code'), 'gl_trans', 'account'))) {
+	if ($Mode=='ADD_ITEM' && (gl_account_in_bank_accounts(RequestService::getPostStatic('account_code')) 
+			|| key_in_foreign_table(RequestService::getPostStatic('account_code'), 'gl_trans', 'account'))) {
 		$input_error = 1;
 		display_error(_("The GL account selected is already in use or has transactions. Select another empty GL account."));
 		set_focus('account_code');
@@ -89,7 +89,7 @@ elseif( $Mode == 'Delete')
 	$cancel_delete = 0;
 	// PREVENT DELETES IF DEPENDENT RECORDS IN 'bank_trans'
 
-	if (key_in_foreign_table($bank_id, 'bank_trans', 'bank_act') || key_in_foreign_table(get_post('account_code'), 'gl_trans', 'account'))
+	if (key_in_foreign_table($bank_id, 'bank_trans', 'bank_act') || key_in_foreign_table(RequestService::getPostStatic('account_code'), 'gl_trans', 'account'))
 	{
 		$cancel_delete = 1;
 		display_error(_("Cannot delete this bank account because transactions have been created using this account."));
@@ -246,7 +246,7 @@ tabbed_content_start('tabs', array(
 		'attachments' => array(_('Attachments'), (user_check_access('SA_ATTACHDOCUMENT') ? $bank_id : null)),
 	));
 	
-	switch (get_post('_tabs_sel')) {
+	switch (RequestService::getPostStatic('_tabs_sel')) {
 		default:
 		case 'settings':
 			$Mode = "Edit";

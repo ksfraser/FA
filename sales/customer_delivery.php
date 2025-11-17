@@ -143,7 +143,7 @@ if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 	exit;
 
 } else {
-	check_edit_conflicts(get_post('cart_id'));
+	check_edit_conflicts(RequestService::getPostStatic('cart_id'));
 
 	if (!check_quantities()) {
 		display_error(_("Selected quantity cannot be less than quantity invoiced nor more than quantity	not dispatched on sales order."));
@@ -340,7 +340,7 @@ if ($_SESSION['Items']->trans_no==0) {
 	ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'", false, ST_CUSTDELIVERY,
 	array('customer' => $_SESSION['Items']->customer_id,
 			'branch' => $_SESSION['Items']->Branch,
-			'date' => get_post('DispatchDate')));
+			'date' => RequestService::getPostStatic('DispatchDate')));
 } else {
 	label_cells(_("Reference"), $_SESSION['Items']->reference, "class='tableheader2'");
 }
@@ -496,7 +496,7 @@ foreach ($_SESSION['Items']->line_items as $line=>$ln_itm) {
 	end_row();
 }
 
-$_POST['ChargeFreightCost'] =  get_post('ChargeFreightCost', 
+$_POST['ChargeFreightCost'] =  RequestService::getPostStatic('ChargeFreightCost', 
 	price_format($_SESSION['Items']->freight_cost));
 
 $colspan = 9;

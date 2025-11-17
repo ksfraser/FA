@@ -35,12 +35,12 @@ if (isset($_GET['FixedAsset'])) {
 page($_SESSION['page_title'], isset($_GET['stock_id']), false, "", $js);
 //------------------------------------------------------------------------------------------------
 
-if (get_post('fixed_asset') == 1)
+if (RequestService::getPostStatic('fixed_asset') == 1)
 	check_db_has_fixed_assets(_("There are no fixed asset defined in the system."));
 else
 	check_db_has_stock_items(_("There are no items defined in the system."));
 
-if(get_post('ShowMoves'))
+if(RequestService::getPostStatic('ShowMoves'))
 {
 	$Ajax->activate('doc_tbl');
 }
@@ -61,12 +61,12 @@ start_table(TABLESTYLE_NOBORDER);
 start_row();
 if (!$page_nested)
 {
-	if (get_post('fixed_asset') == 1) {
+	if (RequestService::getPostStatic('fixed_asset') == 1) {
 		stock_items_list_cells(_("Item:"), 'stock_id', $_POST['stock_id'],
 			false, false, check_value('show_inactive'), false, array('fixed_asset' => true));
 		check_cells(_("Show inactive:"), 'show_inactive', null, true);
 
-		if (get_post('_show_inactive_update')) {
+		if (RequestService::getPostStatic('_show_inactive_update')) {
 			$Ajax->activate('stock_id');
 			set_focus('stock_id');
 		}
@@ -80,7 +80,7 @@ end_table();
 start_table(TABLESTYLE_NOBORDER);
 start_row();
 
-locations_list_cells(_("From Location:"), 'StockLocation', null, true, false, (get_post('fixed_asset') == 1));
+locations_list_cells(_("From Location:"), 'StockLocation', null, true, false, (RequestService::getPostStatic('fixed_asset') == 1));
 
 date_cells(_("From:"), 'AfterDate', '', null, -user_transaction_days());
 date_cells(_("To:"), 'BeforeDate');
@@ -135,7 +135,7 @@ while ($myrow = db_fetch($result))
 
 	$trandate = DateService::sql2dateStatic($myrow["tran_date"]);
 
-	if (get_post('fixed_asset') == 1 && isset($fa_systypes_array[$myrow["type"]]))
+	if (RequestService::getPostStatic('fixed_asset') == 1 && isset($fa_systypes_array[$myrow["type"]]))
 		$type_name = $fa_systypes_array[$myrow["type"]];
 	else
 		$type_name = $systypes_array[$myrow["type"]];

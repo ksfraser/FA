@@ -161,19 +161,19 @@ div_start('totals_tbl');
 
 if ($_POST['supplier_id'] != "" && $_POST['supplier_id'] != ALL_TEXT)
 {
-	$supplier_record = get_supplier_details(get_post('supplier_id'), get_post('TransToDate'), true);
+	$supplier_record = get_supplier_details(RequestService::getPostStatic('supplier_id'), RequestService::getPostStatic('TransToDate'), true);
     display_supplier_summary($supplier_record);
 }
 div_end();
 
-if (get_post('RefreshInquiry') || list_updated('filterType'))
+if (RequestService::getPostStatic('RefreshInquiry') || list_updated('filterType'))
 {
 	$Ajax->activate('_page_body');
 }
 
 //------------------------------------------------------------------------------------------------
 
-$sql = get_sql_for_supplier_inquiry(get_post('filterType'), get_post('TransAfterDate'), get_post('TransToDate'), get_post('supplier_id'));
+$sql = get_sql_for_supplier_inquiry(RequestService::getPostStatic('filterType'), RequestService::getPostStatic('TransAfterDate'), RequestService::getPostStatic('TransToDate'), RequestService::getPostStatic('supplier_id'));
 
 $cols = array(
 			_("Type") => array('fun'=>'systype_name', 'ord'=>''), 

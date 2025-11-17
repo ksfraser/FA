@@ -190,8 +190,8 @@ function get_items_search($description, $type)
 		WHERE i.stock_id=s.stock_id
 			AND !i.inactive AND !s.inactive
 			AND (  i.item_code LIKE " . db_escape("%" . $description. "%") . " OR 
-				i.description LIKE " . db_escape("%" . get_post("description"). "%") . " OR 
-				c.description LIKE " . db_escape("%" . get_post("description"). "%") . ") ";
+				i.description LIKE " . db_escape("%" . RequestService::getPostStatic("description"). "%") . " OR 
+				c.description LIKE " . db_escape("%" . RequestService::getPostStatic("description"). "%") . ") ";
 
 	switch ($type) {
 		case "sales":

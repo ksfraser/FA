@@ -113,7 +113,7 @@ if (isset($_GET['trans_no']) && isset($_GET['trans_type']))
 	$_SESSION['alloc'] = new allocation($_GET['trans_type'], $_GET['trans_no'], @$_GET['supplier_id'], PT_SUPPLIER);
 }
 
-if (get_post('UpdateDisplay'))
+if (RequestService::getPostStatic('UpdateDisplay'))
 {
 	$_SESSION['alloc']->read();
 	$Ajax->activate('alloc_tbl');

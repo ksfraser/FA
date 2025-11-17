@@ -141,7 +141,7 @@ if (list_updated('PaymentType'))
 $item = get_item($wo_details['stock_id']);
 $r = get_default_bank_account(get_company_pref('curr_default'));
 $_POST['cr_acc'] = $r['account_code'];
-$_POST['costs'] = price_format(get_post('PaymentType')==WO_OVERHEAD ? $item['overhead_cost'] : $item['labour_cost']);
+$_POST['costs'] = price_format(RequestService::getPostStatic('PaymentType')==WO_OVERHEAD ? $item['overhead_cost'] : $item['labour_cost']);
 
 amount_row(_("Additional Costs:"), 'costs');
 gl_all_accounts_list_row(_("Credit Account"), 'cr_acc', null);

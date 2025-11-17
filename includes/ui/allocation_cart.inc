@@ -372,7 +372,7 @@ function check_allocations()
 
 	$total_allocated = 0;
 
-	for ($counter = 0; $counter < get_post("TotalNumberOfAllocs"); $counter++)
+	for ($counter = 0; $counter < RequestService::getPostStatic("TotalNumberOfAllocs"); $counter++)
 	{
 		if (!isset($_POST['amount'.$counter])) continue;
 		if (!check_num('amount' . $counter, 0))

@@ -104,12 +104,12 @@ $opts = array(		// default options
 			: _('Enter description fragment to search or * for all')) :'';
 
 	if ($selected_id == null) {
-		$selected_id = get_post($name, (string)$opts['default']);
+		$selected_id = RequestService::getPostStatic($name, (string)$opts['default']);
 	}
 	if(!is_array($selected_id))
 		$selected_id = array((string)$selected_id); // code is generalized for multiple selection support
 
-	$txt = get_post($search_box);
+	$txt = RequestService::getPostStatic($search_box);
 	$rel = '';
 	$limit = '';
 	if (isset($_POST['_'.$name.'_update'])) { // select list or search box change
@@ -142,7 +142,7 @@ $opts = array(		// default options
 				if ($spec_option === false && $selected_id == array())
 					$limit = ' LIMIT 1';
 				else
-					$opts['where'][] = $valfield . "=". db_escape(get_post($name, $spec_id));
+					$opts['where'][] = $valfield . "=". db_escape(RequestService::getPostStatic($name, $spec_id));
 			}
 			else
 				if ($txt != '*') {
@@ -189,7 +189,7 @@ $opts = array(		// default options
 			$descr = $opts['format']==null ?  $contact_row[1] :
 				call_user_func($opts['format'], $contact_row, $pname);
 			$sel = '';
- 		 	if (get_post($search_button) && ($txt == $value)) {
+ 		 	if (RequestService::getPostStatic($search_button) && ($txt == $value)) {
  		 		$selected_id[] = $value;
  		 	}
 
@@ -259,7 +259,7 @@ $opts = array(		// default options
 			."<input type='text' $disabled name='{$name}_text' id='{$name}_text' size='".
 				$opts['editable']."' maxlength='".$opts['max']."' $rel value='$edit'>\n";
 				set_focus($name.'_text'); // prevent lost focus
-		} else if (get_post($search_submit ? $search_submit : "_{$name}_button"))
+		} else if (RequestService::getPostStatic($search_submit ? $search_submit : "_{$name}_button"))
 			set_focus($name); // prevent lost focus
 		if (!$opts['editable'])
 	 		$txt = $found;
@@ -412,7 +412,7 @@ $opts = array(		// default options
 	$multi = $opts['multi'];
 
 	if ($selected_id == null) {
-		$selected_id = get_post($name, $opts['default']);
+		$selected_id = RequestService::getPostStatic($name, $opts['default']);
 	}
 	if(!is_array($selected_id))
 		$selected_id = array((string)$selected_id); // code is generalized for multiple selection support

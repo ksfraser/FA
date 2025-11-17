@@ -58,7 +58,7 @@ check_db_has_customer_branches(_("There are no customers, or there are no custom
 
 if (list_updated('branch_id')) {
 	// when branch is selected via external editor also customer can change
-	$br = get_branch(get_post('branch_id'));
+	$br = get_branch(RequestService::getPostStatic('branch_id'));
 	$_POST['customer_id'] = $br['debtor_no'];
 	$Ajax->activate('customer_id');
 }
@@ -82,7 +82,7 @@ if (isset($_GET['AddedID'])) {
 
 	display_footer_exit();
 } else
-	check_edit_conflicts(get_post('cart_id'));
+	check_edit_conflicts(RequestService::getPostStatic('cart_id'));
 
 //--------------------------------------------------------------------------------
 
@@ -144,14 +144,14 @@ function can_process()
 
 	$input_error = 0;
 
-	if (!get_post('customer_id')) 
+	if (!RequestService::getPostStatic('customer_id')) 
 	{
 		display_error(_("There is no customer selected."));
 		set_focus('customer_id');
 		return false;
 	} 
 	
-	if (!get_post('branch_id')) 
+	if (!RequestService::getPostStatic('branch_id')) 
 	{
 		display_error(_("This customer has no branch defined."));
 		set_focus('branch_id');

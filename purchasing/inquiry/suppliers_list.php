@@ -28,7 +28,7 @@ else
 
 page(_($help_context = "Suppliers"), true, false, "", $js);
 
-if(get_post("search")) {
+if(RequestService::getPostStatic("search")) {
   $Ajax->activate("supplier_tbl");
 }
 
@@ -56,7 +56,7 @@ table_header($th);
 
 $k = 0;
 $name = $_GET["client_id"];
-$result = get_suppliers_search(get_post("supplier"));
+$result = get_suppliers_search(RequestService::getPostStatic("supplier"));
 while ($myrow = db_fetch_assoc($result)) {
 	alt_table_row_color($k);
 	$value = $myrow['supplier_id'];

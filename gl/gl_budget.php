@@ -92,7 +92,7 @@ if (db_has_gl_accounts())
 		$th = array(_("Period"), _("Amount"), _("Last Year"));
 	table_header($th);
 	$year = $_POST['fyear'];
-	if (get_post('update') == '') {
+	if (RequestService::getPostStatic('update') == '') {
 		$fyear = get_fiscalyear($year);
 		$_POST['begin'] = DateService::sql2dateStatic($fyear['begin']);
 		$_POST['end'] = DateService::sql2dateStatic($fyear['end']);
@@ -103,7 +103,7 @@ if (db_has_gl_accounts())
 	for ($i = 0, $date_ = $_POST['begin']; DateService::date1GreaterDate2Static($_POST['end'], $date_); $i++)
 	{
 		start_row();
-		if (get_post('update') == '')
+		if (RequestService::getPostStatic('update') == '')
 			$_POST['amount'.$i] = number_format2(get_only_budget_trans_from_to(
 				$date_, $date_, $_POST['account'], $_POST['dim1'], $_POST['dim2']), 0);
 

@@ -29,7 +29,7 @@ if (isset($_GET['FixedAsset'])) {
 }
 else {
   $_SESSION['page_title'] = _($help_context = "Items");
-	if (!get_post('fixed_asset'))
+	if (!RequestService::getPostStatic('fixed_asset'))
 		$_POST['fixed_asset']  = 0;
 }
 
@@ -45,7 +45,7 @@ include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 include_once($path_to_root . "/fixed_assets/includes/fixed_assets_db.inc");
 
 $user_comp = user_company();
-$new_item = get_post('stock_id')=='' || get_post('cancel') || get_post('clone'); 
+$new_item = RequestService::getPostStatic('stock_id')=='' || RequestService::getPostStatic('cancel') || RequestService::getPostStatic('clone'); 
 //------------------------------------------------------------------------------------
 function set_edit($stock_id)
 {
@@ -97,15 +97,15 @@ if (isset($_GET['stock_id']))
 {
 	$_POST['stock_id'] = $_GET['stock_id'];
 }
-$stock_id = get_post('stock_id');
+$stock_id = RequestService::getPostStatic('stock_id');
 if (list_updated('stock_id')) {
-	$_POST['NewStockID'] = $stock_id = get_post('stock_id');
+	$_POST['NewStockID'] = $stock_id = RequestService::getPostStatic('stock_id');
     clear_data();
 	$Ajax->activate('details');
 	$Ajax->activate('controls');
 }
 
-if (get_post('cancel')) {
+if (RequestService::getPostStatic('cancel')) {
 	$_POST['NewStockID'] = $stock_id = $_POST['stock_id'] = '';
     clear_data();
 	set_focus('stock_id');
@@ -181,7 +181,7 @@ if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
  /* EOF Add Image upload for New Item  - by Ori */
 }
 
-if (get_post('fixed_asset')) {
+if (RequestService::getPostStatic('fixed_asset')) {
 	check_db_has_fixed_asset_categories(_("There are no fixed asset categories defined in the system. At least one fixed asset category is required to add a fixed asset."));
 	check_db_has_fixed_asset_classes(_("There are no fixed asset classes defined in the system. At least one fixed asset class is required to add a fixed asset."));
 } else
@@ -244,7 +244,7 @@ if (isset($_POST['addupdate']))
 			set_focus('NewStockID');
 	}
 	
-  if (get_post('fixed_asset')) {
+  if (RequestService::getPostStatic('fixed_asset')) {
     if ($_POST['depreciation_rate'] > 100) {
       $_POST['depreciation_rate'] = 100;
     }
@@ -266,14 +266,14 @@ if (isset($_POST['addupdate']))
 		{ /*so its an existing one */
 			update_item($_POST['NewStockID'], $_POST['description'],
 				$_POST['long_description'], $_POST['category_id'], 
-				$_POST['tax_type_id'], get_post('units'),
-				get_post('fixed_asset') ? 'F' : get_post('mb_flag'), $_POST['sales_account'],
+				$_POST['tax_type_id'], RequestService::getPostStatic('units'),
+				RequestService::getPostStatic('fixed_asset') ? 'F' : RequestService::getPostStatic('mb_flag'), $_POST['sales_account'],
 				$_POST['inventory_account'], $_POST['cogs_account'],
 				$_POST['adjustment_account'], $_POST['wip_account'], 
 				$_POST['dimension_id'], $_POST['dimension2_id'],
 				check_value('no_sale'), check_value('editable'), check_value('no_purchase'),
-				get_post('depreciation_method'), input_num('depreciation_rate'), input_num('depreciation_factor'), get_post('depreciation_start', null),
-				get_post('fa_class_id'));
+				RequestService::getPostStatic('depreciation_method'), input_num('depreciation_rate'), input_num('depreciation_factor'), RequestService::getPostStatic('depreciation_start', null),
+				RequestService::getPostStatic('fa_class_id'));
 
 			update_record_status($_POST['NewStockID'], $_POST['inactive'],
 				'stock_master', 'stock_id');
@@ -288,13 +288,13 @@ if (isset($_POST['addupdate']))
 
 			add_item($_POST['NewStockID'], $_POST['description'],
 				$_POST['long_description'], $_POST['category_id'], $_POST['tax_type_id'],
-				$_POST['units'], get_post('fixed_asset') ? 'F' : get_post('mb_flag'), $_POST['sales_account'],
+				$_POST['units'], RequestService::getPostStatic('fixed_asset') ? 'F' : RequestService::getPostStatic('mb_flag'), $_POST['sales_account'],
 				$_POST['inventory_account'], $_POST['cogs_account'],
 				$_POST['adjustment_account'], $_POST['wip_account'], 
 				$_POST['dimension_id'], $_POST['dimension2_id'],
 				check_value('no_sale'), check_value('editable'), check_value('no_purchase'),
-				get_post('depreciation_method'), input_num('depreciation_rate'), input_num('depreciation_factor'), get_post('depreciation_start', null),
-				get_post('fa_class_id'));
+				RequestService::getPostStatic('depreciation_method'), input_num('depreciation_rate'), input_num('depreciation_factor'), RequestService::getPostStatic('depreciation_start', null),
+				RequestService::getPostStatic('fa_class_id'));
 
 			display_notification(_("A new item has been added."));
 			$_POST['stock_id'] = $_POST['NewStockID'] = 
@@ -306,7 +306,7 @@ if (isset($_POST['addupdate']))
 	}
 }
 
-if (get_post('clone')) {
+if (RequestService::getPostStatic('clone')) {
 	set_edit($_POST['stock_id']); // restores data for disabled inputs too
 	unset($_POST['stock_id']);
 	$stock_id = '';
@@ -376,7 +376,7 @@ function item_settings(&$stock_id, $new_item)
 	} 
 	else 
 	{ // Must be modifying an existing item
-		if (get_post('NewStockID') != get_post('stock_id') || get_post('addupdate')) { // first item display
+		if (RequestService::getPostStatic('NewStockID') != RequestService::getPostStatic('stock_id') || RequestService::getPostStatic('addupdate')) { // first item display
 
 			$_POST['NewStockID'] = $_POST['stock_id'];
 			set_edit($_POST['stock_id']);
@@ -385,7 +385,7 @@ function item_settings(&$stock_id, $new_item)
 		hidden('NewStockID', $_POST['NewStockID']);
 		set_focus('description');
 	}
-	$fixed_asset = get_post('fixed_asset');
+	$fixed_asset = RequestService::getPostStatic('fixed_asset');
 
 	text_row(_("Name:"), 'description', null, 52, 200);
 
@@ -416,21 +416,21 @@ function item_settings(&$stock_id, $new_item)
 		|| check_usage($_POST['stock_id'],false);
 
 	// show inactive item tax type in selector only if already set.
-  item_tax_types_list_row(_("Item Tax Type:"), 'tax_type_id', null, !$new_item && item_type_inactive(get_post('tax_type_id')));
+  item_tax_types_list_row(_("Item Tax Type:"), 'tax_type_id', null, !$new_item && item_type_inactive(RequestService::getPostStatic('tax_type_id')));
 
-	if (!get_post('fixed_asset'))
+	if (!RequestService::getPostStatic('fixed_asset'))
 		stock_item_types_list_row(_("Item Type:"), 'mb_flag', null, $fresh_item);
 
 	stock_units_list_row(_('Units of Measure:'), 'units', null, $fresh_item);
 
 
-	if (!get_post('fixed_asset')) {
+	if (!RequestService::getPostStatic('fixed_asset')) {
 		check_row(_("Editable description:"), 'editable');
 		check_row(_("Exclude from sales:"), 'no_sale');
 		check_row(_("Exclude from purchases:"), 'no_purchase');
 	}
 
-	if (get_post('fixed_asset')) {
+	if (RequestService::getPostStatic('fixed_asset')) {
 		table_section_title(_("Depreciation"));
 
 		fixed_asset_classes_list_row(_("Fixed Asset Class").':', 'fa_class_id', null, false, true);
@@ -439,7 +439,7 @@ function item_settings(&$stock_id, $new_item)
 
 		if (!isset($_POST['depreciation_rate']) || (list_updated('fa_class_id') || list_updated('depreciation_method'))) {
 			$class_row = get_fixed_asset_class($_POST['fa_class_id']);
-			$_POST['depreciation_rate'] = get_post('depreciation_method') == 'N' ? ceil(100/$class_row['depreciation_rate'])
+			$_POST['depreciation_rate'] = RequestService::getPostStatic('depreciation_method') == 'N' ? ceil(100/$class_row['depreciation_rate'])
 				: $class_row['depreciation_rate'];
 		}
 
@@ -490,12 +490,12 @@ function item_settings(&$stock_id, $new_item)
 
 	gl_all_accounts_list_row(_("Sales Account:"), 'sales_account', $_POST['sales_account']);
 
-	if (get_post('fixed_asset')) {
+	if (RequestService::getPostStatic('fixed_asset')) {
 		gl_all_accounts_list_row(_("Asset account:"), 'inventory_account', $_POST['inventory_account']);
 		gl_all_accounts_list_row(_("Depreciation cost account:"), 'cogs_account', $_POST['cogs_account']);
 		gl_all_accounts_list_row(_("Depreciation/Disposal account:"), 'adjustment_account', $_POST['adjustment_account']);
 	}
-	else if (!InventoryService::isService(get_post('mb_flag')))
+	else if (!InventoryService::isService(RequestService::getPostStatic('mb_flag')))
 	{
 		gl_all_accounts_list_row(_("Inventory Account:"), 'inventory_account', $_POST['inventory_account']);
 		gl_all_accounts_list_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
@@ -509,7 +509,7 @@ function item_settings(&$stock_id, $new_item)
 	}
 
 
-	if (is_manufactured(get_post('mb_flag')))
+	if (is_manufactured(RequestService::getPostStatic('mb_flag')))
 		gl_all_accounts_list_row(_("WIP Account:"), 'wip_account', $_POST['wip_account']);
 	else
 		hidden('wip_account', $_POST['wip_account']);
@@ -521,7 +521,7 @@ function item_settings(&$stock_id, $new_item)
 	show_image(@$_POST['NewStockID']);
 
 	record_status_list_row(_("Item status:"), 'inactive');
-	if (get_post('fixed_asset')) {
+	if (RequestService::getPostStatic('fixed_asset')) {
 		table_section_title(_("Values"));
 		if (!$new_item) {
 			hidden('material_cost');
@@ -543,7 +543,7 @@ function item_settings(&$stock_id, $new_item)
 	{
 		submit_center_first('addupdate', _("Update Item"), '', 
 			$page_nested ? true : 'default');
-		submit_return('select', get_post('stock_id'), 
+		submit_return('select', RequestService::getPostStatic('stock_id'), 
 			_("Select this items and return to document entry."));
 		submit('clone', _("Clone This Item"), true, '', true);
 		submit('delete', _("Delete This Item"), true, '', true);
@@ -562,29 +562,29 @@ if (db_has_stock_items())
 	start_table(TABLESTYLE_NOBORDER);
 	start_row();
     stock_items_list_cells(_("Select an item:"), 'stock_id', null,
-	  _('New item'), true, check_value('show_inactive'), false, array('fixed_asset' => get_post('fixed_asset')));
-	$new_item = get_post('stock_id')=='';
+	  _('New item'), true, check_value('show_inactive'), false, array('fixed_asset' => RequestService::getPostStatic('fixed_asset')));
+	$new_item = RequestService::getPostStatic('stock_id')=='';
 	check_cells(_("Show inactive:"), 'show_inactive', null, true);
 	end_row();
 	end_table();
 
-	if (get_post('_show_inactive_update')) {
+	if (RequestService::getPostStatic('_show_inactive_update')) {
 		$Ajax->activate('stock_id');
 		set_focus('stock_id');
 	}
 }
 else
 {
-	hidden('stock_id', get_post('stock_id'));
+	hidden('stock_id', RequestService::getPostStatic('stock_id'));
 }
 
 div_start('details');
 
-$stock_id = get_post('stock_id');
+$stock_id = RequestService::getPostStatic('stock_id');
 if (!$stock_id)
 	unset($_POST['_tabs_sel']); // force settings tab for new customer
 
-$tabs = (get_post('fixed_asset'))
+$tabs = (RequestService::getPostStatic('fixed_asset'))
 	? array(
 		'settings' => array(_('&General settings'), $stock_id),
 		'movement' => array(_('&Transactions'), $stock_id),
@@ -604,7 +604,7 @@ $tabs = (get_post('fixed_asset'))
 
 tabbed_content_start('tabs', $tabs);
 
-	switch (get_post('_tabs_sel')) {
+	switch (RequestService::getPostStatic('_tabs_sel')) {
 		default:
 		case 'settings':
 			item_settings($stock_id, $new_item); 
@@ -644,7 +644,7 @@ tabbed_content_start('tabs', $tabs);
 		case 'attachments':
 			$id = get_item_code_id($stock_id);
 			$_GET['trans_no'] = $id;
-			$_GET['type_no']= get_post('fixed_asset') ? ST_FIXEDASSET : ST_ITEM;
+			$_GET['type_no']= RequestService::getPostStatic('fixed_asset') ? ST_FIXEDASSET : ST_ITEM;
 			$attachments = new attachments('attachment', $id, 'items');
 			$attachments->show();
 	};
@@ -654,9 +654,9 @@ tabbed_content_end();
 
 div_end();
 
-hidden('fixed_asset', get_post('fixed_asset'));
+hidden('fixed_asset', RequestService::getPostStatic('fixed_asset'));
 
-if (get_post('fixed_asset'))
+if (RequestService::getPostStatic('fixed_asset'))
 	hidden('mb_flag', 'F');
 
 end_form();

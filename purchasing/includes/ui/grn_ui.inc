@@ -82,7 +82,7 @@ function edit_grn_summary(&$po)
     		label_row(_("Order Comments"), $po->Comments, "class='tableheader2'", "colspan=9");
 
 	    if (!BankingService::isCompanyCurrencyStatic($po->curr_code))
-			exchange_rate_display(BankingService::getCompanyCurrency(), $po->curr_code, get_post('DefaultReceivedDate'));
+			exchange_rate_display(BankingService::getCompanyCurrency(), $po->curr_code, RequestService::getPostStatic('DefaultReceivedDate'));
 	end_outer_table(1);
 }
 

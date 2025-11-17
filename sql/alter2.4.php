@@ -42,7 +42,7 @@ class fa2_4 extends fa_patch {
     */
 	function prepare()
     {
-		$this->collation = get_post('collation');
+		$this->collation = RequestService::getPostStatic('collation');
 		return true;
 	}
 

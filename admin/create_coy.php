@@ -38,7 +38,7 @@ function check_data($selected_id)
 	 		return false;
 		}
 	} else {
-		if (!get_post('name') || !get_post('host') || !get_post('dbuser') || !get_post('dbname'))
+		if (!RequestService::getPostStatic('name') || !RequestService::getPostStatic('host') || !RequestService::getPostStatic('dbuser') || !RequestService::getPostStatic('dbname'))
 		{
 			display_error(_("Database settings are not specified."));
 	 		return false;
@@ -126,7 +126,7 @@ function handle_submit($selected_id)
 		} else {
 			if (strncmp(db_get_version(), "5.6", 3) >= 0) 
 				db_query("SET sql_mode = ''");
-			if (!db_import($path_to_root.'/sql/'.get_post('coa'), $conn, $selected_id)) {
+			if (!db_import($path_to_root.'/sql/'.RequestService::getPostStatic('coa'), $conn, $selected_id)) {
 				display_error(_('Cannot create new company due to bugs in sql file.'));
 				$error = true;
 			} 
@@ -345,7 +345,7 @@ function display_company_edit($selected_id)
 		label_row(_("Database Name"), $_POST['dbname']);
 		collations_list_row(_("Database Collation:"), 'collation');
 		label_row(_("Table Pref"), $_POST['tbpref']);
-		if (!get_post('def'))
+		if (!RequestService::getPostStatic('def'))
 			check_row(_("Default Company"), 'def');
 		else
 			label_row(_("Default Company"), _("Yes"));

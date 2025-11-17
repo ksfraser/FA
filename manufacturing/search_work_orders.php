@@ -36,12 +36,12 @@ else
 //-----------------------------------------------------------------------------------
 // Ajax updates
 //
-if (get_post('SearchOrders')) 
+if (RequestService::getPostStatic('SearchOrders')) 
 {
 	$Ajax->activate('orders_tbl');
-} elseif (get_post('_OrderNumber_changed')) 
+} elseif (RequestService::getPostStatic('_OrderNumber_changed')) 
 {
-	$disable = get_post('OrderNumber') !== '';
+	$disable = RequestService::getPostStatic('OrderNumber') !== '';
 
 	$Ajax->addDisable(true, 'StockLocation', $disable);
 	$Ajax->addDisable(true, 'OverdueOnly', $disable);
@@ -158,8 +158,8 @@ function dec_amount($row, $amount)
 	return number_format2($amount, $row['decimals']);
 }
 
-$sql = get_sql_for_work_orders($outstanding_only, get_post('SelectedStockItem'), get_post('StockLocation'),
-	get_post('OrderId'), get_post('OrderNumber'), check_value('OverdueOnly'));
+$sql = get_sql_for_work_orders($outstanding_only, RequestService::getPostStatic('SelectedStockItem'), RequestService::getPostStatic('StockLocation'),
+	RequestService::getPostStatic('OrderId'), RequestService::getPostStatic('OrderNumber'), check_value('OverdueOnly'));
 
 $cols = array(
 	_("#") => array('fun'=>'view_link', 'ord'=>''), 

@@ -33,7 +33,7 @@ if (isset($_GET['debtor_no']))
 	$_POST['customer_id'] = $_GET['debtor_no'];
 }
 
-$selected_id = get_post('customer_id','');
+$selected_id = RequestService::getPostStatic('customer_id','');
 //--------------------------------------------------------------------------------------------
 
 function can_process()
@@ -334,7 +334,7 @@ if (db_has_customers())
 	end_row();
 	end_table();
 
-	if (get_post('_show_inactive_update')) {
+	if (RequestService::getPostStatic('_show_inactive_update')) {
 		$Ajax->activate('customer_id');
 		set_focus('customer_id');
 	}
@@ -356,7 +356,7 @@ tabbed_content_start('tabs', array(
 		'attachments' => array(_('Attachments'), (user_check_access('SA_ATTACHDOCUMENT') ? $selected_id : null)),
 	));
 	
-	switch (get_post('_tabs_sel')) {
+	switch (RequestService::getPostStatic('_tabs_sel')) {
 		default:
 		case 'settings':
 			customer_settings($selected_id); 

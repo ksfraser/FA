@@ -96,8 +96,8 @@ if ($Mode == 'Delete')
 if ($Mode == 'RESET')
 {
 	$selected_id = -1;
-	$sav = get_post('show_inactive');
-    $mb_flag = get_post('mb_flag');
+	$sav = RequestService::getPostStatic('show_inactive');
+    $mb_flag = RequestService::getPostStatic('mb_flag');
 	unset($_POST);
 	$_POST['show_inactive'] = $sav;
 	if (InventoryService::isFixedAsset($mb_flag))
@@ -108,7 +108,7 @@ if (list_updated('mb_flag')) {
 }
 
 //----------------------------------------------------------------------------------
-$fixed_asset = InventoryService::isFixedAsset(get_post('mb_flag'));
+$fixed_asset = InventoryService::isFixedAsset(RequestService::getPostStatic('mb_flag'));
 
 $result = get_item_categories(check_value('show_inactive'), $fixed_asset);
 
@@ -189,19 +189,19 @@ if ($selected_id != -1)
 
 		$company_record = get_company_prefs();
 
-    if (get_post('inventory_account') == "")
+    if (RequestService::getPostStatic('inventory_account') == "")
     	$_POST['inventory_account'] = $company_record["default_inventory_act"];
 
-    if (get_post('cogs_account') == "")
+    if (RequestService::getPostStatic('cogs_account') == "")
     	$_POST['cogs_account'] = $company_record["default_cogs_act"];
 
-	if (get_post('sales_account') == "")
+	if (RequestService::getPostStatic('sales_account') == "")
 		$_POST['sales_account'] = $company_record["default_inv_sales_act"];
 
-	if (get_post('adjustment_account') == "")
+	if (RequestService::getPostStatic('adjustment_account') == "")
 		$_POST['adjustment_account'] = $company_record["default_adj_act"];
 
-	if (get_post('wip_account') == "")
+	if (RequestService::getPostStatic('wip_account') == "")
 		$_POST['wip_account'] = $company_record["default_wip_act"];
 
 }
@@ -212,7 +212,7 @@ table_section_title(_("Default values for new items"));
 
 item_tax_types_list_row(_("Item Tax Type:"), 'tax_type_id', null);
 
-if (InventoryService::isFixedAsset(get_post('mb_flag')))
+if (InventoryService::isFixedAsset(RequestService::getPostStatic('mb_flag')))
 	hidden('mb_flag', 'F');
 else
 	stock_item_types_list_row(_("Item Type:"), 'mb_flag', null, true);

@@ -81,7 +81,7 @@ if (isset($_GET['AddedID'])) {
 
 	display_footer_exit();
 } else
-	check_edit_conflicts(get_post('cart_id'));
+	check_edit_conflicts(RequestService::getPostStatic('cart_id'));
 
 
 //-----------------------------------------------------------------------------
@@ -246,7 +246,7 @@ function display_credit_items()
 		ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'", false, ST_CUSTCREDIT,
 		array('customer' => $_SESSION['Items']->customer_id,
 			'branch' => $_SESSION['Items']->Branch,
-			'date' => get_post('CreditDate')));
+			'date' => RequestService::getPostStatic('CreditDate')));
 	} else {
 		label_cells(_("Reference"), $_SESSION['Items']->reference, "class='tableheader2'");
 	}
@@ -313,7 +313,7 @@ function display_credit_items()
 	$colspan = 7;
 	start_row();
 	label_cell(_("Credit Shipping Cost"), "colspan=$colspan align=right");
-	small_amount_cells(null, "ChargeFreightCost", price_format(get_post('ChargeFreightCost',0)));
+	small_amount_cells(null, "ChargeFreightCost", price_format(RequestService::getPostStatic('ChargeFreightCost',0)));
 	end_row();
 
     $inv_items_total = $_SESSION['Items']->get_items_total_dispatch();
@@ -367,7 +367,7 @@ function display_credit_options()
 }
 
 //-----------------------------------------------------------------------------
-if (get_post('Update'))
+if (RequestService::getPostStatic('Update'))
 {
 	copy_to_cart();
 	$Ajax->activate('credit_items');

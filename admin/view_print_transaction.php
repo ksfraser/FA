@@ -113,11 +113,11 @@ function handle_search()
 	if (check_valid_entries()==true)
 	{
 		$trans_ref = false;
-		$sql = get_sql_for_view_transactions(get_post('filterType'), get_post('FromTransNo'), get_post('ToTransNo'), $trans_ref);
+		$sql = get_sql_for_view_transactions(RequestService::getPostStatic('filterType'), RequestService::getPostStatic('FromTransNo'), RequestService::getPostStatic('ToTransNo'), $trans_ref);
 		if ($sql == "")
 			return;
 
-		$print_type = get_post('filterType');
+		$print_type = RequestService::getPostStatic('filterType');
 		$print_out = ($print_type == ST_SALESINVOICE || $print_type == ST_CUSTCREDIT || $print_type == ST_CUSTDELIVERY ||
 			$print_type == ST_PURCHORDER || $print_type == ST_SALESORDER || $print_type == ST_SALESQUOTE ||
 			$print_type == ST_CUSTPAYMENT || $print_type == ST_SUPPAYMENT || $print_type == ST_WORKORDER);

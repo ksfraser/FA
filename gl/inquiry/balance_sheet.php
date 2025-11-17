@@ -29,7 +29,7 @@ page(_($help_context = "Balance Sheet Drilldown"), false, false, "", $js);
 //----------------------------------------------------------------------------------------------------
 // Ajax updates
 
-if (get_post('Show')) 
+if (RequestService::getPostStatic('Show')) 
 {
 	$Ajax->activate('balance_tbl');
 }

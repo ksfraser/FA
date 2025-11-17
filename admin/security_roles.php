@@ -21,7 +21,7 @@ include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/access_levels.inc");
 include_once($path_to_root . "/admin/db/security_db.inc");
 
-$new_role = get_post('role')=='' || get_post('cancel') || get_post('clone'); 
+$new_role = RequestService::getPostStatic('role')=='' || RequestService::getPostStatic('cancel') || RequestService::getPostStatic('clone'); 
 //--------------------------------------------------------------------------------------------------
 // Following compare function is used for sorting areas 
 // in such a way that security areas defined by module/plugin
@@ -54,7 +54,7 @@ function clear_data()
 	unset($_POST);
 }
 
-if (get_post('addupdate'))
+if (RequestService::getPostStatic('addupdate'))
 {
    	$input_error = 0;
 	if ($_POST['description'] == '')
@@ -70,7 +70,7 @@ if (get_post('addupdate'))
 		set_focus('name');
    	}
 		// prevent accidental editor lockup by removing SA_SECROLES
-	if (get_post('role') == $_SESSION['wa_current_user']->access) {
+	if (RequestService::getPostStatic('role') == $_SESSION['wa_current_user']->access) {
 		if (!isset($_POST['Area'.$security_areas['SA_SECROLES'][0]])
 			|| !isset($_POST['Section'.SS_SETUP])) {
 			display_error(_("Access level edition in Company setup section have to be enabled for your account."));
@@ -107,7 +107,7 @@ if (get_post('addupdate'))
        	{
 			update_security_role($_POST['role'], $_POST['name'], $_POST['description'], 
 				$sections, $areas); 
-			update_record_status($_POST['role'], get_post('inactive'),
+			update_record_status($_POST['role'], RequestService::getPostStatic('inactive'),
 				'security_roles', 'id');
 
 	  		display_notification(_("Security role has been updated."));
@@ -120,27 +120,27 @@ if (get_post('addupdate'))
 
 //--------------------------------------------------------------------------------------------------
 
-if (get_post('delete'))
+if (RequestService::getPostStatic('delete'))
 {
-	if (check_role_used(get_post('role'))) {
+	if (check_role_used(RequestService::getPostStatic('role'))) {
 		display_error(_("This role is currently assigned to some users and cannot be deleted"));
  	} else {
-		delete_security_role(get_post('role'));
+		delete_security_role(RequestService::getPostStatic('role'));
 		display_notification(_("Security role has been sucessfully deleted."));
 		unset($_POST['role']);
 	}
 	$Ajax->activate('_page_body');
 }
 
-if (get_post('cancel'))
+if (RequestService::getPostStatic('cancel'))
 {
 	unset($_POST['role']);
 	$Ajax->activate('_page_body');
 }
 
-if (!isset($_POST['role']) || get_post('clone') || list_updated('role')) {
-	$id = get_post('role');
-	$clone = get_post('clone');
+if (!isset($_POST['role']) || RequestService::getPostStatic('clone') || list_updated('role')) {
+	$id = RequestService::getPostStatic('role');
+	$clone = RequestService::getPostStatic('clone');
 
 	unset($_POST);
 	if ($id) {
@@ -173,13 +173,13 @@ start_form();
 start_table(TABLESTYLE_NOBORDER);
 start_row();
 security_roles_list_cells(_("Role:"). "&nbsp;", 'role', null, true, true, check_value('show_inactive'));
-$new_role = get_post('role')=='';
+$new_role = RequestService::getPostStatic('role')=='';
 check_cells(_("Show inactive:"), 'show_inactive', null, true);
 end_row();
 end_table();
 echo "<hr>";
 
-if (get_post('_show_inactive_update')) {
+if (RequestService::getPostStatic('_show_inactive_update')) {
 	$Ajax->activate('role');
 	set_focus('role');
 }

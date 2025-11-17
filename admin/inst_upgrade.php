@@ -27,9 +27,9 @@ include_once($path_to_root . "/admin/includes/fa_patch.class.inc");
 $site_status = get_site_status($db_connections);
 $installers = get_installers();
 
-if (get_post('Upgrade')) 
+if (RequestService::getPostStatic('Upgrade')) 
 {
-	$comp = get_post('select_comp');
+	$comp = RequestService::getPostStatic('select_comp');
 
     if ($comp === '')
 		display_error(_('Select company to be upgraded.'));
@@ -53,7 +53,7 @@ if ($i != -1)
   unlink(VARLOG_PATH.'/upgrade.'.$i.'.log');
   $Ajax->activate('_page_body');
 }
-if (get_post('_select_comp_update'))
+if (RequestService::getPostStatic('_select_comp_update'))
 {
   $Ajax->activate('_page_body');
 }
@@ -100,18 +100,18 @@ end_table();
 br();
 
 div_start('upgrade_args');
-if (get_post('select_comp') !== '')
+if (RequestService::getPostStatic('select_comp') !== '')
 {
-	$patch = @$installers[$site_status[get_post('select_comp')]['version']];
+	$patch = @$installers[$site_status[RequestService::getPostStatic('select_comp')]['version']];
 	if ($patch)
-		$patch->show_params(get_post('select_comp'));
+		$patch->show_params(RequestService::getPostStatic('select_comp'));
 }
 div_end();
 
 if ($uptodate)
 	display_note(_('All company database schemes are up to date.'));
 else {
-	if (get_post('select_comp') === '')
+	if (RequestService::getPostStatic('select_comp') === '')
 		display_note(_("Select company for incremental upgrade."), 0, 1, "class='stockmankofg'");
 	submit_center('Upgrade', _('Upgrade'), true, _('Save database and perform upgrade'), 'nonajax');
 }

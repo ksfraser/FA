@@ -69,7 +69,7 @@ function update_kit($selected_kit, $component_id)
 		set_focus('quantity');
 		return 0;
 	}
-   	elseif (get_post('description') == '')
+   	elseif (RequestService::getPostStatic('description') == '')
    	{
       	display_error( _("Item code description cannot be empty."));
 		set_focus('description');
@@ -78,12 +78,12 @@ function update_kit($selected_kit, $component_id)
 	elseif ($component_id == -1)	// adding new component to alias/kit with optional kit creation
 	{
 		if ($selected_kit == '') { // New kit/alias definition
-			if (get_post('kit_code') == '') {
+			if (RequestService::getPostStatic('kit_code') == '') {
 	    	  	display_error( _("Kit/alias code cannot be empty."));
 				set_focus('kit_code');
 				return 0;
 			}
-			$kit = get_item_kit(get_post('kit_code'));
+			$kit = get_item_kit(RequestService::getPostStatic('kit_code'));
     		if (db_num_rows($kit)) {
 			  	$input_error = 1;
     	  		display_error( _("This item code is already assigned to stock item or sale kit."));
@@ -93,33 +93,33 @@ function update_kit($selected_kit, $component_id)
 		}
    	}
 
-	if (check_item_in_kit($component_id, $selected_kit, get_post('component'), true)) {
+	if (check_item_in_kit($component_id, $selected_kit, RequestService::getPostStatic('component'), true)) {
 		display_error(_("The selected component contains directly or on any lower level the kit under edition. Recursive kits are not allowed."));
 		set_focus('component');
 		return 0;
 	}
 
 		/*Now check to see that the component is not already in the kit */
-	if (check_item_in_kit($component_id, $selected_kit, get_post('component'))) {
+	if (check_item_in_kit($component_id, $selected_kit, RequestService::getPostStatic('component'))) {
 		display_error(_("The selected component is already in this kit. You can modify it's quantity but it cannot appear more than once in the same kit."));
 		set_focus('component');
 		return 0;
 	}
 	if ($component_id == -1) { // new component in alias/kit 
 		if ($selected_kit == '') {
-			$selected_kit = get_post('kit_code');
+			$selected_kit = RequestService::getPostStatic('kit_code');
 			$msg = _("New alias code has been created.");
 		}
 		 else
 			$msg =_("New component has been added to selected kit.");
 
-		add_item_code($selected_kit, get_post('component'), get_post('description'),
-			 get_post('category'), input_num('quantity'), 0);
+		add_item_code($selected_kit, RequestService::getPostStatic('component'), RequestService::getPostStatic('description'),
+			 RequestService::getPostStatic('category'), input_num('quantity'), 0);
 		display_notification($msg);
 
 	} else { // update component
 		$props = get_kit_props($selected_kit);
-		update_item_code($component_id, $selected_kit, get_post('component'),
+		update_item_code($component_id, $selected_kit, RequestService::getPostStatic('component'),
 			$props['description'], $props['category_id'], input_num('quantity'), 0);
 		display_notification(_("Component of selected kit has been updated."));
 	}
@@ -131,15 +131,15 @@ function update_kit($selected_kit, $component_id)
 
 //--------------------------------------------------------------------------------------------------
 
-if (get_post('update_name')) {
-	update_kit_props(get_post('item_code'), get_post('description'), get_post('category'));
+if (RequestService::getPostStatic('update_name')) {
+	update_kit_props(RequestService::getPostStatic('item_code'), RequestService::getPostStatic('description'), RequestService::getPostStatic('category'));
 	display_notification(_('Kit common properties has been updated'));
 	$Ajax->activate('_page_body');
 }
 
 if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 {
-	if ($selected_kit = update_kit(get_post('item_code'), $selected_id))
+	if ($selected_kit = update_kit(RequestService::getPostStatic('item_code'), $selected_id))
 		$_POST['item_code'] = $selected_kit;
 }
 
@@ -186,14 +186,14 @@ echo "</center><br>";
 $props = get_kit_props($_POST['item_code']);
 
 if (list_updated('item_code')) {
-	if (get_post('item_code') == '')
+	if (RequestService::getPostStatic('item_code') == '')
 		$_POST['description'] = '';
 	$Ajax->activate('_page_body');
 }
 
 $selected_kit = $_POST['item_code'];
 //----------------------------------------------------------------------------------
-if (get_post('item_code') == '') {
+if (RequestService::getPostStatic('item_code') == '') {
 // New sales kit entry
 	start_table(TABLESTYLE2);
 	text_row(_("Alias/kit code:"), 'kit_code', null, 20, 20);
@@ -222,7 +222,7 @@ if (get_post('item_code') == '') {
 	
 	sales_local_items_list_row(_("Component:"),'component', null, false, true);
 
-	if (get_post('item_code') == '') { // new kit/alias
+	if (RequestService::getPostStatic('item_code') == '') { // new kit/alias
 		if ($Mode!='ADD_ITEM' && $Mode!='UPDATE_ITEM') {
 			$_POST['description'] = is_array($props) ? $props['description'] : '';
 			$_POST['category'] = is_array($props) ? $props['category_id'] : '';
@@ -230,7 +230,7 @@ if (get_post('item_code') == '') {
 		text_row(_("Description:"), 'description', null, 50, 200);
 		stock_categories_list_row(_("Category:"), 'category', null);
 	}
-	$res = get_item_edit_info(get_post('component'));
+	$res = get_item_edit_info(RequestService::getPostStatic('component'));
 	$dec =  $res["decimals"] == '' ? 0 : $res["decimals"];
 	$units = $res["units"] == '' ? _('kits') : $res["units"];
 	if (list_updated('component')) 

@@ -33,7 +33,7 @@ function display_order_header(&$Order)
 	currencies_list_row(_('Currency:'), 'currency', null, true);
  	if (list_updated('currency'))
 		unset($_POST['_ex_rate']);
-	exchange_rate_display(get_company_pref('curr_default'), get_post('currency'), get_post('date_'), true);
+	exchange_rate_display(get_company_pref('curr_default'), RequestService::getPostStatic('currency'), RequestService::getPostStatic('date_'), true);
 
 	if (list_updated('currency'))
 		$Order->clear_items();
@@ -48,7 +48,7 @@ function display_order_header(&$Order)
 		table_section(3);
 	}
 
-	ref_row(_("Reference:"), 'ref', null, get_post('ref'), false, ST_JOURNAL, get_post('date_'));
+	ref_row(_("Reference:"), 'ref', null, RequestService::getPostStatic('ref'), false, ST_JOURNAL, RequestService::getPostStatic('date_'));
 	hidden('ref_original');
 
 	if ($qes !== false)
@@ -57,7 +57,7 @@ function display_order_header(&$Order)
 		quick_entries_list_row(_("Quick Entry").":", 'quick', null, QE_JOURNAL, true);
 
 		start_row();
-		$qid = get_quick_entry(get_post('quick'));
+		$qid = get_quick_entry(RequestService::getPostStatic('quick'));
 		if (list_updated('quick')) {
 			unset($_POST['totamount']); // enable default
 		$Ajax->activate('totamount');
@@ -103,7 +103,7 @@ function display_gl_items($title, &$order)
 	$dim = get_company_pref('use_dimension');
 
 	$id = find_submit('Edit');
-	$sub_type = is_subledger_account(get_post('code_id'));
+	$sub_type = is_subledger_account(RequestService::getPostStatic('code_id'));
 	$has_subaccounts = $order->has_sub_accounts();
 
     div_start('items_table');
@@ -127,7 +127,7 @@ function display_gl_items($title, &$order)
 	$k = 0;
 
 	if ($id == -1) 
-		$id = get_post('Index', -1);
+		$id = RequestService::getPostStatic('Index', -1);
 
 	foreach ($order->gl_items as $line => $item) 
 	{
@@ -196,7 +196,7 @@ function gl_edit_item_controls(&$order, $dim, $sub_accounts, $Index=null)
 
 	$id = find_submit('Edit');
 	if ($id == -1) 
-		$continue = $id = get_post('Index', -1);
+		$continue = $id = RequestService::getPostStatic('Index', -1);
 
 	if ($Index != -1 && $Index == $id)
 	{
@@ -225,10 +225,10 @@ function gl_edit_item_controls(&$order, $dim, $sub_accounts, $Index=null)
 		$skip_bank = !$_SESSION["wa_current_user"]->can_access('SA_BANKJOURNAL');
 		echo gl_all_accounts_list('code_id', null, $skip_bank, true, _('[Select account]'), true, false, false);
 
-		if (is_subledger_account(get_post('code_id')))
+		if (is_subledger_account(RequestService::getPostStatic('code_id')))
 		{	// for home currency postings show all customers
-			$sel_cur = get_post('currency', $order->currency);
-			subledger_list_cells(null, 'person_id', get_post('code_id'), null);
+			$sel_cur = RequestService::getPostStatic('currency', $order->currency);
+			subledger_list_cells(null, 'person_id', RequestService::getPostStatic('code_id'), null);
 		} elseif ($order->has_sub_accounts())
 			label_cell('');
 		if ($dim >= 1) 
@@ -244,8 +244,8 @@ function gl_edit_item_controls(&$order, $dim, $sub_accounts, $Index=null)
 		if ($sub_accounts)
 		{
 			// for home currency postings show all customers
-			$sel_cur = get_post('currency', $order->currency);
-			subledger_list_cells(null, 'person_id', get_post('code_id'), null);
+			$sel_cur = RequestService::getPostStatic('currency', $order->currency);
+			subledger_list_cells(null, 'person_id', RequestService::getPostStatic('code_id'), null);
 		}
 		elseif ($order->has_sub_accounts())
 			label_cell('');
@@ -257,7 +257,7 @@ function gl_edit_item_controls(&$order, $dim, $sub_accounts, $Index=null)
 		$_POST['LineMemo'] = "";			
 	}
 
-	if (get_post('_code_id_update'))
+	if (RequestService::getPostStatic('_code_id_update'))
 	{
 	    $Ajax->activate('code_id');
 		set_focus($sub_accounts ? 'person_id' : ($dim < 1 ? 'AmountDebit' : 'dimension_id'));

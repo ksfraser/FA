@@ -49,7 +49,7 @@ function display_db_pager(&$pager) {
 
 	foreach($pager->columns as $num_col=>$col) {
 		// record status control column is displayed only when control checkbox is on
-    	if (isset($col['head']) && ($col['type']!='inactive' || get_post('show_inactive'))) {
+    	if (isset($col['head']) && ($col['type']!='inactive' || RequestService::getPostStatic('show_inactive'))) {
 			if (!isset($col['ord']))
 				$headers[] = $col['head'];
 			else {
@@ -136,7 +136,7 @@ function display_db_pager(&$pager) {
 		    case 'rate':
 				label_cell(number_format2($cell, user_exrate_dec()), "align=center"); break;
 			case 'inactive':
-				if(get_post('show_inactive'))
+				if(RequestService::getPostStatic('show_inactive'))
 					$pager->inactive_control_cell($row); break;
 		    default:
 			  if (isset( $col['align']))

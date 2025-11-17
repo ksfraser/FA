@@ -111,7 +111,7 @@ if ($Mode == 'Delete')
 if ($Mode == 'RESET')
 {
 	$selected_id = -1;
-	$sav = get_post('show_inactive');
+	$sav = RequestService::getPostStatic('show_inactive');
 	unset($_POST);
 	if ($sav)
 		$_POST['show_inactive'] = $sav;
@@ -188,7 +188,7 @@ while($item = db_fetch($items))
 	{
 		check_cells($item['tax_type_name'], 'tax_type_id' . $item['tax_type_id'], 
 			null, true, false, "align='center'");
-		if (get_post('_tax_type_id' . $item['tax_type_id'].'_update'))	
+		if (RequestService::getPostStatic('_tax_type_id' . $item['tax_type_id'].'_update'))	
 		{
 			//$_POST['_tax_type_id' . $item['tax_type_id'].'_update'] = 0;
 			$Ajax->activate('_page_body');

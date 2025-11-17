@@ -82,7 +82,7 @@ if (isset($_POST['add']) || isset($_POST['update']))
 
     	if ($selected_account) 
 		{
-			if (get_post('inactive') == 1 && is_bank_account($_POST['account_code']))
+			if (RequestService::getPostStatic('inactive') == 1 && is_bank_account($_POST['account_code']))
 			{
 				display_error(_("The account belongs to a bank account and cannot be inactivated."));
 			}
@@ -208,7 +208,7 @@ if (db_has_gl_accounts())
 	check_cells(_("Show inactive:"), 'show_inactive', null, true);
 	end_row();
 	end_table();
-	if (get_post('_show_inactive_update')) {
+	if (RequestService::getPostStatic('_show_inactive_update')) {
 		$Ajax->activate('AccountList');
 		set_focus('AccountList');
 	}

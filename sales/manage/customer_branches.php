@@ -139,11 +139,11 @@ elseif ($Mode == 'Delete')
 	$Mode = 'RESET';
 }
 
-if ($Mode == 'RESET' || get_post('_customer_id_update'))
+if ($Mode == 'RESET' || RequestService::getPostStatic('_customer_id_update'))
 {
 	$selected_id = -1;
 	$cust_id = $_POST['customer_id'];
-	$inact = get_post('show_inactive');
+	$inact = RequestService::getPostStatic('show_inactive');
 	unset($_POST);
 	$_POST['show_inactive'] = $inact;
 	$_POST['customer_id'] = $cust_id;
@@ -271,9 +271,9 @@ echo "<center>" . _("Select a customer: ") . "&nbsp;&nbsp;";
 echo customer_list('customer_id', null, false, true);
 echo "</center><br>";
 
-$num_branches = db_customer_has_branches(get_post('customer_id'));
+$num_branches = db_customer_has_branches(RequestService::getPostStatic('customer_id'));
 
-$sql = get_sql_for_customer_branches(get_post('customer_id'));
+$sql = get_sql_for_customer_branches(RequestService::getPostStatic('customer_id'));
 
 //------------------------------------------------------------------------------------------------
 if ($num_branches)
@@ -312,7 +312,7 @@ tabbed_content_start('tabs', array(
 //		'orders' => array('S&ales orders', $selected_id!=-1) // not implemented
 	));
 	
-	switch (get_post('_tabs_sel')) {
+	switch (RequestService::getPostStatic('_tabs_sel')) {
 		default:
 		case 'settings':
 			branch_settings($selected_id, $num_branches); 

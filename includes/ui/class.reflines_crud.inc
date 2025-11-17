@@ -81,7 +81,7 @@ class fa_reflines extends simple_crud_view {
 		$selected_id = $this->selected_id;
 
 		// new or never used
-		$fresh = $selected_id == $this->_none || !$this->data_set->is_used(get_post($this->name.'prefix'), get_post($this->name.'trans_type'));
+		$fresh = $selected_id == $this->_none || !$this->data_set->is_used(RequestService::getPostStatic($this->name.'prefix'), RequestService::getPostStatic($this->name.'trans_type'));
 
 		start_table(TABLESTYLE2);
 
@@ -90,14 +90,14 @@ class fa_reflines extends simple_crud_view {
 			systypes_list_row(_("Transaction Type:"), $this->name.'trans_type');
 			$prefix = text_input($this->name.'prefix', null, 5, 30);
 		} else {
-			label_row(_("Transaction Type:"), $systypes_array[get_post($this->name.'trans_type')]);
+			label_row(_("Transaction Type:"), $systypes_array[RequestService::getPostStatic($this->name.'trans_type')]);
 			hidden($this->name.'trans_type');
-			$prefix = get_post($this->name.'prefix') . hidden($this->name.'prefix');
+			$prefix = RequestService::getPostStatic($this->name.'prefix') . hidden($this->name.'prefix');
 		}
 
 		label_row(_("Reference Pattern:"), $prefix . text_input($this->name.'pattern', null, 30, 60));
 
-		if (get_post($this->name.'default'))
+		if (RequestService::getPostStatic($this->name.'default'))
 			{ label_row(_("Default for This Type:"), _("Yes")); hidden($this->name.'default', 1); }
 		else
 			check_row(_("Set as Default for This Type:"), $this->name.'default');

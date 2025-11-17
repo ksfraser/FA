@@ -38,12 +38,12 @@ else
 //-----------------------------------------------------------------------------------
 // Ajax updates
 //
-if (get_post('SearchOrders'))
+if (RequestService::getPostStatic('SearchOrders'))
 {
 	$Ajax->activate('dim_table');
-} elseif (get_post('_OrderNumber_changed'))
+} elseif (RequestService::getPostStatic('_OrderNumber_changed'))
 {
-	$disable = get_post('OrderNumber') !== '';
+	$disable = RequestService::getPostStatic('OrderNumber') !== '';
 
 	$Ajax->addDisable(true, 'FromDate', $disable);
 	$Ajax->addDisable(true, 'ToDate', $disable);

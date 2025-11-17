@@ -119,7 +119,7 @@ elseif (isset($_GET['ModifyQuotationNumber']))
 
 if (list_updated('branch_id')) {
 	// when branch is selected via external editor also customer can change
-	$br = get_branch(get_post('branch_id'));
+	$br = get_branch(RequestService::getPostStatic('branch_id'));
 	$_POST['customer_id'] = $br['debtor_no'];
 	$Ajax->activate('customer_id');
 }
@@ -270,14 +270,14 @@ if (isset($_GET['AddedID'])) {
 
 	display_footer_exit();
 } else
-	check_edit_conflicts(get_post('cart_id'));
+	check_edit_conflicts(RequestService::getPostStatic('cart_id'));
 //-----------------------------------------------------------------------------
 
 function copy_to_cart()
 {
 	$cart = &$_SESSION['Items'];
 
-	$cart->reference = get_post('ref');
+	$cart->reference = RequestService::getPostStatic('ref');
 
 	$cart->Comments =  $_POST['Comments'];
 
@@ -374,14 +374,14 @@ function can_process() {
 
 	copy_to_cart();
 
-	if (!get_post('customer_id')) 
+	if (!RequestService::getPostStatic('customer_id')) 
 	{
 		display_error(_("There is no customer selected."));
 		set_focus('customer_id');
 		return false;
 	} 
 	
-	if (!get_post('branch_id')) 
+	if (!RequestService::getPostStatic('branch_id')) 
 	{
 		display_error(_("This customer has no branch defined."));
 		set_focus('branch_id');
@@ -536,8 +536,8 @@ function check_item_data()
 {
 	global $SysPrefs;
 	
-	$is_inventory_item = InventoryService::isInventoryItem(get_post('stock_id'));
-	if(!get_post('stock_id_text', true)) {
+	$is_inventory_item = InventoryService::isInventoryItem(RequestService::getPostStatic('stock_id'));
+	if(!RequestService::getPostStatic('stock_id_text', true)) {
 		display_error( _("Item description cannot be empty."));
 		set_focus('stock_id_edit');
 		return false;
@@ -558,7 +558,7 @@ function check_item_data()
 		return false;
 	}
 
-	$cost_home = get_unit_cost(get_post('stock_id')); // Added 2011-03-27 Joe Hunt
+	$cost_home = get_unit_cost(RequestService::getPostStatic('stock_id')); // Added 2011-03-27 Joe Hunt
 	$bankingService = new BankingService();
 	$cost = $cost_home / $bankingService->getExchangeRateFromHomeCurrency($_SESSION['Items']->customer_currency, $_SESSION['Items']->document_date);
 	if (input_num('price') < $cost)
@@ -611,8 +611,8 @@ function handle_new_item()
 	if (!check_item_data()) {
 			return;
 	}
-	add_to_order($_SESSION['Items'], get_post('stock_id'), input_num('qty'),
-		input_num('price'), input_num('Disc') / 100, get_post('stock_id_text'));
+	add_to_order($_SESSION['Items'], RequestService::getPostStatic('stock_id'), input_num('qty'),
+		input_num('price'), input_num('Disc') / 100, RequestService::getPostStatic('stock_id_text'));
 
 	unset($_POST['_stock_id_edit'], $_POST['stock_id']);
 	page_modified();

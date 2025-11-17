@@ -38,7 +38,7 @@ function can_process()
 		return false;
 	}
 
-	if (!is_tax_gl_unique(get_post('sales_gl_code'), get_post('purchasing_gl_code'), $selected_id)) {
+	if (!is_tax_gl_unique(RequestService::getPostStatic('sales_gl_code'), RequestService::getPostStatic('purchasing_gl_code'), $selected_id)) {
 		display_error( _("Selected GL Accounts cannot be used by another tax type."));
 		set_focus('sales_gl_code');
 		return false;
@@ -99,7 +99,7 @@ if ($Mode == 'Delete')
 if ($Mode == 'RESET')
 {
 	$selected_id = -1;
-	$sav = get_post('show_inactive');
+	$sav = RequestService::getPostStatic('show_inactive');
 	unset($_POST);
 	$_POST['show_inactive'] = $sav;
 }

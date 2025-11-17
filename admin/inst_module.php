@@ -196,8 +196,8 @@ if ($Mode == 'Delete')
 	$Mode = 'RESET';
 }
 
-if (get_post('Refresh')) {
-	$comp = get_post('extset');
+if (RequestService::getPostStatic('Refresh')) {
+	$comp = RequestService::getPostStatic('extset');
 	$exts = get_company_extensions($comp);
 
 	$result = true;
@@ -218,8 +218,8 @@ if (get_post('Refresh')) {
 				$exts[$i]['active'] = check_value('Active'.$i);
 		}
 	}
-	write_extensions($exts, get_post('extset'));
-	if (get_post('extset') == user_company())
+	write_extensions($exts, RequestService::getPostStatic('extset'));
+	if (RequestService::getPostStatic('extset') == user_company())
 		$installed_extensions = $exts;
 	
 	if(!$result) {
@@ -246,7 +246,7 @@ start_form(true);
 if (list_updated('extset'))
 	$Ajax->activate('_page_body');
 
-$set = get_post('extset', -1);
+$set = RequestService::getPostStatic('extset', -1);
 
 echo "<center>" . _('Extensions:') . "&nbsp;&nbsp;";
 echo extset_list('extset', null, true);

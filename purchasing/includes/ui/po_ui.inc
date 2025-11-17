@@ -45,7 +45,7 @@ function copy_to_cart()
 	if ($cart->trans_type == ST_SUPPINVOICE)
 	{
 		$cart->due_date = $_POST['due_date'];
-		$cart->cash_account = get_post('cash_account');
+		$cart->cash_account = RequestService::getPostStatic('cash_account');
 	}
 	$cart->reference = $_POST['ref'];
 	$cart->supp_ref = $_POST['supp_ref'];
@@ -86,7 +86,7 @@ function create_new_po($trans_type, $trans_no)
 		$cart->order_no = $trans_no;
 	} else
 		$cart->reference = $Refs->get_next($trans_type, null,
-			array('supplier_id' => $cart->supplier_id, 'date' => get_post('OrderDate')));
+			array('supplier_id' => $cart->supplier_id, 'date' => RequestService::getPostStatic('OrderDate')));
 	$_SESSION['PO'] = &$cart;
 }
 
@@ -114,7 +114,7 @@ function display_po_header(&$order)
 		label_row(_("Supplier:"), $order->supplier_name);
     }
 
-	if ($order->supplier_id != get_post('supplier_id',-1)) {
+	if ($order->supplier_id != RequestService::getPostStatic('supplier_id',-1)) {
 		$old_supp = $order->supplier_id;
 		get_supplier_details_to_order($order, $_POST['supplier_id']); 
 	    get_duedate_from_terms($order);
@@ -183,7 +183,7 @@ function display_po_header(&$order)
     {
     	/*If this is the first time the form loaded set up defaults */
 
-		$loc_row = get_item_location(get_post('StkLocation'));
+		$loc_row = get_item_location(RequestService::getPostStatic('StkLocation'));
         if ($loc_row)
         {
     	  	$_POST['delivery_address'] = $loc_row["delivery_address"];

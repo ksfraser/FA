@@ -76,9 +76,9 @@ if (isset($_POST['BatchInvoice']))
 }
 
 //-----------------------------------------------------------------------------------
-if (get_post('_DeliveryNumber_changed')) 
+if (RequestService::getPostStatic('_DeliveryNumber_changed')) 
 {
-	$disable = get_post('DeliveryNumber') !== '';
+	$disable = RequestService::getPostStatic('DeliveryNumber') !== '';
 
 	$Ajax->addDisable(true, 'DeliveryAfterDate', $disable);
 	$Ajax->addDisable(true, 'DeliveryToDate', $disable);
@@ -162,8 +162,8 @@ function check_overdue($row)
 			$row["Outstanding"]!=0;
 }
 //------------------------------------------------------------------------------------------------
-$sql = get_sql_for_sales_deliveries_view(get_post('DeliveryAfterDate'), get_post('DeliveryToDate'), get_post('customer_id'),	
-	get_post('SelectStockFromList'), get_post('StockLocation'), get_post('DeliveryNumber'), get_post('OutstandingOnly'));
+$sql = get_sql_for_sales_deliveries_view(RequestService::getPostStatic('DeliveryAfterDate'), RequestService::getPostStatic('DeliveryToDate'), RequestService::getPostStatic('customer_id'),	
+	RequestService::getPostStatic('SelectStockFromList'), RequestService::getPostStatic('StockLocation'), RequestService::getPostStatic('DeliveryNumber'), RequestService::getPostStatic('OutstandingOnly'));
 
 $cols = array(
 		_("Delivery #") => array('fun'=>'trans_view', 'align'=>'right'), 

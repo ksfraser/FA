@@ -210,7 +210,7 @@ function display_currency_edit($selected_id)
 	text_row_ex(_("Currency Name:"), 'CurrencyName', 20);
 	text_row_ex(_("Hundredths Name:"), 'hundreds_name', 15);	
 	text_row_ex(_("Country:"), 'country', 40);	
-	check_row(_("Automatic exchange rate update:"), 'auto_update', get_post('auto_update'));
+	check_row(_("Automatic exchange rate update:"), 'auto_update', RequestService::getPostStatic('auto_update'));
 	end_table(1);
 
 	submit_add_or_update_center($selected_id == '', '', 'both');

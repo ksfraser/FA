@@ -24,7 +24,7 @@ function page_footer($no_menu=false, $is_index=false)
 	$Ajax->addScript('editors', $edits);
 
 	echo "<script type='text/javascript'>
-		_focus = '" . get_post('_focus') . "';
+		_focus = '" . RequestService::getPostStatic('_focus') . "';
 		_validate = " . $Ajax->php2js($Validate).";
 		var $edits
 	</script>";

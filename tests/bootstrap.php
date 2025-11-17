@@ -38,3 +38,7 @@ $systypes_array = array(
 
 require_once __DIR__ . '/../includes/date_functions.inc';
 require_once __DIR__ . '/../includes/types.inc';
+require_once __DIR__ . '/../includes/current_user.inc';
+require_once __DIR__ . '/../includes/ui/ui_input.inc';
+require_once __DIR__ . '/../includes/ui/ui_controls.inc';
+require_once __DIR__ . '/../includes/RequestService.php';

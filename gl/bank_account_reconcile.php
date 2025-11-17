@@ -39,7 +39,7 @@ check_db_has_bank_accounts(_("There are no bank accounts defined in the system."
 
 function check_date() {
 	$dateService = new DateService();
-	if (!$dateService->isDate(get_post('reconcile_date'))) {
+	if (!$dateService->isDate(RequestService::getPostStatic('reconcile_date'))) {
 		display_error(_("Invalid reconcile date format"));
 		set_focus('reconcile_date');
 		return false;
@@ -120,10 +120,10 @@ function change_tpl_flag($reconcile_id)
 		&& check_value("rec_".$reconcile_id)) // temporary fix
 		return false;
 
-	if (get_post('bank_date')=='')	// new reconciliation
+	if (RequestService::getPostStatic('bank_date')=='')	// new reconciliation
 		$Ajax->activate('bank_date');
 
-	$_POST['bank_date'] = DateService::date2sqlStatic(get_post('reconcile_date'));
+	$_POST['bank_date'] = DateService::date2sqlStatic(RequestService::getPostStatic('reconcile_date'));
 	$reconcile_value = check_value("rec_".$reconcile_id) 
 						? ("'".$_POST['bank_date'] ."'") : 'NULL';
 	
@@ -142,10 +142,10 @@ function set_tpl_flag($reconcile_id)
 	if (check_value("rec_".$reconcile_id))
 		return;
 
-	if (get_post('bank_date')=='')	// new reconciliation
+	if (RequestService::getPostStatic('bank_date')=='')	// new reconciliation
 		$Ajax->activate('bank_date');
 
-	$_POST['bank_date'] = DateService::date2sqlStatic(get_post('reconcile_date'));
+	$_POST['bank_date'] = DateService::date2sqlStatic(RequestService::getPostStatic('reconcile_date'));
 	$reconcile_value =  ("'".$_POST['bank_date'] ."'");
 	
 	update_reconciled_values($reconcile_id, $reconcile_value, $_POST['reconcile_date'],
@@ -166,11 +166,11 @@ if (list_updated('bank_account')) {
 }
 if (list_updated('bank_date')) {
 	$_POST['reconcile_date'] = 
-		get_post('bank_date')=='' ? DateService::todayStatic() : DateService::sql2dateStatic($_POST['bank_date']);
+		RequestService::getPostStatic('bank_date')=='' ? DateService::todayStatic() : DateService::sql2dateStatic($_POST['bank_date']);
 	update_data();
 }
-if (get_post('_reconcile_date_changed')) {
-	$_POST['bank_date'] = check_date() ? DateService::date2sqlStatic(get_post('reconcile_date')) : '';
+if (RequestService::getPostStatic('_reconcile_date_changed')) {
+	$_POST['bank_date'] = check_date() ? DateService::date2sqlStatic(RequestService::getPostStatic('reconcile_date')) : '';
     $Ajax->activate('bank_date');
 	update_data();
 }
@@ -203,12 +203,12 @@ start_table(TABLESTYLE_NOBORDER);
 start_row();
 bank_accounts_list_cells(_("Account:"), 'bank_account', null, true);
 
-bank_reconciliation_list_cells(_("Bank Statement:"), get_post('bank_account'),
+bank_reconciliation_list_cells(_("Bank Statement:"), RequestService::getPostStatic('bank_account'),
 	'bank_date', null, true, _("New"));
 end_row();
 end_table();
 
-$result = get_max_reconciled(get_post('reconcile_date'), $_POST['bank_account']);
+$result = get_max_reconciled(RequestService::getPostStatic('reconcile_date'), $_POST['bank_account']);
 
 if ($row = db_fetch($result)) {
 	$_POST["reconciled"] = price_format($row["end_balance"]-$row["beg_balance"]);
@@ -217,7 +217,7 @@ if ($row = db_fetch($result)) {
 		$_POST["last_date"] = DateService::sql2dateStatic($row["last_date"]);
 		$_POST["beg_balance"] = price_format($row["beg_balance"]);
 		$_POST["end_balance"] = price_format($row["end_balance"]);
-		if (get_post('bank_date')) {
+		if (RequestService::getPostStatic('bank_date')) {
 			// if it is the last updated bank statement retrieve ending balance
 
 			$row = get_ending_reconciled($_POST['bank_account'], $_POST['bank_date']);
@@ -239,7 +239,7 @@ table_header($th);
 start_row();
 
 date_cells("", "reconcile_date", _('Date of bank statement to reconcile'), 
-	get_post('bank_date')=='', 0, 0, 0, null, true);
+	RequestService::getPostStatic('bank_date')=='', 0, 0, 0, null, true);
 
 amount_cells_ex("", "beg_balance", 15);
 
@@ -261,7 +261,7 @@ echo "<hr>";
 if (!isset($_POST['bank_account']))
     $_POST['bank_account'] = "";
 
-$sql = get_sql_for_bank_account_reconcile(get_post('bank_account'), get_post('reconcile_date'));
+$sql = get_sql_for_bank_account_reconcile(RequestService::getPostStatic('bank_account'), RequestService::getPostStatic('reconcile_date'));
 
 $act = get_bank_account($_POST["bank_account"]);
 display_heading($act['bank_account_name']." - ".$act['bank_curr_code']);

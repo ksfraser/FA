@@ -28,7 +28,7 @@ else
 
 page(_($help_context = "Customers"), true, false, "", $js);
 
-if(get_post("search")) {
+if(RequestService::getPostStatic("search")) {
   $Ajax->activate("customer_tbl");
 }
 
@@ -57,7 +57,7 @@ table_header($th);
 
 $k = 0;
 $name = $_GET["client_id"];
-$result = get_customers_search(get_post("customer"));
+$result = get_customers_search(RequestService::getPostStatic("customer"));
 while ($myrow = db_fetch_assoc($result)) {
 	alt_table_row_color($k);
 	$value = $myrow['debtor_no'];

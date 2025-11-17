@@ -29,7 +29,7 @@ page(_($help_context = "Journal Inquiry"), false, false, "", $js);
 //-----------------------------------------------------------------------------------
 // Ajax updates
 //
-if (get_post('Search'))
+if (RequestService::getPostStatic('Search'))
 {
 	$Ajax->activate('journal_tbl');
 }
@@ -105,8 +105,8 @@ function invoice_supp_reference($row)
 	return $row['supp_reference'];
 }
 
-$sql = get_sql_for_journal_inquiry(get_post('filterType', -1), get_post('FromDate'),
-	get_post('ToDate'), get_post('Ref'), get_post('Memo'), check_value('AlsoClosed'), get_post('userid'));
+$sql = get_sql_for_journal_inquiry(RequestService::getPostStatic('filterType', -1), RequestService::getPostStatic('FromDate'),
+	RequestService::getPostStatic('ToDate'), RequestService::getPostStatic('Ref'), RequestService::getPostStatic('Memo'), check_value('AlsoClosed'), RequestService::getPostStatic('userid'));
 
 $cols = array(
 	_("#") => array('fun'=>'journal_pos', 'align'=>'center'), 

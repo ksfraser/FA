@@ -23,7 +23,7 @@ function display_bank_header(&$order)
 	
     date_row(_("Date:"), 'date_', '', true, 0, 0, 0, null, true);
 
-	ref_row(_("Reference:"), 'ref', '', $order->reference, false, $order->trans_type, get_post('date_'));
+	ref_row(_("Reference:"), 'ref', '', $order->reference, false, $order->trans_type, RequestService::getPostStatic('date_'));
 
 	table_section(2, "33%");
 
@@ -88,7 +88,7 @@ function display_bank_header(&$order)
 
 		case PT_QUICKENTRY :
 			quick_entries_list_row(_("Type").":", 'person_id', null, ($payment ? QE_PAYMENT : QE_DEPOSIT), true);
-			$qid = get_quick_entry(get_post('person_id'));
+			$qid = get_quick_entry(RequestService::getPostStatic('person_id'));
 			if (list_updated('person_id')) {
 				unset($_POST['totamount']); // enable default
 				$Ajax->activate('footer');
@@ -101,7 +101,7 @@ function display_bank_header(&$order)
 
 	table_section(3, "33%");
 
-	if (!$order->order_id && !get_post('bank_account'))
+	if (!$order->order_id && !RequestService::getPostStatic('bank_account'))
 	{
 		if ($_POST['PayType'] == PT_CUSTOMER)
 			$_POST['bank_account'] = get_default_customer_bank_account($_POST['person_id']);
@@ -285,15 +285,15 @@ function gl_options_controls($order)
 	div_start('footer');
 	echo "<br><table align='center'>";
 
-	$type = get_post('PayType');
-	$bank_curr = get_bank_account_currency(get_post('bank_account'));
-	$person_curr = $type == PT_CUSTOMER ? get_customer_currency(get_post('person_id')) 
-		: ($type == PT_SUPPLIER ? get_supplier_currency(get_post('person_id')) : $bank_curr);
+	$type = RequestService::getPostStatic('PayType');
+	$bank_curr = get_bank_account_currency(RequestService::getPostStatic('bank_account'));
+	$person_curr = $type == PT_CUSTOMER ? get_customer_currency(RequestService::getPostStatic('person_id')) 
+		: ($type == PT_SUPPLIER ? get_supplier_currency(RequestService::getPostStatic('person_id')) : $bank_curr);
 
 	if ($person_curr != $bank_curr)
 	{
 		$_POST['settled_amount'] =
-			price_format(abs($order->gl_items_total() / get_exchange_rate_from_to($bank_curr, $person_curr, get_post('date_'))));
+			price_format(abs($order->gl_items_total() / get_exchange_rate_from_to($bank_curr, $person_curr, RequestService::getPostStatic('date_'))));
 		amount_row($type == PT_CUSTOMER ? _("Settled AR Amount:") :  _("Settled AP Amount:"),
 			 'settled_amount', null, null, $person_curr, user_price_dec());
 	}
