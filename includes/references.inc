@@ -123,12 +123,12 @@ class references
 						case 'MM':
 						case 'YY':
 						case 'YYYY':
-							list($day, $month, $year) = explode_date_to_dmy($context['date']);
+							list($day, $month, $year) = DateService::explodeDateToDmyStatic($context['date']);
 							$out .= $ph == 'MM' ? sprintf('%02d', $month) : ($ph == 'YY' ? sprintf('%02d', $year%100): sprintf('%04d', $year));
 							break;
 						case 'FF':
 						case 'FFFF':
-							list($day, $month, $year) = explode_date_to_dmy(get_fiscalyear_begin_for_date($context['date']));
+							list($day, $month, $year) = DateService::explodeDateToDmyStatic(get_fiscalyear_begin_for_date($context['date']));
 							$out .= $ph == 'FF' ? sprintf('%02d', $year%100): sprintf('%04d', $year);
 							break;
 						case 'C':

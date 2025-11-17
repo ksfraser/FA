@@ -265,4 +265,28 @@ class DateService
     {
         return \add_years($date, $years);
     }
+    
+    /**
+     * Static wrapper for explodeDateToDmy
+     */
+    public static function explodeDateToDmyStatic(string $date): array
+    {
+        return \explode_date_to_dmy($date);
+    }
+    
+    /**
+     * Static wrapper for sqlDateComp
+     */
+    public static function sqlDateCompStatic(string $date1, string $date2): int
+    {
+        return \sql_date_comp($date1, $date2);
+    }
+    
+    /**
+     * Static wrapper for dateComp
+     */
+    public static function dateCompStatic(string $date1, string $date2, bool $incl_weekends = true, bool $incl_non_working = true): int
+    {
+        return \date_comp($date1, $date2, $incl_weekends, $incl_non_working);
+    }
 }

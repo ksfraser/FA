@@ -312,7 +312,7 @@ function check_bank_transfer($trans_no, $from_account, $to_account, $date_,
 	if ($problemTransaction) {
 		// If the destination account is the same as that being edited, it may be that this edit will resolve the
 		// problem of voiding.
-		if ($to_account == $old_to['bank_act'] && sql_date_comp($problemTransaction['trans_date'], date2sql($date_)) > 0) {
+		if ($to_account == $old_to['bank_act'] && DateService::sqlDateCompStatic($problemTransaction['trans_date'], date2sql($date_)) > 0) {
 			$problemTransaction['amount'] += $amount;
 			if ($problemTransaction['amount'] >= 0) {
 				$problemTransaction = null;
@@ -328,7 +328,7 @@ function check_bank_transfer($trans_no, $from_account, $to_account, $date_,
 	// 3) The edited from account, that is having funds removed which may result in a
 	//    negative balance in the account at some time and therefore needs to be checked.
 	$balance_offset = 0;
-	if ($from_account == $old_from['bank_act'] && sql_date_comp(date2sql($date_), $old_from['trans_date']) >= 0) {
+	if ($from_account == $old_from['bank_act'] && DateService::sqlDateCompStatic(date2sql($date_), $old_from['trans_date']) >= 0) {
 		// If the edited from_account is the same as the original transaction, and the new date is later than the old date
 		// then add the amount from the original from transaction when checking the history to simulate the void that would
 		// take effect from that date.

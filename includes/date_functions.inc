@@ -241,7 +241,7 @@ function end_fiscalyear()
 function begin_month($date)
 {
 	global $SysPrefs;
-    list($day, $month, $year) = explode_date_to_dmy($date);
+    list($day, $month, $year) = DateService::explodeDateToDmyStatic($date);
     if ($SysPrefs->date_system == 1)
     	list($year, $month, $day) = gregorian_to_jalali($year, $month, $day);
     elseif ($SysPrefs->date_system == 2)	
@@ -271,7 +271,7 @@ function end_month($date)
 {
 	global $SysPrefs;
 
-    list($day, $month, $year) = explode_date_to_dmy($date);
+    list($day, $month, $year) = DateService::explodeDateToDmyStatic($date);
 	if ($SysPrefs->date_system == 1)
 	{
 		list($year, $month, $day) = gregorian_to_jalali($year, $month, $day);
@@ -287,7 +287,7 @@ function end_month($date)
 function add_days($date, $days) // accepts negative values as well
 {
 	global $SysPrefs;
-    list($day, $month, $year) = explode_date_to_dmy($date);
+    list($day, $month, $year) = DateService::explodeDateToDmyStatic($date);
    	$timet = mktime(0,0,0, $month, $day + $days, $year);
     if ($SysPrefs->date_system == 1 || $SysPrefs->date_system == 2)
     {
@@ -305,7 +305,7 @@ function add_months($date, $months) // accepts negative values as well
 {
 	global $SysPrefs;
 
-    list($day, $month, $year) = explode_date_to_dmy($date);
+    list($day, $month, $year) = DateService::explodeDateToDmyStatic($date);
 
 	$months += $year*12+$month;
 	$month = ($months-1)%12+1;
@@ -329,7 +329,7 @@ function add_years($date, $years) // accepts negative values as well
 {
 	global $SysPrefs;
 
-    list($day, $month, $year) = explode_date_to_dmy($date);
+    list($day, $month, $year) = DateService::explodeDateToDmyStatic($date);
    	$timet = Mktime(0,0,0, $month, $day, $year + $years);
     if ($SysPrefs->date_system == 1 || $SysPrefs->date_system == 2)
     {

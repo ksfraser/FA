@@ -913,7 +913,7 @@ function cash_flow($today)
 		$today = \\FA\\Services\\DateService::endFiscalYear();
 	$today1 = DateService::beginMonthStatic($today);
 	$today1 = DateService::addMonthsStatic($today, -$months+1);
-	list($da, $mo, $yr) = explode_date_to_dmy($today1);
+	list($da, $mo, $yr) = DateService::explodeDateToDmyStatic($today1);
 	if ($date_system == 1)
 		list($yr, $mo, $da) = jalali_to_gregorian($yr, $mo, $da);
 	elseif ($date_system == 2)
