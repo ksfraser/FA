@@ -42,8 +42,8 @@ if (get_post('TransFromDate') == "" && get_post('TransToDate') == "")
 	$date = Today();
 	$row = get_company_prefs();
 	$edate = DateService::addMonthsStatic($date, -$row['tax_last']);
-	$edate = end_month($edate);
-	$bdate = begin_month($edate);
+	$edate = DateService::endMonthStatic($edate);
+	$bdate = DateService::beginMonthStatic($edate);
 	$bdate = DateService::addMonthsStatic($bdate, -$row['tax_prd'] + 1);
 	$_POST["TransFromDate"] = $bdate;
 	$_POST["TransToDate"] = $edate;

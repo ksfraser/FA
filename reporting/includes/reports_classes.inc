@@ -198,19 +198,19 @@ class BoxReports
 						else
 							$date = Today();
 						if ($type == 'DATEBEGINM')
-							$date = begin_month($date);
+							$date = DateService::beginMonthStatic($date);
 						elseif ($type == 'DATEENDM')
-							$date = end_month($date);
+							$date = DateService::endMonthStatic($date);
 						elseif ($type == 'DATEBEGINTAX' || $type == 'DATEENDTAX')
 						{
 							$row = get_company_prefs();
 							$edate = DateService::addMonthsStatic($date, -$row['tax_last']);
-							$edate = end_month($edate);
+							$edate = DateService::endMonthStatic($edate);
 							if ($type == 'DATEENDTAX')
 								$date = $edate;
 							else
 							{
-								$bdate = begin_month($edate);
+								$bdate = DateService::beginMonthStatic($edate);
 								$bdate = DateService::addMonthsStatic($bdate, -$row['tax_prd'] + 1);
 								$date = $bdate;
 							}

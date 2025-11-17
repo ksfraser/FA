@@ -694,7 +694,7 @@ function quickentry_calculate($base, $id, $taxgroup=null, $date=null)
 				$date = Today();
 
 			if ($monthly) // marked as monthly
-				$begin = begin_month($date);
+				$begin = DateService::beginMonthStatic($date);
 			else
 			{
 				if (is_account_balancesheet($gl_code)) // total

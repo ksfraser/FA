@@ -73,14 +73,14 @@ if (isset($_POST['go']) || isset($_POST['show']))
 		$date = $date_ = get_post('date_');
 		$freq = get_post('freq');
 		if ($freq == 3 || $freq == 4) {
-			$date_ = begin_month($date_); // avoid skip on shorter months
-			$date  = end_month($date_); // avoid skip on shorter months
+			$date_ = DateService::beginMonthStatic($date_); // avoid skip on shorter months
+			$date  = DateService::endMonthStatic($date_); // avoid skip on shorter months
 		}
 		
 		$lastdate = ($freq == 1 ? DateService::addDaysStatic($date_, 7*$per) :
 			($freq == 2 ? DateService::addDaysStatic($date_, 14*$per) :
-			($freq == 3 ? end_month(DateService::addMonthsStatic($date_, $per)) : 
-			end_month(DateService::addMonthsStatic($date_, 3*$per)))));
+			($freq == 3 ? DateService::endMonthStatic(DateService::addMonthsStatic($date_, $per)) : 
+			DateService::endMonthStatic(DateService::addMonthsStatic($date_, 3*$per)))));
 		if (!is_date_in_fiscalyears($lastdate, false))
 		{
 			display_error(_("Some of the period dates are outside the fiscal year or are closed for further data entry. Create a new fiscal year first!"));
@@ -134,11 +134,11 @@ if (isset($_POST['go']) || isset($_POST['show']))
 							break;
 						case 3:
 							$date_ = DateService::addMonthsStatic($date_, 1);
-							$date = end_month($date_);
+							$date = DateService::endMonthStatic($date_);
 							break;
 						case 4:
 							$date_ = DateService::addMonthsStatic($date_, 3);
-							$date = end_month($date_);
+							$date = DateService::endMonthStatic($date_);
 							break;
 					}
 					$am0 = $am;

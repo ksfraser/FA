@@ -48,9 +48,9 @@ function gl_inquiry_controls()
 
 	$date = today();
 	if (!isset($_POST['TransToDate']))
-		$_POST['TransToDate'] = end_month($date);
+		$_POST['TransToDate'] = DateService::endMonthStatic($date);
 	if (!isset($_POST['TransFromDate']))
-		$_POST['TransFromDate'] = DateService::addDaysStatic(end_month($date), -user_transaction_days());
+		$_POST['TransFromDate'] = DateService::addDaysStatic(DateService::endMonthStatic($date), -user_transaction_days());
 	start_row();	
     date_cells(_("From:"), 'TransFromDate');
 	date_cells(_("To:"), 'TransToDate');

@@ -129,12 +129,22 @@ class DateService
         return \begin_month($date);
     }
 
+    public static function beginMonthStatic(string $date): string
+    {
+        return \begin_month($date);
+    }
+
     public function daysInMonth(int $month, int $year): int
     {
         return \days_in_month($month, $year);
     }
 
     public function endMonth(string $date): string
+    {
+        return \end_month($date);
+    }
+
+    public static function endMonthStatic(string $date): string
     {
         return \end_month($date);
     }

@@ -911,7 +911,7 @@ function cash_flow($today)
 		$months = $_POST['per_g5'];
 	if (!\FA\Services\DateService::isDateInFiscalYear($today))
 		$today = \\FA\\Services\\DateService::endFiscalYear();
-	$today1 = begin_month($today);
+	$today1 = DateService::beginMonthStatic($today);
 	$today1 = DateService::addMonthsStatic($today, -$months+1);
 	list($da, $mo, $yr) = explode_date_to_dmy($today1);
 	if ($date_system == 1)

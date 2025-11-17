@@ -103,7 +103,7 @@ start_form();
 start_table(TABLESTYLE2);
 if (!isset($_POST['date'])) {
 	$cdate = sql2date(get_company_pref('gl_closing_date'));
-	$_POST['date'] = $cdate ;// ? end_month(DateService::addMonthsStatic($cdate, 1)) : Today();
+	$_POST['date'] = $cdate ;// ? DateService::endMonthStatic(DateService::addMonthsStatic($cdate, 1)) : Today();
 }
 date_row(_("End date of closing period:"), 'date');
 end_table(1);

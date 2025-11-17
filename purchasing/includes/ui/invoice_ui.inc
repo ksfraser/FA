@@ -607,7 +607,7 @@ function get_duedate_from_terms(&$trans)
 	if ($trans->terms['day_in_following_month'])
 	{ /*Its a day in the following month when due */
 		$trans->due_date =
-			DateService::addDaysStatic(end_month($date), $trans->terms["day_in_following_month"]);
+			DateService::addDaysStatic(DateService::endMonthStatic($date), $trans->terms["day_in_following_month"]);
 	}
 	else
 	{ /*Use the Days Before Due to add to the invoice date */

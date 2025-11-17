@@ -115,7 +115,7 @@ if (db_has_gl_accounts())
 			label_cell(number_format2($d, 0), "nowrap align=right");
 			$btotal += $d;
 		}
-		$lamount = get_gl_trans_from_to(add_years($date_, -1), add_years(end_month($date_), -1), $_POST['account'], $_POST['dim1'], $_POST['dim2']);
+		$lamount = get_gl_trans_from_to(add_years($date_, -1), add_years(DateService::endMonthStatic($date_), -1), $_POST['account'], $_POST['dim1'], $_POST['dim2']);
 		$total += input_num('amount'.$i);
 		$ltotal += $lamount;
 		label_cell(number_format2($lamount, 0), "nowrap align=right");
