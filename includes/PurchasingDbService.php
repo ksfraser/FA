@@ -11,10 +11,12 @@
 ***********************************************************************/
 namespace FA;
 
+use FA\Interfaces\PurchasingRepositoryInterface;
+
 /**
  * Purchasing Database Service
  *
- * Handles purchasing-related database operations.
+ * Handles purchasing-related database operations with DI support.
  * Refactored to OOP with SOLID principles.
  *
  * SOLID Principles:
@@ -22,7 +24,7 @@ namespace FA;
  * - Open/Closed: Can be extended for additional purchasing logic
  * - Liskov Substitution: Compatible with DB interfaces
  * - Interface Segregation: Focused purchasing DB methods
- * - Dependency Inversion: Depends on abstractions, not globals
+ * - Dependency Inversion: Depends on abstractions via DI
  *
  * DRY: Reuses purchasing DB logic across the application
  * TDD: Developed with unit tests for regression prevention
@@ -31,8 +33,9 @@ namespace FA;
  * +---------------------+
  * | PurchasingDbService |
  * +---------------------+
- * |                     |
+ * | - purchasingRepo   |
  * +---------------------+
+ * | + __construct()    |
  * | + addGlTransSupplier() |
  * | + getPurchasePrice()   |
  * | + getPurchaseConversionFactor() |
@@ -42,11 +45,15 @@ namespace FA;
  * @package FA
  */
 class PurchasingDbService {
+    private ?PurchasingRepositoryInterface $purchasingRepo;
 
     /**
-     * Constructor
+     * Constructor with optional dependency injection
+     *
+     * @param PurchasingRepositoryInterface|null $purchasingRepo Purchasing repository
      */
-    public function __construct() {
+    public function __construct(?PurchasingRepositoryInterface $purchasingRepo = null) {
+        $this->purchasingRepo = $purchasingRepo ?? new ProductionPurchasingRepository();
         include_once($path_to_root . "/purchasing/includes/supp_trans_class.inc");
         include_once($path_to_root . "/includes/banking.inc");
         include_once($path_to_root . "/includes/inventory.inc");

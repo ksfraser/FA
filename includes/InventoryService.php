@@ -2,10 +2,12 @@
 
 namespace FA;
 
+use FA\Interfaces\ItemRepositoryInterface;
+
 /**
  * Inventory Service
  *
- * Handles inventory-related checks and operations.
+ * Handles inventory-related checks and operations with DI support.
  * Refactored from procedural functions to OOP with SOLID principles.
  *
  * SOLID Principles:
@@ -13,7 +15,7 @@ namespace FA;
  * - Open/Closed: Can be extended for additional inventory features
  * - Liskov Substitution: Compatible with inventory interfaces
  * - Interface Segregation: Focused inventory methods
- * - Dependency Inversion: Depends on abstractions, not globals
+ * - Dependency Inversion: Depends on abstractions via DI
  *
  * DRY: Reuses inventory logic across the application
  * TDD: Developed with unit tests for regression prevention
@@ -22,19 +24,31 @@ namespace FA;
  * +---------------------+
  * | InventoryService   |
  * +---------------------+
- * |                    |
+ * | - itemRepo         |
  * +---------------------+
- * | + isManufactured(flag)|
- * | + isPurchased(flag) |
- * | + isService(flag)   |
- * | + isFixedAsset(flag)|
- * | + hasStockHolding(flag)|
+ * | + __construct()    |
+ * | + isManufactured() |
+ * | + isPurchased()    |
+ * | + isService()      |
+ * | + isFixedAsset()   |
+ * | + hasStockHolding()|
  * +---------------------+
  *
  * @package FA
  */
 class InventoryService
 {
+    private ?ItemRepositoryInterface $itemRepo;
+
+    /**
+     * Constructor with optional dependency injection
+     *
+     * @param ItemRepositoryInterface|null $itemRepo Item repository
+     */
+    public function __construct(?ItemRepositoryInterface $itemRepo = null)
+    {
+        $this->itemRepo = $itemRepo ?? new ProductionItemRepository();
+    }
     /**
      * Check if item is manufactured
      *

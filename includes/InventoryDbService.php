@@ -11,10 +11,12 @@
 ***********************************************************************/
 namespace FA;
 
+use FA\Interfaces\InventoryRepositoryInterface;
+
 /**
  * Inventory Database Service
  *
- * Handles inventory-related database operations.
+ * Handles inventory-related database operations with DI support.
  * Refactored to OOP with SOLID principles.
  *
  * SOLID Principles:
@@ -22,7 +24,7 @@ namespace FA;
  * - Open/Closed: Can be extended for additional inventory logic
  * - Liskov Substitution: Compatible with DB interfaces
  * - Interface Segregation: Focused inventory DB methods
- * - Dependency Inversion: Depends on abstractions, not globals
+ * - Dependency Inversion: Depends on abstractions via DI
  *
  * DRY: Reuses inventory DB logic across the application
  * TDD: Developed with unit tests for regression prevention
@@ -31,8 +33,9 @@ namespace FA;
  * +---------------------+
  * | InventoryDbService |
  * +---------------------+
- * |                     |
+ * | - inventoryRepo    |
  * +---------------------+
+ * | + __construct()    |
  * | + itemImgName()    |
  * | + getStockMovements() |
  * | + calculateReorderLevel() |
@@ -42,11 +45,15 @@ namespace FA;
  * @package FA
  */
 class InventoryDbService {
+    private ?InventoryRepositoryInterface $inventoryRepo;
 
     /**
-     * Constructor
+     * Constructor with optional dependency injection
+     *
+     * @param InventoryRepositoryInterface|null $inventoryRepo Inventory repository
      */
-    public function __construct() {
+    public function __construct(?InventoryRepositoryInterface $inventoryRepo = null) {
+        $this->inventoryRepo = $inventoryRepo ?? new ProductionInventoryRepository();
         include_once($path_to_root . "/includes/date_functions.inc");
         include_once($path_to_root . "/includes/banking.inc");
         include_once($path_to_root . "/includes/inventory.inc");

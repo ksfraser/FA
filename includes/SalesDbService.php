@@ -11,10 +11,12 @@
 ***********************************************************************/
 namespace FA;
 
+use FA\Interfaces\SalesRepositoryInterface;
+
 /**
  * Sales Database Service
  *
- * Handles sales-related database operations.
+ * Handles sales-related database operations with DI support.
  * Refactored to OOP with SOLID principles.
  *
  * SOLID Principles:
@@ -22,7 +24,7 @@ namespace FA;
  * - Open/Closed: Can be extended for additional sales logic
  * - Liskov Substitution: Compatible with DB interfaces
  * - Interface Segregation: Focused sales DB methods
- * - Dependency Inversion: Depends on abstractions, not globals
+ * - Dependency Inversion: Depends on abstractions via DI
  *
  * DRY: Reuses sales DB logic across the application
  * TDD: Developed with unit tests for regression prevention
@@ -31,8 +33,9 @@ namespace FA;
  * +---------------------+
  * |   SalesDbService   |
  * +---------------------+
- * |                     |
+ * | - salesRepo        |
  * +---------------------+
+ * | + __construct()    |
  * | + addGlTransCustomer() |
  * | + getCalculatedPrice() |
  * | + roundToNearest()     |
@@ -43,11 +46,15 @@ namespace FA;
  * @package FA
  */
 class SalesDbService {
+    private ?SalesRepositoryInterface $salesRepo;
 
     /**
-     * Constructor
+     * Constructor with optional dependency injection
+     *
+     * @param SalesRepositoryInterface|null $salesRepo Sales repository
      */
-    public function __construct() {
+    public function __construct(?SalesRepositoryInterface $salesRepo = null) {
+        $this->salesRepo = $salesRepo ?? new ProductionSalesRepository();
         include_once($path_to_root . "/includes/banking.inc");
         include_once($path_to_root . "/includes/inventory.inc");
         include_once($path_to_root . "/includes/db/allocations_db.inc");
