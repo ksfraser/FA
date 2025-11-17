@@ -16,7 +16,7 @@ $page_security = 'SA_SALESANALYTIC';
 // date_:	2005-05-19
 // Title:	Inventory Sales Report
 // ----------------------------------------------------------------
-$path_to_root="..";
+if (!isset($path_to_root)) $path_to_root="..";
 
 include_once($path_to_root . "/includes/session.inc");
 require_once($path_to_root . "/includes/InventoryService.php");

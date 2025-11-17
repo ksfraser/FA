@@ -10,7 +10,7 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 $page_security = 'SA_WORKORDERCOST';
-$path_to_root = "..";
+if (!isset($path_to_root)) $path_to_root = "..";
 include_once($path_to_root . "/includes/session.inc");
 require_once($path_to_root . "/includes/DateService.php");
 include_once($path_to_root . "/includes/inventory.inc");

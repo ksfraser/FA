@@ -17,7 +17,7 @@
 //	Entry Direct Invoice
 //
 
-$path_to_root = "..";
+if (!isset($path_to_root)) $path_to_root = "..";
 $page_security = 'SA_SALESORDER';
 
 include_once($path_to_root . "/sales/includes/cart_class.inc");

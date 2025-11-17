@@ -1,1 +1,1 @@
-{"version":1,"defects":{"exchange_ratesTest::testInclude":4,"customer_paymentsTest::testInclude":4},"times":{"DateServiceTest::testFormatDate":0.018,"exchange_ratesTest::testInclude":0.013,"customer_paymentsTest::testInclude":0.016}}
+{"version":1,"defects":{"exchange_ratesTest::testInclude":4,"customer_paymentsTest::testInclude":4},"times":{"DateServiceTest::testFormatDate":0.018,"exchange_ratesTest::testInclude":0.122,"customer_paymentsTest::testInclude":0.016}}

@@ -33,9 +33,8 @@ $systypes_array = array(
     13 => 'Customer Delivery'
 );
 
-// Mock functions
-function user_date_format() { return 2; } // Y/m/d
-function user_date_sep() { return 1; } // -
+// Don't define mock functions - they'll be loaded from actual includes
+// The real application files will load current_user.inc which defines them
 
 require_once __DIR__ . '/../includes/date_functions.inc';
 require_once __DIR__ . '/../includes/types.inc';
