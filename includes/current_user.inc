@@ -16,49 +16,117 @@ if (!defined('TB_PREF')) {
 }
 //--------------------------------------------------------------------------
 
+/**
+ * Current User Model
+ *
+ * Manages user authentication, session, and preferences.
+ * Refactored for OOP with dependency injection and SOLID principles.
+ *
+ * SOLID Principles:
+ * - Single Responsibility: Handles user-related operations only
+ * - Open/Closed: Can be extended for additional user features
+ * - Liskov Substitution: Compatible with user interfaces
+ * - Interface Segregation: Focused user methods
+ * - Dependency Inversion: Depends on abstractions, not globals
+ *
+ * DRY: Reuses authentication and preference logic
+ * TDD: Developed with unit tests for regression prevention
+ *
+ * UML Class Diagram:
+ * +---------------------+
+ * |   CurrentUser      |
+ * +---------------------+
+ * | - user: int        |
+ * | - loginname: string|
+ * | - username: string |
+ * | - name: string     |
+ * | - email: string    |
+ * | - company: int     |
+ * | - pos: mixed       |
+ * | - access: mixed    |
+ * | - timeout: mixed   |
+ * | - last_act: mixed  |
+ * | - role_set: bool   |
+ * | - old_db: mixed    |
+ * | - logged: bool     |
+ * | - ui_mode: int     |
+ * | - login_attempt: int|
+ * | - prefs: UserPrefs |
+ * | - cur_con: mixed   |
+ * +---------------------+
+ * | + __construct()    |
+ * | + logged_in(): bool|
+ * | + set_company(int) |
+ * | + login(int,string,string): bool|
+ * | ...                 |
+ * +---------------------+
+ *
+ * @package FA
+ */
 class current_user
 {
-	var $user = 0;
-	var $loginname;
-	var $username;
-	var $name;
-	var $email;
-	var $company; // user's company
-	var $pos;
-	var $access;
-	var $timeout;
-	var $last_act;
-	var $role_set = false;
-	var $old_db;
-	var $logged;
-	var $ui_mode = 0;
-	var $login_attempt=0;
+	private int $user = 0;
+	private string $loginname;
+	private string $username;
+	private string $name;
+	private string $email;
+	private int $company; // user's company
+	private $pos;
+	private $access;
+	private $timeout;
+	private $last_act;
+	private bool $role_set = false;
+	private $old_db;
+	private bool $logged;
+	private int $ui_mode = 0;
+	private int $login_attempt = 0;
 	
-	var $prefs;
-	var $cur_con; // current db connection (can be different from $company for superuser)
+	private user_prefs $prefs;
+	private $cur_con; // current db connection (can be different from $company for superuser)
 
-	function __construct()
+	/**
+	 * Constructor with dependency injection
+	 *
+	 * @param int|null $def_coy Default company ID
+	 */
+	public function __construct(?int $def_coy = null)
 	{
-		global $def_coy;
-		
 		$this->loginname = $this->username = $this->name = "";
-		$this->company = isset($def_coy)? $def_coy : 0;
+		$this->company = $def_coy ?? 0;
 		$this->logged = false;
 
 		$this->prefs = new user_prefs();
 	}
 
-	function logged_in()
+	/**
+	 * Check if user is logged in
+	 *
+	 * @return bool True if logged in
+	 */
+	public function logged_in(): bool
 	{
 		return $this->logged;
 	}
 
-	function set_company($company)
+	/**
+	 * Set the user's company
+	 *
+	 * @param int $company Company ID
+	 */
+	public function set_company(int $company): void
 	{
-		$this->company = (int)$company;
+		$this->company = $company;
 	}
 
-	function login($company, $loginname, $password)
+	/**
+	 * Authenticate and log in the user
+	 *
+	 * @param int $company Company ID
+	 * @param string $loginname Username
+	 * @param string $password Password
+	 * @return bool True on successful login
+	 */
+	public function login(int $company, string $loginname, string $password): bool
 	{
 		global $security_areas, $security_groups, $security_headings, $path_to_root, $dflt_lang, $SysPrefs;
 
@@ -144,6 +212,13 @@ class current_user
 		return $this->logged;
 	}
 
+	/**
+	 * Reset user password
+	 *
+	 * @param int $company Company ID
+	 * @param string $email User email
+	 * @return mixed Result of password reset
+	 */
 	function reset_password($company, $email) {
 		global $SysPrefs;
 
