@@ -46,8 +46,8 @@ class DateService
     {
         global $SysPrefs, $tmonths;
 
-        $how = user_date_format();
-        $sep = $SysPrefs->dateseps[user_date_sep()];
+        $how = \user_date_format();
+        $sep = $SysPrefs->dateseps[\user_date_sep()];
         $day = (int)$day;
         $month = (int)$month;
         if ($how < 3) {
@@ -62,5 +62,134 @@ class DateService
         else return $year . $sep . $tmonths[$month] . $sep . $day;
     }
 
-    // Add more methods by refactoring other functions from date_functions.inc
+    public function isDate(string $date): bool
+    {
+        if (empty($date)) return false;
+        return (bool)\is_date($date);
+    }
+
+    public function today(): string
+    {
+        return \Today();
+    }
+
+    public function now(): string
+    {
+        return \Now();
+    }
+
+    public function newDocDate(?string $date = null): string
+    {
+        return \new_doc_date($date);
+    }
+
+    public function isDateInFiscalYear(string $date, bool $convert = false): bool
+    {
+        return (bool)\is_date_in_fiscalyear($date, $convert);
+    }
+
+    public function isDateClosed(string $date): bool
+    {
+        return (bool)\is_date_closed($date);
+    }
+
+    public function beginFiscalYear(): string
+    {
+        return \begin_fiscalyear();
+    }
+
+    public function endFiscalYear(): string
+    {
+        return \end_fiscalyear();
+    }
+
+    public function beginMonth(string $date): string
+    {
+        return \begin_month($date);
+    }
+
+    public function daysInMonth(int $month, int $year): int
+    {
+        return \days_in_month($month, $year);
+    }
+
+    public function endMonth(string $date): string
+    {
+        return \end_month($date);
+    }
+
+    public function addDays(string $date, int $days): string
+    {
+        return \add_days($date, $days);
+    }
+
+    public function addMonths(string $date, int $months): string
+    {
+        return \add_months($date, $months);
+    }
+
+    public function addYears(string $date, int $years): string
+    {
+        return \add_years($date, $years);
+    }
+
+    public function sql2date(string $date): string
+    {
+        return \sql2date($date);
+    }
+
+    public function date2sql(string $date): string
+    {
+        return \date2sql($date);
+    }
+
+    public function sqlDateComp(string $date1, string $date2): int
+    {
+        return \sql_date_comp($date1, $date2);
+    }
+
+    public function dateComp(string $date1, string $date2, bool $incl_weekends = true, bool $incl_non_working = true): int
+    {
+        return \date_comp($date1, $date2, $incl_weekends, $incl_non_working);
+    }
+
+    public function date1GreaterDate2(string $date1, string $date2): bool
+    {
+        return (bool)\date1_greater_date2($date1, $date2);
+    }
+
+    public function dateDiff2(string $date1, string $date2, string $period): int
+    {
+        return \date_diff2($date1, $date2, $period);
+    }
+
+    public function explodeDateToDmy(string $date): array
+    {
+        return \explode_date_to_dmy($date);
+    }
+
+    public function div(int $a, int $b): int
+    {
+        return \div($a, $b);
+    }
+
+    public function gregorianToJalali(int $g_y, int $g_m, int $g_d): array
+    {
+        return \gregorian_to_jalali($g_y, $g_m, $g_d);
+    }
+
+    public function jalaliToGregorian(int $j_y, int $j_m, int $j_d): array
+    {
+        return \jalali_to_gregorian($j_y, $j_m, $j_d);
+    }
+
+    public function gregorianToIslamic(int $g_y, int $g_m, int $g_d): array
+    {
+        return \gregorian_to_islamic($g_y, $g_m, $g_d);
+    }
+
+    public function islamicToGregorian(int $i_y, int $i_m, int $i_d): array
+    {
+        return \islamic_to_gregorian($i_y, $i_m, $i_d);
+    }
 }

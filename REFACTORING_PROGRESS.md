@@ -111,6 +111,103 @@ Facade                 - Backward compatible API
 
 ### 4. ErrorsService - 100% Complete ✅
 
+**Original**: `includes/errors.inc` (10 functions)  
+**Refactored**: `includes/ErrorsService.php` (10 methods)  
+**Status**: PHASE A COMPLETE (10/10 functions)
+
+**All Functions Migrated**:
+- `triggerError()` - Trigger custom errors
+- `getBacktrace()` - Generate backtrace for debugging
+- `fmtErrors()` - Format error messages for display
+- `errorBox()` - Display error box
+- `endFlush()` - Output buffer cleanup
+- `displayDbError()` - Display database errors
+- `checkDbError()` - Check and handle database errors
+- `errorHandler()` - Now public, PHP error handler
+- `exceptionHandler()` - NEW: Handle uncaught exceptions ✅
+- `friendlyDbError()` - NEW: Convert DB errors to friendly messages ✅
+
+---
+
+### PHASE 2 SERVICES (3 Complete)
+
+### 5. DateService - 100% Complete ✅
+
+**Original**: `includes/date_functions.inc` (27 functions)  
+**Refactored**: `includes/DateService.php` (27 methods)  
+**Status**: PHASE A COMPLETE (27/27 functions)
+
+**All Functions Migrated**:
+- `formatDate()` - Format date (originally `__date()`)
+- `isDate()` - Validate date string
+- `today()` - Get today's date
+- `now()` - Get current time
+- `newDocDate()` - Get/set default document date
+- `isDateInFiscalYear()` - Check if date in fiscal year
+- `isDateClosed()` - Check if date is closed for editing
+- `beginFiscalYear()` - Get fiscal year start
+- `endFiscalYear()` - Get fiscal year end
+- `beginMonth()` - Get month start date
+- `daysInMonth()` - Get days in month
+- `endMonth()` - Get month end date
+- `addDays()` - Add days to date
+- `addMonths()` - Add months to date
+- `addYears()` - Add years to date
+- `sql2date()` - Convert SQL date to user format
+- `date2sql()` - Convert user date to SQL format
+- `sqlDateComp()` - Compare SQL dates
+- `dateComp()` - Compare dates with business day logic
+- `date1GreaterDate2()` - Check if date1 > date2
+- `dateDiff2()` - Calculate date difference
+- `explodeDateToDmy()` - Parse date to day/month/year array
+- `div()` - Integer division helper
+- `gregorianToJalali()` - Convert to Persian calendar
+- `jalaliToGregorian()` - Convert from Persian calendar
+- `gregorianToIslamic()` - Convert to Islamic calendar
+- `islamicToGregorian()` - Convert from Islamic calendar
+
+**Next Steps**: Apply DI architecture (CalendarInterface, FiscalYearInterface)
+
+---
+
+### 6. InventoryService - 100% Complete ✅
+
+**Original**: `includes/inventory.inc` (5 functions)  
+**Refactored**: `includes/InventoryService.php` (5 methods)  
+**Status**: PHASE A COMPLETE (5/5 functions)
+
+**All Functions Migrated**:
+- `isManufactured()` - Check if item is manufactured
+- `isPurchased()` - Check if item is purchased
+- `isService()` - Check if item is service
+- `isFixedAsset()` - Check if item is fixed asset
+- `hasStockHolding()` - Check if item has stock
+
+**Next Steps**: Apply DI architecture
+
+---
+
+### 7. AccessLevelsService - 100% Complete ✅
+
+**Original**: `includes/access_levels.inc` (4 functions)  
+**Refactored**: `includes/AccessLevelsService.php` (7 methods)  
+**Status**: PHASE A COMPLETE (7/7 functions including infrastructure)
+
+**All Functions Migrated**:
+- `getSecuritySections()` - Get security sections
+- `getSecurityAreas()` - Get security areas
+- `isAreaAllowed()` - Check area access
+- `addAccessExtensions()` - Add extensions access ✅
+- `checkEditAccess()` - Check edit access ✅
+- `accessPost()` - Get POST with access check ✅
+- `accessNum()` - Get numeric POST with access check ✅
+
+**Next Steps**: Apply DI architecture
+
+---
+
+### 4. ErrorsService - 100% Complete ✅ (MOVED TO PHASE 1)
+
 **Status**: PHASE A COMPLETE (10/10 functions)
 
 **All Functions Migrated:**

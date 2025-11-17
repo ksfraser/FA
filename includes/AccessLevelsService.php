@@ -98,4 +98,49 @@ class AccessLevelsService
         $required = $this->security_areas[$area][0];
         return in_array($required, $user_roles);
     }
+
+    /**
+     * Add access extensions from installed modules
+     *
+     * @return void
+     */
+    public function addAccessExtensions(): void
+    {
+        \add_access_extensions();
+    }
+
+    /**
+     * Check if user has edit access to a named control
+     *
+     * @param string $name Control name
+     * @return bool True if user can edit
+     */
+    public function checkEditAccess(string $name): bool
+    {
+        return \check_edit_access($name);
+    }
+
+    /**
+     * Get POST value if user has edit access, otherwise return default
+     *
+     * @param string $name POST parameter name
+     * @param mixed $default Default value if no access
+     * @return mixed POST value or default
+     */
+    public function accessPost(string $name, $default = null)
+    {
+        return \access_post($name, $default);
+    }
+
+    /**
+     * Get numeric POST value if user has edit access, otherwise return default
+     *
+     * @param string $name POST parameter name
+     * @param float|null $default Default value if no access
+     * @return float|null Numeric value or default
+     */
+    public function accessNum(string $name, ?float $default = null): ?float
+    {
+        return \access_num($name, $default);
+    }
 }
