@@ -197,7 +197,7 @@ function customer_settings($selected_id)
 			$_POST['dimension_id'] = 0;
 			$_POST['dimension2_id'] = 0;
 			$_POST['sales_type'] = -1;
-			$_POST['curr_code']  = get_company_currency();
+			$_POST['curr_code']  = BankingService::getCompanyCurrency();
 			$_POST['credit_status']  = -1;
 			$_POST['payment_terms']  = $_POST['notes']  = '';
 

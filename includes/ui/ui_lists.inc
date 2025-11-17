@@ -491,7 +491,7 @@ function _format_add_curr($row, $pname=false)
 
 	if ($company_currency == null)
 	{
-		$company_currency = get_company_currency();
+		$company_currency = BankingService::getCompanyCurrency();
 	}
 	if (!$pname)
 	{
@@ -711,13 +711,13 @@ function currencies_list($name, $selected_id=null, $submit_on_change=false, $exc
 {
 	$sql = "SELECT curr_abrev, currency, inactive FROM ".TB_PREF."currencies";
 	if ($exclude_home_curr)
-		$sql .= " WHERE curr_abrev!='".get_company_currency()."'";
+		$sql .= " WHERE curr_abrev!='".BankingService::getCompanyCurrency()."'";
 
 	// default to the company currency
 	return combo_input($name, $selected_id, $sql, 'curr_abrev', 'currency',
 		array(
 			'select_submit'=> $submit_on_change,
-			'default' => get_company_currency(),
+			'default' => BankingService::getCompanyCurrency(),
 			'async' => false
 		) );
 }

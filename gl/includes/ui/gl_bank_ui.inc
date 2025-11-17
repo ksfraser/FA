@@ -117,7 +117,7 @@ function display_bank_header(&$order)
 
 	$bank_currency = get_bank_account_currency($_POST['bank_account']);
 
-	exchange_rate_display(get_company_currency(), $bank_currency, $_POST['date_']);
+	exchange_rate_display(BankingService::getCompanyCurrency(), $bank_currency, $_POST['date_']);
 
 	end_outer_table(1); // outer table
 

@@ -191,7 +191,7 @@ function get_supplier_currency($supplier_id)
 	$result = db_query($sql, "Retreive currency of supplier $supplier_id");
 
 	$myrow=db_fetch_row($result);
-	return $myrow ? $myrow[0] : get_company_currency();
+	return $myrow ? $myrow[0] : BankingService::getCompanyCurrency();
 }
 
 function get_suppliers_search($supplier)

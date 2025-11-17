@@ -110,7 +110,7 @@ function payment_person_currency($type, $person_id)  {
 		case PT_MISC :
 		case PT_QUICKENTRY :
 		case PT_WORKORDER :
-			return get_company_currency();
+			return BankingService::getCompanyCurrency();
 
 		case PT_CUSTOMER :
 			return get_customer_currency($person_id);
@@ -119,7 +119,7 @@ function payment_person_currency($type, $person_id)  {
 			return get_supplier_currency($person_id);
 
 		default :
-			return get_company_currency();
+			return BankingService::getCompanyCurrency();
 	}
 }
 

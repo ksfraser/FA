@@ -132,7 +132,7 @@ function handle_delete()
 
 function display_currencies()
 {
-	$company_currency = get_company_currency();
+	$company_currency = BankingService::getCompanyCurrency();
 	
     $result = get_currencies(check_value('show_inactive'));
     start_table(TABLESTYLE);

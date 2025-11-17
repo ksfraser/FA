@@ -359,7 +359,7 @@ ref_row(_("Reference:"), 'ref','' , null, '', ST_CUSTPAYMENT);
 
 table_section(3);
 
-$comp_currency = get_company_currency();
+$comp_currency = BankingService::getCompanyCurrency();
 $cust_currency = $_SESSION['alloc']->set_person($_POST['customer_id'], PT_CUSTOMER);
 if (!$cust_currency)
 	$cust_currency = $comp_currency;

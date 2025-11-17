@@ -379,7 +379,7 @@ function handle_negative_inventory($stock_id, $quantity, $standard_cost, $date_)
 		if ($diff != 0)
 		{
 			begin_transaction();
-			add_journal(ST_JOURNAL, $id, $diff, $date_, get_company_currency(), $ref);
+			add_journal(ST_JOURNAL, $id, $diff, $date_, BankingService::getCompanyCurrency(), $ref);
 			$Refs->save(ST_JOURNAL, $id, $ref);
 
 			$stock_gl_code = get_stock_gl_code($stock_id);

@@ -139,10 +139,10 @@ function add_wo_costs_journal($wo_id, $amount, $cost_type, $cr_acc, $date, $dim1
 	if ($is_bank_to)
 	{
 		add_bank_trans(ST_JOURNAL, $journal_id, $is_bank_to, "",
-			$date, -$amount, PT_WORKORDER, $wo_id, get_company_currency(),
+			$date, -$amount, PT_WORKORDER, $wo_id, BankingService::getCompanyCurrency(),
 			"Cannot insert a destination bank transaction");
 	}
-	add_journal(ST_JOURNAL, $journal_id, $amount, $date, get_company_currency(), $ref, '', 1, $date, $date);
+	add_journal(ST_JOURNAL, $journal_id, $amount, $date, BankingService::getCompanyCurrency(), $ref, '', 1, $date, $date);
 
 	add_gl_trans_std_cost(ST_JOURNAL, $journal_id, $date, $wo['wip_account'],
 		$dim1, $dim2,  $wo_cost_types[$cost_type], $amount);

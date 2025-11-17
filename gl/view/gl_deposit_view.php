@@ -34,7 +34,7 @@ if (db_num_rows($result) != 1)
 
 $to_trans = db_fetch($result);
 
-$company_currency = get_company_currency();
+$company_currency = BankingService::getCompanyCurrency();
 
 $show_currencies = false;
 

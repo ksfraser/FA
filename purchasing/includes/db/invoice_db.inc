@@ -129,7 +129,7 @@ function add_supp_invoice(&$supp_trans)
 {
 	global $Refs;
 
-	//$company_currency = get_company_currency();
+	//$company_currency = BankingService::getCompanyCurrency();
 	$trans_no = $supp_trans->trans_no;
 	$trans_type = $supp_trans->trans_type;
 	$supplier = get_supplier($supp_trans->supplier_id);
@@ -340,7 +340,7 @@ function add_supp_invoice(&$supp_trans)
 
 						$id = get_next_trans_no(ST_JOURNAL);
 						$ref = $Refs->get_next(ST_JOURNAL, null, $date_);
-						add_journal(ST_JOURNAL, $id, $diff, $date_, get_company_currency(), $ref);
+						add_journal(ST_JOURNAL, $id, $diff, $date_, BankingService::getCompanyCurrency(), $ref);
 						$stock_id = $entered_grn->item_code;
 						$memo = _("Supplier invoice adjustment for zero inventory of ").$stock_id." "._("Invoice")." ".$supp_trans->reference;
 						//Reverse the inventory effect if $qoh <=0
@@ -611,7 +611,7 @@ function void_supp_invoice($type, $type_no)
 						//Chaitanya : Post a journal entry
 						$id = get_next_trans_no(ST_JOURNAL);
 						$ref = $Refs->get_next(ST_JOURNAL, null, $date_);
-						add_journal(ST_JOURNAL, $id, $details_row["quantity"] * $diff, $old_date, get_company_currency(), $ref);
+						add_journal(ST_JOURNAL, $id, $details_row["quantity"] * $diff, $old_date, BankingService::getCompanyCurrency(), $ref);
 						$stock_id = $details_row["stock_id"];
 						$stock_gl_code = get_stock_gl_code($stock_id);
 						$memo = "Reversing Supplier invoice adjustment for zero inventory of ".$stock_id." Invoice: ".$trans['reference'];

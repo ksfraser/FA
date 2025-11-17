@@ -43,7 +43,7 @@ function add_exchange_variation($trans_no, $date_, $acc_id, $account,
 		$trans_no = get_next_trans_no(ST_JOURNAL);
 		$ref = $Refs->get_next(ST_JOURNAL, null, $date_);
 
-		add_journal(ST_JOURNAL, $trans_no, $diff, $date_ , get_company_currency(), $ref, '', 1, $date_, $date_);
+		add_journal(ST_JOURNAL, $trans_no, $diff, $date_ , BankingService::getCompanyCurrency(), $ref, '', 1, $date_, $date_);
 		$Refs->save(ST_JOURNAL, $trans_no, $ref);
 		add_audit_trail(ST_JOURNAL, $trans_no, $date_);
 
@@ -77,7 +77,7 @@ function add_cust_supp_revaluation($ledger_act, $ex_act, $date, $amount, $person
 	$trans_no = get_next_trans_no(ST_JOURNAL);
 	$ref = $Refs->get_next(ST_JOURNAL);
 
-	add_journal(ST_JOURNAL, $trans_no, $amount, $date, get_company_currency(), $ref, '', 1, $date, $date);
+	add_journal(ST_JOURNAL, $trans_no, $amount, $date, BankingService::getCompanyCurrency(), $ref, '', 1, $date, $date);
 	$Refs->save(ST_JOURNAL, $trans_no, $ref);
 	add_audit_trail(ST_JOURNAL, $trans_no, $date);
 

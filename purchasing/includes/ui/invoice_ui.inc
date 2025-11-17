@@ -148,7 +148,7 @@ function invoice_header(&$supp_trans)
 
 	set_global_supplier($_POST['supplier_id']);
 
-	$company_currency = get_company_currency();
+	$company_currency = BankingService::getCompanyCurrency();
 
 	if ($supp_trans->currency != $company_currency)
 	{

@@ -245,7 +245,7 @@ class Cart
 		} else { // new document
 			$this->trans_type = $type;
 			$this->trans_no = 0;
-			$this->customer_currency = get_company_currency();
+			$this->customer_currency = BankingService::getCompanyCurrency();
 			// set new sales document defaults here
 			if (get_global_customer() != ALL_TEXT)
 			  $this->customer_id = get_global_customer();

@@ -316,7 +316,7 @@ start_form();
 
 	table_section(3);
 
-	$comp_currency = get_company_currency();
+	$comp_currency = BankingService::getCompanyCurrency();
 	$supplier_currency = $_SESSION['alloc']->set_person($_POST['supplier_id'], PT_SUPPLIER);
 	if (!$supplier_currency)
 			$supplier_currency = $comp_currency;

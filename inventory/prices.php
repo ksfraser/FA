@@ -49,7 +49,7 @@ if (isset($_GET['Item']))
 
 if (!isset($_POST['curr_abrev']))
 {
-	$_POST['curr_abrev'] = get_company_currency();
+	$_POST['curr_abrev'] = BankingService::getCompanyCurrency();
 }
 
 //---------------------------------------------------------------------------------------------------

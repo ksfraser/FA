@@ -384,7 +384,7 @@ class items_cart
 	    		$bank_trans[$is_bank_to] += $gl->amount;
     		} elseif ($gl->person_id)
     		{
-    			$home_currency = get_company_currency();
+    			$home_currency = BankingService::getCompanyCurrency();
 				// collect per counterparty amounts (in case more than one posting was done to the account),
 				// do not post exchange variations to AR/AP (journal in not customer/supplier currency)
 	    		if ($gl->person_type_id==PT_SUPPLIER && (get_supplier_currency($gl->person_id) == $this->currency || $this->currency != $home_currency))

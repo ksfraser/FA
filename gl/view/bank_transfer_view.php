@@ -44,7 +44,7 @@ else
 	$to_trans = $trans1;
 }
 
-$company_currency = get_company_currency();
+$company_currency = BankingService::getCompanyCurrency();
 
 $show_currencies = false;
 $show_both_amounts = false;

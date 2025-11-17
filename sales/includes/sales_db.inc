@@ -84,7 +84,7 @@ function get_price ($stock_id, $currency, $sales_type_id, $factor=null, $date=nu
 
 	$add_pct = get_company_pref('add_pct');
 	$base_id = get_base_sales_type();
-    $home_curr = get_company_currency();
+    $home_curr = BankingService::getCompanyCurrency();
 	//	AND (sales_type_id = $sales_type_id	OR sales_type_id = $base_id)
 	$sql = "SELECT price, curr_abrev, sales_type_id
 		FROM ".TB_PREF."prices

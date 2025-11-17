@@ -148,7 +148,7 @@ function display_po_header(&$order)
 	if (!is_company_currency($order->curr_code))
 	{
 		label_row(_("Supplier Currency:"), $order->curr_code);
-		exchange_rate_display(get_company_currency(), $order->curr_code,
+		exchange_rate_display(BankingService::getCompanyCurrency(), $order->curr_code,
 			$_POST['OrderDate']);
 	}
 

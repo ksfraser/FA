@@ -381,7 +381,7 @@ function delete_this_fiscalyear($selected_id)
 		$date_ = sql2date($to);
 		$reference = $Refs->get_next($trans_type, null, $date_);
 		$Refs->save($trans_type, $trans_no, $reference);
-		add_journal($trans_type, $trans_no, $total, $date_, get_company_currency(), $reference);
+		add_journal($trans_type, $trans_no, $total, $date_, BankingService::getCompanyCurrency(), $reference);
 		$Refs->save($trans_type, $trans_no, $reference);
 		add_audit_trail($trans_type, $trans_no, $date_);
 	}

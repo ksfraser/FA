@@ -37,7 +37,7 @@ function write_supp_payment($trans_no, $supplier_id, $bank_account,
 		$bank_amount = $supp_amount/$rate;
 	}
 
-	if ($bank['bank_curr_code'] == get_company_currency()) // [0002506]
+	if ($bank['bank_curr_code'] == BankingService::getCompanyCurrency()) // [0002506]
 		$rate = $bank_amount/$supp_amount;
 	else
 		$rate = 0;

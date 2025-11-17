@@ -203,7 +203,7 @@ function get_customer_currency($customer_id=null, $branch_id=null)
 	$result = db_query($sql, "Retreive currency of customer $customer_id");
 
 	$myrow=db_fetch_row($result);
-	return $myrow ? $myrow[0] : get_company_currency();
+	return $myrow ? $myrow[0] : BankingService::getCompanyCurrency();
 }
 
 function get_customers_search($customer)
