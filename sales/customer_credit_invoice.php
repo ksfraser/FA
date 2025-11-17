@@ -150,7 +150,7 @@ function check_quantities()
 		if (isset($_POST['Line'.$line_no])) {
 			if (check_num('Line'.$line_no, 0, $itm->quantity)) {
 				$_SESSION['Items']->line_items[$line_no]->qty_dispatched =
-				  input_num('Line'.$line_no);
+				  RequestService::inputNumStatic('Line'.$line_no);
 			}
 			else {
 				$ok = 0;
@@ -172,7 +172,7 @@ function copy_to_cart()
 {
 	$cart = &$_SESSION['Items'];
 	$cart->ship_via = $_POST['ShipperID'];
-	$cart->freight_cost = input_num('ChargeFreightCost');
+	$cart->freight_cost = RequestService::inputNumStatic('ChargeFreightCost');
 	$cart->document_date =  $_POST['CreditDate'];
 	$cart->Location = (isset($_POST['Location']) ? $_POST['Location'] : "");
 	$cart->Comments = $_POST['CreditText'];
@@ -318,14 +318,14 @@ function display_credit_items()
 
     $inv_items_total = $_SESSION['Items']->get_items_total_dispatch();
 
-    $display_sub_total = price_format($inv_items_total + input_num($_POST['ChargeFreightCost']));
+    $display_sub_total = price_format($inv_items_total + RequestService::inputNumStatic($_POST['ChargeFreightCost']));
     label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right", "align=right");
 
-    $taxes = $_SESSION['Items']->get_taxes(input_num($_POST['ChargeFreightCost']));
+    $taxes = $_SESSION['Items']->get_taxes(RequestService::inputNumStatic($_POST['ChargeFreightCost']));
 
     $tax_total = display_edit_tax_items($taxes, $colspan, $_SESSION['Items']->tax_included);
 
-    $display_total = price_format(($inv_items_total + input_num('ChargeFreightCost') + $tax_total));
+    $display_total = price_format(($inv_items_total + RequestService::inputNumStatic('ChargeFreightCost') + $tax_total));
 
     label_row(_("Credit Note Total"), $display_total, "colspan=$colspan align=right", "align=right");
 

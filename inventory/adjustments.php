@@ -165,7 +165,7 @@ if (isset($_POST['Process']) && can_process()){
 
 function check_item_data()
 {
-	if (input_num('qty') == 0)
+	if (RequestService::inputNumStatic('qty') == 0)
 	{
 		display_error(_("The quantity entered is invalid."));
 		set_focus('qty');
@@ -187,8 +187,8 @@ function check_item_data()
 function handle_update_item()
 {
 	$id = $_POST['LineNo'];
-   	$_SESSION['adj_items']->update_cart_item($id, input_num('qty'), 
-		input_num('std_cost'));
+   	$_SESSION['adj_items']->update_cart_item($id, RequestService::inputNumStatic('qty'), 
+		RequestService::inputNumStatic('std_cost'));
 	line_start_focus();
 }
 
@@ -205,7 +205,7 @@ function handle_delete_item($id)
 function handle_new_item()
 {
 	add_to_order($_SESSION['adj_items'], $_POST['stock_id'], 
-	input_num('qty'), input_num('std_cost'));
+	RequestService::inputNumStatic('qty'), RequestService::inputNumStatic('std_cost'));
 	line_start_focus();
 }
 

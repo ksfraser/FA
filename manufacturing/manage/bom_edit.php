@@ -100,7 +100,7 @@ function on_submit($selected_parent, $selected_component=-1)
 	if ($selected_component != -1)
 	{
 		update_bom($selected_parent, $selected_component, $_POST['workcentre_added'], $_POST['loc_code'],
-			input_num('quantity'));
+			RequestService::inputNumStatic('quantity'));
 		display_notification(_('Selected component has been updated'));
 		$Mode = 'RESET';
 	}
@@ -120,7 +120,7 @@ function on_submit($selected_parent, $selected_component=-1)
 				$_POST['loc_code'], $selected_parent))
 			{
 				add_bom($selected_parent, $_POST['component'], $_POST['workcentre_added'],
-					$_POST['loc_code'], input_num('quantity'));
+					$_POST['loc_code'], RequestService::inputNumStatic('quantity'));
 				display_notification(_("A new component part has been added to the bill of material for this item."));
 				$Mode = 'RESET';
 			}
@@ -229,7 +229,7 @@ start_form();
 	locations_list_row(_("Location to Draw From:"), 'loc_code', null);
 	workcenter_list_row(_("Work Centre Added:"), 'workcentre_added', null);
 	$dec = get_qty_dec(RequestService::getPostStatic('component'));
-	$_POST['quantity'] = number_format2(input_num('quantity',1), $dec);
+	$_POST['quantity'] = number_format2(RequestService::inputNumStatic('quantity',1), $dec);
 	qty_row(_("Quantity:"), 'quantity', null, null, null, $dec);
 
 	end_table(1);

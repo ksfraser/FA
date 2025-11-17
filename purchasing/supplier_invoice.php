@@ -162,7 +162,7 @@ if (isset($_POST['AddGLCodeToTrans'])){
 	{
 		$_SESSION['supp_trans']->add_gl_codes_to_trans($_POST['gl_code'], $gl_act_name,
 			$_POST['dimension_id'], $_POST['dimension2_id'], 
-			input_num('amount'), $_POST['memo_']);
+			RequestService::inputNumStatic('amount'), $_POST['memo_']);
 		reset_tax_input();
 		set_focus('gl_code');
 	}
@@ -258,7 +258,7 @@ function check_item_data($n)
 {
 	global $SysPrefs;
 
-	if (!check_num('this_quantity_inv'.$n, 0) || input_num('this_quantity_inv'.$n)==0)
+	if (!check_num('this_quantity_inv'.$n, 0) || RequestService::inputNumStatic('this_quantity_inv'.$n)==0)
 	{
 		display_error( _("The quantity to invoice must be numeric and greater than zero."));
 		set_focus('this_quantity_inv'.$n);
@@ -275,9 +275,9 @@ function check_item_data($n)
 	$margin = $SysPrefs->over_charge_allowance();
 	if ($SysPrefs->check_price_charged_vs_order_price == True)
 	{
-		if ($_POST['order_price'.$n]!=input_num('ChgPrice'.$n)) {
+		if ($_POST['order_price'.$n]!=RequestService::inputNumStatic('ChgPrice'.$n)) {
 		     if ($_POST['order_price'.$n]==0 ||
-				input_num('ChgPrice'.$n)/$_POST['order_price'.$n] >
+				RequestService::inputNumStatic('ChgPrice'.$n)/$_POST['order_price'.$n] >
 			    (1 + ($margin/ 100)))
 		    {
 			display_error(_("The price being invoiced is more than the purchase order price by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") .
@@ -291,7 +291,7 @@ function check_item_data($n)
 	if ($SysPrefs->check_qty_charged_vs_del_qty == true && ($_POST['qty_recd'.$n] != $_POST['prev_quantity_inv'.$n])
 		&& !empty($_POST['prev_quantity_inv'.$n]))
 	{
-		if (input_num('this_quantity_inv'.$n) / ($_POST['qty_recd'.$n] - $_POST['prev_quantity_inv'.$n]) >
+		if (RequestService::inputNumStatic('this_quantity_inv'.$n) / ($_POST['qty_recd'.$n] - $_POST['prev_quantity_inv'.$n]) >
 			(1+ ($margin / 100)))
 		{
 			display_error( _("The quantity being invoiced is more than the outstanding quantity by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.")
@@ -310,8 +310,8 @@ function commit_item_data($n)
 	{
 		$_SESSION['supp_trans']->add_grn_to_trans($n, $_POST['po_detail_item'.$n],
 			$_POST['item_code'.$n], $_POST['item_description'.$n], $_POST['qty_recd'.$n],
-			$_POST['prev_quantity_inv'.$n], input_num('this_quantity_inv'.$n),
-			$_POST['order_price'.$n], input_num('ChgPrice'.$n));
+			$_POST['prev_quantity_inv'.$n], RequestService::inputNumStatic('this_quantity_inv'.$n),
+			$_POST['order_price'.$n], RequestService::inputNumStatic('ChgPrice'.$n));
 		reset_tax_input();
 	}
 }
@@ -384,7 +384,7 @@ if ($_SESSION["wa_current_user"]->can_access('SA_GRNDELETE'))
 if (isset($_POST['go']))
 {
 	$Ajax->activate('gl_items');
-	display_quick_entries($_SESSION['supp_trans'], $_POST['qid'], input_num('totamount'), QE_SUPPINV);
+	display_quick_entries($_SESSION['supp_trans'], $_POST['qid'], RequestService::inputNumStatic('totamount'), QE_SUPPINV);
 	$_POST['totamount'] = price_format(0); $Ajax->activate('totamount');
 	reset_tax_input();
 }

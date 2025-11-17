@@ -196,9 +196,9 @@ function adjustment_edit_item_controls(&$order, $line_no=-1)
 	} else {
 		if (RequestService::getPostStatic('_qty_changed')) {
 			$Ajax->activate('items_table');
-			set_focus(input_num('qty') >= 0 ? 'std_cost' : 'AddItem');
+			set_focus(RequestService::inputNumStatic('qty') >= 0 ? 'std_cost' : 'AddItem');
 		}
-		if (input_num('qty') >= 0)
+		if (RequestService::inputNumStatic('qty') >= 0)
 		    amount_cells(null, 'std_cost', null, null, null, $dec2);
 		else {
 		    hidden('std_cost');

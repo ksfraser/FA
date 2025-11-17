@@ -833,7 +833,7 @@ class DataChecksService {
     public function checkInt(string $postname, ?int $min = null, ?int $max = null): int {
         if (!isset($_POST[$postname]))
             return 0;
-        $num = \input_num($postname);
+        $num = \RequestService::inputNumStatic($postname);
         if (!is_int($num)) 
             return 0;
         if (isset($min) && ($num < $min)) 
@@ -857,7 +857,7 @@ class DataChecksService {
     public function checkNum(string $postname, ?float $min = null, ?float $max = null, float $dflt = 0): int {
         if (!isset($_POST[$postname]))
             return 0;
-        $num = \input_num($postname, $dflt);
+        $num = \RequestService::inputNumStatic($postname, $dflt);
         if ($num === false || $num === null) 
             return 0;
         if (isset($min) && ($num < $min)) 

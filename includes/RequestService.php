@@ -37,4 +37,31 @@ class RequestService
     {
         return \get_post($name, $dflt);
     }
+    
+    /**
+     * Get numeric value from POST parameter with user format conversion
+     * 
+     * Reads a numeric value from user-formatted input (e.g., "1,234.56")
+     * and converts it to POSIX format (e.g., 1234.56).
+     * 
+     * @param string|null $postname Parameter name
+     * @param float|int $dflt Default value if parameter not set or empty
+     * @return float|int Numeric value in POSIX format
+     */
+    public function inputNum(?string $postname = null, float|int $dflt = 0): float|int
+    {
+        return \input_num($postname, $dflt);
+    }
+    
+    /**
+     * Static wrapper for input_num()
+     * 
+     * @param string|null $postname Parameter name
+     * @param float|int $dflt Default value if parameter not set or empty
+     * @return float|int Numeric value in POSIX format
+     */
+    public static function inputNumStatic(?string $postname = null, float|int $dflt = 0): float|int
+    {
+        return \input_num($postname, $dflt);
+    }
 }

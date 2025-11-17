@@ -69,7 +69,7 @@ if ($wo_details === false)
 
 function can_process($wo_details)
 {
-	if (input_num('costs')<=0)
+	if (RequestService::inputNumStatic('costs')<=0)
 	{
 		display_error(_("The amount entered is not a valid number or less then zero."));
 		set_focus('costs');
@@ -106,7 +106,7 @@ if (isset($_POST['process']) && can_process($wo_details) == true)
 	$memo = $_POST['memo'];
 	$ref  = $_POST['ref'];
 
-	add_wo_costs_journal($_POST['selected_id'], input_num('costs'), $_POST['PaymentType'], 
+	add_wo_costs_journal($_POST['selected_id'], RequestService::inputNumStatic('costs'), $_POST['PaymentType'], 
 		$_POST['cr_acc'], $date, $_POST['dim1'], $_POST['dim2'], $memo, $ref);
 
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=".$_POST['selected_id']);

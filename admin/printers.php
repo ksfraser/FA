@@ -45,8 +45,8 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if ($error != 1)
 	{
 		write_printer_def($selected_id, RequestService::getPostStatic('name'), RequestService::getPostStatic('descr'),
-			RequestService::getPostStatic('queue'), RequestService::getPostStatic('host'), input_num('port',0),
-			input_num('tout',0));
+			RequestService::getPostStatic('queue'), RequestService::getPostStatic('host'), RequestService::inputNumStatic('port',0),
+			RequestService::inputNumStatic('tout',0));
 
 		display_notification_centered($selected_id==-1? 
 			_('New printer definition has been created') 

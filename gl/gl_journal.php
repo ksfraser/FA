@@ -283,7 +283,7 @@ if (isset($_POST['Process']))
 			while ($tax = db_fetch($taxes))
 			{
 				$tax_id = $tax['id'];
-				$net_amount += input_num('net_amount_'.$tax_id);
+				$net_amount += RequestService::inputNumStatic('net_amount_'.$tax_id);
 			}
 			// in case no tax account used we have to guss tax register on customer/supplier used.
 			if ($net_amount && !$_SESSION['journal_items']->has_taxes() && !$_SESSION['journal_items']->has_sub_accounts())
@@ -314,7 +314,7 @@ if (isset($_POST['Process']))
 
 	$cart->currency = $_POST['currency'];
 	if ($cart->currency != get_company_pref('curr_default'))
-		$cart->rate = input_num('_ex_rate');
+		$cart->rate = RequestService::inputNumStatic('_ex_rate');
 
 	if (check_value('taxable_trans'))
 	{
@@ -325,7 +325,7 @@ if (isset($_POST['Process']))
 		while ($tax = db_fetch($taxes))
 		{
 			$tax_id = $tax['id'];
-			$cart->tax_info['net_amount'][$tax_id] = input_num('net_amount_'.$tax_id);
+			$cart->tax_info['net_amount'][$tax_id] = RequestService::inputNumStatic('net_amount_'.$tax_id);
 			$cart->tax_info['rate'][$tax_id] = $tax['rate'];
 		}
 	} else
@@ -383,7 +383,7 @@ function check_item_data()
 		return false;
 	}
 
-	if (!(input_num('AmountDebit')!=0 ^ input_num('AmountCredit')!=0) )
+	if (!(RequestService::inputNumStatic('AmountDebit')!=0 ^ RequestService::inputNumStatic('AmountCredit')!=0) )
 	{
 		display_error(_("You must enter either a debit amount or a credit amount."));
 		set_focus('AmountDebit');
@@ -424,10 +424,10 @@ function handle_update_item()
 {
     if($_POST['UpdateItem'] != "" && check_item_data())
     {
-    	if (input_num('AmountDebit') > 0)
-    		$amount = input_num('AmountDebit');
+    	if (RequestService::inputNumStatic('AmountDebit') > 0)
+    		$amount = RequestService::inputNumStatic('AmountDebit');
     	else
-    		$amount = -input_num('AmountCredit');
+    		$amount = -RequestService::inputNumStatic('AmountCredit');
 
     	$_SESSION['journal_items']->update_gl_item($_POST['Index'], $_POST['code_id'], 
     	    $_POST['dimension_id'], $_POST['dimension2_id'], $amount, $_POST['LineMemo'], '', RequestService::getPostStatic('person_id'));
@@ -452,10 +452,10 @@ function handle_new_item()
 	if (!check_item_data())
 		return;
 
-	if (input_num('AmountDebit') > 0)
-		$amount = input_num('AmountDebit');
+	if (RequestService::inputNumStatic('AmountDebit') > 0)
+		$amount = RequestService::inputNumStatic('AmountDebit');
 	else
-		$amount = -input_num('AmountCredit');
+		$amount = -RequestService::inputNumStatic('AmountCredit');
 	
 	$_SESSION['journal_items']->add_gl_item($_POST['code_id'], $_POST['dimension_id'],
 		$_POST['dimension2_id'], $amount, $_POST['LineMemo'], '', RequestService::getPostStatic('person_id'));
@@ -485,7 +485,7 @@ if (tab_closed('tabs', 'gl'))
 	while ($tax = db_fetch($taxes))
 	{
 		$tax_id = $tax['id'];
-		$cart->tax_info['net_amount'][$tax_id] = input_num('net_amount_'.$tax_id);
+		$cart->tax_info['net_amount'][$tax_id] = RequestService::inputNumStatic('net_amount_'.$tax_id);
 		$cart->tax_info['rate'][$tax_id] = $tax['rate'];
 	}
 }
@@ -513,7 +513,7 @@ if (isset($_POST['CancelItemChanges']))
 
 if (isset($_POST['go']))
 {
-	display_quick_entries($_SESSION['journal_items'], $_POST['quick'], input_num('totamount'), QE_JOURNAL, RequestService::getPostStatic('aux_info'));
+	display_quick_entries($_SESSION['journal_items'], $_POST['quick'], RequestService::inputNumStatic('totamount'), QE_JOURNAL, RequestService::getPostStatic('aux_info'));
 	$_POST['totamount'] = price_format(0); $Ajax->activate('totamount');
 	line_start_focus();
 }
@@ -564,8 +564,8 @@ tabbed_content_start('tabs', array(
 			{
 				start_row();
 				label_cell($tax['name'].' '.$tax['rate'].'%');
-				amount_cell(input_num('tax_in_'.$tax['id']));
-				amount_cell(input_num('tax_out_'.$tax['id']));
+				amount_cell(RequestService::inputNumStatic('tax_in_'.$tax['id']));
+				amount_cell(RequestService::inputNumStatic('tax_out_'.$tax['id']));
 
 				amount_cells(null, 'net_amount_'.$tax['id']);
 				end_row();

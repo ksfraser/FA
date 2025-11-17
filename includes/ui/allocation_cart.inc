@@ -331,7 +331,7 @@ function show_allocatable($show_totals) {
 
 	    		$un_allocated = round((abs($alloc_item->amount) - $alloc_item->amount_allocated), 6);
 	    		amount_cell($un_allocated, false,'', 'maxval'.$id);
-    			amount_cells(null, "amount" . $id);//, input_num('amount' . $id));
+    			amount_cells(null, "amount" . $id);//, RequestService::inputNumStatic('amount' . $id));
 				label_cell("<a href='javascript:void(0)' name=Alloc$id onclick='allocate_all(this.name.substr(5));return true;'>"
 					 . _("All") . "</a>");
 				label_cell("<a href='javascript:void(0)' name=DeAll$id onclick='allocate_none(this.name.substr(5));return true;'>"
@@ -339,7 +339,7 @@ function show_allocatable($show_totals) {
 					 price_format($un_allocated), false));
 				end_row();
 
-   	    		$total_allocated += input_num('amount' . $id);
+   	    		$total_allocated += RequestService::inputNumStatic('amount' . $id);
 		   	}
 		}
 		if ($show_totals) {
@@ -385,8 +385,8 @@ function check_allocations()
 		  /* Now check to see that the AllocAmt is no greater than the
 		 amount left to be allocated against the transaction under review;
 		 skip check if no allocation is set to avoid deadlock on mistakenly overallocated transactions*/
-		 $allocated = input_num('amount' . $counter);
-		 if ($allocated && ($allocated > input_num('un_allocated' . $counter)))
+		 $allocated = RequestService::inputNumStatic('amount' . $counter);
+		 if ($allocated && ($allocated > RequestService::inputNumStatic('un_allocated' . $counter)))
 		 {
 			display_error(_("At least one transaction is overallocated."));
 			set_focus('amount'.$counter);
@@ -416,14 +416,14 @@ function check_allocations()
 			}
 		}
 
-		$_SESSION['alloc']->allocs[$counter]->current_allocated = input_num('amount' . $counter);
+		$_SESSION['alloc']->allocs[$counter]->current_allocated = RequestService::inputNumStatic('amount' . $counter);
 
-		$total_allocated += input_num('amount' . $counter);
+		$total_allocated += RequestService::inputNumStatic('amount' . $counter);
 	}
 
 	$amount = abs($_SESSION['alloc']->amount);
 
-	if ($total_allocated - ($amount + input_num('discount'))  > $SysPrefs->allocation_settled_allowance())
+	if ($total_allocated - ($amount + RequestService::inputNumStatic('discount'))  > $SysPrefs->allocation_settled_allowance())
 	{
 		display_error(_("These allocations cannot be processed because the amount allocated is more than the total amount left to allocate."));
 		return false;

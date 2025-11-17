@@ -48,13 +48,13 @@ class UiControlsService
             $ret = array();
             foreach($name as $key => $dflt)
                 if (!is_numeric($key)) {
-                    $ret[$key] = is_numeric($dflt) ? input_num($key, $dflt) : $this->getPost($key, $dflt);
+                    $ret[$key] = is_numeric($dflt) ? RequestService::inputNumStatic($key, $dflt) : $this->getPost($key, $dflt);
                 } else {
                     $ret[$dflt] = $this->getPost($dflt, null);
                 }
             return $ret;
         } else
-            return is_float($dflt) ? input_num($name, $dflt) :
+            return is_float($dflt) ? RequestService::inputNumStatic($name, $dflt) :
                     ((!isset($_POST[$name]) /*|| $_POST[$name] === ''*/) ? $dflt : $_POST[$name]);
     }
 

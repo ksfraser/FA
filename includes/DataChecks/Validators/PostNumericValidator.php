@@ -24,7 +24,7 @@ class PostNumericValidator
             return false;
         }
         
-        $num = \input_num($postname, $default);
+        $num = \RequestService::inputNumStatic($postname, $default);
         if ($num === false || $num === null) {
             return false;
         }

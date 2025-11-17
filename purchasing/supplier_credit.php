@@ -157,7 +157,7 @@ if (isset($_POST['AddGLCodeToTrans'])) {
 	{
 		$_SESSION['supp_trans']->add_gl_codes_to_trans($_POST['gl_code'], $gl_act_name,
 			$_POST['dimension_id'], $_POST['dimension2_id'], 
-			input_num('amount'), $_POST['memo_']);
+			RequestService::inputNumStatic('amount'), $_POST['memo_']);
 		reset_tax_input();
 		set_focus('gl_code');
 	}
@@ -294,8 +294,8 @@ function commit_item_data($n)
 		$_SESSION['supp_trans']->add_grn_to_trans($n,
     		$_POST['po_detail_item'.$n], $_POST['item_code'.$n],
     		$_POST['item_description'.$n], $_POST['qty_recd'.$n],
-    		$_POST['prev_quantity_inv'.$n], input_num('This_QuantityCredited'.$n),
-    		$_POST['order_price'.$n], input_num('ChgPrice'.$n));
+    		$_POST['prev_quantity_inv'.$n], RequestService::inputNumStatic('This_QuantityCredited'.$n),
+    		$_POST['order_price'.$n], RequestService::inputNumStatic('ChgPrice'.$n));
 		reset_tax_input();
 	}
 }
@@ -348,7 +348,7 @@ if (isset($_POST['RefreshInquiry']))
 if (isset($_POST['go']))
 {
 	$Ajax->activate('gl_items');
-	display_quick_entries($_SESSION['supp_trans'], $_POST['qid'], input_num('totamount'), QE_SUPPINV);
+	display_quick_entries($_SESSION['supp_trans'], $_POST['qid'], RequestService::inputNumStatic('totamount'), QE_SUPPINV);
 	$_POST['totamount'] = price_format(0); $Ajax->activate('totamount');
 	reset_tax_input();
 }

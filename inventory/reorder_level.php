@@ -84,8 +84,8 @@ while ($myrow = db_fetch($result))
 	if (isset($_POST['UpdateData']) && check_num($myrow["loc_code"]))
 	{
 
-		$myrow["reorder_level"] = input_num($myrow["loc_code"]);
-		set_reorder_level($_POST['stock_id'], $myrow["loc_code"], input_num($myrow["loc_code"]));
+		$myrow["reorder_level"] = RequestService::inputNumStatic($myrow["loc_code"]);
+		set_reorder_level($_POST['stock_id'], $myrow["loc_code"], RequestService::inputNumStatic($myrow["loc_code"]));
 		display_notification(_("Reorder levels has been updated."));
 	}
 

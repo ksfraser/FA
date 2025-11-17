@@ -116,14 +116,14 @@ function display_po_receive_items()
 
 	$colspan = count($th)-1;
 
-	$display_sub_total = price_format($total/* + input_num('freight_cost')*/);
+	$display_sub_total = price_format($total/* + RequestService::inputNumStatic('freight_cost')*/);
 
 	label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right","align=right");
-	$taxes = $_SESSION['PO']->get_taxes(input_num('freight_cost'), true);
+	$taxes = $_SESSION['PO']->get_taxes(RequestService::inputNumStatic('freight_cost'), true);
 	
 	$tax_total = display_edit_tax_items($taxes, $colspan, $_SESSION['PO']->tax_included);
 
-	$display_total = price_format(($total + input_num('freight_cost') + $tax_total));
+	$display_total = price_format(($total + RequestService::inputNumStatic('freight_cost') + $tax_total));
 
 	start_row();
 	label_cells(_("Amount Total"), $display_total, "colspan=$colspan align='right'","align='right'");
@@ -264,7 +264,7 @@ function process_receive_po()
 	$grn->orig_order_date = $_POST['DefaultReceivedDate'];
 	$grn->reference = $_POST['ref'];
 	$grn->Location = $_POST['Location'];
-	$grn->ex_rate = input_num('_ex_rate', null);
+	$grn->ex_rate = RequestService::inputNumStatic('_ex_rate', null);
 
 	$grn_no = add_grn($grn);
 
@@ -303,7 +303,7 @@ if (isset($_POST['Update']) || isset($_POST['ProcessGoodsReceived']))
 		if (!isset($_POST['DefaultReceivedDate']) || $_POST['DefaultReceivedDate'] == "")
 			$_POST['DefaultReceivedDate'] = DateService::newDocDateStatic();
 
-		$_SESSION['PO']->line_items[$line->line_no]->receive_qty = input_num($line->line_no);
+		$_SESSION['PO']->line_items[$line->line_no]->receive_qty = RequestService::inputNumStatic($line->line_no);
 
 		if (isset($_POST[$line->stock_id . "Desc"]) && strlen($_POST[$line->stock_id . "Desc"]) > 0)
 		{

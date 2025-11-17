@@ -83,16 +83,16 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	{
     	if ($selected_id != -1) 
     	{
-    		update_recurrent_invoice($selected_id, $_POST['description'], $_POST['order_no'], input_num('debtor_no'), 
-    			input_num('group_no'), input_num('days', 0), input_num('monthly', 0), $_POST['begin'], $_POST['end']);
+    		update_recurrent_invoice($selected_id, $_POST['description'], $_POST['order_no'], RequestService::inputNumStatic('debtor_no'), 
+    			RequestService::inputNumStatic('group_no'), RequestService::inputNumStatic('days', 0), RequestService::inputNumStatic('monthly', 0), $_POST['begin'], $_POST['end']);
     		if (isset($_POST['last_sent']))	
 				update_last_sent_recurrent_invoice($selected_id, $_POST['last_sent']);
 			$note = _('Selected recurrent invoice has been updated');
     	} 
     	else 
     	{
-    		add_recurrent_invoice($_POST['description'], $_POST['order_no'], input_num('debtor_no'), input_num('group_no'),
-    			input_num('days', 0), input_num('monthly', 0), $_POST['begin'], $_POST['end']);
+    		add_recurrent_invoice($_POST['description'], $_POST['order_no'], RequestService::inputNumStatic('debtor_no'), RequestService::inputNumStatic('group_no'),
+    			RequestService::inputNumStatic('days', 0), RequestService::inputNumStatic('monthly', 0), $_POST['begin'], $_POST['end']);
 			$note = _('New recurrent invoice has been added');
     	}
     

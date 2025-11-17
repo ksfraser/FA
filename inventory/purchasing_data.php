@@ -70,14 +70,14 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	{
      	if ($Mode == 'ADD_ITEM') 
        	{
-			add_item_purchasing_data($_POST['supplier_id'], $_POST['stock_id'], input_num('price',0),
-				$_POST['suppliers_uom'], input_num('conversion_factor'), $_POST['supplier_description']);
+			add_item_purchasing_data($_POST['supplier_id'], $_POST['stock_id'], RequestService::inputNumStatic('price',0),
+				$_POST['suppliers_uom'], RequestService::inputNumStatic('conversion_factor'), $_POST['supplier_description']);
     		display_notification(_("This supplier purchasing data has been added."));
        	} 
        	else
        	{
-       		update_item_purchasing_data($selected_id, $_POST['stock_id'], input_num('price',0),
-       			$_POST['suppliers_uom'], input_num('conversion_factor'), $_POST['supplier_description']);
+       		update_item_purchasing_data($selected_id, $_POST['stock_id'], RequestService::inputNumStatic('price',0),
+       			$_POST['suppliers_uom'], RequestService::inputNumStatic('conversion_factor'), $_POST['supplier_description']);
     	  	display_notification(_("Supplier purchasing data has been updated."));
        	}
 		$Mode = 'RESET';

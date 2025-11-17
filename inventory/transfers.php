@@ -161,7 +161,7 @@ if (isset($_POST['Process']))
 
 function check_item_data()
 {
-	if (!check_num('qty', 0) || input_num('qty') == 0)
+	if (!check_num('qty', 0) || RequestService::inputNumStatic('qty') == 0)
 	{
 		display_error(_("The quantity entered must be a positive number."));
 		set_focus('qty');
@@ -177,7 +177,7 @@ function handle_update_item()
 	$id = $_POST['LineNo'];
    	if (!isset($_POST['std_cost']))
    		$_POST['std_cost'] = $_SESSION['transfer_items']->line_items[$id]->standard_cost;
-   	$_SESSION['transfer_items']->update_cart_item($id, input_num('qty'), $_POST['std_cost']);
+   	$_SESSION['transfer_items']->update_cart_item($id, RequestService::inputNumStatic('qty'), $_POST['std_cost']);
 	line_start_focus();
 }
 
@@ -195,7 +195,7 @@ function handle_new_item()
 {
 	if (!isset($_POST['std_cost']))
    		$_POST['std_cost'] = 0;
-	add_to_order($_SESSION['transfer_items'], $_POST['stock_id'], input_num('qty'), $_POST['std_cost']);
+	add_to_order($_SESSION['transfer_items'], $_POST['stock_id'], RequestService::inputNumStatic('qty'), $_POST['std_cost']);
 	unset($_POST['stock_id']);
 	line_start_focus();
 }

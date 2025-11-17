@@ -219,12 +219,12 @@ function display_order_summary($title, &$order, $editable_items=false)
 	small_amount_cells(null, 'freight_cost', price_format(RequestService::getPostStatic('freight_cost',0)));
 	label_cell('', 'colspan=2');
 	end_row();
-	$display_sub_total = price_format($total + input_num('freight_cost'));
+	$display_sub_total = price_format($total + RequestService::inputNumStatic('freight_cost'));
 	label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right","align=right", 2);
-	$taxes = $order->get_taxes(input_num('freight_cost'));
+	$taxes = $order->get_taxes(RequestService::inputNumStatic('freight_cost'));
 	$tax_total = display_edit_tax_items($taxes, $colspan, $order->tax_included, 2);
 
-	$display_total = price_format(($total + input_num('freight_cost') + $tax_total));
+	$display_total = price_format(($total + RequestService::inputNumStatic('freight_cost') + $tax_total));
 
 	start_row();
 	label_cells(_("Amount Total"), $display_total, "colspan=$colspan align=right","align=right");
@@ -545,7 +545,7 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 
 	small_amount_cells(null, 'Disc', percent_format($_POST['Disc']), null, null, user_percent_dec());
 
-	$line_total = input_num('qty') * input_num('price') * (1 - input_num('Disc') / 100);
+	$line_total = RequestService::inputNumStatic('qty') * RequestService::inputNumStatic('price') * (1 - RequestService::inputNumStatic('Disc') / 100);
 
 	amount_cell($line_total, false, '','line_total');
 

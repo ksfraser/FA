@@ -281,7 +281,7 @@ function credit_edit_item_controls(&$order, $rowcounter, $line_no=-1)
 	amount_cells(null, 'price');
 	small_amount_cells(null, 'Disc', percent_format($_POST['Disc']), null, null, user_percent_dec());
 
-	amount_cell(input_num('qty') * input_num('price') * (1 - input_num('Disc')/100), false, '', 'line_total');
+	amount_cell(RequestService::inputNumStatic('qty') * RequestService::inputNumStatic('price') * (1 - RequestService::inputNumStatic('Disc')/100), false, '', 'line_total');
 
 	if ($id!=-1)
 	{

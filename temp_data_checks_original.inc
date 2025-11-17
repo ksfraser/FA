@@ -576,7 +576,7 @@ function check_empty_result($sql)
 function check_int($postname, $min=null, $max=null) {
 	if(!isset($_POST[$postname]))
 	  return 0;
-    $num = input_num($postname);
+    $num = RequestService::inputNumStatic($postname);
     if(!is_int($num)) 
 	  return 0;
     if (isset($min) && ($num<$min)) 
@@ -593,7 +593,7 @@ function check_int($postname, $min=null, $max=null) {
 function check_num($postname, $min=null, $max=null, $dflt=0) {
 	if(!isset($_POST[$postname]))
 	  return 0;
-    $num = input_num($postname, $dflt);
+    $num = RequestService::inputNumStatic($postname, $dflt);
     if ($num === false || $num === null) 
 	  return 0;
     if (isset($min) && ($num<$min)) 

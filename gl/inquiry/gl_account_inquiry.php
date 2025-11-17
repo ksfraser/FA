@@ -111,7 +111,7 @@ function show_results()
     	$_POST['Dimension2'] = 0;
 	$result = get_gl_transactions($_POST['TransFromDate'], $_POST['TransToDate'], -1,
     	$_POST["account"], $_POST['Dimension'], $_POST['Dimension2'], null,
-    	input_num('amount_min'), input_num('amount_max'), null, null, $_POST['Memo']);
+    	RequestService::inputNumStatic('amount_min'), RequestService::inputNumStatic('amount_max'), null, null, $_POST['Memo']);
 
 	$colspan = ($dim == 2 ? "7" : ($dim == 1 ? "6" : "5"));
 
@@ -120,8 +120,8 @@ function show_results()
 
 	// Only show balances if an account is specified AND we're not filtering by amounts
 	$show_balances = $_POST["account"] != null && 
-                     input_num("amount_min") == 0 && 
-                     input_num("amount_max") == 0;
+                     RequestService::inputNumStatic("amount_min") == 0 && 
+                     RequestService::inputNumStatic("amount_max") == 0;
 		
 	start_table(TABLESTYLE);
 	

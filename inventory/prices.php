@@ -96,7 +96,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		{
 			//editing an existing price
 			update_item_price($selected_id, $_POST['sales_type_id'],
-			$_POST['curr_abrev'], input_num('price'));
+			$_POST['curr_abrev'], RequestService::inputNumStatic('price'));
 
 			$msg = _("This price has been updated.");
 		}
@@ -104,7 +104,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		{
 
 			add_item_price($_POST['stock_id'], $_POST['sales_type_id'],
-			    $_POST['curr_abrev'], input_num('price'));
+			    $_POST['curr_abrev'], RequestService::inputNumStatic('price'));
 
 			$msg = _("The new price has been added.");
 		}

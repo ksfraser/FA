@@ -114,13 +114,13 @@ function update_kit($selected_kit, $component_id)
 			$msg =_("New component has been added to selected kit.");
 
 		add_item_code($selected_kit, RequestService::getPostStatic('component'), RequestService::getPostStatic('description'),
-			 RequestService::getPostStatic('category'), input_num('quantity'), 0);
+			 RequestService::getPostStatic('category'), RequestService::inputNumStatic('quantity'), 0);
 		display_notification($msg);
 
 	} else { // update component
 		$props = get_kit_props($selected_kit);
 		update_item_code($component_id, $selected_kit, RequestService::getPostStatic('component'),
-			$props['description'], $props['category_id'], input_num('quantity'), 0);
+			$props['description'], $props['category_id'], RequestService::inputNumStatic('quantity'), 0);
 		display_notification(_("Component of selected kit has been updated."));
 	}
 	$Mode = 'RESET';

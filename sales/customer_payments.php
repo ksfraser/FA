@@ -187,7 +187,7 @@ function can_process()
 		set_focus('charge');
 		return false;
 	}
-	if (isset($_POST['charge']) && input_num('charge') > 0) {
+	if (isset($_POST['charge']) && RequestService::inputNumStatic('charge') > 0) {
 		$charge_acct = get_bank_charge_account($_POST['bank_account']);
 		if (get_gl_account($charge_acct) == false) {
 			display_error(_("The Bank Charge Account has not been set in System and General GL Setup."));
@@ -207,13 +207,13 @@ function can_process()
 		return false;
 	}
 
-	if (input_num('amount') <= 0) {
+	if (RequestService::inputNumStatic('amount') <= 0) {
 		display_error(_("The balance of the amount and discount is zero or negative. Please enter valid amounts."));
 		set_focus('discount');
 		return false;
 	}
 
-	if (isset($_POST['bank_amount']) && input_num('bank_amount')<=0)
+	if (isset($_POST['bank_amount']) && RequestService::inputNumStatic('bank_amount')<=0)
 	{
 		display_error(_("The entered payment amount is zero or negative."));
 		set_focus('bank_amount');
@@ -223,7 +223,7 @@ function can_process()
 	if (!db_has_currency_rates(get_customer_currency($_POST['customer_id']), $_POST['DateBanked'], true))
 		return false;
 
-	$_SESSION['alloc']->amount = input_num('amount');
+	$_SESSION['alloc']->amount = RequestService::inputNumStatic('amount');
 
 	if (isset($_POST["TotalNumberOfAllocs"]))
 		return check_allocations();
@@ -248,7 +248,7 @@ if (RequestService::getPostStatic('AddPaymentItem') && can_process()) {
 	//Chaitanya : 13-OCT-2011 - To support Edit feature
 	$payment_no = write_customer_payment($_SESSION['alloc']->trans_no, $_POST['customer_id'], $_POST['BranchID'],
 		$_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'],
-                input_num('amount'), input_num('discount'), $_POST['memo_'], 0, input_num('charge'), input_num('bank_amount', input_num('amount')), $_POST['dimension_id'], $_POST['dimension2_id']);
+                RequestService::inputNumStatic('amount'), RequestService::inputNumStatic('discount'), $_POST['memo_'], 0, RequestService::inputNumStatic('charge'), RequestService::inputNumStatic('bank_amount', RequestService::inputNumStatic('amount')), $_POST['dimension_id'], $_POST['dimension2_id']);
 
 	$_SESSION['alloc']->trans_no = $payment_no;
 	$_SESSION['alloc']->date_ = $_POST['DateBanked'];

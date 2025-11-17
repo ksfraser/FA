@@ -54,13 +54,13 @@ if (isset($_POST['go']) || isset($_POST['show']))
 		set_focus('date_');
 		$input_error = 1;
 	}
-	elseif (input_num('amount', 0) == 0.0)
+	elseif (RequestService::inputNumStatic('amount', 0) == 0.0)
 	{
 		display_error(_("The amount can not be 0."));
 		set_focus('amount');
 		$input_error = 1;
 	}
-	elseif (input_num('periods', 0) < 1)
+	elseif (RequestService::inputNumStatic('periods', 0) < 1)
 	{
 		display_error(_("The periods must be greater than 0."));
 		set_focus('periods');
@@ -68,7 +68,7 @@ if (isset($_POST['go']) || isset($_POST['show']))
 	}
 	if ($input_error == 0)
 	{
-		$periods = input_num('periods');
+		$periods = RequestService::inputNumStatic('periods');
 		$per = $periods - 1;
 		$date = $date_ = RequestService::getPostStatic('date_');
 		$freq = RequestService::getPostStatic('freq');
@@ -89,7 +89,7 @@ if (isset($_POST['go']) || isset($_POST['show']))
 		}
 		if ($input_error == 0)
 		{
-			$amount = input_num('amount');
+			$amount = RequestService::inputNumStatic('amount');
 			$am = round2($amount / $periods, user_price_dec());
 			if ($am * $periods != $amount)
 				$am0 = $am + $amount - $am * $periods;

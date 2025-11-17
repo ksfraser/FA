@@ -279,7 +279,7 @@ function exchange_rate_display($from_currency, $to_currency, $date_, $force_edit
 
 	if ($from_currency != $to_currency)
 	{
-	 	$rate = input_num('_ex_rate');
+	 	$rate = RequestService::inputNumStatic('_ex_rate');
 	 	if (check_ui_refresh() || !$rate) { // readonly or ui context changed
 			$comp_currency = BankingService::getCompanyCurrency();
 

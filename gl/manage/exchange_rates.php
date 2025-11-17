@@ -35,7 +35,7 @@ function check_data($selected_id)
 		set_focus('date_');
 		return false;
 	}
-	if (input_num('BuyRate') <= 0)
+	if (RequestService::inputNumStatic('BuyRate') <= 0)
 	{
 		display_error( _("The exchange rate cannot be zero or a negative number."));
 		set_focus('BuyRate');
@@ -63,13 +63,13 @@ function handle_submit()
 	{
 
 		update_exchange_rate($_POST['curr_abrev'], $_POST['date_'],
-		input_num('BuyRate'), input_num('BuyRate'));
+		RequestService::inputNumStatic('BuyRate'), RequestService::inputNumStatic('BuyRate'));
 	}
 	else
 	{
 
 		add_exchange_rate($_POST['curr_abrev'], $_POST['date_'],
-		    input_num('BuyRate'), input_num('BuyRate'));
+		    RequestService::inputNumStatic('BuyRate'), RequestService::inputNumStatic('BuyRate'));
 	}
 
 	$selected_id = '';

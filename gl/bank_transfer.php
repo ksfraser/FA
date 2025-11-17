@@ -193,7 +193,7 @@ function check_valid_entries($trans_no)
 		set_focus('amount');
 		return false;
 	}
-	if (input_num('amount') == 0) {
+	if (RequestService::inputNumStatic('amount') == 0) {
 		display_error(_("The total bank amount cannot be 0."));
 		set_focus('amount');
 		return false;
@@ -201,12 +201,12 @@ function check_valid_entries($trans_no)
 
 	$limit = get_bank_account_limit($_POST['FromBankAccount'], $_POST['DatePaid']);
 
-	$amnt_tr = input_num('charge') + input_num('amount');
+	$amnt_tr = RequestService::inputNumStatic('charge') + RequestService::inputNumStatic('amount');
 
 	$problemTransaction = null;
 	if ($trans_no) {
 		$problemTransaction = check_bank_transfer( $trans_no, $_POST['FromBankAccount'], $_POST['ToBankAccount'], $_POST['DatePaid'],
-			$amnt_tr, input_num('target_amount', $amnt_tr));
+			$amnt_tr, RequestService::inputNumStatic('target_amount', $amnt_tr));
 
 	if ($problemTransaction != null	) {
 		if (!array_key_exists('trans_no', $problemTransaction)) {
@@ -248,7 +248,7 @@ function check_valid_entries($trans_no)
 		set_focus('charge');
 		return false;
 	}
-	if (isset($_POST['charge']) && input_num('charge') > 0 && get_bank_charge_account($_POST['FromBankAccount']) == '') {
+	if (isset($_POST['charge']) && RequestService::inputNumStatic('charge') > 0 && get_bank_charge_account($_POST['FromBankAccount']) == '') {
 		display_error(_("The Bank Charge Account has not been set in System and General GL Setup."));
 		set_focus('charge');
 		return false;
@@ -272,7 +272,7 @@ function check_valid_entries($trans_no)
 		set_focus('target_amount');
 		return false;
 	}
-	if (isset($_POST['target_amount']) && input_num('target_amount') == 0) {
+	if (isset($_POST['target_amount']) && RequestService::inputNumStatic('target_amount') == 0) {
 		display_error(_("The incomming bank amount cannot be 0."));
 		set_focus('target_amount');
 		return false;
@@ -293,12 +293,12 @@ function bank_transfer_handle_submit()
 {
 	$trans_no = array_key_exists('_trans_no', $_POST) ?  $_POST['_trans_no'] : null;
 	if ($trans_no) {
-		$trans_no = update_bank_transfer($trans_no, $_POST['FromBankAccount'], $_POST['ToBankAccount'], $_POST['DatePaid'],	input_num('amount'), 
-			$_POST['ref'], $_POST['memo_'], $_POST['dimension_id'], $_POST['dimension2_id'], input_num('charge'), input_num('target_amount'));
+		$trans_no = update_bank_transfer($trans_no, $_POST['FromBankAccount'], $_POST['ToBankAccount'], $_POST['DatePaid'],	RequestService::inputNumStatic('amount'), 
+			$_POST['ref'], $_POST['memo_'], $_POST['dimension_id'], $_POST['dimension2_id'], RequestService::inputNumStatic('charge'), RequestService::inputNumStatic('target_amount'));
 	} else {
 		DateService::newDocDateStatic($_POST['DatePaid']);
-		$trans_no = add_bank_transfer($_POST['FromBankAccount'], $_POST['ToBankAccount'], $_POST['DatePaid'], input_num('amount'), $_POST['ref'], 
-			$_POST['memo_'], $_POST['dimension_id'], $_POST['dimension2_id'], input_num('charge'), input_num('target_amount'));
+		$trans_no = add_bank_transfer($_POST['FromBankAccount'], $_POST['ToBankAccount'], $_POST['DatePaid'], RequestService::inputNumStatic('amount'), $_POST['ref'], 
+			$_POST['memo_'], $_POST['dimension_id'], $_POST['dimension2_id'], RequestService::inputNumStatic('charge'), RequestService::inputNumStatic('target_amount'));
 	}
 
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");

@@ -191,7 +191,7 @@ function can_process()
 			{
 
 				if (InventoryService::hasStockHolding($bom_item["ResourceType"]))
-				{                		$quantity = $bom_item["quantity"] * input_num('quantity');
+				{                		$quantity = $bom_item["quantity"] * RequestService::inputNumStatic('quantity');
 
                         if (check_negative_stock($bom_item["component"], -$quantity, $bom_item["loc_code"], $_POST['date_']))
                 		{
@@ -206,7 +206,7 @@ function can_process()
         	elseif ($_POST['type'] == WO_UNASSEMBLY)
         	{
         		// if unassembling, check item to unassemble
-                if (check_negative_stock($_POST['stock_id'], -input_num('quantity'), $_POST['StockLocation'], $_POST['date_']))
+                if (check_negative_stock($_POST['stock_id'], -RequestService::inputNumStatic('quantity'), $_POST['StockLocation'], $_POST['date_']))
         		{
         			display_error(_("The selected item cannot be unassembled because there is insufficient stock."));
 					return false;
@@ -224,7 +224,7 @@ function can_process()
 		}
     	if (isset($selected_id))
     	{
-    		if ($_POST['units_issued'] > input_num('quantity'))
+    		if ($_POST['units_issued'] > RequestService::inputNumStatic('quantity'))
     		{
 				set_focus('quantity');
     			display_error(_("The quantity cannot be changed to be less than the quantity already manufactured for this order."));
@@ -244,9 +244,9 @@ if (isset($_POST['ADD_ITEM']) && can_process())
 		$_POST['cr_acc'] = "";
 	if (!isset($_POST['cr_lab_acc']))
 		$_POST['cr_lab_acc'] = "";
-	$id = add_work_order($_POST['wo_ref'], $_POST['StockLocation'], input_num('quantity'),
+	$id = add_work_order($_POST['wo_ref'], $_POST['StockLocation'], RequestService::inputNumStatic('quantity'),
 		$_POST['stock_id'],  $_POST['type'], $_POST['date_'],
-		$_POST['RequDate'], $_POST['memo_'], input_num('Costs'), $_POST['cr_acc'], input_num('Labour'), $_POST['cr_lab_acc']);
+		$_POST['RequDate'], $_POST['memo_'], RequestService::inputNumStatic('Costs'), $_POST['cr_acc'], RequestService::inputNumStatic('Labour'), $_POST['cr_lab_acc']);
 
 	DateService::newDocDateStatic($_POST['date_']);
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=$id&type=".$_POST['type']."&date=".$_POST['date_']);
@@ -257,7 +257,7 @@ if (isset($_POST['ADD_ITEM']) && can_process())
 if (isset($_POST['UPDATE_ITEM']) && can_process())
 {
 
-	update_work_order($selected_id, $_POST['StockLocation'], input_num('quantity'),
+	update_work_order($selected_id, $_POST['StockLocation'], RequestService::inputNumStatic('quantity'),
 		$_POST['stock_id'],  $_POST['date_'], $_POST['RequDate'], $_POST['memo_']);
 	DateService::newDocDateStatic($_POST['date_']);
 	meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$selected_id");

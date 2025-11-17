@@ -38,7 +38,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
       	display_error( _("There is no item selected."));
 		set_focus('stock_id');
    	}
-   	elseif (!input_num('quantity'))
+   	elseif (!RequestService::inputNumStatic('quantity'))
    	{
       	$input_error = 1;
       	display_error( _("The quantity entered was not positive number."));

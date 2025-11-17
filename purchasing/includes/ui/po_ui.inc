@@ -54,8 +54,8 @@ function copy_to_cart()
 	$cart->delivery_address = $_POST['delivery_address'];
    	$cart->dimension = @$_POST['dimension'];
 	$cart->dimension2 =  @$_POST['dimension2'];
-	$cart->prep_amount = input_num('prep_amount', 0);
-	$cart->ex_rate = input_num('_ex_rate', null);
+	$cart->prep_amount = RequestService::inputNumStatic('prep_amount', 0);
+	$cart->ex_rate = RequestService::inputNumStatic('_ex_rate', null);
 
     if (isset($_POST['mantax'])) {
 		foreach($_POST['mantax'] as $id => $tax) {
@@ -276,11 +276,11 @@ function display_po_items(&$order, $editable=true)
 
 	label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right","align=right", 2);
 
-	$taxes = $order->get_taxes(input_num('freight_cost'));
+	$taxes = $order->get_taxes(RequestService::inputNumStatic('freight_cost'));
 	
 	$tax_total = display_edit_tax_items($taxes, $colspan, $order->tax_included, 2, $order->trans_type==ST_SUPPINVOICE);
 
-	$display_total = price_format(($total + input_num('freight_cost') + $tax_total));
+	$display_total = price_format(($total + RequestService::inputNumStatic('freight_cost') + $tax_total));
 
 	start_row();
 	label_cells(_("Amount Total"), $display_total, "colspan=$colspan align='right'","align='right'");
@@ -438,7 +438,7 @@ function po_item_controls(&$order, &$rowcounter, $line_no=-1)
    	else	
 		unit_amount_cells(null, 'price');
 
-	$line_total = round(input_num('qty') * input_num('price'),  user_price_dec());
+	$line_total = round(RequestService::inputNumStatic('qty') * RequestService::inputNumStatic('price'),  user_price_dec());
 	amount_cell($line_total, false, '','line_total');
 
 	if ($id!=-1)

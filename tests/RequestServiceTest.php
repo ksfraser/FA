@@ -34,4 +34,20 @@ class RequestServiceTest extends TestCase
         
         $this->assertEquals('', $result);
     }
+
+    public function testInputNumReturnsDefaultWhenNotSet(): void
+    {
+        $result = RequestService::inputNumStatic('nonexistent', 42.5);
+        
+        $this->assertEquals(42.5, $result);
+    }
+
+    public function testInputNumReturnsDefaultWhenEmpty(): void
+    {
+        $_POST['empty_field'] = '';
+        
+        $result = RequestService::inputNumStatic('empty_field', 10);
+        
+        $this->assertEquals(10, $result);
+    }
 }

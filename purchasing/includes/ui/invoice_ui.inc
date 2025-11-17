@@ -41,7 +41,7 @@ function copy_to_trans(&$supp_trans)
    	$supp_trans->dimension = @$_POST['dimension'];
 	$supp_trans->dimension2 =  @$_POST['dimension2'];
 
-	$supp_trans->ex_rate = input_num('_ex_rate', null);
+	$supp_trans->ex_rate = RequestService::inputNumStatic('_ex_rate', null);
 
 	$supp_trans->ov_amount = $supp_trans->ov_discount = 0; /* for starters */
     if (isset($_POST['mantax'])) {
@@ -259,7 +259,7 @@ function display_gl_items(&$supp_trans, $mode=0)
 			}
 			echo "&nbsp;".$qid['base_desc'].":"."&nbsp;";
 
-			$amount = input_num('totamount', $qid['base_amount']);
+			$amount = RequestService::inputNumStatic('totamount', $qid['base_amount']);
 			$dec = user_price_dec();
 			echo "<input class='amount' type='text' name='totamount' size='7' maxlength='12' dec='$dec' value='$amount'>&nbsp;";
 			submit('go', _("Go"), true, false, true);

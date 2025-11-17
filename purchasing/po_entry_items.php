@@ -271,8 +271,8 @@ function handle_update_item()
 
 	if ($allow_update)
 	{
-		if ($_SESSION['PO']->line_items[$_POST['line_no']]->qty_inv > input_num('qty') ||
-			$_SESSION['PO']->line_items[$_POST['line_no']]->qty_received > input_num('qty'))
+		if ($_SESSION['PO']->line_items[$_POST['line_no']]->qty_inv > RequestService::inputNumStatic('qty') ||
+			$_SESSION['PO']->line_items[$_POST['line_no']]->qty_received > RequestService::inputNumStatic('qty'))
 		{
 			display_error(_("You are attempting to make the quantity ordered a quantity less than has already been invoiced or received.  This is prohibited.") .
 				"<br>" . _("The quantity received can only be modified by entering a negative receipt and the quantity invoiced can only be reduced by entering a credit note against this item."));
@@ -280,7 +280,7 @@ function handle_update_item()
 			return;
 		}
 	
-		$_SESSION['PO']->update_order_item($_POST['line_no'], input_num('qty'), input_num('price'),
+		$_SESSION['PO']->update_order_item($_POST['line_no'], RequestService::inputNumStatic('qty'), RequestService::inputNumStatic('price'),
   			@$_POST['req_del_date'], $_POST['item_description'] );
 		unset_form_variables();
 	}	
@@ -319,9 +319,9 @@ function handle_add_new_item()
 
 			if ($allow_update)
 			{
-				$_SESSION['PO']->add_to_order (count($_SESSION['PO']->line_items), $_POST['stock_id'], input_num('qty'), 
+				$_SESSION['PO']->add_to_order (count($_SESSION['PO']->line_items), $_POST['stock_id'], RequestService::inputNumStatic('qty'), 
 					RequestService::getPostStatic('stock_id_text'), //$myrow["description"], 
-					input_num('price'), '', // $myrow["units"], (retrived in cart)
+					RequestService::inputNumStatic('price'), '', // $myrow["units"], (retrived in cart)
 					$_SESSION['PO']->trans_type == ST_PURCHORDER ? $_POST['req_del_date'] : '', 0, 0);
 
 				unset_form_variables();
@@ -410,7 +410,7 @@ function can_commit()
      	display_error (_("The order cannot be placed because there are no lines entered on this order."));
      	return false;
 	}
-	if (floatcmp(input_num('prep_amount'), $_SESSION['PO']->get_trans_total()) > 0)
+	if (floatcmp(RequestService::inputNumStatic('prep_amount'), $_SESSION['PO']->get_trans_total()) > 0)
 	{
 		display_error(_("Required prepayment is greater than total invoice value."));
 		set_focus('prep_amount');

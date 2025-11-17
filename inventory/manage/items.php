@@ -272,7 +272,7 @@ if (isset($_POST['addupdate']))
 				$_POST['adjustment_account'], $_POST['wip_account'], 
 				$_POST['dimension_id'], $_POST['dimension2_id'],
 				check_value('no_sale'), check_value('editable'), check_value('no_purchase'),
-				RequestService::getPostStatic('depreciation_method'), input_num('depreciation_rate'), input_num('depreciation_factor'), RequestService::getPostStatic('depreciation_start', null),
+				RequestService::getPostStatic('depreciation_method'), RequestService::inputNumStatic('depreciation_rate'), RequestService::inputNumStatic('depreciation_factor'), RequestService::getPostStatic('depreciation_start', null),
 				RequestService::getPostStatic('fa_class_id'));
 
 			update_record_status($_POST['NewStockID'], $_POST['inactive'],
@@ -293,7 +293,7 @@ if (isset($_POST['addupdate']))
 				$_POST['adjustment_account'], $_POST['wip_account'], 
 				$_POST['dimension_id'], $_POST['dimension2_id'],
 				check_value('no_sale'), check_value('editable'), check_value('no_purchase'),
-				RequestService::getPostStatic('depreciation_method'), input_num('depreciation_rate'), input_num('depreciation_factor'), RequestService::getPostStatic('depreciation_start', null),
+				RequestService::getPostStatic('depreciation_method'), RequestService::inputNumStatic('depreciation_rate'), RequestService::inputNumStatic('depreciation_factor'), RequestService::getPostStatic('depreciation_start', null),
 				RequestService::getPostStatic('fa_class_id'));
 
 			display_notification(_("A new item has been added."));

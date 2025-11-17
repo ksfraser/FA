@@ -196,7 +196,7 @@ function check_data()
 		return false;
 	}
 
-	if ($_SESSION['Items']->has_items_dispatch() == 0 && input_num('ChargeFreightCost') == 0) {
+	if ($_SESSION['Items']->has_items_dispatch() == 0 && RequestService::inputNumStatic('ChargeFreightCost') == 0) {
 		display_error(_("There are no item quantities on this delivery note."));
 		return false;
 	}
@@ -220,7 +220,7 @@ function copy_to_cart()
 {
 	$cart = &$_SESSION['Items'];
 	$cart->ship_via = $_POST['ship_via'];
-	$cart->freight_cost = input_num('ChargeFreightCost');
+	$cart->freight_cost = RequestService::inputNumStatic('ChargeFreightCost');
 	$cart->document_date = $_POST['DispatchDate'];
 	$cart->due_date =  $_POST['due_date'];
 	$cart->Location = $_POST['Location'];
@@ -266,7 +266,7 @@ function check_quantities()
 
 			if (check_num('Line'.$line, $min, $max)) {
 				$_SESSION['Items']->line_items[$line]->qty_dispatched =
-				  input_num('Line'.$line);
+				  RequestService::inputNumStatic('Line'.$line);
 			} else {
 				set_focus('Line'.$line);
 				$ok = 0;
@@ -508,14 +508,14 @@ end_row();
 
 $inv_items_total = $_SESSION['Items']->get_items_total_dispatch();
 
-$display_sub_total = price_format($inv_items_total + input_num('ChargeFreightCost'));
+$display_sub_total = price_format($inv_items_total + RequestService::inputNumStatic('ChargeFreightCost'));
 
 label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right","align=right");
 
-$taxes = $_SESSION['Items']->get_taxes(input_num('ChargeFreightCost'));
+$taxes = $_SESSION['Items']->get_taxes(RequestService::inputNumStatic('ChargeFreightCost'));
 $tax_total = display_edit_tax_items($taxes, $colspan, $_SESSION['Items']->tax_included);
 
-$display_total = price_format(($inv_items_total + input_num('ChargeFreightCost') + $tax_total));
+$display_total = price_format(($inv_items_total + RequestService::inputNumStatic('ChargeFreightCost') + $tax_total));
 
 label_row(_("Amount Total"), $display_total, "colspan=$colspan align=right","align=right");
 

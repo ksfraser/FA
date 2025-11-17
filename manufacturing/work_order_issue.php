@@ -125,7 +125,7 @@ if (isset($_POST['Process']) && can_process())
 
 function check_item_data()
 {
-	if (input_num('qty') == 0 || !check_num('qty', 0))
+	if (RequestService::inputNumStatic('qty') == 0 || !check_num('qty', 0))
 	{
 		display_error(_("The quantity entered is negative or invalid."));
 		set_focus('qty');
@@ -149,7 +149,7 @@ function handle_update_item()
     if($_POST['UpdateItem'] != "" && check_item_data())
     {
 		$id = $_POST['LineNo'];
-    	$_SESSION['issue_items']->update_cart_item($id, input_num('qty'), input_num('std_cost'));
+    	$_SESSION['issue_items']->update_cart_item($id, RequestService::inputNumStatic('qty'), RequestService::inputNumStatic('std_cost'));
     }
 	line_start_focus();
 }
@@ -169,8 +169,8 @@ function handle_new_item()
 	if (!check_item_data())
 		return;
 
-	add_to_issue($_SESSION['issue_items'], $_POST['stock_id'], input_num('qty'),
-		 input_num('std_cost'));
+	add_to_issue($_SESSION['issue_items'], $_POST['stock_id'], RequestService::inputNumStatic('qty'),
+		 RequestService::inputNumStatic('std_cost'));
 	line_start_focus();
 }
 

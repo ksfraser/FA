@@ -155,7 +155,7 @@ function check_inputs()
 		return false;
 	}
 
-	if (isset($_POST['charge']) && input_num('charge') > 0) {
+	if (isset($_POST['charge']) && RequestService::inputNumStatic('charge') > 0) {
 		$charge_acct = get_bank_charge_account($_POST['bank_account']);
 		if (get_gl_account($charge_acct) == false) {
 			display_error(_("The Bank Charge Account has not been set in System and General GL Setup."));
@@ -176,15 +176,15 @@ function check_inputs()
 		return false;
 	}
 
-	//if (input_num('amount') - input_num('discount') <= 0) 
-	if (input_num('amount') <= 0) 
+	//if (RequestService::inputNumStatic('amount') - RequestService::inputNumStatic('discount') <= 0) 
+	if (RequestService::inputNumStatic('amount') <= 0) 
 	{
 		display_error(_("The total of the amount and the discount is zero or negative. Please enter positive values."));
 		set_focus('amount');
 		return false;
 	}
 
-	if (isset($_POST['bank_amount']) && input_num('bank_amount')<=0)
+	if (isset($_POST['bank_amount']) && RequestService::inputNumStatic('bank_amount')<=0)
 	{
 		display_error(_("The entered bank amount is zero or negative."));
 		set_focus('bank_amount');
@@ -208,7 +208,7 @@ function check_inputs()
 
 	$limit = get_bank_account_limit($_POST['bank_account'], $_POST['DatePaid']);
 
-	if (($limit !== null) && (floatcmp($limit, input_num('amount')) < 0))
+	if (($limit !== null) && (floatcmp($limit, RequestService::inputNumStatic('amount')) < 0))
 	{
 		display_error(sprintf(_("The total bank amount exceeds allowed limit (%s)."), price_format($limit)));
 		set_focus('amount');
@@ -224,7 +224,7 @@ function check_inputs()
 	if (!db_has_currency_rates(get_supplier_currency($_POST['supplier_id']), $_POST['DatePaid'], true))
 		return false;
 
-	$_SESSION['alloc']->amount = -input_num('amount');
+	$_SESSION['alloc']->amount = -RequestService::inputNumStatic('amount');
 
 	if (isset($_POST["TotalNumberOfAllocs"]))
 		return check_allocations();
@@ -237,8 +237,8 @@ function check_inputs()
 function handle_add_payment()
 {
 	$payment_id = write_supp_payment(0, $_POST['supplier_id'], $_POST['bank_account'],
-		$_POST['DatePaid'], $_POST['ref'], input_num('amount'),	input_num('discount'), $_POST['memo_'], 
-		input_num('charge'), input_num('bank_amount', input_num('amount')), $_POST['dimension_id'], $_POST['dimension2_id']);
+		$_POST['DatePaid'], $_POST['ref'], RequestService::inputNumStatic('amount'),	RequestService::inputNumStatic('discount'), $_POST['memo_'], 
+		RequestService::inputNumStatic('charge'), RequestService::inputNumStatic('bank_amount', RequestService::inputNumStatic('amount')), $_POST['dimension_id'], $_POST['dimension2_id']);
 	DateService::newDocDateStatic($_POST['DatePaid']);
 
 	$_SESSION['alloc']->trans_no = $payment_id;

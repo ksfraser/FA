@@ -54,8 +54,8 @@ if (isset($_POST['UpdateData']))
 {
 	$old_cost = get_unit_cost($_POST['stock_id']);
 
-   	$new_cost = input_num('material_cost') + input_num('labour_cost')
-	     + input_num('overhead_cost');
+   	$new_cost = RequestService::inputNumStatic('material_cost') + RequestService::inputNumStatic('labour_cost')
+	     + RequestService::inputNumStatic('overhead_cost');
 
    	$should_update = true;
 
@@ -75,8 +75,8 @@ if (isset($_POST['UpdateData']))
    	if ($should_update)
    	{
 		$update_no = stock_cost_update($_POST['stock_id'],
-		    input_num('material_cost'), input_num('labour_cost'),
-		    input_num('overhead_cost'),	$old_cost, 
+		    RequestService::inputNumStatic('material_cost'), RequestService::inputNumStatic('labour_cost'),
+		    RequestService::inputNumStatic('overhead_cost'),	$old_cost, 
         $_POST['refline'], $_POST['memo_']);
 
         display_notification(_("Cost has been updated."));

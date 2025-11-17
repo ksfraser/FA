@@ -128,7 +128,7 @@ function change_tpl_flag($reconcile_id)
 						? ("'".$_POST['bank_date'] ."'") : 'NULL';
 	
 	update_reconciled_values($reconcile_id, $reconcile_value, $_POST['reconcile_date'],
-		input_num('end_balance'), $_POST['bank_account']);
+		RequestService::inputNumStatic('end_balance'), $_POST['bank_account']);
 		
 	$Ajax->activate('reconciled');
 	$Ajax->activate('difference');
@@ -149,7 +149,7 @@ function set_tpl_flag($reconcile_id)
 	$reconcile_value =  ("'".$_POST['bank_date'] ."'");
 	
 	update_reconciled_values($reconcile_id, $reconcile_value, $_POST['reconcile_date'],
-		input_num('end_balance'), $_POST['bank_account']);
+		RequestService::inputNumStatic('end_balance'), $_POST['bank_account']);
 		
 	$Ajax->activate('reconciled');
 	$Ajax->activate('difference');
@@ -245,8 +245,8 @@ amount_cells_ex("", "beg_balance", 15);
 
 amount_cells_ex("", "end_balance", 15);
 
-$reconciled = input_num('reconciled');
-$difference = input_num("end_balance") - input_num("beg_balance") - $reconciled;
+$reconciled = RequestService::inputNumStatic('reconciled');
+$difference = RequestService::inputNumStatic("end_balance") - RequestService::inputNumStatic("beg_balance") - $reconciled;
 
 amount_cell($total);
 amount_cell($reconciled, false, '', "reconciled");

@@ -44,7 +44,7 @@ function can_process()
 if ($Mode=='ADD_ITEM' && can_process())
 {
 	add_sales_type($_POST['sales_type'], check_value('tax_included'),
-	    input_num('factor'));
+	    RequestService::inputNumStatic('factor'));
 	display_notification(_('New sales type has been added'));
 	$Mode = 'RESET';
 }
@@ -55,7 +55,7 @@ if ($Mode=='UPDATE_ITEM' && can_process())
 {
 
 	update_sales_type($selected_id, $_POST['sales_type'], check_value('tax_included'),
-	     input_num('factor'));
+	     RequestService::inputNumStatic('factor'));
 	display_notification(_('Selected sales type has been updated'));
 	$Mode = 'RESET';
 }

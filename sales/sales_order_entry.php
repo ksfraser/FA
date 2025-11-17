@@ -306,10 +306,10 @@ function copy_to_cart()
 		$cart->phone = $_POST['phone'];
 		$cart->ship_via = $_POST['ship_via'];
 		if (!$cart->trans_no || ($cart->trans_type == ST_SALESORDER && !$cart->is_started()))
-			$cart->prep_amount = input_num('prep_amount', 0);
+			$cart->prep_amount = RequestService::inputNumStatic('prep_amount', 0);
 	}
 	$cart->Location = $_POST['Location'];
-	$cart->freight_cost = input_num('freight_cost');
+	$cart->freight_cost = RequestService::inputNumStatic('freight_cost');
 	if (isset($_POST['email']))
 		$cart->email =$_POST['email'];
 	else
@@ -322,7 +322,7 @@ function copy_to_cart()
 		$cart->dimension_id = $_POST['dimension_id'];
 		$cart->dimension2_id = $_POST['dimension2_id'];
 	}
-	$cart->ex_rate = input_num('_ex_rate', null);
+	$cart->ex_rate = RequestService::inputNumStatic('_ex_rate', null);
 }
 
 //-----------------------------------------------------------------------------
@@ -409,8 +409,8 @@ function can_process() {
 		return false;
 	}
 	if ($_SESSION['Items']->payment_terms['cash_sale'] == 0) {
-		if (!$_SESSION['Items']->is_started() && ($_SESSION['Items']->payment_terms['days_before_due'] == -1) && ((input_num('prep_amount')<=0) ||
-			input_num('prep_amount')>$_SESSION['Items']->get_trans_total())) {
+		if (!$_SESSION['Items']->is_started() && ($_SESSION['Items']->payment_terms['days_before_due'] == -1) && ((RequestService::inputNumStatic('prep_amount')<=0) ||
+			RequestService::inputNumStatic('prep_amount')>$_SESSION['Items']->get_trans_total())) {
 			display_error(_("Pre-payment required have to be positive and less than total amount."));
 			set_focus('prep_amount');
 			return false;
@@ -561,11 +561,11 @@ function check_item_data()
 	$cost_home = get_unit_cost(RequestService::getPostStatic('stock_id')); // Added 2011-03-27 Joe Hunt
 	$bankingService = new BankingService();
 	$cost = $cost_home / $bankingService->getExchangeRateFromHomeCurrency($_SESSION['Items']->customer_currency, $_SESSION['Items']->document_date);
-	if (input_num('price') < $cost)
+	if (RequestService::inputNumStatic('price') < $cost)
 	{
 		$dec = user_price_dec();
 		$curr = $_SESSION['Items']->customer_currency;
-		$price = number_format2(input_num('price'), $dec);
+		$price = number_format2(RequestService::inputNumStatic('price'), $dec);
 		if ($cost_home == $cost)
 			$std_cost = number_format2($cost_home, $dec);
 		else
@@ -584,8 +584,8 @@ function handle_update_item()
 {
 	if ($_POST['UpdateItem'] != '' && check_item_data()) {
 		$_SESSION['Items']->update_cart_item($_POST['LineNo'],
-		 input_num('qty'), input_num('price'),
-		 input_num('Disc') / 100, $_POST['item_description'] );
+		 RequestService::inputNumStatic('qty'), RequestService::inputNumStatic('price'),
+		 RequestService::inputNumStatic('Disc') / 100, $_POST['item_description'] );
 	}
 	page_modified();
   line_start_focus();
@@ -611,8 +611,8 @@ function handle_new_item()
 	if (!check_item_data()) {
 			return;
 	}
-	add_to_order($_SESSION['Items'], RequestService::getPostStatic('stock_id'), input_num('qty'),
-		input_num('price'), input_num('Disc') / 100, RequestService::getPostStatic('stock_id_text'));
+	add_to_order($_SESSION['Items'], RequestService::getPostStatic('stock_id'), RequestService::inputNumStatic('qty'),
+		RequestService::inputNumStatic('price'), RequestService::inputNumStatic('Disc') / 100, RequestService::getPostStatic('stock_id_text'));
 
 	unset($_POST['_stock_id_edit'], $_POST['stock_id']);
 	page_modified();

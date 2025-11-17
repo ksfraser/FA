@@ -23,7 +23,7 @@ class PostIntegerValidator
             return false;
         }
         
-        $num = \input_num($postname);
+        $num = \RequestService::inputNumStatic($postname);
         if (!is_int($num)) {
             return false;
         }

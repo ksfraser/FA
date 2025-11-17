@@ -102,13 +102,13 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		if ($selected_id != -1) 
 		{
 			update_quick_entry($selected_id, $_POST['description'], $_POST['type'],
-				 input_num('base_amount'), $_POST['base_desc'], RequestService::getPostStatic('bal_type', 0), $_POST['usage']);
+				 RequestService::inputNumStatic('base_amount'), $_POST['base_desc'], RequestService::getPostStatic('bal_type', 0), $_POST['usage']);
 			display_notification(_('Selected quick entry has been updated'));
 		} 
 		else 
 		{
 			add_quick_entry($_POST['description'], $_POST['type'], 
-				input_num('base_amount'), $_POST['base_desc'], RequestService::getPostStatic('bal_type', 0), $_POST['usage']);
+				RequestService::inputNumStatic('base_amount'), $_POST['base_desc'], RequestService::getPostStatic('bal_type', 0), $_POST['usage']);
 			display_notification(_('New quick entry has been added'));
 		}
 		$Mode = 'RESET';
@@ -123,13 +123,13 @@ if ($Mode2=='ADD_ITEM2' || $Mode2=='UPDATE_ITEM2')
 	}
 	elseif ($selected_id2 != -1) 
 	{
-		update_quick_entry_line($selected_id2, $selected_id, $_POST['actn'], $_POST['dest_id'], input_num('amount', 0), 
+		update_quick_entry_line($selected_id2, $selected_id, $_POST['actn'], $_POST['dest_id'], RequestService::inputNumStatic('amount', 0), 
 			$_POST['dimension_id'], $_POST['dimension2_id'], RequestService::getPostStatic('memo'));
 		display_notification(_('Selected quick entry line has been updated'));
 	} 
 	else 
 	{
-		add_quick_entry_line($selected_id, $_POST['actn'], $_POST['dest_id'], input_num('amount', 0), 
+		add_quick_entry_line($selected_id, $_POST['actn'], $_POST['dest_id'], RequestService::inputNumStatic('amount', 0), 
 			$_POST['dimension_id'], $_POST['dimension2_id'], RequestService::getPostStatic('memo'));
 		display_notification(_('New quick entry line has been added'));
 	}

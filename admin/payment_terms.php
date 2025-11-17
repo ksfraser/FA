@@ -64,7 +64,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if ($input_error != 1)
 	{
 		$type = RequestService::getPostStatic('type');
-		$days = input_num('DayNumber');
+		$days = RequestService::inputNumStatic('DayNumber');
 		$from_now = ($type != PTT_FOLLOWING);
 		if ($type == PTT_CASH)
 			$days = 0;

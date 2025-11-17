@@ -89,8 +89,8 @@ function handle_submit(&$selected_id)
 	{
 		update_customer($_POST['customer_id'], $_POST['CustName'], $_POST['cust_ref'], $_POST['address'],
 			$_POST['tax_id'], $_POST['curr_code'], $_POST['dimension_id'], $_POST['dimension2_id'],
-			$_POST['credit_status'], $_POST['payment_terms'], input_num('discount') / 100, input_num('pymt_discount') / 100,
-			input_num('credit_limit'), $_POST['sales_type'], $_POST['notes']);
+			$_POST['credit_status'], $_POST['payment_terms'], RequestService::inputNumStatic('discount') / 100, RequestService::inputNumStatic('pymt_discount') / 100,
+			RequestService::inputNumStatic('credit_limit'), $_POST['sales_type'], $_POST['notes']);
 
 		update_record_status($_POST['customer_id'], $_POST['inactive'],
 			'debtors_master', 'debtor_no');
@@ -104,8 +104,8 @@ function handle_submit(&$selected_id)
 		begin_transaction();
 		add_customer($_POST['CustName'], $_POST['cust_ref'], $_POST['address'],
 			$_POST['tax_id'], $_POST['curr_code'], $_POST['dimension_id'], $_POST['dimension2_id'],
-			$_POST['credit_status'], $_POST['payment_terms'], input_num('discount') / 100, input_num('pymt_discount') / 100,
-			input_num('credit_limit'), $_POST['sales_type'], $_POST['notes']);
+			$_POST['credit_status'], $_POST['payment_terms'], RequestService::inputNumStatic('discount') / 100, RequestService::inputNumStatic('pymt_discount') / 100,
+			RequestService::inputNumStatic('credit_limit'), $_POST['sales_type'], $_POST['notes']);
 
 		$selected_id = $_POST['customer_id'] = db_insert_id();
          

@@ -104,7 +104,7 @@ function can_process($wo_details)
 		return false;
 	}
 	// don't produce more that required. Otherwise change the Work Order.
-	if (input_num('quantity') > ($wo_details["units_reqd"] - $wo_details["units_issued"]))
+	if (RequestService::inputNumStatic('quantity') > ($wo_details["units_reqd"] - $wo_details["units_issued"]))
 	{
 		display_error(_("The production exceeds the quantity needed. Please change the Work Order."));
 		set_focus('quantity');
@@ -113,7 +113,7 @@ function can_process($wo_details)
 	// if unassembling we need to check the qoh
 	if (($_POST['ProductionType'] == 0) && !$SysPrefs->allow_negative_stock())
 	{
-		if (check_negative_stock($wo_details["stock_id"], -input_num('quantity'), $wo_details["loc_code"], $_POST['date_']))
+		if (check_negative_stock($wo_details["stock_id"], -RequestService::inputNumStatic('quantity'), $wo_details["loc_code"], $_POST['date_']))
 		{
 			display_error(_("The unassembling cannot be processed because there is insufficient stock."));
 			set_focus('quantity');
@@ -131,7 +131,7 @@ function can_process($wo_details)
 			if ($row['mb_flag'] == 'D') // service, non stock
 				continue;
 
-			if (check_negative_stock($row["stock_id"], -$row['units_req'] * input_num('quantity'), $row["loc_code"], $_POST['date_']))
+			if (check_negative_stock($row["stock_id"], -$row['units_req'] * RequestService::inputNumStatic('quantity'), $row["loc_code"], $_POST['date_']))
 			{
     			display_error( _("The production cannot be processed because a required item would cause a negative inventory balance :") .
     				" " . $row['stock_id'] . " - " .  $row['description']);
@@ -160,7 +160,7 @@ if ((isset($_POST['Process']) || isset($_POST['ProcessAndClose'])) && can_proces
 	if ($_POST['ProductionType'] == 0)
 		$_POST['quantity'] = -$_POST['quantity'];
 
-	 $id = work_order_produce($_POST['selected_id'], $_POST['ref'], input_num('quantity'),
+	 $id = work_order_produce($_POST['selected_id'], $_POST['ref'], RequestService::inputNumStatic('quantity'),
 			$_POST['date_'], $_POST['memo_'], $close_wo);
 
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=".$_POST['selected_id']."&date=".$_POST['date_']);

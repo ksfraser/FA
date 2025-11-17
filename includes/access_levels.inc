@@ -352,5 +352,5 @@ function access_num($name, $dflt=null)
 	if (!check_edit_access($name))
 		return $dflt;
 	else
-		return input_num($name, $dflt);
+		return RequestService::inputNumStatic($name, $dflt);
 }

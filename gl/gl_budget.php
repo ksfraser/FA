@@ -34,7 +34,7 @@ if (isset($_POST['add']) || isset($_POST['delete']))
 	for ($i = 0, $da = $_POST['begin']; DateService::date1GreaterDate2Static($_POST['end'], $da); $i++)
 	{
 		if (isset($_POST['add']))
-			add_update_gl_budget_trans($da, $_POST['account'], $_POST['dim1'], $_POST['dim2'], input_num('amount'.$i));
+			add_update_gl_budget_trans($da, $_POST['account'], $_POST['dim1'], $_POST['dim2'], RequestService::inputNumStatic('amount'.$i));
 		else
 			delete_gl_budget_trans($da, $_POST['account'], $_POST['dim1'], $_POST['dim2']);
 		$da = DateService::addMonthsStatic($da, 1);
@@ -116,7 +116,7 @@ if (db_has_gl_accounts())
 			$btotal += $d;
 		}
 		$lamount = get_gl_trans_from_to(DateService::addYearsStatic($date_, -1), DateService::addYearsStatic(DateService::endMonthStatic($date_), -1), $_POST['account'], $_POST['dim1'], $_POST['dim2']);
-		$total += input_num('amount'.$i);
+		$total += RequestService::inputNumStatic('amount'.$i);
 		$ltotal += $lamount;
 		label_cell(number_format2($lamount, 0), "nowrap align=right");
 		$date_ = DateService::addMonthsStatic($date_, 1);

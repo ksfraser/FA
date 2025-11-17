@@ -286,7 +286,7 @@ function check_trans()
 	if (!db_has_currency_rates(get_bank_account_currency($_POST['bank_account']), $_POST['date_'], true))
 		$input_error = 1;
 
-	if (isset($_POST['settled_amount']) && in_array(RequestService::getPostStatic('PayType'), array(PT_SUPPLIER, PT_CUSTOMER)) && (input_num('settled_amount') <= 0)) {
+	if (isset($_POST['settled_amount']) && in_array(RequestService::getPostStatic('PayType'), array(PT_SUPPLIER, PT_CUSTOMER)) && (RequestService::inputNumStatic('settled_amount') <= 0)) {
 		display_error(_("Settled amount have to be positive number."));
 		set_focus('person_id');
 		$input_error = 1;
@@ -301,13 +301,13 @@ if (isset($_POST['Process']) && !check_trans())
 	$_SESSION['pay_items'] = &$_SESSION['pay_items'];
 	$new = $_SESSION['pay_items']->order_id == 0;
 
-	add_new_exchange_rate(get_bank_account_currency(RequestService::getPostStatic('bank_account')), RequestService::getPostStatic('date_'), input_num('_ex_rate'));
+	add_new_exchange_rate(get_bank_account_currency(RequestService::getPostStatic('bank_account')), RequestService::getPostStatic('date_'), RequestService::inputNumStatic('_ex_rate'));
 
 	$trans = write_bank_transaction(
 		$_SESSION['pay_items']->trans_type, $_SESSION['pay_items']->order_id, $_POST['bank_account'],
 		$_SESSION['pay_items'], $_POST['date_'],
 		$_POST['PayType'], $_POST['person_id'], RequestService::getPostStatic('PersonDetailID'),
-		$_POST['ref'], $_POST['memo_'], true, input_num('settled_amount', null));
+		$_POST['ref'], $_POST['memo_'], true, RequestService::inputNumStatic('settled_amount', null));
 
 	$trans_type = $trans[0];
    	$trans_no = $trans[1];
@@ -337,7 +337,7 @@ function check_item_data()
 		set_focus('amount');
 		return false;
 	}
-	if (isset($_POST['_ex_rate']) && input_num('_ex_rate') <= 0)
+	if (isset($_POST['_ex_rate']) && RequestService::inputNumStatic('_ex_rate') <= 0)
 	{
 		display_error( _("The exchange rate cannot be zero or a negative number."));
 		set_focus('_ex_rate');
@@ -351,7 +351,7 @@ function check_item_data()
 
 function handle_update_item()
 {
-	$amount = ($_SESSION['pay_items']->trans_type==ST_BANKPAYMENT ? 1:-1) * input_num('amount');
+	$amount = ($_SESSION['pay_items']->trans_type==ST_BANKPAYMENT ? 1:-1) * RequestService::inputNumStatic('amount');
     if($_POST['UpdateItem'] != "" && check_item_data())
     {
     	$_SESSION['pay_items']->update_gl_item($_POST['Index'], $_POST['code_id'], 
@@ -374,7 +374,7 @@ function handle_new_item()
 {
 	if (!check_item_data())
 		return;
-	$amount = ($_SESSION['pay_items']->trans_type==ST_BANKPAYMENT ? 1:-1) * input_num('amount');
+	$amount = ($_SESSION['pay_items']->trans_type==ST_BANKPAYMENT ? 1:-1) * RequestService::inputNumStatic('amount');
 
 	$_SESSION['pay_items']->add_gl_item($_POST['code_id'], $_POST['dimension_id'],
 		$_POST['dimension2_id'], $amount, $_POST['LineMemo']);
@@ -396,7 +396,7 @@ if (isset($_POST['CancelItemChanges']) || isset($_POST['Index']))
 
 if (isset($_POST['go']))
 {
-	display_quick_entries($_SESSION['pay_items'], $_POST['person_id'], input_num('totamount'), 
+	display_quick_entries($_SESSION['pay_items'], $_POST['person_id'], RequestService::inputNumStatic('totamount'), 
 		$_SESSION['pay_items']->trans_type==ST_BANKPAYMENT ? QE_PAYMENT : QE_DEPOSIT);
 	$_POST['totamount'] = price_format(0); $Ajax->activate('totamount');
 	line_start_focus();

@@ -99,7 +99,7 @@ function copy_to_cn()
 	$cart = &$_SESSION['Items'];
 	$cart->Comments = $_POST['CreditText'];
 	$cart->document_date = $_POST['OrderDate'];
-	$cart->freight_cost = input_num('ChargeFreightCost');
+	$cart->freight_cost = RequestService::inputNumStatic('ChargeFreightCost');
 	$cart->Location = (isset($_POST["Location"]) ? $_POST["Location"] : "");
 	$cart->sales_type = $_POST['sales_type_id'];
 	if ($cart->trans_no == 0)
@@ -157,7 +157,7 @@ function can_process()
 		set_focus('branch_id');
 		return false;
 	} 
-	if ($_SESSION['Items']->count_items() == 0 && !input_num('ChargeFreightCost',0))
+	if ($_SESSION['Items']->count_items() == 0 && !RequestService::inputNumStatic('ChargeFreightCost',0))
 	{
 		display_error(_("You must enter at least one non empty item line."));
 		set_focus('AddItem');
@@ -239,8 +239,8 @@ function check_item_data()
 function handle_update_item()
 {
 	if ($_POST['UpdateItem'] != "" && check_item_data()) {
-		$_SESSION['Items']->update_cart_item($_POST['line_no'], input_num('qty'),
-			input_num('price'), input_num('Disc') / 100);
+		$_SESSION['Items']->update_cart_item($_POST['line_no'], RequestService::inputNumStatic('qty'),
+			RequestService::inputNumStatic('price'), RequestService::inputNumStatic('Disc') / 100);
 	}
     line_start_focus();
 }
@@ -261,8 +261,8 @@ function handle_new_item()
 	if (!check_item_data())
 		return;
 
-	add_to_order($_SESSION['Items'], $_POST['stock_id'], input_num('qty'),
-		input_num('price'), input_num('Disc') / 100);
+	add_to_order($_SESSION['Items'], $_POST['stock_id'], RequestService::inputNumStatic('qty'),
+		RequestService::inputNumStatic('price'), RequestService::inputNumStatic('Disc') / 100);
     line_start_focus();
 }
 //-----------------------------------------------------------------------------

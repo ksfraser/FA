@@ -70,7 +70,7 @@ function handle_submit(&$supplier_id)
 		update_supplier($_POST['supplier_id'], $_POST['supp_name'], $_POST['supp_ref'], $_POST['address'],
 			$_POST['supp_address'], $_POST['gst_no'],
 			$_POST['website'], $_POST['supp_account_no'], $_POST['bank_account'], 
-			input_num('credit_limit', 0), $_POST['dimension_id'], $_POST['dimension2_id'], $_POST['curr_code'],
+			RequestService::inputNumStatic('credit_limit', 0), $_POST['dimension_id'], $_POST['dimension2_id'], $_POST['curr_code'],
 			$_POST['payment_terms'], $_POST['payable_account'], $_POST['purchase_account'], $_POST['payment_discount_account'],
 			$_POST['notes'], $_POST['tax_group_id'], check_value('tax_included'));
 		update_record_status($_POST['supplier_id'], $_POST['inactive'],
@@ -83,7 +83,7 @@ function handle_submit(&$supplier_id)
 	{
 		add_supplier($_POST['supp_name'], $_POST['supp_ref'], $_POST['address'], $_POST['supp_address'],
 			$_POST['gst_no'], $_POST['website'], $_POST['supp_account_no'], $_POST['bank_account'], 
-			input_num('credit_limit',0), $_POST['dimension_id'], $_POST['dimension2_id'],
+			RequestService::inputNumStatic('credit_limit',0), $_POST['dimension_id'], $_POST['dimension2_id'],
 			$_POST['curr_code'], $_POST['payment_terms'], $_POST['payable_account'], $_POST['purchase_account'],
 			$_POST['payment_discount_account'], $_POST['notes'], $_POST['tax_group_id'], check_value('tax_included'));
 
