@@ -10,7 +10,7 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 // Modern OOP Services
-require_once(dirname(__FILE__) . "/../../includes/Services/InventoryService.php");
+require_once(dirname(__FILE__) . "/../../includes/InventoryService.php");
 use FA\Services\InventoryService;
 
 include_once($path_to_root . "/includes/ui.inc");

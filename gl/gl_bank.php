@@ -25,7 +25,7 @@ include_once($path_to_root . "/gl/includes/gl_ui.inc");
 include_once($path_to_root . "/admin/db/attachments_db.inc");
 
 // Modern OOP Services
-require_once($path_to_root . "/includes/Services/DateService.php");
+require_once($path_to_root . "/includes/DateService.php");
 use FA\Services\DateService;
 
 $js = '';

@@ -26,7 +26,7 @@ include_once($path_to_root . "/sales/includes/ui/sales_order_ui.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 
 // Modern OOP Services
-require_once($path_to_root . "/includes/Services/DateService.php");
+require_once($path_to_root . "/includes/DateService.php");
 use FA\Services\DateService;
 
 $js = "";

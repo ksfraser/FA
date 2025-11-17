@@ -22,7 +22,7 @@ include_once($path_to_root . "/admin/db/transactions_db.inc");
 include_once($path_to_root . "/admin/db/voiding_db.inc");
 
 // Modern OOP Services
-require_once($path_to_root . "/includes/Services/DateService.php");
+require_once($path_to_root . "/includes/DateService.php");
 use FA\Services\DateService;
 $js = "";
 if (user_use_date_picker())

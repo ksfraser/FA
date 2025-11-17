@@ -22,7 +22,7 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 include_once($path_to_root . "/includes/banking.inc");
 
 // Modern OOP Services
-require_once($path_to_root . "/includes/Services/DateService.php");
+require_once($path_to_root . "/includes/DateService.php");
 use FA\Services\DateService;
 
 $js = "";

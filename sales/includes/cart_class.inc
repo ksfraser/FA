@@ -22,7 +22,7 @@ include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 include_once($path_to_root . "/taxes/tax_calc.inc");
 
 // Modern OOP Services
-require_once($path_to_root . "/includes/Services/InventoryService.php");
+require_once($path_to_root . "/includes/InventoryService.php");
 use FA\Services\InventoryService;
 
 class Cart 

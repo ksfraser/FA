@@ -22,7 +22,7 @@ include_once($path_to_root . "/inventory/includes/stock_transfers_ui.inc");
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 
 // Modern OOP Services
-require_once($path_to_root . "/includes/Services/DateService.php");
+require_once($path_to_root . "/includes/DateService.php");
 use FA\Services\DateService;
 $js = "";
 if ($SysPrefs->use_popup_windows)

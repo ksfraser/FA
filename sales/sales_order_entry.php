@@ -29,7 +29,7 @@ include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 
 // Modern OOP Services
-require_once($path_to_root . "/includes/Services/BankingService.php");
+require_once($path_to_root . "/includes/BankingService.php");
 use FA\Services\BankingService;
 
 set_page_security( @$_SESSION['Items']->trans_type,

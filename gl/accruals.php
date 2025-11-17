@@ -21,7 +21,7 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/ui/items_cart.inc");
 
 // Modern OOP Services
-require_once($path_to_root . "/includes/Services/DateService.php");
+require_once($path_to_root . "/includes/DateService.php");
 use FA\Services\DateService;
 
 $js = get_js_open_window(800, 500);

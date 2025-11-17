@@ -26,7 +26,7 @@ include_once($path_to_root . "/taxes/tax_calc.inc");
 include_once($path_to_root . "/admin/db/shipping_db.inc");
 
 // Modern OOP Services
-require_once($path_to_root . "/includes/Services/DateService.php");
+require_once($path_to_root . "/includes/DateService.php");
 use FA\Services\DateService;
 
 $js = "";
