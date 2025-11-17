@@ -1,5 +1,71 @@
+# FrontAccounting Refactoring Project
+
+## Overview
+
+This project is undergoing a comprehensive refactoring to modernize the codebase using Object-Oriented Programming (OOP) principles and software engineering best practices. The goal is to transform the legacy procedural code into a maintainable, testable, and scalable system.
+
+## Objectives
+
+- **OOP Transformation**: Convert procedural code to object-oriented classes and structures.
+- **Test Coverage**: Ensure all classes and files have comprehensive unit test cases and integration test cases using PHPUnit.
+- **Best Practices**:
+  - **SOLID Principles**: Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion.
+  - **DRY (Don't Repeat Yourself)**: Eliminate code duplication.
+  - **DI (Dependency Injection)**: Inject dependencies for better testability and flexibility.
+  - **SRP (Single Responsibility Principle)**: Each class has one reason to change.
+  - **TDD (Test-Driven Development)**: Write tests before implementing code.
+  - **UML**: Document architecture with Unified Modeling Language diagrams.
+  - **PHPDoc**: Comprehensive documentation for all classes, methods, and properties.
+  - **PHPUnit**: Framework for unit and integration testing.
+- **MVC Separation**: Clearly separate Model, View, and Controller layers.
+- **Architectural Patterns**:
+  - **Repositories**: For data access abstraction.
+  - **Services**: For business logic encapsulation.
+  - **Handlers**: For processing requests and responses.
+  - **DAO/DTO/Models**: Data Access Objects, Data Transfer Objects, and Domain Models for data handling.
+- **Version Control**: Frequent `git add` and `git commit` with detailed change documentation to track progress incrementally.
+
+## Current Progress
+
+- Refactored view files (e.g., `view_dispatch.php`, `view_credit.php`, `view_invoice.php`) to use OOP HTML rendering with Ksfraser\HTML library.
+- Created models like `Dispatch`, `Invoice`, etc., with data loading and business logic.
+- Implemented views like `ViewDispatch`, `ViewInvoice`, etc., for rendering.
+- Added unit tests for models and views.
+- Enhanced documentation with PHPDoc and UML diagrams.
+
+## Structure
+
+- `includes/`: Core classes (Models, Views, Services, etc.)
+- `tests/`: PHPUnit test cases
+- `sales/view/`: Refactored view controllers
+- Other directories remain as per original structure until refactored.
+
+## How to Contribute
+
+1. Follow TDD: Write tests first.
+2. Implement code adhering to SOLID and other principles.
+3. Add PHPDoc and UML where applicable.
+4. Commit frequently with descriptive messages (e.g., "Refactor ViewDispatch to use DI and add unit tests").
+
+## Tools and Libraries
+
+- **PHPUnit**: For testing.
+- **Ksfraser\HTML**: For OOP HTML element composition.
+- **Git**: For version control.
+
+## Future Steps
+
+- Refactor remaining view files and controllers.
+- Implement repositories for database access.
+- Add services for complex business logic.
+- Ensure full test coverage.
+- Update documentation as architecture evolves.
+
+This refactoring aims to make FrontAccounting more robust, easier to maintain, and aligned with modern PHP development standards.
+
+---
+
 ![FrontAccounting ERP](./themes/default/images/logo_frontaccounting.jpg  "FrontAccounting ERP")
-===================
 
 FrontAccounting ERP is open source, web-based accounting software for small and medium enterprises.
 It supports double entry accounting providing both low level journal entry and user friendly, document based 
