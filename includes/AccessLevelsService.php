@@ -2,10 +2,12 @@
 
 namespace FA;
 
+use FA\Interfaces\SecurityRepositoryInterface;
+
 /**
  * Access Levels Service
  *
- * Manages security sections and areas for access control.
+ * Manages security sections and areas for access control with DI support.
  * Refactored from global arrays to OOP with SOLID principles.
  *
  * SOLID Principles:
@@ -13,7 +15,7 @@ namespace FA;
  * - Open/Closed: Can be extended for additional security features
  * - Liskov Substitution: Compatible with access interfaces
  * - Interface Segregation: Focused access methods
- * - Dependency Inversion: Depends on abstractions, not globals
+ * - Dependency Inversion: Depends on abstractions via DI
  *
  * DRY: Reuses access logic across the application
  * TDD: Developed with unit tests for regression prevention
@@ -22,18 +24,22 @@ namespace FA;
  * +---------------------+
  * | AccessLevelsService|
  * +---------------------+
- * | - security_sections: array|
- * | - security_areas: array|
+ * | - securityRepo     |
+ * | - security_sections|
+ * | - security_areas   |
  * +---------------------+
+ * | + __construct()    |
  * | + getSecuritySections()|
  * | + getSecurityAreas() |
- * | + isAreaAllowed(area,roles)|
+ * | + isAreaAllowed()  |
  * +---------------------+
  *
  * @package FA
  */
 class AccessLevelsService
 {
+    private ?SecurityRepositoryInterface $securityRepo;
+    
     private array $security_sections = [
         SS_SADMIN => _("System administration"),
         SS_SETUP => _("Company setup"),
@@ -64,6 +70,16 @@ class AccessLevelsService
         'SA_CREATECOMPANY' => [SS_SADMIN|1, _("Install/update companies")],
         // Add more as needed
     ];
+
+    /**
+     * Constructor with optional dependency injection
+     *
+     * @param SecurityRepositoryInterface|null $securityRepo Security repository
+     */
+    public function __construct(?SecurityRepositoryInterface $securityRepo = null)
+    {
+        $this->securityRepo = $securityRepo ?? new ProductionSecurityRepository();
+    }
 
     /**
      * Get security sections

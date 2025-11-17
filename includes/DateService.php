@@ -2,10 +2,13 @@
 
 namespace FA;
 
+use FA\Interfaces\FiscalYearRepositoryInterface;
+use FA\Interfaces\CalendarConverterInterface;
+
 /**
  * Date Service
  *
- * Handles date validation, parsing, and formatting.
+ * Handles date validation, parsing, and formatting with DI support.
  * Refactored from procedural functions to OOP with SOLID principles.
  *
  * SOLID Principles:
@@ -13,7 +16,7 @@ namespace FA;
  * - Open/Closed: Can be extended for additional date features
  * - Liskov Substitution: Compatible with date interfaces
  * - Interface Segregation: Focused date methods
- * - Dependency Inversion: Depends on abstractions, not globals
+ * - Dependency Inversion: Depends on abstractions via DI
  *
  * DRY: Reuses date logic across the application
  * TDD: Developed with unit tests for regression prevention
@@ -22,8 +25,10 @@ namespace FA;
  * +---------------------+
  * |   DateService      |
  * +---------------------+
- * |                    |
+ * | - fiscalYearRepo   |
+ * | - calendarConverter|
  * +---------------------+
+ * | + __construct()    |
  * | + __date(y,m,d)    |
  * | + isDate(d)        |
  * | + dateDiff(d1,d2)  |
@@ -34,6 +39,22 @@ namespace FA;
  */
 class DateService
 {
+    private ?FiscalYearRepositoryInterface $fiscalYearRepo;
+    private ?CalendarConverterInterface $calendarConverter;
+
+    /**
+     * Constructor with optional dependency injection
+     *
+     * @param FiscalYearRepositoryInterface|null $fiscalYearRepo Fiscal year repository
+     * @param CalendarConverterInterface|null $calendarConverter Calendar converter
+     */
+    public function __construct(
+        ?FiscalYearRepositoryInterface $fiscalYearRepo = null,
+        ?CalendarConverterInterface $calendarConverter = null
+    ) {
+        $this->fiscalYearRepo = $fiscalYearRepo ?? new ProductionFiscalYearRepository();
+        $this->calendarConverter = $calendarConverter ?? new ProductionCalendarConverter();
+    }
     /**
      * Format a date according to user preferences
      *
@@ -175,21 +196,21 @@ class DateService
 
     public function gregorianToJalali(int $g_y, int $g_m, int $g_d): array
     {
-        return \gregorian_to_jalali($g_y, $g_m, $g_d);
+        return $this->calendarConverter->gregorianToJalali($g_y, $g_m, $g_d);
     }
 
     public function jalaliToGregorian(int $j_y, int $j_m, int $j_d): array
     {
-        return \jalali_to_gregorian($j_y, $j_m, $j_d);
+        return $this->calendarConverter->jalaliToGregorian($j_y, $j_m, $j_d);
     }
 
     public function gregorianToIslamic(int $g_y, int $g_m, int $g_d): array
     {
-        return \gregorian_to_islamic($g_y, $g_m, $g_d);
+        return $this->calendarConverter->gregorianToIslamic($g_y, $g_m, $g_d);
     }
 
     public function islamicToGregorian(int $i_y, int $i_m, int $i_d): array
     {
-        return \islamic_to_gregorian($i_y, $i_m, $i_d);
+        return $this->calendarConverter->islamicToGregorian($i_y, $i_m, $i_d);
     }
 }

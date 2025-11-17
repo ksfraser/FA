@@ -236,6 +236,83 @@ Facade                 - Backward compatible API
 
 ## 🔄 IN PROGRESS - PHASE 2
 
+## 🎯 PHASE 2B: Dependency Injection Architecture - 50% Complete
+
+**Started**: Nov 17, 2025  
+**Status**: 🔄 IN PROGRESS (6/12 services complete)
+
+### ✅ Services with Full DI (6)
+
+1. **BankingService** ✅
+   - Interfaces: 4 (CompanyPreferences, ExchangeRateRepository, DisplayService, MathService)
+   - Mocks: 4
+   - Tests: 28 methods
+
+2. **DataChecks** ✅
+   - Interfaces: 2 (DatabaseQuery, ValidationErrorHandler)
+   - Architecture: 77 classes
+   - Mocks: 2
+   - Tests: Comprehensive
+
+3. **ErrorsService** ✅
+   - Interfaces: 3 (planned)
+   - Status: Complete implementation
+
+4. **TaxCalculationService** ✅
+   - Interfaces: 2
+   - Status: Complete
+
+5. **DateService** ✅ NEW
+   - Interfaces: 2 (FiscalYearRepository, CalendarConverter)
+   - Production: 2 implementations
+   - Mocks: 2
+   - Tests: 9 methods
+   - Calendar systems: 3 (Gregorian, Jalali, Islamic)
+
+6. **AccessLevelsService** ✅ NEW
+   - Interfaces: 1 (SecurityRepository)
+   - Production: 1 implementation
+   - Mocks: 1
+   - Tests: 10 methods
+
+### ⏳ Services Pending DI (6)
+
+7. **InventoryService** - Ready (ItemRepositoryInterface needed)
+8. **ReferencesService** - Ready (ReferenceRepositoryInterface needed)
+9. **AppEntriesService** - No DI needed (wraps array)
+10. **SalesDbService** - Ready (SalesRepositoryInterface created)
+11. **PurchasingDbService** - Ready (PurchasingRepositoryInterface created)
+12. **InventoryDbService** - Ready (InventoryRepositoryInterface created)
+
+### 📦 New Deliverables (Phase 2B)
+
+**Interfaces Created (7)**:
+1. FiscalYearRepositoryInterface (5 methods)
+2. CalendarConverterInterface (4 methods)
+3. ItemRepositoryInterface (3 methods)
+4. SecurityRepositoryInterface (4 methods)
+5. SalesRepositoryInterface (4 methods)
+6. PurchasingRepositoryInterface (5 methods)
+7. InventoryRepositoryInterface (4 methods)
+
+**Production Implementations (3)**:
+1. ProductionFiscalYearRepository
+2. ProductionCalendarConverter
+3. ProductionSecurityRepository
+
+**Mock Implementations (3)**:
+1. MockFiscalYearRepository
+2. MockCalendarConverter
+3. MockSecurityRepository
+
+**Tests Created (2 suites, 19 methods)**:
+1. DateServiceDITest (9 methods)
+2. AccessLevelsServiceDITest (10 methods)
+
+**Project Infrastructure**:
+1. composer.json (PSR-4 autoloading)
+2. phpunit.xml (test configuration)
+
 ### TODO: Refactor Legacy Database Functions
 - [ ] Create `DatabaseConnectionInterface` to abstract `db_query()`, `db_fetch_row()`, `db_escape()`
 - [ ] Implement `ProductionDatabaseConnection` wrapping legacy functions
