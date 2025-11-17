@@ -75,7 +75,7 @@ function create_new_po($trans_type, $trans_no)
 	$cart = new purch_order;
 	$_POST['OrderDate'] = new_doc_date();
 	if (!\FA\Services\DateService::isDateInFiscalYear($_POST['OrderDate']))
-		$_POST['OrderDate'] = end_fiscalyear();
+		$_POST['OrderDate'] = DateService::endFiscalYear();
 	$cart->due_date = $cart->orig_order_date = $_POST['OrderDate'];
 
 	$cart->trans_type = $trans_type;

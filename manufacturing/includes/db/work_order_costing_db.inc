@@ -95,7 +95,7 @@ function update_material_cost($stock_id, $qty, $unit_cost, $date)
 		$cart->tran_date = $cart->doc_date = $cart->event_date = $date;
 
 		if (!DateService::isDateInFiscalYear($cart->tran_date))
-			$cart->tran_date = end_fiscalyear();
+			$cart->tran_date = DateService::endFiscalYear();
 
 		$cart->reference = $Refs->get_next(ST_COSTUPDATE, null, $cart->tran_date);
 

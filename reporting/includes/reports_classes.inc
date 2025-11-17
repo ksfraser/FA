@@ -194,7 +194,7 @@ class BoxReports
 						if ($type == 'DATEBEGIN')
 							$date = \FA\Services\DateService::beginFiscalYear();
 						elseif ($type == 'DATEEND')
-							$date = end_fiscalyear();
+							$date = DateService::endFiscalYear();
 						else
 							$date = Today();
 						if ($type == 'DATEBEGINM')

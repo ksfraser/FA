@@ -118,7 +118,7 @@ function gl_payment_controls($trans_no)
 	if (!isset($_POST['DatePaid'])) { // init page
 		$_POST['DatePaid'] = new_doc_date();
 		if (!is_date_in_fiscalyear($_POST['DatePaid']))
-			$_POST['DatePaid'] = end_fiscalyear();
+			$_POST['DatePaid'] = DateService::endFiscalYear();
 	}
     date_row(_("Transfer Date:"), 'DatePaid', '', true, 0, 0, 0, null, true);
 

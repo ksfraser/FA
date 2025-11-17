@@ -38,7 +38,7 @@ function read_supplier_details_to_trans(&$supp_trans, $supplier_id)
 		$supp_trans->tran_date = Today();
 
 		if (!\FA\Services\DateService::isDateInFiscalYear($supp_trans->tran_date))
-			$supp_trans->tran_date = end_fiscalyear();
+			$supp_trans->tran_date = DateService::endFiscalYear();
 	}
 
     $supp_trans->tax_included = $myrow['tax_included'];

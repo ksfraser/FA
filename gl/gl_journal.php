@@ -163,7 +163,7 @@ function create_cart($type=0, $trans_no=0)
 	} else {
 		$cart->tran_date = $cart->doc_date = $cart->event_date = new_doc_date();
 		if (!is_date_in_fiscalyear($cart->tran_date))
-			$cart->tran_date = end_fiscalyear();
+			$cart->tran_date = DateService::endFiscalYear();
 		$cart->reference = $Refs->get_next(ST_JOURNAL, null, $cart->tran_date);
 	}
 

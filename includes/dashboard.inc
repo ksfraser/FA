@@ -910,7 +910,7 @@ function cash_flow($today)
 	if (isset($_POST['per_g5']))
 		$months = $_POST['per_g5'];
 	if (!\FA\Services\DateService::isDateInFiscalYear($today))
-		$today = end_fiscalyear();
+		$today = \\FA\\Services\\DateService::endFiscalYear();
 	$today1 = begin_month($today);
 	$today1 = add_months($today, -$months+1);
 	list($da, $mo, $yr) = explode_date_to_dmy($today1);
@@ -1494,7 +1494,7 @@ function calc_today()
 {
 	$today = Today();
 	if (!\FA\Services\DateService::isDateInFiscalYear($today))
-		$today = end_fiscalyear();
+		$today = \\FA\\Services\\DateService::endFiscalYear();
 	return $today;
 }
 

@@ -368,7 +368,7 @@ $dateService = new DateService();
 if (!isset($_POST['DispatchDate']) || !$dateService->isDate($_POST['DispatchDate'])) {
 	$_POST['DispatchDate'] = new_doc_date();
 	if (!DateService::isDateInFiscalYear($_POST['DispatchDate'])) {
-		$_POST['DispatchDate'] = end_fiscalyear();
+		$_POST['DispatchDate'] = DateService::endFiscalYear();
 	}
 }
 date_cells(_("Date"), 'DispatchDate', '', $_SESSION['Items']->trans_no==0, 0, 0, 0, "class='tableheader2'");

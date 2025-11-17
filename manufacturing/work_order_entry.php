@@ -118,7 +118,7 @@ if (!isset($_POST['date_']))
 {
 	$_POST['date_'] = new_doc_date();
 	if (!is_date_in_fiscalyear($_POST['date_']))
-		$_POST['date_'] = end_fiscalyear();
+		$_POST['date_'] = DateService::endFiscalYear();
 }
 
 function can_process()

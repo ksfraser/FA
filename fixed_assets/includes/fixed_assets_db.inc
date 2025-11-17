@@ -22,13 +22,13 @@ function process_fixed_asset_depreciation($stock_id, $gl_rows, $refline, $memo_)
 
   $date_ = Today();
   if (!\FA\Services\DateService::isDateInFiscalYear($date_))
-    $date_ = end_fiscalyear();
+    $date_ = DateService::endFiscalYear();
 
   $stock_gl_code = get_stock_gl_code($stock_id);
 
   $cart = new items_cart(ST_JOURNAL);
   $cart->tran_date = $cart->doc_date = $cart->event_date = $date_;
-  $cart->tran_date = end_fiscalyear();
+  $cart->tran_date = DateService::endFiscalYear();
   $cart->reference = $Refs->get_next(ST_JOURNAL, $refline, $cart->tran_date, $date_);
 
   $value_of_change = 0;

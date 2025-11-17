@@ -91,7 +91,7 @@ function handle_new_order()
     $_SESSION['adj_items']->fixed_asset = isset($_GET['FixedAsset']);
 	$_POST['AdjDate'] = new_doc_date();
 	if (!DateService::isDateInFiscalYear($_POST['AdjDate']))
-		$_POST['AdjDate'] = end_fiscalyear();
+		$_POST['AdjDate'] = DateService::endFiscalYear();
 	$_SESSION['adj_items']->tran_date = $_POST['AdjDate'];	
 }
 

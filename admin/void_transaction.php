@@ -335,7 +335,7 @@ if (!isset($_POST['date_']))
 {
 	$_POST['date_'] = Today();
 	if (!is_date_in_fiscalyear($_POST['date_']))
-		$_POST['date_'] = end_fiscalyear();
+		$_POST['date_'] = DateService::endFiscalYear();
 }		
 	
 if (isset($_POST['ProcessVoiding']))

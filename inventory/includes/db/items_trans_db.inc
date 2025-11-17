@@ -47,7 +47,7 @@ function stock_cost_update($stock_id, $material_cost, $labour_cost, $overhead_co
 
    	$date_ = Today();
 	if (!DateService::isDateInFiscalYear($date_))
-		$date_ = end_fiscalyear();
+		$date_ = DateService::endFiscalYear();
 
 	if ($qoh > 0)
 	{
@@ -63,7 +63,7 @@ function stock_cost_update($stock_id, $material_cost, $labour_cost, $overhead_co
 			$cart = new items_cart(ST_COSTUPDATE);
 			$cart->tran_date = $cart->doc_date = $cart->event_date = $date_;
 			if (!DateService::isDateInFiscalYear($cart->tran_date))
-				$cart->tran_date = end_fiscalyear();
+				$cart->tran_date = DateService::endFiscalYear();
 			$cart->reference = $Refs->get_next(ST_COSTUPDATE, $refline, $cart->tran_date, $date_);
  
 			if (empty($memo_))

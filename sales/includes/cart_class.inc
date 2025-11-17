@@ -253,7 +253,7 @@ class Cart
 			  $this->customer_id = '';
 			$this->document_date = new_doc_date();
 			if (!DateService::isDateInFiscalYear($this->document_date))
-				$this->document_date = end_fiscalyear();
+				$this->document_date = DateService::endFiscalYear();
 			$this->reference = $Refs->get_next($this->trans_type, null, array('date' => Today(),
 				'customer' => $this->customer_id));
 			if ($type != ST_SALESORDER && $type != ST_SALESQUOTE) // Added 2.1 Joe Hunt 2008-11-12

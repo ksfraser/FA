@@ -320,7 +320,7 @@ function adjust_deliveries($stock_id, $material_cost, $to)
 		$cart = new items_cart(ST_COSTUPDATE);
 		$cart->tran_date = $cart->doc_date = $cart->event_date = $to;
 		if (!\FA\Services\DateService::isDateInFiscalYear($cart->tran_date))
-			$cart->tran_date = end_fiscalyear();
+			$cart->tran_date = DateService::endFiscalYear();
 		$cart->reference = $Refs->get_next(ST_COSTUPDATE, null, $cart->tran_date, $to);
 
 		$cart->memo_ = _("Cost was ") . $old_cost. _(" changed to ") . $new_cost . _(" for item ")."'$stock_id'";

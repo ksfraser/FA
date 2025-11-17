@@ -54,7 +54,7 @@ if (!isset($_POST['DatePaid']))
 {
 	$_POST['DatePaid'] = new_doc_date();
 	if (!DateService::isDateInFiscalYear($_POST['DatePaid']))
-		$_POST['DatePaid'] = end_fiscalyear();
+		$_POST['DatePaid'] = DateService::endFiscalYear();
 }
 
 if (isset($_POST['_DatePaid_changed'])) {

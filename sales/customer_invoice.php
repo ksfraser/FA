@@ -485,7 +485,7 @@ $dateService = new DateService();
 if (!isset($_POST['InvoiceDate']) || !$dateService->isDate($_POST['InvoiceDate'])) {
 	$_POST['InvoiceDate'] = new_doc_date();
 	if (!DateService::isDateInFiscalYear($_POST['InvoiceDate'])) {
-		$_POST['InvoiceDate'] = end_fiscalyear();
+		$_POST['InvoiceDate'] = DateService::endFiscalYear();
 	}
 }
 

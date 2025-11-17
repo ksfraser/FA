@@ -97,7 +97,7 @@ if (!isset($_POST['customer_id'])) {
 if (!isset($_POST['DateBanked'])) {
 	$_POST['DateBanked'] = new_doc_date();
 	if (!DateService::isDateInFiscalYear($_POST['DateBanked'])) {
-		$_POST['DateBanked'] = end_fiscalyear();
+		$_POST['DateBanked'] = DateService::endFiscalYear();
 	}
 }
 

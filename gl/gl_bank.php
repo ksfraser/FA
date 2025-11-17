@@ -207,7 +207,7 @@ function create_cart($type, $trans_no)
 		$cart->reference = $Refs->get_next($cart->trans_type, null, $cart->tran_date);
 		$cart->tran_date = new_doc_date();
 		if (!is_date_in_fiscalyear($cart->tran_date))
-			$cart->tran_date = end_fiscalyear();
+			$cart->tran_date = DateService::endFiscalYear();
 	}
 
 	$_POST['memo_'] = $cart->memo_;
