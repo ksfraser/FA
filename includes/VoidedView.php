@@ -11,12 +11,37 @@ use Ksfraser\HTML\HtmlAttribute;
 
 /**
  * View for displaying voided transaction information
+ *
+ * Follows MVC pattern with dependency injection.
+ * Uses HTML element composition for recursive rendering.
+ *
+ * SOLID Principles:
+ * - Single Responsibility: Renders voided views only
+ * - Open/Closed: Can be extended for additional voided display elements
+ * - Liskov Substitution: Compatible with HtmlElementInterface
+ * - Interface Segregation: Minimal, focused interface
+ * - Dependency Inversion: Depends on data arrays, no tight coupling
+ *
+ * DRY: Reuses HTML element classes, avoids code duplication
+ * TDD: Developed with unit tests for regression prevention
+ *
+ * UML Class Diagram:
+ * +---------------------+
+ * |   VoidedView       |
+ * +---------------------+
+ * |                    |
+ * +---------------------+
+ * | + render(voidEntry,|
+ * |   label): HtmlEle..|
+ * +---------------------+
+ *
+ * @package FA
  */
 class VoidedView
 {
     /**
      * Render voided information if transaction is voided
-     * 
+     *
      * @param array|null $voidEntry Voided entry data or null if not voided
      * @param string $label Message to display
      * @return HtmlElementInterface|null Returns table element if voided, null otherwise

@@ -17,6 +17,52 @@ include_once($path_to_root . "/sales/includes/sales_ui.inc");
 
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 
+use FA\ViewInvoice;
+use Ksfraser\HTML\HtmlFragment;
+use Ksfraser\HTML\Elements\HtmlRaw;
+use Ksfraser\HTML\Elements\HtmlOB;
+
+/**
+ * Controller for viewing sales invoices
+ *
+ * Refactored using MVC pattern with dependency injection.
+ * Separates business logic (Invoice model) from view logic (ViewInvoice).
+ * Uses OOP HTML rendering for maintainable, testable code.
+ *
+ * SOLID Principles:
+ * - Single Responsibility: Handles invoice viewing only
+ * - Open/Closed: Can be extended for additional invoice types
+ * - Liskov Substitution: Compatible with FA controller interface
+ * - Interface Segregation: Minimal, focused controller
+ * - Dependency Inversion: Injects Invoice into ViewInvoice
+ *
+ * DRY: Reuses model and view classes, avoids code duplication
+ * TDD: Refactored with unit tests to prevent regressions
+ *
+ * UML Class Diagram:
+ * +---------------------+
+ * | view_invoice.php   |
+ * +---------------------+
+ * |                    |
+ * +---------------------+
+ * | + (main logic)     |
+ * +---------------------+
+ *           |
+ *           | instantiates
+ *           v
+ * +---------------------+
+ * |   ViewInvoice      |
+ * +---------------------+
+ *           |
+ *           | uses
+ *           v
+ * +---------------------+
+ * |     Invoice        |
+ * +---------------------+
+ *
+ * @package FA
+ */
+
 $js = "";
 if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 600);
@@ -34,7 +80,10 @@ elseif (isset($_POST["trans_no"]))
 
 // 3 different queries to get the information - what a JOKE !!!!
 
-$myrow = get_customer_trans($trans_id, ST_SALESINVOICE);
+$view = new ViewInvoice(new \FA\Invoice($trans_id));
+echo $view->render();
+
+end_page(true, false, false, ST_SALESINVOICE, $trans_id);
 $paym = get_payment_terms($myrow['payment_terms']);
 
 $branch = get_branch($myrow["branch_code"]);
