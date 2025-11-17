@@ -103,7 +103,7 @@ stock_items_list_cells(_("for item:"), 'SelectStockFromList', null, true);
 if (!$page_nested)
 	supplier_list_cells(_("Select a supplier: "), 'supplier_id', null, true, true);
 
-check_cells(_('Also closed:'), 'also_closed', check_value('also_closed'));
+check_cells(_('Also closed:'), 'also_closed', RequestService::checkValueStatic('also_closed'));
 
 submit_cells('SearchOrders', _("Search"),'',_('Select documents'), 'default');
 end_row();

@@ -202,9 +202,9 @@ if (RequestService::getPostStatic('Refresh')) {
 
 	$result = true;
 	foreach($exts as $i => $ext) {
-		if ($ext['package'] && ($ext['active'] ^ check_value('Active'.$i))) 
+		if ($ext['package'] && ($ext['active'] ^ RequestService::checkValueStatic('Active'.$i))) 
 		{
-			if (check_value('Active'.$i) && !check_src_ext_version($ext['version']))
+			if (RequestService::checkValueStatic('Active'.$i) && !check_src_ext_version($ext['version']))
 			{
 				display_warning(sprintf(_("Package '%s' is incompatible with current application version and cannot be activated.\n")
 					. _("Check Install/Activate page for newer package version."), $ext['name']));
@@ -215,7 +215,7 @@ if (RequestService::getPostStatic('Refresh')) {
 			if ($activated !== null)
 				$result &= $activated;
 			if ($activated || ($activated === null))
-				$exts[$i]['active'] = check_value('Active'.$i);
+				$exts[$i]['active'] = RequestService::checkValueStatic('Active'.$i);
 		}
 	}
 	write_extensions($exts, RequestService::getPostStatic('extset'));

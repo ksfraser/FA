@@ -37,7 +37,7 @@ function can_process()
 if ($Mode=='ADD_ITEM' && can_process())
 {
 	add_sales_point($_POST['name'], $_POST['location'], $_POST['account'],
-		check_value('cash'), check_value('credit'));
+		RequestService::checkValueStatic('cash'), RequestService::checkValueStatic('credit'));
 	display_notification(_('New point of sale has been added'));
 	$Mode = 'RESET';
 }
@@ -48,7 +48,7 @@ if ($Mode=='UPDATE_ITEM' && can_process())
 {
 
 	update_sales_point($selected_id, $_POST['name'], $_POST['location'],
-		$_POST['account'], check_value('cash'), check_value('credit'));
+		$_POST['account'], RequestService::checkValueStatic('cash'), RequestService::checkValueStatic('credit'));
 	display_notification(_('Selected point of sale has been updated'));
 	$Mode = 'RESET';
 }
@@ -76,7 +76,7 @@ if ($Mode == 'RESET')
 }
 //----------------------------------------------------------------------------------------------------
 
-$result = get_all_sales_points(check_value('show_inactive'));
+$result = get_all_sales_points(RequestService::checkValueStatic('show_inactive'));
 
 start_form();
 start_table(TABLESTYLE);
@@ -128,8 +128,8 @@ if ($selected_id != -1)
 
 text_row_ex(_("Point of Sale Name").':', 'name', 20, 30);
 if($cash) {
-	check_row(_('Allowed credit sale terms selection:'), 'credit', check_value('credit_sale'));
-	check_row(_('Allowed cash sale terms selection:'), 'cash',  check_value('cash_sale'));
+	check_row(_('Allowed credit sale terms selection:'), 'credit', RequestService::checkValueStatic('credit_sale'));
+	check_row(_('Allowed cash sale terms selection:'), 'cash',  RequestService::checkValueStatic('cash_sale'));
 	cash_accounts_list_row(_("Default cash account").':', 'account');
 } else {
 	hidden('credit', 1);

@@ -63,7 +63,7 @@ if (!$page_nested)
 {
 	if (RequestService::getPostStatic('fixed_asset') == 1) {
 		stock_items_list_cells(_("Item:"), 'stock_id', $_POST['stock_id'],
-			false, false, check_value('show_inactive'), false, array('fixed_asset' => true));
+			false, false, RequestService::checkValueStatic('show_inactive'), false, array('fixed_asset' => true));
 		check_cells(_("Show inactive:"), 'show_inactive', null, true);
 
 		if (RequestService::getPostStatic('_show_inactive_update')) {

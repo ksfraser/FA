@@ -105,7 +105,7 @@ if ($Mode == 'RESET')
 }
 //-----------------------------------------------------------------------------------
 
-$result = get_all_tax_types(check_value('show_inactive'));
+$result = get_all_tax_types(RequestService::checkValueStatic('show_inactive'));
 
 start_form();
 

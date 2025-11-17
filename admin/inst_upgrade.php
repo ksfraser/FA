@@ -37,7 +37,7 @@ if (RequestService::getPostStatic('Upgrade'))
 		$patch = @$installers[$site_status[$comp]['version']];
 		if ($patch)
 		{
-			if (!$patch->upgrade_company($comp, check_value('force')))
+			if (!$patch->upgrade_company($comp, RequestService::checkValueStatic('force')))
 				display_error(implode('<hr>', $patch->errors));
 			else
 				display_notification(_("Company upgraded successfully."));

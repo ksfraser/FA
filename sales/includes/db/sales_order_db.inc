@@ -538,7 +538,7 @@ function get_sql_for_sales_orders_view($trans_type, $trans_no, $filter,
 		if ($no_auto)
 		    $sql .= " AND sorder.reference != 'auto'";
 	}
-		if ($trans_type == ST_SALESQUOTE && !check_value('show_all'))
+		if ($trans_type == ST_SALESQUOTE && !RequestService::checkValueStatic('show_all'))
 			$sql .= " AND sorder.delivery_date >= '".date2sql(Today())."' AND line.qty_sent=0"; // show only outstanding, not realized quotes
 
 		//if ($selected_customer != -1)

@@ -159,7 +159,7 @@ function dec_amount($row, $amount)
 }
 
 $sql = get_sql_for_work_orders($outstanding_only, RequestService::getPostStatic('SelectedStockItem'), RequestService::getPostStatic('StockLocation'),
-	RequestService::getPostStatic('OrderId'), RequestService::getPostStatic('OrderNumber'), check_value('OverdueOnly'));
+	RequestService::getPostStatic('OrderId'), RequestService::getPostStatic('OrderNumber'), RequestService::checkValueStatic('OverdueOnly'));
 
 $cols = array(
 	_("#") => array('fun'=>'view_link', 'ord'=>''), 

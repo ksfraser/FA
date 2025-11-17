@@ -200,14 +200,14 @@ function invoice_prep_link($row)
 $id = find_submit('_chgtpl');
 if ($id != -1)
 {
-	sales_order_set_template($id, check_value('chgtpl'.$id));
+	sales_order_set_template($id, RequestService::checkValueStatic('chgtpl'.$id));
 	$Ajax->activate('orders_tbl');
 }
 
 if (isset($_POST['Update']) && isset($_POST['last'])) {
 	foreach($_POST['last'] as $id => $value)
-		if ($value != check_value('chgtpl'.$id))
-			sales_order_set_template($id, !check_value('chgtpl'.$id));
+		if ($value != RequestService::checkValueStatic('chgtpl'.$id))
+			sales_order_set_template($id, !RequestService::checkValueStatic('chgtpl'.$id));
 }
 
 $show_dates = !in_array($_POST['order_view_mode'], array('OutstandingOnly', 'InvoiceTemplates', 'DeliveryTemplates'));
@@ -274,7 +274,7 @@ end_table(1);
 //	Orders inquiry table
 //
 $sql = get_sql_for_sales_orders_view($trans_type, RequestService::getPostStatic('OrderNumber'), RequestService::getPostStatic('order_view_mode'),
-	RequestService::getPostStatic('SelectStockFromList'), RequestService::getPostStatic('OrdersAfterDate'), RequestService::getPostStatic('OrdersToDate'), RequestService::getPostStatic('OrderReference'), RequestService::getPostStatic('StockLocation'), RequestService::getPostStatic('customer_id'), check_value('show_voided'),
+	RequestService::getPostStatic('SelectStockFromList'), RequestService::getPostStatic('OrdersAfterDate'), RequestService::getPostStatic('OrdersToDate'), RequestService::getPostStatic('OrderReference'), RequestService::getPostStatic('StockLocation'), RequestService::getPostStatic('customer_id'), RequestService::checkValueStatic('show_voided'),
 	RequestService::getPostStatic('by_delivery'), RequestService::getPostStatic('no_auto'));
 
 if ($trans_type == ST_SALESORDER)

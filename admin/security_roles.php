@@ -172,7 +172,7 @@ start_form();
 
 start_table(TABLESTYLE_NOBORDER);
 start_row();
-security_roles_list_cells(_("Role:"). "&nbsp;", 'role', null, true, true, check_value('show_inactive'));
+security_roles_list_cells(_("Role:"). "&nbsp;", 'role', null, true, true, RequestService::checkValueStatic('show_inactive'));
 $new_role = RequestService::getPostStatic('role')=='';
 check_cells(_("Show inactive:"), 'show_inactive', null, true);
 end_row();
@@ -216,7 +216,7 @@ end_table(1);
 					_("On/off set of features")),
 			"class='tableheader2'", "class='tableheader'");
 		}
-		if (check_value('Section'.$m)) {
+		if (RequestService::checkValueStatic('Section'.$m)) {
 				alt_table_row_color($k);
 				check_cells($parms[1], 'Area'.$parms[0], null, 
 					false, '', "align='center'");

@@ -96,7 +96,7 @@ function handle_submit($selected_id)
 
 	$new = !isset($db_connections[$selected_id]);
 
-	if (check_value('def'))
+	if (RequestService::checkValueStatic('def'))
 		$def_coy = $selected_id;
 
 	$db_connections[$selected_id]['name'] = $_POST['name'];

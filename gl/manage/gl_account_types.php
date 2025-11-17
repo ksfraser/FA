@@ -124,9 +124,9 @@ if ($Mode == 'RESET')
 //-----------------------------------------------------------------------------------
 $filter_cid = (isset($_POST["cid"]));
 if ($filter_cid)
-	$result = get_account_types(check_value('show_inactive'), $_POST["cid"]);
+	$result = get_account_types(RequestService::checkValueStatic('show_inactive'), $_POST["cid"]);
 else
-	$result = get_account_types(check_value('show_inactive'));
+	$result = get_account_types(RequestService::checkValueStatic('show_inactive'));
 
 start_form();
 start_table(TABLESTYLE);

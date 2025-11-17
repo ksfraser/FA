@@ -43,7 +43,7 @@ if (isset($_POST['setprefs']))
 			'query_size' => 10, 'transaction_days' => 30, 'save_report_selections' => 0,
 			'def_print_destination' => 0, 'def_print_orientation' => 0)));
 
-		set_user_prefs(check_value(
+		set_user_prefs(RequestService::checkValueStatic(
 			array( 'show_gl', 'show_codes', 'show_hints', 'rep_popup',
 			  'graphic_links', 'sticky_doc_date', 'use_date_picker')));
 

@@ -117,14 +117,14 @@ function change_tpl_flag($reconcile_id)
 	global	$Ajax;
 
 	if (!check_date() 
-		&& check_value("rec_".$reconcile_id)) // temporary fix
+		&& RequestService::checkValueStatic("rec_".$reconcile_id)) // temporary fix
 		return false;
 
 	if (RequestService::getPostStatic('bank_date')=='')	// new reconciliation
 		$Ajax->activate('bank_date');
 
 	$_POST['bank_date'] = DateService::date2sqlStatic(RequestService::getPostStatic('reconcile_date'));
-	$reconcile_value = check_value("rec_".$reconcile_id) 
+	$reconcile_value = RequestService::checkValueStatic("rec_".$reconcile_id) 
 						? ("'".$_POST['bank_date'] ."'") : 'NULL';
 	
 	update_reconciled_values($reconcile_id, $reconcile_value, $_POST['reconcile_date'],
@@ -139,7 +139,7 @@ function set_tpl_flag($reconcile_id)
 {
 	global	$Ajax;
 
-	if (check_value("rec_".$reconcile_id))
+	if (RequestService::checkValueStatic("rec_".$reconcile_id))
 		return;
 
 	if (RequestService::getPostStatic('bank_date')=='')	// new reconciliation
@@ -183,7 +183,7 @@ if ($id != -1)
 if (isset($_POST['last']) && isset($_POST['Reconcile'])) {
 	set_focus('bank_date');
 	foreach($_POST['last'] as $id => $value)
-		if ($value != check_value('rec_'.$id))
+		if ($value != RequestService::checkValueStatic('rec_'.$id))
 			if(!change_tpl_flag($id)) break;
 
     $Ajax->activate('_page_body');

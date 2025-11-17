@@ -90,7 +90,7 @@ if ($Mode == 'RESET')
 }
 //-----------------------------------------------------------------------------------
 
-$result = get_all_credit_status(check_value('show_inactive'));
+$result = get_all_credit_status(RequestService::checkValueStatic('show_inactive'));
 
 start_form();
 start_table(TABLESTYLE, "width=40%");

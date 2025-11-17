@@ -46,7 +46,7 @@ start_form();
 	}
 
 	$settled = false;
-	if (check_value('ShowSettled'))
+	if (RequestService::checkValueStatic('ShowSettled'))
 		$settled = true;
 	$supplier_id = null;
 	if (isset($_POST['supplier_id']))

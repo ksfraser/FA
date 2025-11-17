@@ -207,7 +207,7 @@ if (RequestService::getPostStatic('RefreshInquiry') || list_updated('filterType'
 }
 //------------------------------------------------------------------------------------------------
 $sql = get_sql_for_customer_inquiry(RequestService::getPostStatic('TransAfterDate'), RequestService::getPostStatic('TransToDate'),
-	RequestService::getPostStatic('customer_id'), RequestService::getPostStatic('filterType'), check_value('show_voided'), RequestService::getPostStatic('Ref'));
+	RequestService::getPostStatic('customer_id'), RequestService::getPostStatic('filterType'), RequestService::checkValueStatic('show_voided'), RequestService::getPostStatic('Ref'));
 
 //------------------------------------------------------------------------------------------------
 //db_query("set @bal:=0");

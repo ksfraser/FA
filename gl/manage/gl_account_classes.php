@@ -39,7 +39,7 @@ function can_process()
 		return false;
 	}
 	if (isset($SysPrefs->use_oldstyle_convert) && $SysPrefs->use_oldstyle_convert == 1)
-		$_POST['Balance'] = check_value('Balance');
+		$_POST['Balance'] = RequestService::checkValueStatic('Balance');
 	return true;
 }
 
@@ -103,7 +103,7 @@ if ($Mode == 'RESET')
 }
 //-----------------------------------------------------------------------------------
 
-$result = get_account_classes(check_value('show_inactive'));
+$result = get_account_classes(RequestService::checkValueStatic('show_inactive'));
 
 start_form();
 start_table(TABLESTYLE);

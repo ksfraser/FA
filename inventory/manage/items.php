@@ -259,7 +259,7 @@ if (isset($_POST['addupdate']))
 	
 	if ($input_error != 1)
 	{
-		if (check_value('del_image'))
+		if (RequestService::checkValueStatic('del_image'))
 			del_image($_POST['NewStockID']);
 		
 		if (!$new_item) 
@@ -271,7 +271,7 @@ if (isset($_POST['addupdate']))
 				$_POST['inventory_account'], $_POST['cogs_account'],
 				$_POST['adjustment_account'], $_POST['wip_account'], 
 				$_POST['dimension_id'], $_POST['dimension2_id'],
-				check_value('no_sale'), check_value('editable'), check_value('no_purchase'),
+				RequestService::checkValueStatic('no_sale'), RequestService::checkValueStatic('editable'), RequestService::checkValueStatic('no_purchase'),
 				RequestService::getPostStatic('depreciation_method'), RequestService::inputNumStatic('depreciation_rate'), RequestService::inputNumStatic('depreciation_factor'), RequestService::getPostStatic('depreciation_start', null),
 				RequestService::getPostStatic('fa_class_id'));
 
@@ -292,7 +292,7 @@ if (isset($_POST['addupdate']))
 				$_POST['inventory_account'], $_POST['cogs_account'],
 				$_POST['adjustment_account'], $_POST['wip_account'], 
 				$_POST['dimension_id'], $_POST['dimension2_id'],
-				check_value('no_sale'), check_value('editable'), check_value('no_purchase'),
+				RequestService::checkValueStatic('no_sale'), RequestService::checkValueStatic('editable'), RequestService::checkValueStatic('no_purchase'),
 				RequestService::getPostStatic('depreciation_method'), RequestService::inputNumStatic('depreciation_rate'), RequestService::inputNumStatic('depreciation_factor'), RequestService::getPostStatic('depreciation_start', null),
 				RequestService::getPostStatic('fa_class_id'));
 
@@ -562,7 +562,7 @@ if (db_has_stock_items())
 	start_table(TABLESTYLE_NOBORDER);
 	start_row();
     stock_items_list_cells(_("Select an item:"), 'stock_id', null,
-	  _('New item'), true, check_value('show_inactive'), false, array('fixed_asset' => RequestService::getPostStatic('fixed_asset')));
+	  _('New item'), true, RequestService::checkValueStatic('show_inactive'), false, array('fixed_asset' => RequestService::getPostStatic('fixed_asset')));
 	$new_item = RequestService::getPostStatic('stock_id')=='';
 	check_cells(_("Show inactive:"), 'show_inactive', null, true);
 	end_row();

@@ -315,7 +315,7 @@ function get_sql_for_supplier_allocation_inquiry()
    		}
    	}
 
-   	if (!check_value('showSettled'))
+   	if (!RequestService::checkValueStatic('showSettled'))
    	{
    		$sql .= " AND (round(abs(ov_amount + ov_gst + ov_discount) - alloc,6) != 0) ";
    	}

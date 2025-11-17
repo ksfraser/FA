@@ -130,7 +130,7 @@ function fmt_credit($row)
 //------------------------------------------------------------------------------------------------
 
 $sql = get_sql_for_supplier_allocation_inquiry(RequestService::getPostStatic('TransAfterDate'),RequestService::getPostStatic('TransToDate'),
-	RequestService::getPostStatic('filterType'), RequestService::getPostStatic('supplier_id'), check_value('showSettled'));
+	RequestService::getPostStatic('filterType'), RequestService::getPostStatic('supplier_id'), RequestService::checkValueStatic('showSettled'));
 
 $cols = array(
 	_("Type") => array('fun'=>'systype_name'),

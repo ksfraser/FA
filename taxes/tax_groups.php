@@ -49,10 +49,10 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
 		while (($id = find_submit('tax_type_id'))!=-1)
 		{
-			if (check_value('tax_type_id'.$id) != 0)
+			if (RequestService::checkValueStatic('tax_type_id'.$id) != 0)
 			{
        			$taxes[] = $id;
-				$tax_shippings[] = check_value('tax_shipping'.$id);
+				$tax_shippings[] = RequestService::checkValueStatic('tax_shipping'.$id);
 			}	
 			unset($_POST['tax_type_id' . $id]);
 			unset($_POST['tax_shipping' . $id]);
@@ -118,7 +118,7 @@ if ($Mode == 'RESET')
 }
 //-----------------------------------------------------------------------------------
 
-$result = get_all_tax_groups(check_value('show_inactive'));
+$result = get_all_tax_groups(RequestService::checkValueStatic('show_inactive'));
 
 start_form();
 
@@ -193,7 +193,7 @@ while($item = db_fetch($items))
 			//$_POST['_tax_type_id' . $item['tax_type_id'].'_update'] = 0;
 			$Ajax->activate('_page_body');
 		}
-		if (check_value('tax_type_id' . $item['tax_type_id'])==1)
+		if (RequestService::checkValueStatic('tax_type_id' . $item['tax_type_id'])==1)
 			check_cells(null, 'tax_shipping' . $item['tax_type_id'], null);
 	}		
 	end_row();	

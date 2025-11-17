@@ -120,7 +120,7 @@ if ($Mode == 'RESET')
 }
 //-------------------------------------------------------------------------------------------------
 
-$result = get_payment_terms_all(check_value('show_inactive'));
+$result = get_payment_terms_all(RequestService::checkValueStatic('show_inactive'));
 
 start_form();
 start_table(TABLESTYLE);

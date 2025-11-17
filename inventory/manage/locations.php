@@ -59,7 +59,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     	{
     
     		update_item_location($selected_id, $_POST['location_name'], $_POST['delivery_address'],
-				$_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], $_POST['contact'], check_value('fixed_asset'));
+				$_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], $_POST['contact'], RequestService::checkValueStatic('fixed_asset'));
 			display_notification(_('Selected location has been updated'));
     	} 
     	else 
@@ -68,7 +68,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     	/*selected_id is null cos no item selected on first time round so must be adding a	record must be submitting new entries in the new Location form */
     	
     		add_item_location($_POST['loc_code'], $_POST['location_name'], $_POST['delivery_address'], 
-				$_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], $_POST['contact'], check_value('fixed_asset'));
+				$_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], $_POST['contact'], RequestService::checkValueStatic('fixed_asset'));
 			display_notification(_('New location has been added'));
     	}
 		
@@ -148,7 +148,7 @@ if ($Mode == 'RESET')
 	$_POST['fixed_asset'] = $sav2;
 }
 
-$result = get_item_locations(check_value('show_inactive'), RequestService::getPostStatic('fixed_asset', 0));
+$result = get_item_locations(RequestService::checkValueStatic('show_inactive'), RequestService::getPostStatic('fixed_asset', 0));
 
 start_form();
 start_table(TABLESTYLE);

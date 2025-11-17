@@ -50,7 +50,7 @@ if (isset($_POST['BatchInvoice']))
     if (isset($_POST['Sel_'])) {
 		foreach($_POST['Sel_'] as $delivery => $branch) {
 			$checkbox = 'Sel_'.$delivery;
-			if (check_value($checkbox))	{
+			if (RequestService::checkValueStatic($checkbox))	{
 				if (!$del_count) {
 					$del_branch = $branch;
 				}

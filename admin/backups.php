@@ -146,7 +146,7 @@ if (RequestService::getPostStatic('creat')) {
 
 if (RequestService::getPostStatic('restore')) {
 	if ($backup_name) {
-		if (db_import($backup_path, $conn, true, false, check_value('protect')))
+		if (db_import($backup_path, $conn, true, false, RequestService::checkValueStatic('protect')))
 			display_notification(_("Restore backup completed."));
 		$SysPrefs->refresh(); // re-read system setup
 	} else

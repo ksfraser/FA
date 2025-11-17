@@ -92,7 +92,7 @@ if ($Mode == 'RESET')
 }
 //------------------------------------------------------------------------------------------------
 
-$result = get_salesmen(check_value('show_inactive'));
+$result = get_salesmen(RequestService::checkValueStatic('show_inactive'));
 
 start_form();
 start_table(TABLESTYLE, "width='60%'");

@@ -75,7 +75,7 @@ if (($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM') && check_csrf_token())
     	{
     		add_user($_POST['user_id'], $_POST['real_name'], md5($_POST['password']),
 				$_POST['phone'], $_POST['email'], $_POST['role_id'], $_POST['language'],
-				$_POST['print_profile'], check_value('rep_popup'), $_POST['pos']);
+				$_POST['print_profile'], RequestService::checkValueStatic('rep_popup'), $_POST['pos']);
 			$id = db_insert_id();
 			// use current user display preferences as start point for new user
 			$prefs = $_SESSION['wa_current_user']->prefs->get_all();
@@ -116,7 +116,7 @@ if ($Mode == 'RESET')
 	$_POST['show_inactive'] = $sav;
 }
 
-$result = get_users(check_value('show_inactive'));
+$result = get_users(RequestService::checkValueStatic('show_inactive'));
 start_form();
 start_table(TABLESTYLE);
 
@@ -149,7 +149,7 @@ while ($myrow = db_fetch($result))
 	
     if ($not_me)
 		inactive_control_cell($myrow["id"], $myrow["inactive"], 'users', 'id');
-	elseif (check_value('show_inactive'))
+	elseif (RequestService::checkValueStatic('show_inactive'))
 		label_cell('');
 
 	edit_button_cell("Edit".$myrow["id"], _("Edit"));

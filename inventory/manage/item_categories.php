@@ -58,7 +58,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 				$_POST['cogs_account'], $_POST['inventory_account'], 
 				$_POST['adjustment_account'], $_POST['wip_account'],
 				$_POST['units'], $_POST['mb_flag'],	$_POST['dim1'],	$_POST['dim2'],
-				check_value('no_sale'), check_value('no_purchase'));
+				RequestService::checkValueStatic('no_sale'), RequestService::checkValueStatic('no_purchase'));
 			display_notification(_('Selected item category has been updated'));
     	} 
     	else 
@@ -68,7 +68,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 				$_POST['cogs_account'], $_POST['inventory_account'], 
 				$_POST['adjustment_account'], $_POST['wip_account'], 
 				$_POST['units'], $_POST['mb_flag'],	$_POST['dim1'],	
-				$_POST['dim2'],	check_value('no_sale'), check_value('no_purchase'));
+				$_POST['dim2'],	RequestService::checkValueStatic('no_sale'), RequestService::checkValueStatic('no_purchase'));
 			display_notification(_('New item category has been added'));
     	}
 		$Mode = 'RESET';
@@ -110,7 +110,7 @@ if (list_updated('mb_flag')) {
 //----------------------------------------------------------------------------------
 $fixed_asset = InventoryService::isFixedAsset(RequestService::getPostStatic('mb_flag'));
 
-$result = get_item_categories(check_value('show_inactive'), $fixed_asset);
+$result = get_item_categories(RequestService::checkValueStatic('show_inactive'), $fixed_asset);
 
 start_form();
 start_table(TABLESTYLE, "width='80%'");

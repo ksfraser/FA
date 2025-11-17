@@ -59,4 +59,26 @@ class RequestService
 
         return user_numeric($_POST[$postname]);
     }
+    
+    /**
+     * Check if POST parameter has a value (checkbox/boolean check)
+     * 
+     * Returns 1 if the POST parameter is set and non-empty, 0 otherwise.
+     * Can handle arrays of parameter names.
+     * 
+     * @param string|array $name Parameter name or array of parameter names
+     * @return int|array 1 if set and non-empty, 0 otherwise (or array of results)
+     */
+    public static function checkValueStatic(string|array $name): int|array
+    {
+        if (is_array($name)) {
+            $ret = array();
+            foreach($name as $key) {
+                $ret[$key] = self::checkValueStatic($key);
+            }
+            return $ret;
+        } else {
+            return (empty($_POST[$name]) ? 0 : 1);
+        }
+    }
 }

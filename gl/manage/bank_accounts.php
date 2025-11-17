@@ -121,7 +121,7 @@ if (!isset($_POST['bank_charge_act']))
 
 /* Always show the list of accounts */
 
-$result = get_bank_accounts(check_value('show_inactive'));
+$result = get_bank_accounts(RequestService::checkValueStatic('show_inactive'));
 
 start_form(true);
 start_table(TABLESTYLE, "width='80%'");

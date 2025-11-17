@@ -94,7 +94,7 @@ if ($Mode == 'RESET')
 }
 //-----------------------------------------------------------------------------------
 
-$result = get_all_work_centres(check_value('show_inactive'));
+$result = get_all_work_centres(RequestService::checkValueStatic('show_inactive'));
 
 start_form();
 start_table(TABLESTYLE, "width='50%'");

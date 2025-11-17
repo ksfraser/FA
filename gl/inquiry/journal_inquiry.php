@@ -106,7 +106,7 @@ function invoice_supp_reference($row)
 }
 
 $sql = get_sql_for_journal_inquiry(RequestService::getPostStatic('filterType', -1), RequestService::getPostStatic('FromDate'),
-	RequestService::getPostStatic('ToDate'), RequestService::getPostStatic('Ref'), RequestService::getPostStatic('Memo'), check_value('AlsoClosed'), RequestService::getPostStatic('userid'));
+	RequestService::getPostStatic('ToDate'), RequestService::getPostStatic('Ref'), RequestService::getPostStatic('Memo'), RequestService::checkValueStatic('AlsoClosed'), RequestService::getPostStatic('userid'));
 
 $cols = array(
 	_("#") => array('fun'=>'journal_pos', 'align'=>'center'), 
@@ -123,7 +123,7 @@ $cols = array(
 	array('insert'=>true, 'fun'=>'edit_link')
 );
 
-if (!check_value('AlsoClosed')) {
+if (!RequestService::checkValueStatic('AlsoClosed')) {
 	$cols[_("#")] = 'skip';
 }
 

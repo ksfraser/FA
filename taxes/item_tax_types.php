@@ -47,7 +47,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
         
         while ($myrow = db_fetch($tax_types)) 
         {
-        	if (check_value('ExemptTax' . $myrow["id"]))
+        	if (RequestService::checkValueStatic('ExemptTax' . $myrow["id"]))
         	{
         		$exempt_from[$i] = $myrow["id"];
         		$i++;
@@ -110,7 +110,7 @@ if ($Mode == 'RESET')
 //-----------------------------------------------------------------------------------
 
 
-$result2 = $result = get_all_item_tax_types(check_value('show_inactive'));
+$result2 = $result = get_all_item_tax_types(RequestService::checkValueStatic('show_inactive'));
 
 start_form();
 start_table(TABLESTYLE, "width='30%'");

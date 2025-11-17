@@ -43,7 +43,7 @@ if (isset($_POST['customer_id']) && ($_POST['customer_id'] == ALL_TEXT))
 }
 
 $settled = false;
-if (check_value('ShowSettled'))
+if (RequestService::checkValueStatic('ShowSettled'))
 	$settled = true;
 
 $customer_id = null;

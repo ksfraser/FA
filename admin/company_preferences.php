@@ -128,7 +128,7 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 			}
 		}
 	}
-	if (check_value('del_coy_logo'))
+	if (RequestService::checkValueStatic('del_coy_logo'))
 	{
 		$filename = company_path()."/images/".clean_file_name($_POST['coy_logo']);
 		if (file_exists($filename))

@@ -329,7 +329,7 @@ if (db_has_customers())
 	start_table(TABLESTYLE_NOBORDER);
 	start_row();
 	customer_list_cells(_("Select a customer: "), 'customer_id', null,
-		_('New customer'), true, check_value('show_inactive'));
+		_('New customer'), true, RequestService::checkValueStatic('show_inactive'));
 	check_cells(_("Show inactive:"), 'show_inactive', null, true);
 	end_row();
 	end_table();

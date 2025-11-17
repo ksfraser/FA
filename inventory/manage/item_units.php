@@ -87,7 +87,7 @@ if ($Mode == 'RESET')
 
 //----------------------------------------------------------------------------------
 
-$result = get_all_item_units(check_value('show_inactive'));
+$result = get_all_item_units(RequestService::checkValueStatic('show_inactive'));
 
 start_form();
 start_table(TABLESTYLE, "width='40%'");

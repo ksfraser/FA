@@ -72,7 +72,7 @@ function handle_submit(&$supplier_id)
 			$_POST['website'], $_POST['supp_account_no'], $_POST['bank_account'], 
 			RequestService::inputNumStatic('credit_limit', 0), $_POST['dimension_id'], $_POST['dimension2_id'], $_POST['curr_code'],
 			$_POST['payment_terms'], $_POST['payable_account'], $_POST['purchase_account'], $_POST['payment_discount_account'],
-			$_POST['notes'], $_POST['tax_group_id'], check_value('tax_included'));
+			$_POST['notes'], $_POST['tax_group_id'], RequestService::checkValueStatic('tax_included'));
 		update_record_status($_POST['supplier_id'], $_POST['inactive'],
 			'suppliers', 'supplier_id');
 
@@ -85,7 +85,7 @@ function handle_submit(&$supplier_id)
 			$_POST['gst_no'], $_POST['website'], $_POST['supp_account_no'], $_POST['bank_account'], 
 			RequestService::inputNumStatic('credit_limit',0), $_POST['dimension_id'], $_POST['dimension2_id'],
 			$_POST['curr_code'], $_POST['payment_terms'], $_POST['payable_account'], $_POST['purchase_account'],
-			$_POST['payment_discount_account'], $_POST['notes'], $_POST['tax_group_id'], check_value('tax_included'));
+			$_POST['payment_discount_account'], $_POST['notes'], $_POST['tax_group_id'], RequestService::checkValueStatic('tax_included'));
 
 		$supplier_id = $_POST['supplier_id'] = db_insert_id();
 
@@ -300,7 +300,7 @@ if (db_has_suppliers())
 	start_table(false, "", 3);
 	start_row();
 	supplier_list_cells(_("Select a supplier: "), 'supplier_id', null,
-		  _('New supplier'), true, check_value('show_inactive'));
+		  _('New supplier'), true, RequestService::checkValueStatic('show_inactive'));
 	check_cells(_("Show inactive:"), 'show_inactive', null, true);
 	end_row();
 	end_table();

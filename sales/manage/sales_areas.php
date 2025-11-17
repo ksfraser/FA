@@ -80,7 +80,7 @@ if ($Mode == 'RESET')
 
 //-------------------------------------------------------------------------------------------------
 
-$result = get_sales_areas(check_value('show_inactive'));
+$result = get_sales_areas(RequestService::checkValueStatic('show_inactive'));
 
 start_form();
 start_table(TABLESTYLE, "width='30%'");

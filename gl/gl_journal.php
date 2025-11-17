@@ -270,7 +270,7 @@ if (isset($_POST['Process']))
 		// FIXME: check proper tax net input values, check sum of net values against total GL an issue warning
 	}
 
-	if (check_value('taxable_trans'))
+	if (RequestService::checkValueStatic('taxable_trans'))
 	{
 	 	if (!tab_visible('tabs', 'tax'))
 	 	{
@@ -316,7 +316,7 @@ if (isset($_POST['Process']))
 	if ($cart->currency != get_company_pref('curr_default'))
 		$cart->rate = RequestService::inputNumStatic('_ex_rate');
 
-	if (check_value('taxable_trans'))
+	if (RequestService::checkValueStatic('taxable_trans'))
 	{
 		// complete tax register data
 		$cart->tax_info['tax_date'] = $_POST['tax_date'];
@@ -465,7 +465,7 @@ function handle_new_item()
 
 //-----------------------------------------------------------------------------------------------
 if (isset($_POST['_taxable_trans_update']))
-{	if (!check_value('taxable_trans'))
+{	if (!RequestService::checkValueStatic('taxable_trans'))
 		$_POST['tabs_gl'] = true; // force tax tab select
 	else
 		set_focus('taxable_trans');
@@ -531,7 +531,7 @@ display_order_header($_SESSION['journal_items']);
 
 tabbed_content_start('tabs', array(
 		'gl' => array(_('&GL postings'), true),
-		'tax' => array(_('&Tax register'), check_value('taxable_trans')),
+		'tax' => array(_('&Tax register'), RequestService::checkValueStatic('taxable_trans')),
 	));
 	
 	switch (RequestService::getPostStatic('_tabs_sel')) {

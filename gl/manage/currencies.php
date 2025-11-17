@@ -65,14 +65,14 @@ function handle_submit()
 	{
 
 		update_currency($_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'], 
-			$_POST['country'], $_POST['hundreds_name'], check_value('auto_update'));
+			$_POST['country'], $_POST['hundreds_name'], RequestService::checkValueStatic('auto_update'));
 		display_notification(_('Selected currency settings has been updated'));
 	} 
 	else 
 	{
 
 		add_currency($_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'], 
-			$_POST['country'], $_POST['hundreds_name'], check_value('auto_update'));
+			$_POST['country'], $_POST['hundreds_name'], RequestService::checkValueStatic('auto_update'));
 		display_notification(_('New currency has been added'));
 	}	
 	$Mode = 'RESET';
@@ -134,7 +134,7 @@ function display_currencies()
 {
 	$company_currency = BankingService::getCompanyCurrency();
 	
-    $result = get_currencies(check_value('show_inactive'));
+    $result = get_currencies(RequestService::checkValueStatic('show_inactive'));
     start_table(TABLESTYLE);
     $th = array(_("Abbreviation"), _("Symbol"), _("Currency Name"),
     	_("Hundredths name"), _("Country"), _("Auto update"), "", "");

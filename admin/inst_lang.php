@@ -43,7 +43,7 @@ function display_languages()
 	//
 	if (function_exists('gettext'))
 	{
-		if (check_value('DisplayAll'))
+		if (RequestService::checkValueStatic('DisplayAll'))
 			 array_insert($th, 7, _("Supported"));
 		start_table();
 		check_row(_('Display also languages not supported by server locales'), 'DisplayAll', null, true);
@@ -93,7 +93,7 @@ function display_languages()
 			radio(null, 'CurDflt', $id, $dflt_lang == $lang, true),
 			"align='center'");
 		
-		if (function_exists('gettext') && check_value('DisplayAll'))
+		if (function_exists('gettext') && RequestService::checkValueStatic('DisplayAll'))
 			label_cell($support ? _("Yes") :_("No"));
 
 		if (!$available && ($lang != 'C'))	// manually installed language

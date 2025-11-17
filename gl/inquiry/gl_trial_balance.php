@@ -101,7 +101,7 @@ function display_trial_balance($type, $typename)
 		//Print Type Title if it has atleast one non-zero account
 		if (!$printtitle)
 		{
-			if (!check_value('GroupTotalOnly'))
+			if (!RequestService::checkValueStatic('GroupTotalOnly'))
 			{
 				start_row("class='inquirybg' style='font-weight:bold'");
 				label_cell(_("Group")." - ".$type ." - ".$typename, "colspan=8");
@@ -122,9 +122,9 @@ function display_trial_balance($type, $typename)
 		$prev = get_balance($account["account_code"], $_POST['Dimension'], $_POST['Dimension2'], $begin, $_POST['TransFromDate'], false, false);
 		$curr = get_balance($account["account_code"], $_POST['Dimension'], $_POST['Dimension2'], $_POST['TransFromDate'], $_POST['TransToDate'], true, true);
 		$tot = get_balance($account["account_code"], $_POST['Dimension'], $_POST['Dimension2'], $begin, $_POST['TransToDate'], false, true);
-		if (check_value("NoZero") && !$prev['balance'] && !$curr['balance'] && !$tot['balance'])
+		if (RequestService::checkValueStatic("NoZero") && !$prev['balance'] && !$curr['balance'] && !$tot['balance'])
 			continue;
-		if (!check_value('GroupTotalOnly'))
+		if (!RequestService::checkValueStatic('GroupTotalOnly'))
 		{
 			alt_table_row_color($k);
 
@@ -133,9 +133,9 @@ function display_trial_balance($type, $typename)
 			label_cell($url);
 			label_cell($account["account_name"]);
 		}
-		if (check_value('Balance'))
+		if (RequestService::checkValueStatic('Balance'))
 		{
-			if (!check_value('GroupTotalOnly'))
+			if (!RequestService::checkValueStatic('GroupTotalOnly'))
 			{
 				display_debit_or_credit_cells($prev['balance']);
 				display_debit_or_credit_cells($curr['balance']);
@@ -144,7 +144,7 @@ function display_trial_balance($type, $typename)
 		}
 		else
 		{
-			if (!check_value('GroupTotalOnly'))
+			if (!RequestService::checkValueStatic('GroupTotalOnly'))
 			{
 				amount_cell($prev['debit']-$offset);
 				amount_cell($prev['credit']-$offset);
@@ -183,13 +183,13 @@ function display_trial_balance($type, $typename)
 	}
 
 	start_row("class='inquirybg' style='font-weight:bold'");
-	if (!check_value('GroupTotalOnly'))
+	if (!RequestService::checkValueStatic('GroupTotalOnly'))
 		label_cell(_("Total") ." - ".$typename, "colspan=2");
 	else
 		label_cell(" - ".$typename, "colspan=2");
 
 
-	if (!check_value('Balance'))
+	if (!RequestService::checkValueStatic('Balance'))
 	{
 		amount_cell($pdeb-$Apdeb );
 		amount_cell($pcre-$Apcre);
@@ -261,7 +261,7 @@ while ($class = db_fetch($classresult))
 	}
 }
 
-if (!check_value('Balance'))
+if (!RequestService::checkValueStatic('Balance'))
 {
 	start_row("class='inquirybg' style='font-weight:bold'");
 	label_cell(_("Total") ." - ".$_POST['TransToDate'], "colspan=2");

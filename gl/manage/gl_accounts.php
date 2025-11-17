@@ -202,9 +202,9 @@ if (db_has_gl_accounts())
 	start_table(TABLESTYLE_NOBORDER);
 	start_row();
 	if ($filter_id)
-		gl_all_accounts_list_cells(null, 'AccountList', null, false, false, _('New account'), true, check_value('show_inactive'), $_POST['id']);
+		gl_all_accounts_list_cells(null, 'AccountList', null, false, false, _('New account'), true, RequestService::checkValueStatic('show_inactive'), $_POST['id']);
 	else
-		gl_all_accounts_list_cells(null, 'AccountList', null, false, false, _('New account'), true, check_value('show_inactive'));
+		gl_all_accounts_list_cells(null, 'AccountList', null, false, false, _('New account'), true, RequestService::checkValueStatic('show_inactive'));
 	check_cells(_("Show inactive:"), 'show_inactive', null, true);
 	end_row();
 	end_table();

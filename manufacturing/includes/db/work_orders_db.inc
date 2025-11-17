@@ -324,7 +324,7 @@ function get_sql_for_work_orders($outstanding_only, $stock_id, $location = ALL_T
 			AND workorder.loc_code=location.loc_code
 			AND item.units=unit.abbr";
 
-	if (check_value('OpenOnly') || $outstanding_only != 0)
+	if (RequestService::checkValueStatic('OpenOnly') || $outstanding_only != 0)
 	{
 		$sql .= " AND workorder.closed=0";
 	}

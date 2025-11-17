@@ -42,7 +42,7 @@ class fa_reflines extends simple_crud_view {
 		table_header($th);
 
 		$k = 0;
-		$data = $this->data_set->get_all(check_value('show_inactive') ? null : '!inactive', array('trans_type', 'prefix'));
+		$data = $this->data_set->get_all(RequestService::checkValueStatic('show_inactive') ? null : '!inactive', array('trans_type', 'prefix'));
 
 		if (!$data) return false;
 
@@ -56,7 +56,7 @@ class fa_reflines extends simple_crud_view {
 			label_cell($rec['default'] ? _("Yes") : _("No"));
 			label_cell($rec['description']);
 
-			if (check_value('show_inactive') && $rec['default'])
+			if (RequestService::checkValueStatic('show_inactive') && $rec['default'])
 				label_cell('');
 			else
 				inactive_control_cell($rec["id"], $rec["inactive"], 'reflines', 'id');

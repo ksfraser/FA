@@ -78,7 +78,7 @@ if ($Mode == 'RESET')
 }
 //-------------------------------------------------------------------------------------------------
 
-$result = get_sales_groups(check_value('show_inactive'));
+$result = get_sales_groups(RequestService::checkValueStatic('show_inactive'));
 
 start_form();
 start_table(TABLESTYLE, "width='30%'");

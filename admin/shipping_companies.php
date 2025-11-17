@@ -84,7 +84,7 @@ if ($Mode == 'RESET')
 }
 //----------------------------------------------------------------------------------------------
 
-$result = get_shippers(check_value('show_inactive'));
+$result = get_shippers(RequestService::checkValueStatic('show_inactive'));
 
 start_form();
 start_table(TABLESTYLE);
