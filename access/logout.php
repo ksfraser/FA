@@ -46,5 +46,6 @@ echo "</div></td>
 </table>
 <br>\n";
 end_page(false, true);
+\FA\Services\UserPrefsCache::invalidate();
 session_unset();
 @session_destroy();

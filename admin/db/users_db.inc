@@ -62,7 +62,9 @@ function update_user_prefs($id, $prefs)
 	}
 	$sql .= implode(',', $prefs) . " WHERE id=".db_escape($id);
 
-	return db_query($sql, "could not update user display prefs for $id");
+	$result = db_query($sql, "could not update user display prefs for $id");
+	\FA\Services\UserPrefsCache::invalidate();
+	return $result;
 }
 
 //-----------------------------------------------------------------------------------------------

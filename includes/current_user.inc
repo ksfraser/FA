@@ -207,6 +207,7 @@ class current_user
 				$this->last_act = time();
 				$this->timeout = session_timeout();
 				flush_dir(user_js_cache()); // refresh cache on login
+				\FA\Services\UserPrefsCache::invalidate(); // clear prefs cache on login
 			}
 		}
 		return $this->logged;
@@ -678,6 +679,7 @@ function user_check_access($sec_area)
 function set_user_prefs($prefs)
 {
 	$_SESSION["wa_current_user"]->update_prefs($prefs);
+	\FA\Services\UserPrefsCache::invalidate();
 }
 
 function add_user_js_data() {
