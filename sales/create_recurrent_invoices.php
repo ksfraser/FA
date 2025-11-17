@@ -88,7 +88,7 @@ function calculate_next($myrow)
 }
 
 $id = find_submit("confirmed");
-if ($id != -1 && is_date_closed($_POST['trans_date']))
+if ($id != -1 && DateService::isDateClosedStatic($_POST['trans_date']))
 {
 	display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
 	set_focus('trans_date');

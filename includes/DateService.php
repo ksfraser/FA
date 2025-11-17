@@ -289,4 +289,12 @@ class DateService
     {
         return \date_comp($date1, $date2, $incl_weekends, $incl_non_working);
     }
+    
+    /**
+     * Static wrapper for isDateClosed
+     */
+    public static function isDateClosedStatic(string $date): bool
+    {
+        return (bool)\is_date_closed($date);
+    }
 }
