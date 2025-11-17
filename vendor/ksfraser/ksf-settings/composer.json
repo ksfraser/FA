@@ -1,0 +1,12 @@
+{
+    "name": "ksfraser/ksf-settings",
+    "description": "Settings and configuration library for Ksfraser projects",
+    "require": {
+        "php": ">=7.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Ksfraser\\Settings\\": "src/Ksfraser/Settings/"
+        }
+    }
+}

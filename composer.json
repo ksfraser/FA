@@ -1,0 +1,33 @@
+{
+    "name": "frontaccounting/fa",
+    "description": "FrontAccounting - PHP Accounting Software",
+    "type": "project",
+    "require": {
+        "ksfraser/html-project": "dev-main",
+        "ksfraser/ksf-settings": "dev-main",
+        "doctrine/dbal": "^4.3"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.0"
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "./html-lib"
+        },
+        {
+            "type": "path",
+            "url": "./ksf-settings"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "FA\\": "includes/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "FA\\Tests\\": "tests/"
+        }
+    }
+}
