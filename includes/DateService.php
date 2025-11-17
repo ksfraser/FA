@@ -297,4 +297,12 @@ class DateService
     {
         return (bool)\is_date_closed($date);
     }
+    
+    /**
+     * Static wrapper for isDateInFiscalYear
+     */
+    public static function isDateInFiscalYearStatic(string $date, bool $convert = false): bool
+    {
+        return (bool)\is_date_in_fiscalyear($date, $convert);
+    }
 }

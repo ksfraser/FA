@@ -117,7 +117,7 @@ function safe_exit()
 if (!isset($_POST['date_']))
 {
 	$_POST['date_'] = new_doc_date();
-	if (!is_date_in_fiscalyear($_POST['date_']))
+	if (!DateService::isDateInFiscalYearStatic($_POST['date_']))
 		$_POST['date_'] = DateService::endFiscalYear();
 }
 

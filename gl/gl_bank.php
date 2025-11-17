@@ -206,7 +206,7 @@ function create_cart($type, $trans_no)
 	} else {
 		$cart->reference = $Refs->get_next($cart->trans_type, null, $cart->tran_date);
 		$cart->tran_date = new_doc_date();
-		if (!is_date_in_fiscalyear($cart->tran_date))
+		if (!DateService::isDateInFiscalYearStatic($cart->tran_date))
 			$cart->tran_date = DateService::endFiscalYear();
 	}
 
@@ -267,7 +267,7 @@ function check_trans()
 		set_focus('date_');
 		$input_error = 1;
 	}
-	elseif (!is_date_in_fiscalyear($_POST['date_']))
+	elseif (!DateService::isDateInFiscalYearStatic($_POST['date_']))
 	{
 		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('date_');

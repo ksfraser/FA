@@ -122,7 +122,7 @@ function can_process()
 		set_focus('AdjDate');
 		return false;
 	} 
-	elseif (!is_date_in_fiscalyear($_POST['AdjDate'])) 
+	elseif (!DateService::isDateInFiscalYearStatic($_POST['AdjDate'])) 
 	{
 		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('AdjDate');

@@ -117,7 +117,7 @@ function gl_payment_controls($trans_no)
 
 	if (!isset($_POST['DatePaid'])) { // init page
 		$_POST['DatePaid'] = new_doc_date();
-		if (!is_date_in_fiscalyear($_POST['DatePaid']))
+		if (!DateService::isDateInFiscalYearStatic($_POST['DatePaid']))
 			$_POST['DatePaid'] = DateService::endFiscalYear();
 	}
     date_row(_("Transfer Date:"), 'DatePaid', '', true, 0, 0, 0, null, true);
@@ -180,7 +180,7 @@ function check_valid_entries($trans_no)
 		set_focus('DatePaid');
 		return false;
 	}
-	if (!is_date_in_fiscalyear($_POST['DatePaid']))
+	if (!DateService::isDateInFiscalYearStatic($_POST['DatePaid']))
 	{
 		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('DatePaid');

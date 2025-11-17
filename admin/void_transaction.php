@@ -124,7 +124,7 @@ function select_link($row)
 {
 	if (!isset($row['type']))
 		$row['type'] = $_POST['filterType'];
-	if (!is_date_in_fiscalyear($row['trans_date'], true))
+	if (!DateService::isDateInFiscalYearStatic($row['trans_date'], true))
 		return _("N/A");
   	return button('Edit'.$row["trans_no"], _("Select"), _("Select"), ICON_EDIT);
 }
@@ -278,7 +278,7 @@ function check_valid_entries()
 		set_focus('date_');
 		return false;
 	}
-	if (!is_date_in_fiscalyear($_POST['date_']))
+	if (!DateService::isDateInFiscalYearStatic($_POST['date_']))
 	{
 		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('date_');
@@ -334,7 +334,7 @@ function handle_void_transaction()
 if (!isset($_POST['date_']))
 {
 	$_POST['date_'] = Today();
-	if (!is_date_in_fiscalyear($_POST['date_']))
+	if (!DateService::isDateInFiscalYearStatic($_POST['date_']))
 		$_POST['date_'] = DateService::endFiscalYear();
 }		
 	
