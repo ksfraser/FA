@@ -22,6 +22,7 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
+require_once($path_to_root . "/includes/DateService.php");
 
 //----------------------------------------------------------------------------------------------------
 
@@ -43,7 +44,7 @@ function getTransactions($from, $to)
 function getYTD($dim)
 {
 	$date = Today();
-	$date = begin_fiscalyear($date);
+	$date = \FA\Services\DateService::beginFiscalYear($date);
 	date2sql($date);
 	
 	$sql = "SELECT SUM(amount) AS Balance

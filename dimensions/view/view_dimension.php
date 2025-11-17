@@ -13,6 +13,7 @@ $page_security = 'SA_DIMTRANSVIEW';
 $path_to_root = "../..";
 
 include_once($path_to_root . "/includes/session.inc");
+require_once($path_to_root . "/includes/DateService.php");
 
 $js = "";
 if (user_use_date_picker())
@@ -79,7 +80,7 @@ start_table(TABLESTYLE_NOBORDER);
 start_row();
 
 if (!isset($_POST['TransFromDate']))
-	$_POST['TransFromDate'] = begin_fiscalyear();
+	$_POST['TransFromDate'] = \FA\Services\DateService::beginFiscalYear();
 if (!isset($_POST['TransToDate']))
 	$_POST['TransToDate'] = Today();
 date_cells(_("from:"), 'TransFromDate');

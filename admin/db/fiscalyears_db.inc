@@ -8,8 +8,9 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-***********************************************************************/
+/***********************************************************************/
 require_once($path_to_root. "/includes/ui/items_cart.inc");
+require_once($path_to_root . "/includes/DateService.php");
 
 // fiscal year routines
 function add_fiscalyear($from_date, $to_date, $closed)
@@ -89,7 +90,7 @@ function get_fiscalyear_begin_for_date($date)
 	if ($row != false)
 		return sql2date($row[0]);
 	else
-		return begin_fiscalyear();
+		return \FA\Services\DateService::beginFiscalYear();
 }
 
 function check_begin_end_date($date1, $date2)

@@ -13,6 +13,7 @@ $page_security = 'SA_GLANALYTIC';
 $path_to_root="../..";
 
 include_once($path_to_root . "/includes/session.inc");
+require_once($path_to_root . "/includes/DateService.php");
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
@@ -220,7 +221,7 @@ function display_profit_and_loss($compare)
 			$begin = $from;
 		}
 		else
-			$begin = begin_fiscalyear();
+			$begin = \FA\Services\DateService::beginFiscalYear();
 	}
 	elseif ($compare == 1)
 	{

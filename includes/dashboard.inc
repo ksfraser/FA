@@ -433,7 +433,7 @@ function display_all()
 
 function customer_top($today, $limit=10, $width='33', &$pg=null)
 {
-	$begin = date2sql(begin_fiscalyear());
+	$begin = date2sql(\\FA\\Services\\DateService::beginFiscalYear());
 	$today = date2sql($today);
 	$sql = "SELECT SUM((ov_amount + ov_discount) * rate * IF(trans.type = ".ST_CUSTCREDIT.", -1, 1)) AS total,d.debtor_no, d.name FROM ".TB_PREF."debtor_trans AS trans, ".TB_PREF."debtors_master AS d WHERE trans.debtor_no=d.debtor_no
 		AND (trans.type = ".ST_SALESINVOICE." OR trans.type = ".ST_CUSTCREDIT.")
@@ -474,7 +474,7 @@ function customer_top($today, $limit=10, $width='33', &$pg=null)
 
 function supplier_top($today, $limit=10, $width='33', &$pg=null)
 {
-	$begin = date2sql(begin_fiscalyear());
+	$begin = date2sql(\\FA\\Services\\DateService::beginFiscalYear());
 	$today = date2sql($today);
 	$sql = "SELECT SUM((trans.ov_amount + trans.ov_discount) * rate) AS total, s.supplier_id, s.supp_name FROM
 		".TB_PREF."supp_trans AS trans, ".TB_PREF."suppliers AS s WHERE trans.supplier_id=s.supplier_id
@@ -522,7 +522,7 @@ function stock_top($today, $limit=10, $width='33', $type=0, &$pg=null)
 		$sec = 'SA_WORKORDERANALYTIC';
 	else
 		$sec = 'SA_ITEMSTRANSVIEW';
-	$begin = date2sql(begin_fiscalyear());
+	$begin = date2sql(\\FA\\Services\\DateService::beginFiscalYear());
 	$today = date2sql($today);
 	if ($type == 0)
 	{
@@ -609,7 +609,7 @@ function stock_top($today, $limit=10, $width='33', $type=0, &$pg=null)
 
 function dimension_top($today, $limit=10, $width='33', &$pg=null)
 {
-	$begin = date2sql(begin_fiscalyear());
+	$begin = date2sql(\\FA\\Services\\DateService::beginFiscalYear());
 	$today = date2sql($today);
 
 	$sql = "SELECT SUM(IF(c.ctype > 3, -amount, 0)) AS result, SUM(IF(c.ctype < 4, amount, 0)) AS balance, d.reference, d.name FROM ".TB_PREF."gl_trans g 
@@ -656,7 +656,7 @@ function dimension_top($today, $limit=10, $width='33', &$pg=null)
 
 function gl_top($today, $width='33', &$pg=null)
 {
-	$begin = date2sql(begin_fiscalyear());
+	$begin = date2sql(\\FA\\Services\\DateService::beginFiscalYear());
 	$today = date2sql($today);
 	$sql = "SELECT SUM(IF(c.ctype > 3, -amount, amount)) AS total, c.class_name, c.ctype FROM
 		".TB_PREF."gl_trans,".TB_PREF."chart_master AS a, ".TB_PREF."chart_types AS t, 
@@ -711,7 +711,7 @@ function gl_week_performance($today, $width="33", $weeks=4)
 		$pg->type = $_POST['select_g3'];
 	if (isset($_POST['per_g3']))
 		$weeks = $_POST['per_g3'];
-	$begin = date2sql(begin_fiscalyear());
+	$begin = date2sql(\\FA\\Services\\DateService::beginFiscalYear());
 	$today1 = date2sql($today);
 	$sep = $SysPrefs->dateseps[user_date_sep()];
 	$sql = "SELECT week_name, sales, costs 
@@ -750,7 +750,7 @@ function gl_month_performance($today, $width="33", $months=5)
 		$pg->type = $_POST['select_g4'];
 	if (isset($_POST['per_g4']))
 		$months = $_POST['per_g4'];
-	$begin = date2sql(begin_fiscalyear());
+	$begin = date2sql(\\FA\\Services\\DateService::beginFiscalYear());
 	$today1 = date2sql($today);
 	$sep = $SysPrefs->dateseps[user_date_sep()];
 	$sql = "SELECT month_name, sales, costs 
@@ -1306,7 +1306,7 @@ function get_num_reorder()
 
 function get_num_assembled()
 {
-	$begin = date2sql(begin_fiscalyear());
+	$begin = date2sql(\\FA\\Services\\DateService::beginFiscalYear());
 	$today = date2sql(calc_today());
 	$sql = "SELECT count(*) FROM ".TB_PREF."workorders WHERE closed = 1 AND type = ".WO_ASSEMBLY." AND released_date >= '$begin'
 		AND released_date <= '$today'";
@@ -1317,7 +1317,7 @@ function get_num_assembled()
 
 function get_num_manufactured()
 {
-	$begin = date2sql(begin_fiscalyear());
+	$begin = date2sql(\\FA\\Services\\DateService::beginFiscalYear());
 	$today = date2sql(calc_today());
 	$sql = "SELECT count(*) FROM ".TB_PREF."workorders WHERE closed = 1 AND type = ".WO_ADVANCED." AND released_date >= '$begin'
 		AND released_date <= '$today'";
@@ -1402,7 +1402,7 @@ function get_dim_closed()
 
 function get_dim_total()
 {
-	$begin = date2sql(begin_fiscalyear());
+	$begin = date2sql(\\FA\\Services\\DateService::beginFiscalYear());
 	$today = date2sql(calc_today());
 	
 	$sql = "SELECT SUM(IF(c.ctype > 3, -amount, 0)) AS result, SUM(IF(c.ctype < 4, amount, 0)) AS balance, d.reference, d.name FROM ".TB_PREF."gl_trans g 

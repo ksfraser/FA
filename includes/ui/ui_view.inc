@@ -11,6 +11,7 @@
 ***********************************************************************/
 include_once($path_to_root . "/admin/db/voiding_db.inc");
 include_once($path_to_root . "/includes/types.inc");
+require_once($path_to_root . "/includes/DateService.php");
 
 //--------------------------------------------------------------------------------------
 
@@ -699,7 +700,7 @@ function quickentry_calculate($base, $id, $taxgroup=null, $date=null)
 				if (is_account_balancesheet($gl_code)) // total
 					$begin = "";
 				else
-					$begin = begin_fiscalyear(); // from fiscalyear begin
+					$begin = \FA\Services\DateService::beginFiscalYear(); // from fiscalyear begin
 			}
 			$base = get_gl_trans_from_to($begin, $date, $gl_code);
 

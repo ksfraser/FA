@@ -9,6 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+$path_to_root = dirname(dirname(dirname(__FILE__)));
+require_once($path_to_root . "/includes/DateService.php");
 
 // Standard report classess
 define('RC_CUSTOMER', 0);
@@ -190,7 +192,7 @@ class BoxReports
 					if (!isset($_POST[$name]))
 					{
 						if ($type == 'DATEBEGIN')
-							$date = begin_fiscalyear();
+							$date = \FA\Services\DateService::beginFiscalYear();
 						elseif ($type == 'DATEEND')
 							$date = end_fiscalyear();
 						else

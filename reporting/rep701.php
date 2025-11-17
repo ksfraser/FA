@@ -22,6 +22,7 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
+require_once($path_to_root . "/includes/DateService.php");
 
 //----------------------------------------------------------------------------------------------------
 
@@ -51,7 +52,7 @@ function display_type ($type, $typename, &$dec, &$rep, $showbalance, $level)
 		}			
 		if ($showbalance == 1)
 		{
-			$begin = begin_fiscalyear();
+			$begin = \FA\Services\DateService::beginFiscalYear();
 			if (is_account_balancesheet($account["account_code"]))
 				$begin = "";
 			$balance = get_gl_trans_from_to($begin, ToDay(), $account["account_code"], 0);

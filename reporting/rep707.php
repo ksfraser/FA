@@ -23,6 +23,7 @@ include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
 include_once($path_to_root . "/admin/db/tags_db.inc");
+require_once($path_to_root . "/includes/DateService.php");
 
 //----------------------------------------------------------------------------------------------------
 
