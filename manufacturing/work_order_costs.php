@@ -82,7 +82,7 @@ function can_process($wo_details)
 		set_focus('date_');
 		return false;
 	}
-	elseif (!is_date_in_fiscalyear($_POST['date_']))
+	elseif (!DateService::isDateInFiscalYear($_POST['date_']))
 	{
 		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('date_');

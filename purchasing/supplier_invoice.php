@@ -200,7 +200,7 @@ function check_data()
 		set_focus('trans_date');
 		return false;
 	} 
-	elseif (!is_date_in_fiscalyear($_SESSION['supp_trans']->tran_date)) 
+	elseif (!DateService::isDateInFiscalYear($_SESSION['supp_trans']->tran_date)) 
 	{
 		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('trans_date');

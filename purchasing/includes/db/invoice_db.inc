@@ -9,6 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+require_once(dirname(__FILE__) . "/../../../includes/DateService.php");
 include_once($path_to_root . "/purchasing/includes/db/invoice_items_db.inc");
 include_once($path_to_root . "/admin/db/attachments_db.inc");
 
@@ -36,7 +37,7 @@ function read_supplier_details_to_trans(&$supp_trans, $supplier_id)
     {
 		$supp_trans->tran_date = Today();
 
-		if (!is_date_in_fiscalyear($supp_trans->tran_date))
+		if (!\FA\Services\DateService::isDateInFiscalYear($supp_trans->tran_date))
 			$supp_trans->tran_date = end_fiscalyear();
 	}
 

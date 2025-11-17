@@ -356,7 +356,7 @@ function can_commit()
 		return false;
 	} 
 	if (($_SESSION['PO']->trans_type == ST_SUPPRECEIVE || $_SESSION['PO']->trans_type == ST_SUPPINVOICE) 
-		&& !is_date_in_fiscalyear($_POST['OrderDate'])) {
+		&& !DateService::isDateInFiscalYear($_POST['OrderDate'])) {
 		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('OrderDate');
 		return false;

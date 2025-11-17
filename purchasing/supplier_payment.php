@@ -53,7 +53,7 @@ if (!isset($_POST['supplier_id']))
 if (!isset($_POST['DatePaid']))
 {
 	$_POST['DatePaid'] = new_doc_date();
-	if (!is_date_in_fiscalyear($_POST['DatePaid']))
+	if (!DateService::isDateInFiscalYear($_POST['DatePaid']))
 		$_POST['DatePaid'] = end_fiscalyear();
 }
 
@@ -199,7 +199,7 @@ function check_inputs()
 		set_focus('DatePaid');
 		return false;
 	} 
-	elseif (!is_date_in_fiscalyear($_POST['DatePaid'])) 
+	elseif (!DateService::isDateInFiscalYear($_POST['DatePaid'])) 
 	{
 		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('DatePaid');

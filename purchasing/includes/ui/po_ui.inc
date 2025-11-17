@@ -9,6 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+require_once(dirname(__FILE__) . "/../../../includes/DateService.php");
 include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
 
 //--------------------------------------------------------------------------------------------------
@@ -73,7 +74,7 @@ function create_new_po($trans_type, $trans_no)
 
 	$cart = new purch_order;
 	$_POST['OrderDate'] = new_doc_date();
-	if (!is_date_in_fiscalyear($_POST['OrderDate']))
+	if (!\FA\Services\DateService::isDateInFiscalYear($_POST['OrderDate']))
 		$_POST['OrderDate'] = end_fiscalyear();
 	$cart->due_date = $cart->orig_order_date = $_POST['OrderDate'];
 
