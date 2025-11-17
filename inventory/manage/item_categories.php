@@ -100,7 +100,7 @@ if ($Mode == 'RESET')
     $mb_flag = get_post('mb_flag');
 	unset($_POST);
 	$_POST['show_inactive'] = $sav;
-	if (is_fixed_asset($mb_flag))
+	if (InventoryService::isFixedAsset($mb_flag))
 		$_POST['mb_flag'] = 'F';
 }
 if (list_updated('mb_flag')) {
@@ -108,7 +108,7 @@ if (list_updated('mb_flag')) {
 }
 
 //----------------------------------------------------------------------------------
-$fixed_asset = is_fixed_asset(get_post('mb_flag'));
+$fixed_asset = InventoryService::isFixedAsset(get_post('mb_flag'));
 
 $result = get_item_categories(check_value('show_inactive'), $fixed_asset);
 
@@ -212,14 +212,14 @@ table_section_title(_("Default values for new items"));
 
 item_tax_types_list_row(_("Item Tax Type:"), 'tax_type_id', null);
 
-if (is_fixed_asset(get_post('mb_flag')))
+if (InventoryService::isFixedAsset(get_post('mb_flag')))
 	hidden('mb_flag', 'F');
 else
 	stock_item_types_list_row(_("Item Type:"), 'mb_flag', null, true);
 
 stock_units_list_row(_("Units of Measure:"), 'units', null);
 
-if (is_fixed_asset($_POST['mb_flag'])) 
+if (InventoryService::isFixedAsset($_POST['mb_flag'])) 
 	hidden('no_sale', 0);
 else
 	check_row(_("Exclude from sales:"), 'no_sale');
@@ -234,7 +234,7 @@ if (InventoryService::isService($_POST['mb_flag']))
 	hidden('inventory_account', $_POST['inventory_account']);
 	hidden('adjustment_account', $_POST['adjustment_account']);
 }
-elseif (is_fixed_asset($_POST['mb_flag'])) 
+elseif (InventoryService::isFixedAsset($_POST['mb_flag'])) 
 {
 	gl_all_accounts_list_row(_("Asset account:"), 'inventory_account', $_POST['inventory_account']);
 	gl_all_accounts_list_row(_("Depreciation cost account:"), 'cogs_account', $_POST['cogs_account']);

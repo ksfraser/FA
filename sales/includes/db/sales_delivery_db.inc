@@ -9,6 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+require_once($path_to_root . "/includes/InventoryService.php");
 //-----------------------------------------------------------------------------
 // insert/update sales delivery
 //
@@ -101,7 +102,7 @@ function write_sales_delivery(&$delivery,$bo_policy)
 
 			$mb_flag = get_mb_flag($delivery_line->stock_id);
 
-			if (is_fixed_asset($mb_flag)) {
+			if (InventoryService::isFixedAsset($mb_flag)) {
 				$sql = "UPDATE ".TB_PREF."stock_master SET inactive=1, material_cost=0
 					WHERE stock_id=".db_escape($delivery_line->stock_id);
 				db_query($sql,"The cost details for the fixed asset could not be updated");

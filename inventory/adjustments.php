@@ -24,6 +24,7 @@ include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 
 // Modern OOP Services
 require_once($path_to_root . "/includes/DateService.php");
+require_once($path_to_root . "/includes/InventoryService.php");
 use FA\Services\DateService;
 $js = "";
 if ($SysPrefs->use_popup_windows)
@@ -50,11 +51,9 @@ if (isset($_GET['AddedID']))
   $result = get_stock_adjustment_items($trans_no);
   $row = db_fetch($result);
 
-  if (is_fixed_asset($row['mb_flag'])) {
-    display_notification_centered(_("Fixed Assets disposal has been processed"));
-    display_note(get_trans_view_str($trans_type, $trans_no, _("&View this disposal")));
-
-    display_note(get_gl_view_str($trans_type, $trans_no, _("View the GL &Postings for this Disposal")), 1, 0);
+	if (InventoryService::isFixedAsset($row['mb_flag'])) {
+		display_notification_centered(_("Fixed Assets disposal has been processed"));
+		display_note(get_trans_view_str($trans_type, $trans_no, _("&View this disposal")));    display_note(get_gl_view_str($trans_type, $trans_no, _("View the GL &Postings for this Disposal")), 1, 0);
 	  hyperlink_params($_SERVER['PHP_SELF'], _("Enter &Another Disposal"), "NewAdjustment=1&FixedAsset=1");
   }
   else {
