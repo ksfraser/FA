@@ -204,7 +204,7 @@
 				if (isset($_SESSION['wa_current_user']))
 				{
 					echo "<span class='power'><a target='_blank' href='$SysPrefs->power_url'>$SysPrefs->power_by $version</a></span>\n";
-					echo "<span class='date'>".Today() . "&nbsp;" . Now()."</span>\n";
+					echo "<span class='date'>".DateService::todayStatic() . "&nbsp;" . DateService::nowStatic()."</span>\n";
 					echo "<span class='date'>" . $db_connections[$_SESSION["wa_current_user"]->company]["name"] . "</span>\n";
 					echo "<span class='date'>" . $_SERVER['SERVER_NAME'] . "</span>\n";
 					echo "<span class='date'>" . $_SESSION["wa_current_user"]->name . "</span>\n";

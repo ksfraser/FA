@@ -91,12 +91,12 @@ class DateService
 
     public function today(): string
     {
-        return \Today();
+        return \DateService::todayStatic();
     }
 
     public function now(): string
     {
-        return \Now();
+        return \DateService::nowStatic();
     }
 
     public function newDocDate(?string $date = null): string
@@ -304,5 +304,21 @@ class DateService
     public static function isDateInFiscalYearStatic(string $date, bool $convert = false): bool
     {
         return (bool)\is_date_in_fiscalyear($date, $convert);
+    }
+    
+    /**
+     * Static wrapper for today
+     */
+    public static function todayStatic(): string
+    {
+        return \DateService::todayStatic();
+    }
+    
+    /**
+     * Static wrapper for now
+     */
+    public static function nowStatic(): string
+    {
+        return \DateService::nowStatic();
     }
 }

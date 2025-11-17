@@ -148,7 +148,7 @@ function print_supplier_balances()
 		if (!$convert && $currency != $myrow['curr_code'])
 			continue;
 		$accumulate = 0;
-		$rate = $convert ? BankingService::getExchangeRateFromHomeCurrency($myrow['curr_code'], Today()) : 1;
+		$rate = $convert ? BankingService::getExchangeRateFromHomeCurrency($myrow['curr_code'], DateService::todayStatic()) : 1;
 		$bal = get_open_balance($myrow['supplier_id'], $from);
 		$init = array();
 		$init[0] = round2(($bal != false ? abs($bal['charges']) : 0)*$rate, $dec);

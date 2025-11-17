@@ -36,7 +36,7 @@ function check_data()
 {
 	global $SysPrefs;
 	
-	if (!DateService::isDate($_POST['date']) || DateService::date1GreaterDate2Static($_POST['date'], Today()))
+	if (!DateService::isDate($_POST['date']) || DateService::date1GreaterDate2Static($_POST['date'], DateService::todayStatic()))
 	{
 		display_error( _("The entered date is invalid."));
 		set_focus('date');
@@ -103,7 +103,7 @@ start_form();
 start_table(TABLESTYLE2);
 if (!isset($_POST['date'])) {
 	$cdate = sql2date(get_company_pref('gl_closing_date'));
-	$_POST['date'] = $cdate ;// ? DateService::endMonthStatic(DateService::addMonthsStatic($cdate, 1)) : Today();
+	$_POST['date'] = $cdate ;// ? DateService::endMonthStatic(DateService::addMonthsStatic($cdate, 1)) : DateService::todayStatic();
 }
 date_row(_("End date of closing period:"), 'date');
 end_table(1);

@@ -82,7 +82,7 @@ start_row();
 if (!isset($_POST['TransFromDate']))
 	$_POST['TransFromDate'] = \FA\Services\DateService::beginFiscalYear();
 if (!isset($_POST['TransToDate']))
-	$_POST['TransToDate'] = Today();
+	$_POST['TransToDate'] = DateService::todayStatic();
 date_cells(_("from:"), 'TransFromDate');
 date_cells(_("to:"), 'TransToDate');
 submit_cells('Show',_("Show"), '', false, 'default');

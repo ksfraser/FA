@@ -30,7 +30,7 @@ class ProductionSalesRepository implements SalesRepositoryInterface
         float $factor = 1.0,
         ?string $date = null
     ): ?float {
-        $date = $date ?? \Today();
+        $date = $date ?? \DateService::todayStatic();
         
         $sql = "SELECT price FROM " . TB_PREF . "prices 
                 WHERE stock_id=" . \db_escape($stockId) . " 

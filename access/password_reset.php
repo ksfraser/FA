@@ -96,7 +96,7 @@ function defaultCompany()
 	echo "<table class='bottomBar'>\n";
 	echo "<tr>";
 	if (isset($_SESSION['wa_current_user'])) 
-		$date = Today() . " | " . Now();
+		$date = DateService::todayStatic() . " | " . DateService::nowStatic();
 	else	
 		$date = date("m/d/Y") . " | " . date("h.i am");
 	echo "<td class='bottomBarCell'>$date</td>\n";

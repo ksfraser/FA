@@ -39,7 +39,7 @@ if (get_post('Show'))
 
 if (get_post('TransFromDate') == "" && get_post('TransToDate') == "")
 {
-	$date = Today();
+	$date = DateService::todayStatic();
 	$row = get_company_prefs();
 	$edate = DateService::addMonthsStatic($date, -$row['tax_last']);
 	$edate = DateService::endMonthStatic($edate);

@@ -130,7 +130,7 @@ function display_rate_edit()
 	}
 	else
 	{
-		$_POST['date_'] = Today();
+		$_POST['date_'] = DateService::todayStatic();
 		$_POST['BuyRate'] = '';
 		date_row(_("Date to Use From:"), 'date_');
 	}

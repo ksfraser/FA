@@ -83,10 +83,10 @@ function check_overdue($row)
 {
 	global $trans_type;
 	if ($trans_type == ST_SALESQUOTE)
-		return (DateService::date1GreaterDate2Static(Today(), sql2date($row['delivery_date'])));
+		return (DateService::date1GreaterDate2Static(DateService::todayStatic(), sql2date($row['delivery_date'])));
 	else
 		return ($row['type'] == 0
-			&& DateService::date1GreaterDate2Static(Today(), sql2date($row['delivery_date']))
+			&& DateService::date1GreaterDate2Static(DateService::todayStatic(), sql2date($row['delivery_date']))
 			&& ($row['TotDelivered'] < $row['TotQuantity']));
 }
 

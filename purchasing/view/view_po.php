@@ -57,7 +57,7 @@ foreach ($purchase_order->line_items as $stock_item)
 
 	// if overdue and outstanding quantities, then highlight as so
 	if (($stock_item->quantity - $stock_item->qty_received > 0)	&&
-		DateService::date1GreaterDate2Static(Today(), $stock_item->req_del_date))
+		DateService::date1GreaterDate2Static(DateService::todayStatic(), $stock_item->req_del_date))
 	{
     	start_row("class='overduebg'");
     	$overdue_items = true;

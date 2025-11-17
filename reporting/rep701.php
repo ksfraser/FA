@@ -55,7 +55,7 @@ function display_type ($type, $typename, &$dec, &$rep, $showbalance, $level)
 			$begin = \FA\Services\DateService::beginFiscalYear();
 			if (is_account_balancesheet($account["account_code"]))
 				$begin = "";
-			$balance = get_gl_trans_from_to($begin, ToDay(), $account["account_code"], 0);
+			$balance = get_gl_trans_from_to($begin, DateService::todayStatic(), $account["account_code"], 0);
 		}
 		$rep->TextCol(0, 1,	$account['account_code']);
 		$rep->TextCol(1, 2,	$prefix.$account['account_name']);

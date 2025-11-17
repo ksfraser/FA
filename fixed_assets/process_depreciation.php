@@ -156,7 +156,7 @@ function show_gl_controls() {
   start_table(TABLESTYLE2);
 
   if (!isset($_POST['date']))
-    $_POST['date'] = Today();
+    $_POST['date'] = DateService::todayStatic();
 
   $start = next_depreciation_date($myrow['depreciation_date']);
   $start_text =  _(date('F', $start)).' '.date('Y', $start);

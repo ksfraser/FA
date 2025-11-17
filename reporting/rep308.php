@@ -67,12 +67,12 @@ function fetch_items($category=0)
 function trans_qty($stock_id, $location, $from_date, $to_date, $inward = true)
 {
 	if ($from_date == null)
-		$from_date = Today();
+		$from_date = DateService::todayStatic();
 
 	$from_date = date2sql($from_date);	
 
 	if ($to_date == null)
-		$to_date = Today();
+		$to_date = DateService::todayStatic();
 
 	$to_date = date2sql($to_date);
 
@@ -100,7 +100,7 @@ function trans_qty($stock_id, $location, $from_date, $to_date, $inward = true)
 function avg_unit_cost($stock_id, $location, $to_date)
 {
 	if ($to_date == null)
-		$to_date = Today();
+		$to_date = DateService::todayStatic();
 
 	$to_date = date2sql($to_date);
 
@@ -142,12 +142,12 @@ function avg_unit_cost($stock_id, $location, $to_date)
 function trans_qty_unit_cost($stock_id, $location, $from_date, $to_date, $inward = true)
 {
 	if ($from_date == null)
-		$from_date = Today();
+		$from_date = DateService::todayStatic();
 
 	$from_date = date2sql($from_date);	
 
 	if ($to_date == null)
-		$to_date = Today();
+		$to_date = DateService::todayStatic();
 
 	$to_date = date2sql($to_date);
 

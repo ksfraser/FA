@@ -51,7 +51,7 @@ function get_domestic_price($myrow, $stock_id)
 function getAverageCost($stock_id, $location, $to_date)
 {
 	if ($to_date == null)
-		$to_date = Today();
+		$to_date = DateService::todayStatic();
 
 	$to_date = date2sql($to_date);
 

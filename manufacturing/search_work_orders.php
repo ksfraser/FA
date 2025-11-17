@@ -92,7 +92,7 @@ end_table();
 function check_overdue($row)
 {
 	return (!$row["closed"] 
-		&& \FA\Services\DateService::dateDiff(Today(), sql2date($row["required_by"]), "d") > 0);
+		&& \FA\Services\DateService::dateDiff(DateService::todayStatic(), sql2date($row["required_by"]), "d") > 0);
 }
 
 function view_link($dummy, $order_no)

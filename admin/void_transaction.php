@@ -333,7 +333,7 @@ function handle_void_transaction()
 
 if (!isset($_POST['date_']))
 {
-	$_POST['date_'] = Today();
+	$_POST['date_'] = DateService::todayStatic();
 	if (!DateService::isDateInFiscalYearStatic($_POST['date_']))
 		$_POST['date_'] = DateService::endFiscalYear();
 }		

@@ -43,7 +43,7 @@ function getTransactions($from, $to)
 
 function getYTD($dim)
 {
-	$date = Today();
+	$date = DateService::todayStatic();
 	$date = \FA\Services\DateService::beginFiscalYear($date);
 	date2sql($date);
 	

@@ -79,7 +79,7 @@ function display_reval()
 	start_table(TABLESTYLE2);
 
 	if (!isset($_POST['date']))
-		$_POST['date'] = Today();
+		$_POST['date'] = DateService::todayStatic();
     date_row(_("Date for Revaluation:"), 'date', '', null, 0, 0, 0, null, true);
     textarea_row(_("Memo:"), 'memo_', null, 40,4);
 	end_table(1);

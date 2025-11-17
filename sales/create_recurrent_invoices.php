@@ -161,7 +161,7 @@ $id = find_submit('create');
 if ($id != -1)
 {
 	$Ajax->activate('_page_body');
-	$date = Today();
+	$date = DateService::todayStatic();
 	$myrow = get_recurrent_invoice($id);
 	$from = calculate_from($myrow);
 	$to = DateService::addMonthsStatic($from, $myrow['monthly']);
@@ -169,7 +169,7 @@ if ($id != -1)
 
 	if (!DateService::isDateInFiscalYear($date))
 		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
-	elseif (!DateService::date1GreaterDate2Static(DateService::addDaysStatic(Today(), 1), $to))
+	elseif (!DateService::date1GreaterDate2Static(DateService::addDaysStatic(DateService::todayStatic(), 1), $to))
 		display_error(_("Recurrent invoice cannot be generated before last day of covered period."));
 	elseif (check_recurrent_invoice_prices($id))
 		display_error(_("Recurrent invoices cannot be generated because some items have no price defined in customer currency."));
@@ -203,7 +203,7 @@ if ($id != -1)
 }
 else
 {
-$result = get_recurrent_invoices(Today());
+$result = get_recurrent_invoices(DateService::todayStatic());
 
 start_form();
 start_table(TABLESTYLE, "width=70%");

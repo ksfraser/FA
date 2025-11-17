@@ -46,7 +46,7 @@ function gl_inquiry_controls()
 
     start_table(TABLESTYLE_NOBORDER);
 
-	$date = today();
+	$date = DateService::todayStatic();
 	if (!isset($_POST['TransToDate']))
 		$_POST['TransToDate'] = DateService::endMonthStatic($date);
 	if (!isset($_POST['TransFromDate']))

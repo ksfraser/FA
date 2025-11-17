@@ -217,7 +217,7 @@ function print_customer_balances()
     {
         if (!$convert && $currency != $myrow['curr_code']) continue;
 
-        $rate = $convert ? BankingService::getExchangeRateFromHomeCurrency($myrow['curr_code'], Today()) : 1;
+        $rate = $convert ? BankingService::getExchangeRateFromHomeCurrency($myrow['curr_code'], DateService::todayStatic()) : 1;
         $bal = get_open_balance($myrow['debtor_no'], $from);
         $init = array();
         $curr_db = $bal ? round2(abs($bal['charges'] * $rate), $dec) : 0; // db

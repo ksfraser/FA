@@ -168,7 +168,7 @@ function inquiry_controls()
 	$dim = get_company_pref('use_dimension');
     start_table(TABLESTYLE_NOBORDER);
     
-	$date = today();
+	$date = DateService::todayStatic();
 	if (!isset($_POST['TransToDate']))
 		$_POST['TransToDate'] = DateService::endMonthStatic($date);
 	if (!isset($_POST['TransFromDate']))
