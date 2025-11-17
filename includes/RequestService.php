@@ -8,6 +8,8 @@ namespace FA\Services;
  * 
  * Handles HTTP request data retrieval and validation.
  * Provides centralized access to POST/GET parameters with type conversion.
+ * 
+ * This replaces the legacy get_post() and input_num() functions with proper OOP methods.
  */
 class RequestService
 {
@@ -21,21 +23,22 @@ class RequestService
      * @param mixed $dflt Default value if parameter not set
      * @return mixed Parameter value or default
      */
-    public function getPost(string|array $name, mixed $dflt = ''): mixed
-    {
-        return \RequestService::getPostStatic($name, $dflt);
-    }
-    
-    /**
-     * Static wrapper for get_post()
-     * 
-     * @param string|array $name Parameter name or array of name=>default pairs
-     * @param mixed $dflt Default value if parameter not set
-     * @return mixed Parameter value or default
-     */
     public static function getPostStatic(string|array $name, mixed $dflt = ''): mixed
     {
-        return \get_post($name, $dflt);
+        if (is_array($name)) {
+            $ret = array();
+            foreach($name as $key => $dflt) {
+                if (!is_numeric($key)) {
+                    $ret[$key] = is_numeric($dflt) ? self::inputNumStatic($key, $dflt) : self::getPostStatic($key, $dflt);
+                } else {
+                    $ret[$dflt] = self::getPostStatic($dflt, null);
+                }
+            }
+            return $ret;
+        } else {
+            return is_float($dflt) ? self::inputNumStatic($name, $dflt) :
+                    ((!isset($_POST[$name])) ? $dflt : $_POST[$name]);
+        }
     }
     
     /**
@@ -48,20 +51,12 @@ class RequestService
      * @param float|int $dflt Default value if parameter not set or empty
      * @return float|int Numeric value in POSIX format
      */
-    public function inputNum(?string $postname = null, float|int $dflt = 0): float|int
-    {
-        return \input_num($postname, $dflt);
-    }
-    
-    /**
-     * Static wrapper for input_num()
-     * 
-     * @param string|null $postname Parameter name
-     * @param float|int $dflt Default value if parameter not set or empty
-     * @return float|int Numeric value in POSIX format
-     */
     public static function inputNumStatic(?string $postname = null, float|int $dflt = 0): float|int
     {
-        return \input_num($postname, $dflt);
+        if (!isset($_POST[$postname]) || $_POST[$postname] == "") {
+            return $dflt;
+        }
+
+        return user_numeric($_POST[$postname]);
     }
 }
