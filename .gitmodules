@@ -1,0 +1,6 @@
+[submodule "html-lib"]
+	path = html-lib
+	url = https://github.com/ksfraser/html
+[submodule "ksf-settings"]
+	path = ksf-settings
+	url = https://github.com/ksfraser/ksf_settings
