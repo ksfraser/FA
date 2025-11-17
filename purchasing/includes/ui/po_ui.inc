@@ -414,7 +414,7 @@ function po_item_controls(&$order, &$rowcounter, $line_no=-1)
    		$_POST['qty'] =	number_format2(get_purchase_conversion_factor ($order->supplier_id, $_POST['stock_id']), $dec);
 		$_POST['price'] = price_decimal_format(get_purchase_price ($order->supplier_id, $_POST['stock_id']), $dec2);
 		if ($order->trans_type == ST_PURCHORDER)
-			$_POST['req_del_date'] = add_days(Today(), $SysPrefs->default_receival_required_by());
+			$_POST['req_del_date'] = DateService::addDaysStatic(Today(), $SysPrefs->default_receival_required_by());
 		$qty_rcvd = '';
 	}
 

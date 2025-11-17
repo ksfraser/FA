@@ -121,9 +121,9 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 		$order->due_date = get_invoice_duedate($order->payment, $order->document_date);
 	}
 	elseif ($order->trans_type == ST_SALESORDER)
-		$order->due_date = add_days($order->document_date, $SysPrefs->default_delivery_required_by());
+		$order->due_date = DateService::addDaysStatic($order->document_date, $SysPrefs->default_delivery_required_by());
 	elseif ($order->trans_type == ST_SALESQUOTE)
-		$order->due_date = add_days($order->document_date, $SysPrefs->default_quote_valid_days());
+		$order->due_date = DateService::addDaysStatic($order->document_date, $SysPrefs->default_quote_valid_days());
 
 	if($order->payment_terms['cash_sale']) {
 		$order->set_location($order->pos["pos_location"], $order->pos["location_name"]);
@@ -430,7 +430,7 @@ function display_order_header(&$order, $editable, $date_text)
 			if ($order->trans_type == ST_SALESINVOICE) {
 				$_POST['delivery_date'] = get_invoice_duedate(get_post('payment'), get_post('OrderDate'));
 			} else 
-				$_POST['delivery_date'] = add_days(get_post('OrderDate'), $SysPrefs->default_delivery_required_by());
+				$_POST['delivery_date'] = DateService::addDaysStatic(get_post('OrderDate'), $SysPrefs->default_delivery_required_by());
 			$Ajax->activate('items_table');
 			$Ajax->activate('delivery_date');
 		}

@@ -1040,8 +1040,8 @@ function calculate_next_invoice($myrow)
 	else
 		$next = sql2date($myrow["last_sent"]);
 	$next = add_months($next, $myrow['monthly']);
-	$next = add_days($next, $myrow['days']);
-	return add_days($next,-1);
+	$next = DateService::addDaysStatic($next, $myrow['days']);
+	return DateService::addDaysStatic($next,-1);
 }
 
 function customer_recurrent_invoices($today)

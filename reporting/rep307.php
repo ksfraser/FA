@@ -149,7 +149,7 @@ function inventory_movements()
 		$rep->TextCol(2, 3, $myrow['units']);
 		$qoh_start= $inward = $outward = $qoh_end = 0; 
 		
-		$qoh_start += get_qoh_on_date($myrow['stock_id'], $location, add_days($from_date, -1));
+		$qoh_start += get_qoh_on_date($myrow['stock_id'], $location, DateService::addDaysStatic($from_date, -1));
 		$qoh_end += get_qoh_on_date($myrow['stock_id'], $location, $to_date);
 		
 		$inward += trans_qty($myrow['stock_id'], $location, $from_date, $to_date);

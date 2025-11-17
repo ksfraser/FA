@@ -77,8 +77,8 @@ if (isset($_POST['go']) || isset($_POST['show']))
 			$date  = end_month($date_); // avoid skip on shorter months
 		}
 		
-		$lastdate = ($freq == 1 ? add_days($date_, 7*$per) :
-			($freq == 2 ? add_days($date_, 14*$per) :
+		$lastdate = ($freq == 1 ? DateService::addDaysStatic($date_, 7*$per) :
+			($freq == 2 ? DateService::addDaysStatic($date_, 14*$per) :
 			($freq == 3 ? end_month(add_months($date_, $per)) : 
 			end_month(add_months($date_, 3*$per)))));
 		if (!is_date_in_fiscalyears($lastdate, false))
@@ -127,10 +127,10 @@ if (isset($_POST['go']) || isset($_POST['show']))
 					switch($freq)
 					{
 						case 1:
-							$date = $date_ = add_days($date_, 7);
+							$date = $date_ = DateService::addDaysStatic($date_, 7);
 							break;
 						case 2:
-							$date = $date_ = add_days($date_, 14);
+							$date = $date_ = DateService::addDaysStatic($date_, 14);
 							break;
 						case 3:
 							$date_ = add_months($date_, 1);

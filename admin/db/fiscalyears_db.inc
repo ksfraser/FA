@@ -100,8 +100,8 @@ function check_begin_end_date($date1, $date2)
 	$row = db_fetch_row($result);
 	if ($row[0] === null)
 		return true;
-	$max = add_days(sql2date($row[0]), 1);
-	$min = add_days(sql2date($row[1]), -1);
+	$max = DateService::addDaysStatic(sql2date($row[0]), 1);
+	$min = DateService::addDaysStatic(sql2date($row[1]), -1);
 	return ($max === $date1 || $min === $date2);
 }
 
@@ -112,7 +112,7 @@ function next_begin_date()
 	$row = db_fetch_row($result);
 	if ($row[0] === null)
 		return false;
-	return add_days(sql2date($row[0]), 1);
+	return DateService::addDaysStatic(sql2date($row[0]), 1);
 }
 
 function check_years_before($date, $closed=false)
@@ -182,7 +182,7 @@ function open_year($year)
 	$from = sql2date($myrow['begin']);
 
 	begin_transaction();
-	close_transactions(add_days($from, -1));
+	close_transactions(DateService::addDaysStatic($from, -1));
 	commit_transaction();
 }
 

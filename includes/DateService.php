@@ -144,7 +144,17 @@ class DateService
         return \add_days($date, $days);
     }
 
+    public static function addDaysStatic(string $date, int $days): string
+    {
+        return \add_days($date, $days);
+    }
+
     public function addMonths(string $date, int $months): string
+    {
+        return \add_months($date, $months);
+    }
+
+    public static function addMonthsStatic(string $date, int $months): string
     {
         return \add_months($date, $months);
     }
@@ -175,6 +185,11 @@ class DateService
     }
 
     public function date1GreaterDate2(string $date1, string $date2): bool
+    {
+        return (bool)\date1_greater_date2($date1, $date2);
+    }
+
+    public static function date1GreaterDate2Static(string $date1, string $date2): bool
     {
         return (bool)\date1_greater_date2($date1, $date2);
     }

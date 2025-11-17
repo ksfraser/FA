@@ -282,7 +282,7 @@ class Cart
 					get_invoice_duedate($this->payment, $this->document_date);
 			} else
 				$this->due_date =
-					add_days($this->document_date, $SysPrefs->default_delivery_required_by());
+					DateService::addDaysStatic($this->document_date, $SysPrefs->default_delivery_required_by());
 		}
 		$this->credit = get_current_cust_credit($this->customer_id);
 	}

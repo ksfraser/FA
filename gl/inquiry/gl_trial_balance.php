@@ -50,7 +50,7 @@ function gl_inquiry_controls()
 	if (!isset($_POST['TransToDate']))
 		$_POST['TransToDate'] = end_month($date);
 	if (!isset($_POST['TransFromDate']))
-		$_POST['TransFromDate'] = add_days(end_month($date), -user_transaction_days());
+		$_POST['TransFromDate'] = DateService::addDaysStatic(end_month($date), -user_transaction_days());
 	start_row();	
     date_cells(_("From:"), 'TransFromDate');
 	date_cells(_("To:"), 'TransToDate');
@@ -84,7 +84,7 @@ function display_trial_balance($type, $typename)
 	$begin = get_fiscalyear_begin_for_date($_POST['TransFromDate']);
 	if (date1_greater_date2($begin, $_POST['TransFromDate']))
 		$begin = $_POST['TransFromDate'];
-	$begin = add_days($begin, -1);
+	$begin = DateService::addDaysStatic($begin, -1);
 
 	$Apdeb=$pdeb;
 	$Apcre=$pcre;

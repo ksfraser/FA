@@ -255,13 +255,13 @@ function inventory_movements()
 			$rep->fontSize -= 2;
 			$rep->NewLine();
 		}
-		$qoh_start = get_qoh_on_date($myrow['stock_id'], $location, add_days($from_date, -1));
+		$qoh_start = get_qoh_on_date($myrow['stock_id'], $location, DateService::addDaysStatic($from_date, -1));
 		$qoh_end = get_qoh_on_date($myrow['stock_id'], $location, $to_date);
 		
 		$inward = trans_qty($myrow['stock_id'], $location, $from_date, $to_date);
 		$outward = trans_qty($myrow['stock_id'], $location, $from_date, $to_date, false);
 		$openCost = avg_unit_cost($myrow['stock_id'], $location, $from_date);
-		$unitCost = avg_unit_cost($myrow['stock_id'], $location, add_days($to_date, 1));
+		$unitCost = avg_unit_cost($myrow['stock_id'], $location, DateService::addDaysStatic($to_date, 1));
 		if ($qoh_start == 0 && $inward == 0 && $outward == 0 && $qoh_end == 0)
 			continue;
 		$rep->NewLine();

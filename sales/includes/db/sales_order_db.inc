@@ -398,9 +398,9 @@ function get_invoice_duedate($terms, $invdate)
 		return $invdate;
 
 	if ($myrow['day_in_following_month'] > 0)
-		$duedate = add_days(end_month($invdate), $myrow['day_in_following_month']);
+		$duedate = DateService::addDaysStatic(end_month($invdate), $myrow['day_in_following_month']);
 	elseif ($myrow['days_before_due'] > 0)
-		$duedate = add_days($invdate, $myrow['days_before_due']);
+		$duedate = DateService::addDaysStatic($invdate, $myrow['days_before_due']);
 	else
 		$duedate = $invdate;
 	return $duedate;

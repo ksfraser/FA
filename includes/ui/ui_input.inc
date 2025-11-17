@@ -645,7 +645,7 @@ function date_cells($label, $name, $title = null, $check=null, $inc_days=0,
 		{
 			$dd = Today();
 			if ($inc_days != 0)
-				$dd = add_days($dd, $inc_days);
+				$dd = DateService::addDaysStatic($dd, $inc_days);
 			if ($inc_months != 0)
 				$dd = add_months($dd, $inc_months);
 			if ($inc_years != 0)
@@ -1008,7 +1008,7 @@ function bank_balance_row($bank_acc, $parms='')
 {
 	global $path_to_root;
 
-	$to = add_days(Today(), 1);
+	$to = DateService::addDaysStatic(Today(), 1);
 	$bal = get_balance_before_for_bank_account($bank_acc, $to);
 	label_row( _("Bank Balance:"),
 		"<a target='_blank' " . ($bal<0 ? 'class="redfg"' : '')

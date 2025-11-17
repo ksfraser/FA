@@ -41,7 +41,7 @@ function display_type ($type, $typename, &$dec, &$rep, $from, $to, $zero, $balan
 	$begin = get_fiscalyear_begin_for_date($from);
 	if (date1_greater_date2($begin, $from))
 		$begin = $from;
-	$begin = add_days($begin, -1);
+	$begin = DateService::addDaysStatic($begin, -1);
 	while ($account=db_fetch($accounts))
 	{
 		//Print Type Title if it has atleast one non-zero account	

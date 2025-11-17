@@ -154,7 +154,7 @@ function show_results()
 		$begin = get_fiscalyear_begin_for_date($_POST['TransFromDate']);
 		if (date1_greater_date2($begin, $_POST['TransFromDate']))
 			$begin = $_POST['TransFromDate'];
-		$begin = add_days($begin, -1);
+		$begin = DateService::addDaysStatic($begin, -1);
 	}
 
 	$bfw = 0;

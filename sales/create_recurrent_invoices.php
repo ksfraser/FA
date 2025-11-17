@@ -83,8 +83,8 @@ function calculate_next($myrow)
 	else
 		$next = sql2date($myrow["last_sent"]);
 	$next = add_months($next, $myrow['monthly']);
-	$next = add_days($next, $myrow['days']);
-	return add_days($next,-1);
+	$next = DateService::addDaysStatic($next, $myrow['days']);
+	return DateService::addDaysStatic($next,-1);
 }
 
 $id = find_submit("confirmed");
@@ -165,11 +165,11 @@ if ($id != -1)
 	$myrow = get_recurrent_invoice($id);
 	$from = calculate_from($myrow);
 	$to = add_months($from, $myrow['monthly']);
-	$to = add_days($to, $myrow['days']);
+	$to = DateService::addDaysStatic($to, $myrow['days']);
 
 	if (!DateService::isDateInFiscalYear($date))
 		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
-	elseif (!date1_greater_date2(add_days(Today(), 1), $to))
+	elseif (!date1_greater_date2(DateService::addDaysStatic(Today(), 1), $to))
 		display_error(_("Recurrent invoice cannot be generated before last day of covered period."));
 	elseif (check_recurrent_invoice_prices($id))
 		display_error(_("Recurrent invoices cannot be generated because some items have no price defined in customer currency."));
@@ -186,9 +186,9 @@ if ($id != -1)
 		label_row(_('Number of invoices:'), $count);
 		date_row(_('Invoice date:'), 'trans_date');
 		$newto = add_months($to, $myrow['monthly']);
-		$newto = add_days($newto, $myrow['days']);
-		text_row(_('Invoice notice:'), 'memo', sprintf(_("Recurrent Invoice covers period %s - %s."), $to,	 add_days($newto, -1)), 100, 100);
-		//text_row(_('Invoice notice:'), 'memo', sprintf(_("Recurrent Invoice covers period %s - %s."), //$from, add_days($to, -1)), 100, 100);
+		$newto = DateService::addDaysStatic($newto, $myrow['days']);
+		text_row(_('Invoice notice:'), 'memo', sprintf(_("Recurrent Invoice covers period %s - %s."), $to,	 DateService::addDaysStatic($newto, -1)), 100, 100);
+		//text_row(_('Invoice notice:'), 'memo', sprintf(_("Recurrent Invoice covers period %s - %s."), //$from, DateService::addDaysStatic($to, -1)), 100, 100);
 		end_table();
 		hidden('from', $from, true);
 		hidden('to', $to, true);
