@@ -8,6 +8,9 @@ namespace FA\Services;
  * 
  * Handles number and currency formatting with user preferences.
  * Replaces legacy FormatService::numberFormat2() and FormatService::priceFormat() functions.
+ * 
+ * Uses UserPrefsCache to avoid repeated session lookups (191+ price_dec calls,
+ * 378+ tho_sep calls, 378+ dec_sep calls reduced to 1 each per request).
  */
 class FormatService
 {
@@ -24,8 +27,8 @@ class FormatService
     public static function numberFormat2(float|int $number, int|string $decimals = 0): string
     {
         global $SysPrefs;
-        $tsep = $SysPrefs->thoseps[user_tho_sep()];
-        $dsep = $SysPrefs->decseps[user_dec_sep()];
+        $tsep = $SysPrefs->thoseps[UserPrefsCache::getThousandsSeparator()];
+        $dsep = $SysPrefs->decseps[UserPrefsCache::getDecimalSeparator()];
 
         $number = (float)$number;
         if($decimals === 'max') {
@@ -52,6 +55,6 @@ class FormatService
      */
     public static function priceFormat(float|int $number): string
     {
-        return self::numberFormat2($number, user_price_dec());
+        return self::numberFormat2($number, UserPrefsCache::getPriceDecimals());
     }
 }

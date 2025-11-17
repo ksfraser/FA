@@ -46,3 +46,4 @@ require_once __DIR__ . '/../includes/ui/ui_controls.inc';
 require_once __DIR__ . '/../includes/RequestService.php';
 require_once __DIR__ . '/../includes/FormatService.php';
 require_once __DIR__ . '/../includes/UiMessageService.php';
+require_once __DIR__ . '/../includes/UserPrefsCache.php';
