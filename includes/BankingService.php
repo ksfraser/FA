@@ -2,6 +2,11 @@
 
 namespace FA;
 
+use FA\Contracts\CompanyPreferencesInterface;
+use FA\Contracts\ExchangeRateRepositoryInterface;
+use FA\Contracts\DisplayServiceInterface;
+use FA\Contracts\MathServiceInterface;
+
 /**
  * Banking Service
  *
@@ -13,26 +18,88 @@ namespace FA;
  * - Open/Closed: Can be extended for additional banking features
  * - Liskov Substitution: Compatible with banking interfaces
  * - Interface Segregation: Focused banking methods
- * - Dependency Inversion: Depends on abstractions, not globals
+ * - Dependency Inversion: Depends on abstractions via interfaces (DI pattern)
  *
  * DRY: Reuses banking logic across the application
  * TDD: Developed with unit tests for regression prevention
  *
+ * Architecture Patterns:
+ * - Dependency Injection: Services injected via constructor
+ * - Repository Pattern: Data access through ExchangeRateRepository
+ * - MVC Separation: Display logic abstracted through DisplayService
+ *
  * UML Class Diagram:
- * +---------------------+
- * |  BankingService    |
- * +---------------------+
- * |                    |
- * +---------------------+
- * | + isCompanyCurrency(currency)|
- * | + getCompanyCurrency()|
- * | + getExchangeRate(...)|
- * +---------------------+
+ * +----------------------------------+
+ * |        BankingService            |
+ * +----------------------------------+
+ * | - prefs: CompanyPreferencesInterface |
+ * | - rateRepo: ExchangeRateRepositoryInterface |
+ * | - display: DisplayServiceInterface |
+ * +----------------------------------+
+ * | + isCompanyCurrency(currency)    |
+ * | + getCompanyCurrency()           |
+ * | + getExchangeRateFromHomeCurrency() |
+ * | + getExchangeRateToHomeCurrency() |
+ * | + toHomeCurrency()               |
+ * | + getExchangeRateFromTo()        |
+ * | + exchangeFromTo()               |
+ * | + exchangeVariation()            |
+ * +----------------------------------+
  *
  * @package FA
  */
 class BankingService
 {
+    private CompanyPreferencesInterface $prefs;
+    private ExchangeRateRepositoryInterface $rateRepo;
+    private DisplayServiceInterface $display;
+    private MathServiceInterface $math;
+    
+    /**
+     * Constructor with dependency injection
+     *
+     * @param CompanyPreferencesInterface|null $prefs Company preferences service
+     * @param ExchangeRateRepositoryInterface|null $rateRepo Exchange rate repository
+     * @param DisplayServiceInterface|null $display Display service
+     * @param MathServiceInterface|null $math Math service
+     */
+    public function __construct(
+        ?CompanyPreferencesInterface $prefs = null,
+        ?ExchangeRateRepositoryInterface $rateRepo = null,
+        ?DisplayServiceInterface $display = null,
+        ?MathServiceInterface $math = null
+    ) {
+        // If no dependencies injected, use global function wrappers for backward compatibility
+        $this->prefs = $prefs ?? new class implements CompanyPreferencesInterface {
+            public function get(string $key) {
+                return \get_company_pref($key);
+            }
+            public function set(string $key, $value): void {
+                // Not implemented for backward compat wrapper
+            }
+        };
+        
+        $this->rateRepo = $rateRepo ?? new class implements ExchangeRateRepositoryInterface {
+            public function getLastExchangeRate(string $currencyCode, string $date): ?array {
+                return \get_last_exchange_rate($currencyCode, $date);
+            }
+        };
+        
+        $this->display = $display ?? new class implements DisplayServiceInterface {
+            public function displayError(string $message, bool $exit = false): void {
+                \display_error($message, $exit);
+            }
+        };
+        
+        $this->math = $math ?? new class implements MathServiceInterface {
+            public function round2(float $value, int $decimals): float {
+                return \round2($value, $decimals);
+            }
+            public function userPriceDecimals(): int {
+                return \user_price_dec();
+            }
+        };
+    }
     /**
      * Check if currency is company currency
      *
@@ -51,25 +118,25 @@ class BankingService
      */
     public function getCompanyCurrency(): string
     {
-        return \get_company_pref('curr_default');
+        return $this->prefs->get('curr_default');
     }
 
     /**
      * Get exchange rate from home currency
      *
-     * @param string $currency_code Currency code
+     * @param string|null $currency_code Currency code
      * @param string $date Date
      * @return float Exchange rate
      */
-    public function getExchangeRateFromHomeCurrency(string $currency_code, string $date_): float
+    public function getExchangeRateFromHomeCurrency(?string $currency_code, string $date_): float
     {
-        if ($currency_code == $this->getCompanyCurrency() || $currency_code == null)
+        if ($currency_code == null || $currency_code == $this->getCompanyCurrency())
             return 1.0000;
 
-        $rate = \get_last_exchange_rate($currency_code, $date_);
+        $rate = $this->rateRepo->getLastExchangeRate($currency_code, $date_);
 
         if (!$rate) {
-            \display_error(
+            $this->display->displayError(
                 sprintf(_("Cannot retrieve exchange rate for currency %s as of %s. Please add exchange rate manually on Exchange Rates page."),
                      $currency_code, $date_));
             return 1.000;
@@ -101,7 +168,7 @@ class BankingService
     public function toHomeCurrency(float $amount, string $currency_code, string $date_): float
     {
         $ex_rate = $this->getExchangeRateToHomeCurrency($currency_code, $date_);
-        return \round2($amount / $ex_rate, \user_price_dec());
+        return $this->math->round2($amount / $ex_rate, $this->math->userPriceDecimals());
     }
 
     /**
