@@ -347,7 +347,7 @@ function db_has_fixed_asset_classes()
 
 function db_has_depreciable_fixed_assets()
 {
-	$year = get_current_fiscalyear();
+	$year = DateService::getCurrentFiscalYearStatic();
 	$begin = date2sql(DateService::addMonthsStatic(sql2date($year['begin']), -1));
 	$end = date2sql(DateService::addMonthsStatic(sql2date($year['end']), -1));
 

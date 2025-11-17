@@ -238,4 +238,23 @@ class DateService
     {
         return $this->calendarConverter->islamicToGregorian($i_y, $i_m, $i_d);
     }
+    
+    /**
+     * Get current fiscal year
+     *
+     * @return array|null Fiscal year data
+     */
+    public function getCurrentFiscalYear(): ?array
+    {
+        return \get_current_fiscalyear();
+    }
+    
+    /**
+     * Static wrapper for getCurrentFiscalYear
+     */
+    public static function getCurrentFiscalYearStatic(): ?array
+    {
+        $service = new self();
+        return $service->getCurrentFiscalYear();
+    }
 }

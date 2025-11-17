@@ -1153,7 +1153,7 @@ function stock_depreciable_fa_list_cells($label, $name, $selected_id=null,
 	$where_opts[] = "stock_id NOT IN
     	( SELECT stock_id FROM ".TB_PREF."stock_moves WHERE (type=".ST_CUSTDELIVERY." OR type=".ST_INVADJUST.") AND qty!=0 )";
 
-	$year = get_current_fiscalyear();
+	$year = DateService::getCurrentFiscalYearStatic();
 	$begin = date2sql(DateService::addMonthsStatic(sql2date($year['begin']), -1));
 	$end = date2sql(DateService::addMonthsStatic(sql2date($year['end']), -1));
 

@@ -205,7 +205,7 @@ function is_date_in_fiscalyear($date, $convert=false)
 	if (user_check_access('SA_MULTIFISCALYEARS')) // allow all open years for this one
 		return is_date_in_fiscalyears($date2, false);
 
-	$myrow = get_current_fiscalyear();
+	$myrow = DateService::getCurrentFiscalYearStatic();
 	$begin = sql2date($myrow['begin']);
 	$end = sql2date($myrow['end']);
 	if (DateService::date1GreaterDate2Static($begin, $date2) || DateService::date1GreaterDate2Static($date2, $end))
@@ -225,7 +225,7 @@ function begin_fiscalyear()
 	global $path_to_root;
 	include_once($path_to_root . "/admin/db/fiscalyears_db.inc");
 
-	$myrow = get_current_fiscalyear();
+	$myrow = DateService::getCurrentFiscalYearStatic();
 	return sql2date($myrow['begin']);
 }
 
@@ -234,7 +234,7 @@ function end_fiscalyear()
 	global $path_to_root;
 	include_once($path_to_root . "/admin/db/fiscalyears_db.inc");
 
-	$myrow = get_current_fiscalyear();
+	$myrow = DateService::getCurrentFiscalYearStatic();
 	return sql2date($myrow['end']);
 }
 

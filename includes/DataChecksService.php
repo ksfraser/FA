@@ -522,7 +522,7 @@ class DataChecksService {
      * @return bool True if has depreciable fixed assets
      */
     public function dbHasDepreciableFixedAssets(): bool {
-        $year = \get_current_fiscalyear();
+        $year = \DateService::getCurrentFiscalYearStatic();
         $begin = \date2sql(\DateService::addMonthsStatic(\sql2date($year['begin']), -1));
         $end = \date2sql(\DateService::addMonthsStatic(\sql2date($year['end']), -1));
 
