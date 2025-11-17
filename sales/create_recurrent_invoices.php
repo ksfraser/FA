@@ -13,6 +13,7 @@ $page_security = 'SA_SALESINVOICE';
 $path_to_root = "..";
 include_once($path_to_root . "/sales/includes/cart_class.inc");
 include_once($path_to_root . "/includes/session.inc");
+require_once($path_to_root . "/includes/DateService.php");
 include_once($path_to_root . "/sales/includes/ui/sales_order_ui.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
@@ -166,7 +167,7 @@ if ($id != -1)
 	$to = add_months($from, $myrow['monthly']);
 	$to = add_days($to, $myrow['days']);
 
-	if (!is_date_in_fiscalyear($date))
+	if (!DateService::isDateInFiscalYear($date))
 		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
 	elseif (!date1_greater_date2(add_days(Today(), 1), $to))
 		display_error(_("Recurrent invoice cannot be generated before last day of covered period."));

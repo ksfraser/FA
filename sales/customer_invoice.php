@@ -304,7 +304,7 @@ function check_data()
 		return false;
 	}
 
-	if (!is_date_in_fiscalyear($_POST['InvoiceDate'])) {
+	if (!DateService::isDateInFiscalYear($_POST['InvoiceDate'])) {
 		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('InvoiceDate');
 		return false;
@@ -484,7 +484,7 @@ if ($prepaid)
 $dateService = new DateService();
 if (!isset($_POST['InvoiceDate']) || !$dateService->isDate($_POST['InvoiceDate'])) {
 	$_POST['InvoiceDate'] = new_doc_date();
-	if (!is_date_in_fiscalyear($_POST['InvoiceDate'])) {
+	if (!DateService::isDateInFiscalYear($_POST['InvoiceDate'])) {
 		$_POST['InvoiceDate'] = end_fiscalyear();
 	}
 }

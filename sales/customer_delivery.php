@@ -167,7 +167,7 @@ function check_data()
 		return false;
 	}
 
-	if (!is_date_in_fiscalyear($_POST['DispatchDate'])) {
+	if (!DateService::isDateInFiscalYear($_POST['DispatchDate'])) {
 		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('DispatchDate');
 		return false;
@@ -367,7 +367,7 @@ shippers_list_cells(null, 'ship_via', $_POST['ship_via']);
 $dateService = new DateService();
 if (!isset($_POST['DispatchDate']) || !$dateService->isDate($_POST['DispatchDate'])) {
 	$_POST['DispatchDate'] = new_doc_date();
-	if (!is_date_in_fiscalyear($_POST['DispatchDate'])) {
+	if (!DateService::isDateInFiscalYear($_POST['DispatchDate'])) {
 		$_POST['DispatchDate'] = end_fiscalyear();
 	}
 }

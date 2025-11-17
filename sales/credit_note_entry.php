@@ -176,7 +176,7 @@ function can_process()
 		display_error(_("The entered date for the credit note is invalid."));
 		set_focus('OrderDate');
 		$input_error = 1;
-	} elseif (!is_date_in_fiscalyear($_POST['OrderDate'])) {
+	} elseif (!DateService::isDateInFiscalYear($_POST['OrderDate'])) {
 		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('OrderDate');
 		$input_error = 1;

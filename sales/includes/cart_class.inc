@@ -23,7 +23,9 @@ include_once($path_to_root . "/taxes/tax_calc.inc");
 
 // Modern OOP Services
 require_once($path_to_root . "/includes/InventoryService.php");
+require_once($path_to_root . "/includes/DateService.php");
 use FA\Services\InventoryService;
+use FA\Services\DateService;
 
 class Cart 
 {
@@ -250,7 +252,7 @@ class Cart
 			else
 			  $this->customer_id = '';
 			$this->document_date = new_doc_date();
-			if (!is_date_in_fiscalyear($this->document_date))
+			if (!DateService::isDateInFiscalYear($this->document_date))
 				$this->document_date = end_fiscalyear();
 			$this->reference = $Refs->get_next($this->trans_type, null, array('date' => Today(),
 				'customer' => $this->customer_id));

@@ -96,7 +96,7 @@ if (!isset($_POST['customer_id'])) {
 }
 if (!isset($_POST['DateBanked'])) {
 	$_POST['DateBanked'] = new_doc_date();
-	if (!is_date_in_fiscalyear($_POST['DateBanked'])) {
+	if (!DateService::isDateInFiscalYear($_POST['DateBanked'])) {
 		$_POST['DateBanked'] = end_fiscalyear();
 	}
 }
@@ -165,7 +165,7 @@ function can_process()
 		display_error(_("The entered date is invalid. Please enter a valid date for the payment."));
 		set_focus('DateBanked');
 		return false;
-	} elseif (!is_date_in_fiscalyear($_POST['DateBanked'])) {
+	} elseif (!DateService::isDateInFiscalYear($_POST['DateBanked'])) {
 		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('DateBanked');
 		return false;
