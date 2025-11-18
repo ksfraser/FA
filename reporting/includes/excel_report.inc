@@ -264,7 +264,7 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 		$this->NewLine();
 		$str = _("Print Out Date") . ':';
 		$this->sheet->writeString($this->y, 0, $str, $this->formatLeft);
-		$this->sheet->writeString($this->y, 1, Today() . "  ".Now(), $this->formatLeft);
+		$this->sheet->writeString($this->y, 1, \FA\DateService::todayStatic() . "  ".\FA\DateService::nowStatic(), $this->formatLeft);
 		$this->sheet->writeString($this->y, $tcol-1, $this->company['coy_name'], $this->formatLeft);
 		$this->sheet->mergeCells($this->y, $tcol-1, $this->y, $tcol);
 		$this->NewLine();
@@ -415,7 +415,7 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 		$this->NewLine();
 		$str = _("Generated At") . ':';
 		$this->sheet->writeString($this->y, 0, $str, $this->formatLeft);
-		$this->sheet->writeString($this->y, 1, Today() . "  ".Now(), $this->formatLeft);
+		$this->sheet->writeString($this->y, 1, \FA\DateService::todayStatic() . "  ".\FA\DateService::nowStatic(), $this->formatLeft);
 
 		// Name of the user that generated this copy of the report
 		$this->NewLine();

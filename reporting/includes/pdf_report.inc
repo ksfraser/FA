@@ -330,7 +330,7 @@ class FrontReport extends Cpdf
 		}
 		$str = _("Print Out Date") . ':';
 		$this->Text($this->leftMargin, $str, $titleCol);
-		$str = Today() . '   ' . Now();
+		$str = \FA\DateService::todayStatic() . '   ' . \FA\DateService::nowStatic();
 		if ($this->company['time_zone'])
 			$str .= ' ' . date('O') . ' GMT';
 		$this->Text($titleCol, $str, $companyCol);
@@ -603,7 +603,7 @@ class FrontReport extends Cpdf
 		// Timestamp of when this copy of the report was generated
 		$str = _("Generated At") . ':';
 		$this->Text($this->leftMargin, $str, $headerFieldCol);
-		$str = Today() . '   ' . Now();
+		$str = \FA\DateService::todayStatic() . '   ' . \FA\DateService::nowStatic();
 		if ($this->company['time_zone'])
 			$str .= ' ' . date('O') . ' GMT';
 		$this->Text($headerFieldCol, $str, $companyCol);

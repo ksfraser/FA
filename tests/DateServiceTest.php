@@ -207,6 +207,14 @@ class DateServiceTest extends TestCase
         $this->assertEquals('11/30/2025', $result, 'Should return last day of month');
     }
     
+    public function testNowStatic(): void
+    {
+        $result = \FA\DateService::nowStatic();
+        
+        // Now() returns time in 12-hour format: HH:MM am/pm
+        $this->assertMatchesRegularExpression('/^\d{2}:\d{2} (am|pm)$/', $result, 'Should return time in 12-hour format');
+    }
+    
     private function createMockUser(): object
     {
         $mockPrefs = new class {
