@@ -445,4 +445,15 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_LANGUAGE', 'Language');
     define('UI_TEXT_LANGUAGE_LABEL', 'Language:');
     define('UI_TEXT_IF_SET_DOCUMENT_DATE_REMEMBERED', 'If set document date is remembered on subsequent documents, otherwise default is current date');
+    define('UI_TEXT_CATEGORY_DESCRIPTION_CANNOT_BE_EMPTY', 'Category description cannot be empty.');
+    define('UI_TEXT_CANNOT_DELETE_CATEGORY_WITH_CONTACTS', 'Cannot delete this category because there are contacts related to it.');
+    define('UI_TEXT_CATEGORY_TYPE', 'Category Type');
+    define('UI_TEXT_CATEGORY_SUBTYPE', 'Category Subtype');
+    define('UI_TEXT_SHORT_NAME', 'Short Name');
+    define('UI_TEXT_DESCRIPTION', 'Description');
+    define('UI_TEXT_CONTACT_CATEGORY_TYPE_LABEL', 'Contact Category Type:');
+    define('UI_TEXT_CONTACT_CATEGORY_SUBTYPE_LABEL', 'Contact Category Subtype:');
+    define('UI_TEXT_CATEGORY_SHORT_NAME_LABEL', 'Category Short Name:');
+    define('UI_TEXT_CATEGORY_DESCRIPTION_LABEL', 'Category Description:');
+    define('UI_TEXT_CATEGORY_HAS_BEEN_DELETED', 'Category has been deleted');
 }

@@ -17,6 +17,7 @@ include_once($path_to_root . "/includes/db/crm_contacts_db.inc");
 page(_($help_context = "Contact Categories"));
 
 include($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 
 simple_page_mode(true);
 
@@ -28,7 +29,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if (strlen($_POST['description']) == 0) 
 	{
 		$input_error = 1;
-		UiMessageService::displayError(_("Category description cannot be empty."));
+		UiMessageService::displayError(_(UI_TEXT_CATEGORY_DESCRIPTION_CANNOT_BE_EMPTY));
 		set_focus('description');
 	}
 
@@ -59,13 +60,13 @@ if ($Mode == 'Delete')
 	if (is_crm_category_used($selected_id))
 	{
 		$cancel_delete = 1;
-		UiMessageService::displayError(_("Cannot delete this category because there are contacts related to it."));
+		UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_CATEGORY_WITH_CONTACTS));
 	} 
 	if ($cancel_delete == 0) 
 	{
 		delete_crm_category($selected_id);
 
-		\FA\Services\UiMessageService::displayNotification(_('Category has been deleted'));
+		\FA\Services\UiMessageService::displayNotification(_(UI_TEXT_CATEGORY_HAS_BEEN_DELETED));
 	}
 	$Mode = 'RESET';
 }
@@ -85,7 +86,7 @@ $result = get_crm_categories(RequestService::checkValueStatic('show_inactive'));
 start_form();
 start_table(TABLESTYLE, "width='70%'");
 
-$th = array(_("Category Type"), _("Category Subtype"), _("Short Name"), _("Description"),  "", "&nbsp;");
+$th = array(_(UI_TEXT_CATEGORY_TYPE), _(UI_TEXT_CATEGORY_SUBTYPE), _(UI_TEXT_SHORT_NAME), _(UI_TEXT_DESCRIPTION),  "", "&nbsp;");
 inactive_control_column($th);
 
 table_header($th);
@@ -103,11 +104,11 @@ while ($myrow = db_fetch($result))
 	
 	inactive_control_cell($myrow["id"], $myrow["inactive"], 'crm_categories', 'id');
 
- 	edit_button_cell("Edit".$myrow["id"], _("Edit"));
+ 	edit_button_cell("Edit".$myrow["id"], _(UI_TEXT_EDIT));
  	if ($myrow["system"])
 		label_cell('');
 	else
-		delete_button_cell("Delete".$myrow["id"], _("Delete"));
+		delete_button_cell("Delete".$myrow["id"], _(UI_TEXT_DELETE));
 	end_row();
 }
 	
@@ -132,16 +133,16 @@ if ($selected_id != -1)
 } 
 
 if ($Mode == 'Edit' && $myrow['system']) {
-	label_row(_("Contact Category Type:"), $_POST['type']);
-	label_row(_("Contact Category Subtype:"), $_POST['subtype']);
+	label_row(_(UI_TEXT_CONTACT_CATEGORY_TYPE_LABEL), $_POST['type']);
+	label_row(_(UI_TEXT_CONTACT_CATEGORY_SUBTYPE_LABEL), $_POST['subtype']);
 } else {
 //	crm_category_type_list_row(_("Contact Category Type:"), 'type', null, _('Other'));
-	text_row_ex(_("Contact Category Type:"), 'type', 30); 
-	text_row_ex(_("Contact Category Subtype:"), 'subtype', 30); 
+	text_row_ex(_(UI_TEXT_CONTACT_CATEGORY_TYPE_LABEL), 'type', 30); 
+	text_row_ex(_(UI_TEXT_CONTACT_CATEGORY_SUBTYPE_LABEL), 'subtype', 30); 
 }
 
-text_row_ex(_("Category Short Name:"), 'name', 30); 
-textarea_row(_("Category Description:"), 'description', null, 60, 4);
+text_row_ex(_(UI_TEXT_CATEGORY_SHORT_NAME_LABEL), 'name', 30); 
+textarea_row(_(UI_TEXT_CATEGORY_DESCRIPTION_LABEL), 'description', null, 60, 4);
 
 end_table(1);
 
