@@ -17,6 +17,7 @@ include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/admin/db/transactions_db.inc");
 
@@ -24,7 +25,7 @@ include_once($path_to_root . "/reporting/includes/reporting.inc");
 $js = "";
 if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(800, 500);
-page(_($help_context = "View or Print Transactions"), false, false, "", $js);
+page(_($help_context = UI_TEXT_VIEW_PRINT_TRANSACTIONS_TITLE), false, false, "", $js);
 
 //----------------------------------------------------------------------------------------
 function view_link($trans)
@@ -40,9 +41,9 @@ function prt_link($row)
 		$row['type'] = $_POST['filterType'];
   	if ($row['type'] == ST_PURCHORDER || $row['type'] == ST_SALESORDER || $row['type'] == ST_SALESQUOTE || 
   		$row['type'] == ST_WORKORDER)
- 		return print_document_link($row['trans_no'], _("Print"), true, $row['type'], ICON_PRINT);
+ 		return print_document_link($row['trans_no'], _(UI_TEXT_PRINT), true, $row['type'], ICON_PRINT);
  	else	
-		return print_document_link($row['trans_no']."-".$row['type'], _("Print"), true, $row['type'], ICON_PRINT);
+		return print_document_link($row['trans_no']."-".$row['type'], _(UI_TEXT_PRINT), true, $row['type'], ICON_PRINT);
 }
 
 function gl_view($row)
@@ -64,23 +65,23 @@ function ref_view($row)
 
 function viewing_controls()
 {
-	display_note(_("Only documents can be printed."));
+	display_note(_(UI_TEXT_ONLY_DOCUMENTS_PRINTABLE));
 
     start_table(TABLESTYLE_NOBORDER);
 	start_row();
 
-	systypes_list_cells(_("Type:"), 'filterType', null, true, array(ST_CUSTOMER, ST_SUPPLIER));
+	systypes_list_cells(_(UI_TEXT_TYPE_LABEL), 'filterType', null, true, array(ST_CUSTOMER, ST_SUPPLIER));
 
 	if (!isset($_POST['FromTransNo']))
 		$_POST['FromTransNo'] = "1";
 	if (!isset($_POST['ToTransNo']))
 		$_POST['ToTransNo'] = "999999";
 
-    ref_cells(_("from #:"), 'FromTransNo');
+    ref_cells(_(UI_TEXT_FROM_NUMBER), 'FromTransNo');
 
-    ref_cells(_("to #:"), 'ToTransNo');
+    ref_cells(_(UI_TEXT_TO_NUMBER), 'ToTransNo');
 
-    submit_cells('ProcessSearch', _("Search"), '', '', 'default');
+    submit_cells('ProcessSearch', _(UI_TEXT_SEARCH), '', '', 'default');
 
 	end_row();
     end_table(1);
@@ -93,13 +94,13 @@ function check_valid_entries()
 {
 	if (!is_numeric($_POST['FromTransNo']) OR $_POST['FromTransNo'] <= 0)
 	{
-		UiMessageService::displayError(_("The starting transaction number is expected to be numeric and greater than zero."));
+		UiMessageService::displayError(_(UI_TEXT_START_TRANS_NUMERIC_ERROR));
 		return false;
 	}
 
 	if (!is_numeric($_POST['ToTransNo']) OR $_POST['ToTransNo'] <= 0)
 	{
-		UiMessageService::displayError(_("The ending transaction number is expected to be numeric and greater than zero."));
+		UiMessageService::displayError(_(UI_TEXT_END_TRANS_NUMERIC_ERROR));
 		return false;
 	}
 
@@ -123,11 +124,11 @@ function handle_search()
 			$print_type == ST_CUSTPAYMENT || $print_type == ST_SUPPAYMENT || $print_type == ST_WORKORDER);
 
 		$cols = array(
-			_("#") => array('insert'=>true, 'fun'=>'view_link'), 
-			_("Reference") => array('fun'=>'ref_view'), 
-			_("Date") => array('type'=>'date', 'fun'=>'date_view'),
-			_("Print") => array('insert'=>true, 'fun'=>'prt_link'), 
-			_("GL") => array('insert'=>true, 'fun'=>'gl_view')
+			_(UI_TEXT_NUMBER_COLUMN) => array('insert'=>true, 'fun'=>'view_link'), 
+			_(UI_TEXT_REFERENCE_COLUMN) => array('fun'=>'ref_view'), 
+			_(UI_TEXT_DATE_COLUMN) => array('type'=>'date', 'fun'=>'date_view'),
+			_(UI_TEXT_PRINT) => array('insert'=>true, 'fun'=>'prt_link'), 
+			_(UI_TEXT_GL_LABEL) => array('insert'=>true, 'fun'=>'gl_view')
 		);
 		if(!$print_out) {
 			array_remove($cols, 3);

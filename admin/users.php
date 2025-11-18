@@ -13,10 +13,11 @@ $page_security = 'SA_USERS';
 $path_to_root = "..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_($help_context = "Users"));
+page(_($help_context = UI_TEXT_USERS_TITLE));
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 
 include_once($path_to_root . "/admin/db/users_db.inc");
 
@@ -28,7 +29,7 @@ function can_process($new)
 
 	if (strlen($_POST['user_id']) < 4)
 	{
-		UiMessageService::displayError( _("The user login entered must be at least 4 characters long."));
+		UiMessageService::displayError(_(UI_TEXT_USER_LOGIN_TOO_SHORT_ERROR));
 		set_focus('user_id');
 		return false;
 	}
@@ -37,14 +38,14 @@ function can_process($new)
 	{
     	if (strlen($_POST['password']) < 4)
     	{
-    		UiMessageService::displayError( _("The password entered must be at least 4 characters long."));
+    		UiMessageService::displayError(_(UI_TEXT_PASSWORD_TOO_SHORT_ERROR));
 			set_focus('password');
     		return false;
     	}
 
     	if (strstr($_POST['password'], $_POST['user_id']) != false)
     	{
-    		UiMessageService::displayError( _("The password cannot contain the user login."));
+    		UiMessageService::displayError(_(UI_TEXT_PASSWORD_CONTAINS_LOGIN_ERROR));
 			set_focus('password');
     		return false;
     	}
@@ -69,7 +70,7 @@ if (($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM') && check_csrf_token())
     		if ($_POST['password'] != "")
     			update_user_password($selected_id, $_POST['user_id'], md5($_POST['password']));
 
-    		display_notification_centered(_("The selected user has been updated."));
+    		display_notification_centered(_(UI_TEXT_USER_UPDATED_NOTICE));
     	} 
     	else 
     	{
@@ -83,7 +84,7 @@ if (($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM') && check_csrf_token())
 			update_user_prefs($id, array_merge($prefs, RequestService::getPostStatic(array('print_profile',
 				'rep_popup' => 0, 'language'))));
 
-			display_notification_centered(_("A new user has been added."));
+			display_notification_centered(_(UI_TEXT_USER_ADDED_NOTICE));
     	}
 		$Mode = 'RESET';
 	}
@@ -97,12 +98,12 @@ if ($Mode == 'Delete' && check_csrf_token())
     if (key_in_foreign_table($selected_id, 'audit_trail', 'user'))
     {
         $cancel_delete = 1;
-        UiMessageService::displayError(_("Cannot delete this user because entries are associated with this user."));
+        UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_USER_ERROR));
     }
     if ($cancel_delete == 0) 
     {
     	delete_user($selected_id);
-    	display_notification_centered(_("User has been deleted."));
+    	display_notification_centered(_(UI_TEXT_USER_DELETED_NOTICE));
     } //end if Delete group
     $Mode = 'RESET';
 }
@@ -120,8 +121,8 @@ $result = get_users(RequestService::checkValueStatic('show_inactive'));
 start_form();
 start_table(TABLESTYLE);
 
-$th = array(_("User login"), _("Full Name"), _("Phone"),
-	_("E-mail"), _("Last Visit"), _("Access Level"), "", "");
+$th = array(_(UI_TEXT_USER_LOGIN), _(UI_TEXT_FULL_NAME), _(UI_TEXT_PHONE),
+	_(UI_TEXT_EMAIL), _(UI_TEXT_LAST_VISIT), _(UI_TEXT_ACCESS_LEVEL), "", "");
 
 inactive_control_column($th);
 table_header($th);	
@@ -152,9 +153,9 @@ while ($myrow = db_fetch($result))
 	elseif (RequestService::checkValueStatic('show_inactive'))
 		label_cell('');
 
-	edit_button_cell("Edit".$myrow["id"], _("Edit"));
+	edit_button_cell("Edit".$myrow["id"], _(UI_TEXT_EDIT));
     if ($not_me)
- 		delete_button_cell("Delete".$myrow["id"], _("Delete"));
+ 		delete_button_cell("Delete".$myrow["id"], _(UI_TEXT_DELETE));
 	else
 		label_cell('');
 	end_row();
@@ -188,41 +189,41 @@ if ($selected_id != -1)
 	hidden('user_id');
 
 	start_row();
-	label_row(_("User login:"), $_POST['user_id']);
+	label_row(_(UI_TEXT_USER_LOGIN_LABEL), $_POST['user_id']);
 } 
 else 
 { //end of if $selected_id only do the else when a new record is being entered
-	text_row(_("User Login:"), "user_id",  null, 22, 20);
+	text_row(_(UI_TEXT_USER_LOGIN_LABEL), "user_id",  null, 22, 20);
 	$_POST['language'] = user_language();
 	$_POST['print_profile'] = user_print_profile();
 	$_POST['rep_popup'] = user_rep_popup();
 	$_POST['pos'] = user_pos();
 }
 $_POST['password'] = "";
-password_row(_("Password:"), 'password', $_POST['password']);
+password_row(_(UI_TEXT_PASSWORD_LABEL), 'password', $_POST['password']);
 
 if ($selected_id != -1) 
 {
-	table_section_title(_("Enter a new password to change, leave empty to keep current."));
+	table_section_title(_(UI_TEXT_ENTER_NEW_PASSWORD_INSTRUCTION));
 }
 
-text_row_ex(_("Full Name").":", 'real_name',  50);
+text_row_ex(_(UI_TEXT_FULL_NAME).":", 'real_name',  50);
 
-text_row_ex(_("Telephone No.:"), 'phone', 30);
+text_row_ex(_(UI_TEXT_TELEPHONE_LABEL), 'phone', 30);
 
-email_row_ex(_("Email Address:"), 'email', 50);
+email_row_ex(_(UI_TEXT_EMAIL_ADDRESS_LABEL), 'email', 50);
 
-security_roles_list_row(_("Access Level:"), 'role_id', null); 
+security_roles_list_row(_(UI_TEXT_ACCESS_LEVEL).":", 'role_id', null); 
 
-languages_list_row(_("Language:"), 'language', null);
+languages_list_row(_(UI_TEXT_LANGUAGE_LABEL), 'language', null);
 
-pos_list_row(_("User's POS"). ':', 'pos', null);
+pos_list_row(_(UI_TEXT_USERS_POS_LABEL), 'pos', null);
 
-print_profiles_list_row(_("Printing profile"). ':', 'print_profile', null,
-	_('Browser printing support'));
+print_profiles_list_row(_(UI_TEXT_PRINTING_PROFILE_LABEL), 'print_profile', null,
+	_(UI_TEXT_BROWSER_PRINTING_SUPPORT));
 
-check_row(_("Use popup window for reports:"), 'rep_popup', $_POST['rep_popup'],
-	false, _('Set this option to on if your browser directly supports pdf files'));
+check_row(_(UI_TEXT_USE_POPUP_WINDOW_LABEL), 'rep_popup', $_POST['rep_popup'],
+	false, _(UI_TEXT_POPUP_WINDOW_INSTRUCTION));
 
 end_table(1);
 

@@ -127,8 +127,8 @@ function select_link($row)
 	if (!isset($row['type']))
 		$row['type'] = $_POST['filterType'];
 	if (!DateService::isDateInFiscalYearStatic($row['trans_date'], true))
-		return _("N/A");
-  	return button('Edit'.$row["trans_no"], _("Select"), _("Select"), ICON_EDIT);
+		return _(UI_TEXT_NA);
+  	return button('Edit'.$row["trans_no"], _(UI_TEXT_SELECT), _(UI_TEXT_SELECT), ICON_EDIT);
 }
 
 function gl_view($row)
@@ -189,9 +189,9 @@ function voiding_controls()
 		return;
 
 	$cols = array(
-		_("#") => array('insert'=>true, 'fun'=>'view_link'),
-		_("Reference") => array('fun'=>'ref_view'),
-		_("Date") => array('type'=>'date', 'fun'=>'date_view'),
+		_(UI_TEXT_NUMBER_COLUMN) => array('insert'=>true, 'fun'=>'view_link'),
+		_(UI_TEXT_REFERENCE_COLUMN) => array('fun'=>'ref_view'),
+		_(UI_TEXT_DATE_COLUMN) => array('type'=>'date', 'fun'=>'date_view'),
 		_(UI_TEXT_GL_LABEL) => array('insert'=>true, 'fun'=>'gl_view'),
 		_(UI_TEXT_SELECT) => array('insert'=>true, 'fun'=>'select_link')
 	);
@@ -232,7 +232,7 @@ function voiding_controls()
 			unset($_POST['trans_no']);
 			unset($_POST['memo_']);
 			unset($_POST['date_']);
-    		submit_center('ProcessVoiding', _("Void Transaction"), true, '', 'default');
+    		submit_center('ProcessVoiding', _(UI_TEXT_VOID_TRANSACTION_BUTTON), true, '', 'default');
 		}	
  		else
  		{
@@ -253,10 +253,10 @@ function voiding_controls()
                     }
                 }
             }
-       		\FA\Services\UiMessageService::displayWarning(_("Are you sure you want to void this transaction ? This action cannot be undone."));
+       		\FA\Services\UiMessageService::displayWarning(_(UI_TEXT_VOID_CONFIRMATION));
    			br();
-    		submit_center_first('ConfirmVoiding', _("Proceed"), '', true);
-    		submit_center_last('CancelVoiding', _("Cancel"), '', 'cancel');
+    		submit_center_first('ConfirmVoiding', _(UI_TEXT_VOID_PROCEED), '', true);
+    		submit_center_last('CancelVoiding', _(UI_TEXT_CANCEL), '', 'cancel');
     	}	
     }
 
@@ -269,27 +269,27 @@ function check_valid_entries()
 {
 	if (is_closed_trans($_POST['filterType'],$_POST['trans_no']))
 	{
-		UiMessageService::displayError(_("The selected transaction was closed for edition and cannot be voided."));
+		UiMessageService::displayError(_(UI_TEXT_CLOSED_TRANSACTION_ERROR));
 		set_focus('trans_no');
 		return false;
 	}
 	$dateService = new DateService();
 	if (!$dateService->isDate($_POST['date_']))
 	{
-		UiMessageService::displayError(_("The entered date is invalid."));
+		UiMessageService::displayError(_(UI_TEXT_INVALID_DATE_ERROR));
 		set_focus('date_');
 		return false;
 	}
 	if (!DateService::isDateInFiscalYearStatic($_POST['date_']))
 	{
-		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_(UI_TEXT_DATE_OUT_OF_FISCAL_YEAR_ERROR));
 		set_focus('date_');
 		return false;
 	}
 
 	if (!is_numeric($_POST['trans_no']) OR $_POST['trans_no'] <= 0)
 	{
-		UiMessageService::displayError(_("The transaction number is expected to be numeric and greater than zero."));
+		UiMessageService::displayError(_(UI_TEXT_NUMERIC_TRANSACTION_NUMBER_ERROR));
 		set_focus('trans_no');
 		return false;
 	}
@@ -306,7 +306,7 @@ function handle_void_transaction()
 		$void_entry = get_voided_entry($_POST['filterType'], $_POST['trans_no']);
 		if ($void_entry != null) 
 		{
-			UiMessageService::displayError(_("The selected transaction has already been voided."), true);
+			UiMessageService::displayError(_(UI_TEXT_ALREADY_VOIDED_ERROR), true);
 			unset($_POST['trans_no']);
 			unset($_POST['memo_']);
 			unset($_POST['date_']);
@@ -319,7 +319,7 @@ function handle_void_transaction()
 
 		if (!$msg) 
 		{
-			display_notification_centered(_("Selected transaction has been voided."));
+			display_notification_centered(_(UI_TEXT_TRANSACTION_VOIDED_NOTICE));
 			unset($_POST['trans_no']);
 			unset($_POST['memo_']);
 		}
