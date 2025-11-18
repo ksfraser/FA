@@ -18,6 +18,7 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/admin/db/attachments_db.inc");
 include_once($path_to_root . "/admin/db/transactions_db.inc");
 include_once($path_to_root . "/inventory/includes/db/items_db.inc");
@@ -85,19 +86,19 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 	if (($_POST['filterType'] == ST_ITEM || $_POST['filterType'] == ST_FIXEDASSET) && $Mode == 'ADD_ITEM')
 		$_POST['trans_no'] = get_item_code_id($_POST['trans_no']);
 	if (!transaction_exists($_POST['filterType'], $_POST['trans_no']))
-		UiMessageService::displayError(_("Selected transaction does not exists."));
+		UiMessageService::displayError(_(UI_TEXT_SELECTED_TRANSACTION_DOES_NOT_EXISTS));
 	elseif ($Mode == 'ADD_ITEM' && !in_array(strtoupper(substr($filename, strlen($filename) - 3)), array('JPG','PNG','GIF', 'PDF', 'DOC', 'ODT')))
 	{
 		UiMessageService::displayError(_('Only graphics,pdf,doc and odt files are supported.'));
 	} elseif ($Mode == 'ADD_ITEM' && !isset($_FILES['filename']))
-		UiMessageService::displayError(_("Select attachment file."));
+		UiMessageService::displayError(_(UI_TEXT_SELECT_ATTACHMENT_FILE));
 	elseif ($Mode == 'ADD_ITEM' && ($_FILES['filename']['error'] > 0)) {
     	if ($_FILES['filename']['error'] == UPLOAD_ERR_INI_SIZE) 
-		  	UiMessageService::displayError(_("The file size is over the maximum allowed."));
+		  	UiMessageService::displayError(_(UI_TEXT_THE_FILE_SIZE_IS_OVER_THE_MAXIMUM_ALLOWED));
     	else
-		  	UiMessageService::displayError(_("Select attachment file."));
+		  	UiMessageService::displayError(_(UI_TEXT_SELECT_ATTACHMENT_FILE));
   	} elseif ( strlen($filename) > 60) {
-		UiMessageService::displayError(_("File name exceeds maximum of 60 chars. Please change filename and try again."));
+		UiMessageService::displayError(_(UI_TEXT_FILE_NAME_EXCEEDS_MAXIMUM_OF_60_CHARS));
 	} else {
 		//$content = base64_encode(file_get_contents($_FILES['filename']['tmp_name']));
 		$tmpname = $_FILES['filename']['tmp_name'];
@@ -136,13 +137,13 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 		{
 			add_attachment($_POST['filterType'], $_POST['trans_no'], $_POST['description'],
 				$filename, $unique_name, $filesize, $filetype);
-			\FA\Services\UiMessageService::displayNotification(_("Attachment has been inserted.")); 
+			\FA\Services\UiMessageService::displayNotification(_(UI_TEXT_ATTACHMENT_HAS_BEEN_INSERTED)); 
 		}
 		else
 		{
 			update_attachment($selected_id, $_POST['filterType'], $_POST['trans_no'], $_POST['description'],
 				$filename, $unique_name, $filesize, $filetype); 
-			\FA\Services\UiMessageService::displayNotification(_("Attachment has been updated.")); 
+			\FA\Services\UiMessageService::displayNotification(_(UI_TEXT_ATTACHMENT_HAS_BEEN_UPDATED)); 
 		}
 		reset_form();
 	}
@@ -157,7 +158,7 @@ if ($Mode == 'Delete')
 	if (file_exists($dir."/".$row['unique_name']))
 		unlink($dir."/".$row['unique_name']);
 	delete_attachment($selected_id);	
-	\FA\Services\UiMessageService::displayNotification(_("Attachment has been deleted.")); 
+	\FA\Services\UiMessageService::displayNotification(_(UI_TEXT_ATTACHMENT_HAS_BEEN_DELETED)); 
 	reset_form();
 }
 
@@ -179,21 +180,21 @@ function viewing_controls()
     start_table(TABLESTYLE_NOBORDER);
 
 	start_row();
-	systypes_list_cells(_("Type:"), 'filterType', null, true);
+	systypes_list_cells(_(UI_TEXT_TYPE_LABEL), 'filterType', null, true);
 	if (list_updated('filterType'))
 		reset_form();
 
 	if(RequestService::getPostStatic('filterType') == ST_CUSTOMER ){
-		customer_list_cells(_("Select a customer: "), 'trans_no', null, false, true, true);
+		customer_list_cells(_(UI_TEXT_SELECT_A_CUSTOMER_LABEL), 'trans_no', null, false, true, true);
 	} elseif(RequestService::getPostStatic('filterType') == ST_SUPPLIER){
-		supplier_list_cells(_("Select a supplier: "), 'trans_no', null,  false, true,true);
+		supplier_list_cells(_(UI_TEXT_SELECT_A_SUPPLIER_LABEL), 'trans_no', null,  false, true,true);
 	} elseif(RequestService::getPostStatic('filterType') == ST_ITEM){
-		stock_items_list_cells(_("Select an Item: "), 'trans_no', null,  false, true,true);
+		stock_items_list_cells(_(UI_TEXT_SELECT_AN_ITEM_LABEL), 'trans_no', null,  false, true,true);
 	} elseif(RequestService::getPostStatic('filterType') == ST_FIXEDASSET){
-		stock_items_list_cells(_("Select an Item: "), 'trans_no', null,  false, true,false, false,
+		stock_items_list_cells(_(UI_TEXT_SELECT_AN_ITEM_LABEL), 'trans_no', null,  false, true,false, false,
 			array('fixed_asset' => 1));
 	} elseif(RequestService::getPostStatic('filterType') == ST_BANKACCOUNT){
-		bank_accounts_list_cells(_("Select a Bank Account: "), 'trans_no', null,  true);
+		bank_accounts_list_cells(_(UI_TEXT_SELECT_A_BANK_ACCOUNT_LABEL), 'trans_no', null,  true);
 	}
 	
 	end_row();
@@ -211,22 +212,22 @@ function trans_view($trans)
 
 function edit_link($row)
 {
-  	return button('Edit'.$row["id"], _("Edit"), _("Edit"), ICON_EDIT);
+  	return button('Edit'.$row["id"], _(UI_TEXT_EDIT), _(UI_TEXT_EDIT), ICON_EDIT);
 }
 
 function view_link($row)
 {
-  	return button('view'.$row["id"], _("View"), _("View"), ICON_VIEW);
+  	return button('view'.$row["id"], _(UI_TEXT_VIEW), _(UI_TEXT_VIEW), ICON_VIEW);
 }
 
 function download_link($row)
 {
-  	return button('download'.$row["id"], _("Download"), _("Download"), ICON_DOWN);
+  	return button('download'.$row["id"], _(UI_TEXT_DOWNLOAD), _(UI_TEXT_DOWNLOAD), ICON_DOWN);
 }
 
 function delete_link($row)
 {
-  	return button('Delete'.$row["id"], _("Delete"), _("Delete"), ICON_DELETE);
+  	return button('Delete'.$row["id"], _(UI_TEXT_DELETE), _(UI_TEXT_DELETE), ICON_DELETE);
 }
 
 function display_rows($type, $trans_no)
@@ -234,12 +235,12 @@ function display_rows($type, $trans_no)
 	$sql = get_sql_for_attached_documents($type, $type==ST_SUPPLIER || $type==ST_CUSTOMER || $type==ST_BANKACCOUNT ? $trans_no : 
 		($type==ST_ITEM || $type==ST_FIXEDASSET ? get_item_code_id($trans_no) : 0));
 	$cols = array(
-	    _("#") => array('fun'=>'trans_view', 'ord'=>''), 
-		_("Doc Title") => array('name'=>'description'),
-	    _("Filename") => array('name'=>'filename'),
-	    _("Size") => array('name'=>'filesize'),
-	    _("Filetype") => array('name'=>'filetype'),
-	    _("Doc Date") => array('name'=>'tran_date', 'type'=>'date', 'ord'=>''),
+	    _(UI_TEXT_NUMBER) => array('fun'=>'trans_view', 'ord'=>''), 
+		_(UI_TEXT_DOC_TITLE) => array('name'=>'description'),
+	    _(UI_TEXT_FILENAME) => array('name'=>'filename'),
+	    _(UI_TEXT_SIZE) => array('name'=>'filesize'),
+	    _(UI_TEXT_FILETYPE) => array('name'=>'filetype'),
+	    _(UI_TEXT_DOC_DATE) => array('name'=>'tran_date', 'type'=>'date', 'ord'=>''),
 	    	array('insert'=>true, 'fun'=>'edit_link'),
 	    	array('insert'=>true, 'fun'=>'view_link'),
 	    	array('insert'=>true, 'fun'=>'download_link'),
@@ -279,16 +280,16 @@ if ($selected_id != -1)
 		hidden('trans_no', $row['trans_no']);
 		hidden('unique_name', $row['unique_name']);
 		if ($type != ST_SUPPLIER && $type != ST_CUSTOMER && $type != ST_ITEM && $type != ST_BANKACCOUNT)
-			label_row(_("Transaction #"), $row['trans_no']);
+			label_row(_(UI_TEXT_TRANSACTION_NUMBER), $row['trans_no']);
 	}	
 	hidden('selected_id', $selected_id);
 }
 else {
 	if ($type != ST_SUPPLIER && $type != ST_CUSTOMER && $type != ST_ITEM && $type != ST_FIXEDASSET && $type != ST_BANKACCOUNT)
-		text_row_ex(_("Transaction #").':', 'trans_no', 10);
+		text_row_ex(_(UI_TEXT_TRANSACTION_NUMBER).':', 'trans_no', 10);
 }
-text_row_ex(_("Doc Title").':', 'description', 40);
-file_row(_("Attached File") . ":", 'filename', 'filename');
+text_row_ex(_(UI_TEXT_DOC_TITLE).':', 'description', 40);
+file_row(_(UI_TEXT_ATTACHED_FILE) . ":", 'filename', 'filename');
 
 end_table(1);
 

@@ -302,4 +302,22 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_DEFAULT_LANGUAGE', 'Default Language');
     define('UI_TEXT_LANGUAGE_FILE', 'Language File');
     define('UI_TEXT_SELECT_YOUR_LANGUAGE_FILES_FROM_YOUR_LOCAL_HARDDISK', 'Select your language files from your local harddisk.');
+    define('UI_TEXT_SELECTED_TRANSACTION_DOES_NOT_EXISTS', 'Selected transaction does not exists.');
+    define('UI_TEXT_SELECT_ATTACHMENT_FILE', 'Select attachment file.');
+    define('UI_TEXT_THE_FILE_SIZE_IS_OVER_THE_MAXIMUM_ALLOWED', 'The file size is over the maximum allowed.');
+    define('UI_TEXT_FILE_NAME_EXCEEDS_MAXIMUM_OF_60_CHARS', 'File name exceeds maximum of 60 chars. Please change filename and try again.');
+    define('UI_TEXT_ATTACHMENT_HAS_BEEN_INSERTED', 'Attachment has been inserted.');
+    define('UI_TEXT_ATTACHMENT_HAS_BEEN_UPDATED', 'Attachment has been updated.');
+    define('UI_TEXT_ATTACHMENT_HAS_BEEN_DELETED', 'Attachment has been deleted.');
+    define('UI_TEXT_SELECT_A_CUSTOMER_LABEL', 'Select a customer: ');
+    define('UI_TEXT_SELECT_A_SUPPLIER_LABEL', 'Select a supplier: ');
+    define('UI_TEXT_SELECT_AN_ITEM_LABEL', 'Select an Item: ');
+    define('UI_TEXT_SELECT_A_BANK_ACCOUNT_LABEL', 'Select a Bank Account: ');
+    define('UI_TEXT_VIEW', 'View');
+    define('UI_TEXT_DOWNLOAD', 'Download');
+    define('UI_TEXT_DOC_TITLE', 'Doc Title');
+    define('UI_TEXT_SIZE', 'Size');
+    define('UI_TEXT_FILETYPE', 'Filetype');
+    define('UI_TEXT_DOC_DATE', 'Doc Date');
+    define('UI_TEXT_ATTACHED_FILE', 'Attached File');
 }
