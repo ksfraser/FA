@@ -15,6 +15,7 @@ include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
+include_once($path_to_root . "/includes/CompanyPrefsService.php");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/reporting/includes/reports_classes.inc");
 $js = "";
@@ -29,7 +30,7 @@ page(_($help_context = "Reports and Analysis"), false, false, "", $js);
 
 $reports = new BoxReports;
 
-$dim = get_company_pref('use_dimension');
+$dim = \FA\Services\CompanyPrefsService::getUseDimensions();
 
 $reports->addReportClass(_('Customer'), RC_CUSTOMER);
 $reports->addReport(RC_CUSTOMER, 101, _('Customer &Balances'),

@@ -11,8 +11,9 @@
 ***********************************************************************/
 $page_security = 'SA_ITEMCATEGORY';
 if (!isset($path_to_root)) $path_to_root = "../..";
-include($path_to_root . "/includes/session.inc");
+require_once($path_to_root . "/includes/session.inc");
 require_once($path_to_root . "/includes/InventoryService.php");
+require_once($path_to_root . "/includes/CompanyPrefsService.php");
 
 if (isset($_GET['FixedAsset'])) {
   $page_security = 'SA_ASSETCATEGORY';
@@ -253,7 +254,7 @@ if (is_manufactured($_POST['mb_flag']))
 else
 	hidden('wip_account', $_POST['wip_account']);
 
-$dim = get_company_pref('use_dimension');
+$dim = \FA\Services\CompanyPrefsService::getUseDimensions();
 if ($dim >= 1)
 {
 	dimensions_list_row(_("Dimension")." 1", 'dim1', null, true, " ", false, 1);

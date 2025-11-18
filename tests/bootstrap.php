@@ -55,3 +55,4 @@ require_once __DIR__ . '/../libs/ksf_PrefCache/src/PreferenceCache.php';
 // Preference providers
 require_once __DIR__ . '/../includes/Providers/FASessionPreferenceProvider.php';
 require_once __DIR__ . '/../includes/Providers/DatabasePreferenceProvider.php';
+require_once __DIR__ . '/../includes/Providers/FACompanyPreferenceProvider.php';

@@ -24,6 +24,7 @@ include_once($path_to_root . "/sales/includes/sales_ui.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 include_once($path_to_root . "/taxes/tax_calc.inc");
 include_once($path_to_root . "/admin/db/shipping_db.inc");
+include_once($path_to_root . "/includes/CompanyPrefsService.php");
 
 // Modern OOP Services
 require_once($path_to_root . "/includes/DateService.php");
@@ -431,7 +432,7 @@ start_table(TABLESTYLE2, "width='80%'", 5);
 
 start_row();
 $colspan = 1;
-$dim = get_company_pref('use_dimension');
+$dim = \FA\Services\CompanyPrefsService::getUseDimensions();
 if ($dim > 0) 
 	$colspan = 3;
 label_cells(_("Customer"), $_SESSION['Items']->customer_name, "class='tableheader2'");

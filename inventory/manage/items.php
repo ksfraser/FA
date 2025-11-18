@@ -13,6 +13,7 @@ $page_security = 'SA_ITEM';
 if (!isset($path_to_root)) $path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 require_once($path_to_root . "/includes/InventoryService.php");
+require_once($path_to_root . "/includes/CompanyPrefsService.php");
 include($path_to_root . "/reporting/includes/tcpdf.php");
 
 $js = "";
@@ -472,7 +473,7 @@ function item_settings(&$stock_id, $new_item)
 	}
 	table_section(2);
 
-	$dim = get_company_pref('use_dimension');
+	$dim = \FA\Services\CompanyPrefsService::getUseDimensions();
 	if ($dim >= 1)
 	{
 		table_section_title(_("Dimensions"));

@@ -17,6 +17,7 @@ include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/banking.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
+include_once($path_to_root . "/includes/CompanyPrefsService.php");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 
@@ -375,7 +376,7 @@ amount_row(_("Bank Charge:"), 'charge', null, '', $bank_currency);
 $row = get_customer($_POST['customer_id']);
 $_POST['dimension_id'] = !$row ? 0 : $row['dimension_id'];
 $_POST['dimension2_id'] = !$row ? 0 : $row['dimension2_id'];
-$dim = get_company_pref('use_dimension');
+$dim = \FA\Services\CompanyPrefsService::getUseDimensions();
 if ($dim > 0)
     dimensions_list_row(_("Dimension").":", 'dimension_id',
         null, true, ' ', false, 1, false);
