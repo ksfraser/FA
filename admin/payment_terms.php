@@ -16,6 +16,7 @@ include($path_to_root . "/includes/session.inc");
 page(_($help_context = "Payment Terms"));
 
 include($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 
 simple_page_mode(true);
 
@@ -48,13 +49,13 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if (!is_numeric($_POST['DayNumber']))
 	{
 		$input_error = 1;
-		UiMessageService::displayError( _("The number of days or the day in the following month must be numeric."));
+		UiMessageService::displayError( _(UI_TEXT_NUMBER_OF_DAYS_OR_DAY_IN_FOLLOWING_MONTH_MUST_BE_NUMERIC_ERROR));
 		set_focus('DayNumber');
 	} 
 	elseif (strlen($_POST['terms']) == 0) 
 	{
 		$input_error = 1;
-		UiMessageService::displayError( _("The Terms description must be entered."));
+		UiMessageService::displayError( _(UI_TEXT_TERMS_DESCRIPTION_MUST_BE_ENTERED_ERROR));
 		set_focus('terms');
 	}
 
@@ -92,13 +93,13 @@ if ($Mode == 'Delete')
 	// PREVENT DELETES IF DEPENDENT RECORDS IN debtors_master
 	if (key_in_foreign_table($selected_id, 'debtors_master', 'payment_terms'))
 	{
-		UiMessageService::displayError(_("Cannot delete this payment term, because customer accounts have been created referring to this term."));
+		UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_PAYMENT_TERM_CUSTOMER_ACCOUNTS_ERROR));
 	} 
 	else 
 	{
 		if (key_in_foreign_table($selected_id, 'suppliers', 'payment_terms'))
 		{
-			UiMessageService::displayError(_("Cannot delete this payment term, because supplier accounts have been created referring to this term"));
+			UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_PAYMENT_TERM_SUPPLIER_ACCOUNTS_ERROR));
 		} 
 		else 
 		{
@@ -124,7 +125,7 @@ $result = get_payment_terms_all(RequestService::checkValueStatic('show_inactive'
 
 start_form();
 start_table(TABLESTYLE);
-$th = array(_("Description"), _("Type"), _("Due After/Days"), "", "");
+$th = array(_(UI_TEXT_DESCRIPTION), _(UI_TEXT_TYPE), _(UI_TEXT_DUE_AFTER_DAYS), "", "");
 inactive_control_column($th);
 table_header($th);
 
@@ -137,10 +138,10 @@ while ($myrow = db_fetch($result))
 	$days = term_days($myrow);
     label_cell($myrow["terms"]);
     label_cell($pterm_types[$type]);
-    label_cell($type == PTT_DAYS ? "$days "._("days") : ($type == PTT_FOLLOWING ? $days : _("N/A")));
+    label_cell($type == PTT_DAYS ? "$days "._(UI_TEXT_DAYS) : ($type == PTT_FOLLOWING ? $days : _(UI_TEXT_NA)));
 	inactive_control_cell($myrow["terms_indicator"], $myrow["inactive"], 'payment_terms', "terms_indicator");
- 	edit_button_cell("Edit".$myrow["terms_indicator"], _("Edit"));
- 	delete_button_cell("Delete".$myrow["terms_indicator"], _("Delete"));
+ 	edit_button_cell("Edit".$myrow["terms_indicator"], _(UI_TEXT_EDIT));
+ 	delete_button_cell("Delete".$myrow["terms_indicator"], _(UI_TEXT_DELETE));
     end_row();
 
 }
@@ -171,12 +172,12 @@ if ($selected_id != -1)
 	hidden('selected_id', $selected_id);
 }
 
-text_row(_("Terms Description:"), 'terms', null, 40, 40);
+text_row(_(UI_TEXT_TERMS_DESCRIPTION_LABEL), 'terms', null, 40, 40);
 
-payment_type_list_row(_("Payment type:"), 'type', null, true);
+payment_type_list_row(_(UI_TEXT_PAYMENT_TYPE_LABEL), 'type', null, true);
 
 if ( in_array(RequestService::getPostStatic('type'), array(PTT_FOLLOWING, PTT_DAYS))) 
-	text_row_ex(_("Days (Or Day In Following Month):"), 'DayNumber', 3);
+	text_row_ex(_(UI_TEXT_DAYS_OR_DAY_IN_FOLLOWING_MONTH_LABEL), 'DayNumber', 3);
 else
 	hidden('DayNumber', 0);
 

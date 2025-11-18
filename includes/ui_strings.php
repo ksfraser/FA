@@ -261,4 +261,12 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_DELETE_BACKUP', 'Delete Backup');
     define('UI_TEXT_YOU_ARE_ABOUT_TO_REMOVE_SELECTED_BACKUP_FILE', 'You are about to remove selected backup file.\nDo you want to continue ?');
     define('UI_TEXT_UPLOAD_FILE', 'Upload file');
+    define('UI_TEXT_NUMBER_OF_DAYS_OR_DAY_IN_FOLLOWING_MONTH_MUST_BE_NUMERIC_ERROR', 'The number of days or the day in the following month must be numeric.');
+    define('UI_TEXT_TERMS_DESCRIPTION_MUST_BE_ENTERED_ERROR', 'The Terms description must be entered.');
+    define('UI_TEXT_CANNOT_DELETE_PAYMENT_TERM_CUSTOMER_ACCOUNTS_ERROR', 'Cannot delete this payment term, because customer accounts have been created referring to this term.');
+    define('UI_TEXT_CANNOT_DELETE_PAYMENT_TERM_SUPPLIER_ACCOUNTS_ERROR', 'Cannot delete this payment term, because supplier accounts have been created referring to this term');
+    define('UI_TEXT_DUE_AFTER_DAYS', 'Due After/Days');
+    define('UI_TEXT_TERMS_DESCRIPTION_LABEL', 'Terms Description:');
+    define('UI_TEXT_PAYMENT_TYPE_LABEL', 'Payment type:');
+    define('UI_TEXT_DAYS_OR_DAY_IN_FOLLOWING_MONTH_LABEL', 'Days (Or Day In Following Month):');
 }
