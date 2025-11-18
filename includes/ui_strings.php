@@ -269,4 +269,12 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_TERMS_DESCRIPTION_LABEL', 'Terms Description:');
     define('UI_TEXT_PAYMENT_TYPE_LABEL', 'Payment type:');
     define('UI_TEXT_DAYS_OR_DAY_IN_FOLLOWING_MONTH_LABEL', 'Days (Or Day In Following Month):');
+    define('UI_TEXT_SELECTED_THEME_HAS_BEEN_SUCCESSFULLY_DELETED', 'Selected theme has been successfully deleted');
+    define('UI_TEXT_THEME', 'Theme');
+    define('UI_TEXT_INSTALLED', 'Installed');
+    define('UI_TEXT_AVAILABLE', 'Available');
+    define('UI_TEXT_NO_OPTIONAL_THEME_IS_CURRENTLY_AVAILABLE', 'No optional theme is currently available.');
+    define('UI_TEXT_UPDATE', 'Update');
+    define('UI_TEXT_INSTALL', 'Install');
+    define('UI_TEXT_YOU_ARE_ABOUT_TO_REMOVE_PACKAGE', 'You are about to remove package \'%s\'.\nDo you want to continue ?');
 }

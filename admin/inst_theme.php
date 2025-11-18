@@ -16,6 +16,7 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root."/includes/packages.inc");
 include_once($path_to_root . "/admin/db/maintenance_db.inc");
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 
 if ($SysPrefs->use_popup_windows) {
 	$js = get_js_open_window(900, 500);
@@ -37,7 +38,7 @@ if (($id = find_submit('Delete', false)) && isset($installed_extensions[$id])
 		rmdir($dirname);
 		unset($extensions[$id]);
 		if (update_extensions($extensions)) {
-			\FA\Services\UiMessageService::displayNotification(_("Selected theme has been successfully deleted"));
+			\FA\Services\UiMessageService::displayNotification(_(UI_TEXT_SELECTED_THEME_HAS_BEEN_SUCCESSFULLY_DELETED));
 			meta_forward($_SERVER['PHP_SELF']);
 		}
 	}
@@ -52,13 +53,13 @@ start_form(true);
 	div_start('ext_tbl');
 	start_table(TABLESTYLE);
 
-	$th = array(_("Theme"),  _("Installed"), _("Available"), "", "");
+	$th = array(_(UI_TEXT_THEME),  _(UI_TEXT_INSTALLED), _(UI_TEXT_AVAILABLE), "", "");
 	$k = 0;
 
 	$mods = get_themes_list();
 
 	if (!$mods)
-		display_note(_("No optional theme is currently available."));
+		display_note(_(UI_TEXT_NO_OPTIONAL_THEME_IS_CURRENTLY_AVAILABLE));
 	else
 	{
 		table_header($th);
@@ -73,12 +74,12 @@ start_form(true);
 
 			label_cell($available ? get_package_view_str($pkg_name, $ext['name']) : $ext['name']);
 
-			label_cell($id === null ? _("None") :
-				($available && $installed ? $installed : _("Unknown")));
-			label_cell($available ? $available : _("None"));
+			label_cell($id === null ? _(UI_TEXT_NONE) :
+				($available && $installed ? $installed : _(UI_TEXT_UNKNOWN)));
+			label_cell($available ? $available : _(UI_TEXT_NONE));
 
 			if ($available && check_pkg_upgrade($installed, $available)) // outdated or not installed theme in repo
-				button_cell('Update'.$pkg_name, $installed ? _("Update") : _("Install"),
+				button_cell('Update'.$pkg_name, $installed ? _(UI_TEXT_UPDATE) : _(UI_TEXT_INSTALL),
 					_('Upload and install latest extension package'), ICON_DOWN, 'process');
 			else
 				label_cell('');
@@ -86,7 +87,7 @@ start_form(true);
 			if ($id !== null) {
 				delete_button_cell('Delete'.$id, _('Delete'));
 				submit_js_confirm('Delete'.$id, 
-					sprintf(_("You are about to remove package \'%s\'.\nDo you want to continue ?"), 
+					sprintf(_(UI_TEXT_YOU_ARE_ABOUT_TO_REMOVE_PACKAGE), 
 						$ext['name']));
 			} else
 				label_cell('');
