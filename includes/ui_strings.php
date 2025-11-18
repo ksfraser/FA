@@ -277,4 +277,12 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_UPDATE', 'Update');
     define('UI_TEXT_INSTALL', 'Install');
     define('UI_TEXT_YOU_ARE_ABOUT_TO_REMOVE_PACKAGE', 'You are about to remove package \'%s\'.\nDo you want to continue ?');
+    define('UI_TEXT_SELECTED_EXTENSION_HAS_BEEN_SUCCESSFULLY_DELETED', 'Selected extension has been successfully deleted');
+    define('UI_TEXT_EXTENSION', 'Extension');
+    define('UI_TEXT_VERSION', 'Version');
+    define('UI_TEXT_PATH', 'Path');
+    define('UI_TEXT_ACTIVE', 'Active');
+    define('UI_TEXT_PACKAGE_IS_INCOMPATIBLE_WITH_CURRENT_APPLICATION_VERSION', 'Package \'%s\' is incompatible with current application version and cannot be activated.\nCheck Install/Activate page for newer package version.');
+    define('UI_TEXT_NO_OPTIONAL_EXTENSION_MODULE_IS_CURRENTLY_AVAILABLE', 'No optional extension module is currently available.');
+    define('UI_TEXT_INSTALL_THIRD_PARTY_EXTENSION', 'Install third-party extension.');
 }

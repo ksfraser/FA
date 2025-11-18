@@ -23,6 +23,7 @@ include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/admin/db/company_db.inc");
 include_once($path_to_root . "/admin/db/maintenance_db.inc");
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 
 simple_page_mode(true);
 
@@ -85,7 +86,7 @@ function handle_delete($id)
 	}
 	unset($extensions[$id]);
 	if (update_extensions($extensions)) {
-		\FA\Services\UiMessageService::displayNotification(_("Selected extension has been successfully deleted"));
+		\FA\Services\UiMessageService::displayNotification(_(UI_TEXT_SELECTED_EXTENSION_HAS_BEEN_SUCCESSFULLY_DELETED));
 	}
 	return true;
 }
@@ -100,7 +101,7 @@ function display_extensions($mods)
 	div_start('ext_tbl');
 	start_table(TABLESTYLE);
 
-	$th = array(_("Extension"), _("Installed"), _("Available"),  "", "");
+	$th = array(_(UI_TEXT_EXTENSION), _(UI_TEXT_INSTALLED), _(UI_TEXT_AVAILABLE),  "", "");
 	table_header($th);
 
 	$k = 0;
@@ -115,18 +116,18 @@ function display_extensions($mods)
 
 		label_cell($available ? get_package_view_str($pkg_name, $ext['name']) : $ext['name']);
 
-		label_cell($id === null ? _("None") :
-			(($installed && ($installed != '-' || $installed != '')) ? $installed : _("Unknown")));
-		label_cell($available ? $available : _("Unknown"));
+		label_cell($id === null ? _(UI_TEXT_NONE) :
+			(($installed && ($installed != '-' || $installed != '')) ? $installed : _(UI_TEXT_UNKNOWN)));
+		label_cell($available ? $available : _(UI_TEXT_UNKNOWN));
 
 		if (!$available && $ext['type'] == 'extension')	{// third-party plugin
 			if (!$installed)
-				button_cell('Local'.$ext['package'], _("Install"), _('Install third-party extension.'), 
+				button_cell('Local'.$ext['package'], _(UI_TEXT_INSTALL), _(UI_TEXT_INSTALL_THIRD_PARTY_EXTENSION), 
 					ICON_DOWN);
 			else
 				label_cell('');
 		} elseif (check_pkg_upgrade($installed, $available)) // outdated or not installed extension in repo
-			button_cell('Update'.$pkg_name, $installed ? _("Update") : _("Install"),
+			button_cell('Update'.$pkg_name, $installed ? _(UI_TEXT_UPDATE) : _(UI_TEXT_INSTALL),
 				_('Upload and install latest extension package'), ICON_DOWN);
 		else
 			label_cell('');
@@ -134,7 +135,7 @@ function display_extensions($mods)
 		if ($id !== null) {
 			delete_button_cell('Delete'.$id, _('Delete'));
 			submit_js_confirm('Delete'.$id, 
-				sprintf(_("You are about to remove package \'%s\'.\nDo you want to continue ?"), 
+				sprintf(_(UI_TEXT_YOU_ARE_ABOUT_TO_REMOVE_PACKAGE), 
 					$ext['name']));
 		} else
 			label_cell('');
@@ -144,7 +145,7 @@ function display_extensions($mods)
 
 	end_table(1);
 
-	submit_center_first('Refresh', _("Update"), '', null);
+	submit_center_first('Refresh', _(UI_TEXT_UPDATE), '', null);
 
 	div_end();
 }
@@ -157,7 +158,7 @@ function company_extensions($id)
 {
 	start_table(TABLESTYLE);
 	
-	$th = array(_("Extension"), _("Version"), _("Path"), _("Active"));
+	$th = array(_(UI_TEXT_EXTENSION), _(UI_TEXT_VERSION), _(UI_TEXT_PATH), _(UI_TEXT_ACTIVE));
 	
 	$mods = get_company_extensions();
 	$exts = get_company_extensions($id);
@@ -206,8 +207,7 @@ if (RequestService::getPostStatic('Refresh')) {
 		{
 			if (RequestService::checkValueStatic('Active'.$i) && !check_src_ext_version($ext['version']))
 			{
-				\FA\Services\UiMessageService::displayWarning(sprintf(_("Package '%s' is incompatible with current application version and cannot be activated.\n")
-					. _("Check Install/Activate page for newer package version."), $ext['name']));
+				\FA\Services\UiMessageService::displayWarning(sprintf(_(UI_TEXT_PACKAGE_IS_INCOMPATIBLE_WITH_CURRENT_APPLICATION_VERSION), $ext['name']));
 				continue;
 			}
 			$activated = activate_hooks($ext['package'], $comp, !$ext['active']);	// change active state
@@ -256,7 +256,7 @@ if ($set == -1)
 {
 	$mods = get_extensions_list('extension');
 	if (!$mods)
-		display_note(_("No optional extension module is currently available."));
+		display_note(_(UI_TEXT_NO_OPTIONAL_EXTENSION_MODULE_IS_CURRENTLY_AVAILABLE));
 	else
 		display_extensions($mods);
 } else 
