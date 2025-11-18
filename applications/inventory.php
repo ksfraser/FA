@@ -9,48 +9,50 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+include_once($path_to_root . "/includes/ui_strings.php");
+
 class inventory_app extends application
 {
 	function __construct()
 	{
-		parent::__construct("stock", _($this->help_context = "&Items and Inventory"));
+		parent::__construct("stock", _($this->help_context = _(UI_TEXT_ITEMS_AND_INVENTORY)));
 
-		$this->add_module(_("Transactions"));
-		$this->add_lapp_function(0, _("Inventory Location &Transfers"),
+		$this->add_module(_(UI_TEXT_TRANSACTIONS));
+		$this->add_lapp_function(0, _(UI_TEXT_INVENTORY_LOCATION_TRANSFERS),
 			"inventory/transfers.php?NewTransfer=1", 'SA_LOCATIONTRANSFER', MENU_TRANSACTION);
-		$this->add_lapp_function(0, _("Inventory &Adjustments"),
+		$this->add_lapp_function(0, _(UI_TEXT_INVENTORY_ADJUSTMENTS),
 			"inventory/adjustments.php?NewAdjustment=1", 'SA_INVENTORYADJUSTMENT', MENU_TRANSACTION);
 
-		$this->add_module(_("Inquiries and Reports"));
-		$this->add_lapp_function(1, _("Inventory Item &Movements"),
+		$this->add_module(_(UI_TEXT_INQUIRIES_AND_REPORTS));
+		$this->add_lapp_function(1, _(UI_TEXT_INVENTORY_ITEM_MOVEMENTS),
 			"inventory/inquiry/stock_movements.php?", 'SA_ITEMSTRANSVIEW', MENU_INQUIRY);
-		$this->add_lapp_function(1, _("Inventory Item &Status"),
+		$this->add_lapp_function(1, _(UI_TEXT_INVENTORY_ITEM_STATUS),
 			"inventory/inquiry/stock_status.php?", 'SA_ITEMSSTATVIEW', MENU_INQUIRY);
-		$this->add_rapp_function(1, _("Inventory &Reports"),
+		$this->add_rapp_function(1, _(UI_TEXT_INVENTORY_REPORTS),
 			"reporting/reports_main.php?Class=2", 'SA_ITEMSTRANSVIEW', MENU_REPORT);
 
-		$this->add_module(_("Maintenance"));
-		$this->add_lapp_function(2, _("&Items"),
+		$this->add_module(_(UI_TEXT_MAINTENANCE));
+		$this->add_lapp_function(2, _(UI_TEXT_ITEMS),
 			"inventory/manage/items.php?", 'SA_ITEM', MENU_ENTRY);
-		$this->add_lapp_function(2, _("&Foreign Item Codes"),
+		$this->add_lapp_function(2, _(UI_TEXT_FOREIGN_ITEM_CODES),
 			"inventory/manage/item_codes.php?", 'SA_FORITEMCODE', MENU_MAINTENANCE);
-		$this->add_lapp_function(2, _("Sales &Kits"),
+		$this->add_lapp_function(2, _(UI_TEXT_SALES_KITS),
 			"inventory/manage/sales_kits.php?", 'SA_SALESKIT', MENU_MAINTENANCE);
-		$this->add_lapp_function(2, _("Item &Categories"),
+		$this->add_lapp_function(2, _(UI_TEXT_ITEM_CATEGORIES),
 			"inventory/manage/item_categories.php?", 'SA_ITEMCATEGORY', MENU_MAINTENANCE);
-		$this->add_rapp_function(2, _("Inventory &Locations"),
+		$this->add_rapp_function(2, _(UI_TEXT_INVENTORY_LOCATIONS),
 			"inventory/manage/locations.php?", 'SA_INVENTORYLOCATION', MENU_MAINTENANCE);
-		$this->add_rapp_function(2, _("&Units of Measure"),
+		$this->add_rapp_function(2, _(UI_TEXT_UNITS_OF_MEASURE),
 			"inventory/manage/item_units.php?", 'SA_UOM', MENU_MAINTENANCE);
-		$this->add_rapp_function(2, _("&Reorder Levels"),
+		$this->add_rapp_function(2, _(UI_TEXT_REORDER_LEVELS),
 			"inventory/reorder_level.php?", 'SA_REORDER', MENU_MAINTENANCE);
 
-		$this->add_module(_("Pricing and Costs"));
-		$this->add_lapp_function(3, _("Sales &Pricing"),
+		$this->add_module(_(UI_TEXT_PRICING_AND_COSTS));
+		$this->add_lapp_function(3, _(UI_TEXT_SALES_PRICING),
 			"inventory/prices.php?", 'SA_SALESPRICE', MENU_MAINTENANCE);
-		$this->add_lapp_function(3, _("Purchasing &Pricing"),
+		$this->add_lapp_function(3, _(UI_TEXT_PURCHASING_PRICING),
 			"inventory/purchasing_data.php?", 'SA_PURCHASEPRICING', MENU_MAINTENANCE);
-		$this->add_rapp_function(3, _("Standard &Costs"),
+		$this->add_rapp_function(3, _(UI_TEXT_STANDARD_COSTS),
 			"inventory/cost_update.php?", 'SA_STANDARDCOST', MENU_MAINTENANCE);
 
 		$this->add_extensions();
