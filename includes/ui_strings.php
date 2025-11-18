@@ -532,4 +532,13 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_SUPPLIER_ALLOCATION_INQUIRY', 'Supplier Allocation &Inquiry');
     define('UI_TEXT_SUPPLIER_PURCHASING_REPORTS', 'Supplier and Purchasing &Reports');
     define('UI_TEXT_SUPPLIERS', '&Suppliers');
+    define('UI_TEXT_MANUFACTURING', '&Manufacturing');
+    define('UI_TEXT_WORK_ORDER_ENTRY', 'Work &Order Entry');
+    define('UI_TEXT_OUTSTANDING_WORK_ORDERS', '&Outstanding Work Orders');
+    define('UI_TEXT_COSTED_BILL_OF_MATERIAL_INQUIRY', 'Costed Bill Of Material Inquiry');
+    define('UI_TEXT_INVENTORY_ITEM_WHERE_USED_INQUIRY', 'Inventory Item Where Used &Inquiry');
+    define('UI_TEXT_WORK_ORDER_INQUIRY', 'Work Order &Inquiry');
+    define('UI_TEXT_MANUFACTURING_REPORTS', 'Manufacturing &Reports');
+    define('UI_TEXT_BILLS_OF_MATERIAL', '&Bills Of Material');
+    define('UI_TEXT_WORK_CENTRES', '&Work Centres');
 };
