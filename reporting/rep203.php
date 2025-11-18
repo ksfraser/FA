@@ -30,7 +30,7 @@ print_payment_report();
 function getTransactions($supplier, $date)
 {
 	$date = DateService::date2sqlStatic($date);
-	$dec = user_price_dec();
+	$dec = \FA\UserPrefsCache::getPriceDecimals();
 
 	$sql = "SELECT  supp_reference, tran_date, due_date, trans_no, type, rate,
 			(ABS( ov_amount) + ABS( ov_gst) -  alloc) AS Balance,
@@ -70,7 +70,7 @@ function print_payment_report()
 	else
 		$from = get_supplier_name($fromsupp);
 
-    	$dec = user_price_dec();
+    	$dec = \FA\UserPrefsCache::getPriceDecimals();
 
 	if ($currency == ALL_TEXT)
 	{

@@ -129,7 +129,7 @@ class ViewCreditNote
                 if ($k % 2 == 0) {
                     $row->addAttribute(new HtmlAttribute('class', 'odd'));
                 }
-                $value = round2(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]), user_price_dec());
+                $value = round2(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]), \FA\UserPrefsCache::getPriceDecimals());
                 $sub_total += $value;
 
                 $display_discount = ($myrow2["discount_percent"] == 0) ? "" : percent_format($myrow2["discount_percent"]*100) . "%";

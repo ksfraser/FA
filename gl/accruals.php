@@ -90,7 +90,7 @@ if (isset($_POST['go']) || isset($_POST['show']))
 		if ($input_error == 0)
 		{
 			$amount = RequestService::inputNumStatic('amount');
-			$am = round2($amount / $periods, user_price_dec());
+			$am = round2($amount / $periods, \FA\UserPrefsCache::getPriceDecimals());
 			if ($am * $periods != $amount)
 				$am0 = $am + $amount - $am * $periods;
 			else

@@ -66,7 +66,7 @@ function print_remittances()
 	if (!$from || !$to) return;
 
 	$orientation = ($orientation ? 'L' : 'P');
-	$dec = user_price_dec();
+	$dec = \FA\UserPrefsCache::getPriceDecimals();
 
  	$fno = explode("-", $from);
 	$tno = explode("-", $to);

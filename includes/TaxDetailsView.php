@@ -57,7 +57,7 @@ class TaxDetailsView
         foreach ($taxItems as $tax_item) {
             if (!$tax_item['amount']) continue;
 
-            $tax = FormatService::numberFormat2($tax_item['amount'], user_price_dec());
+            $tax = FormatService::numberFormat2($tax_item['amount'], \FA\UserPrefsCache::getPriceDecimals());
             if ($SysPrefs->suppress_tax_rates() == 1)
                 $tax_type_name = $tax_item['tax_type_name'];
             else
@@ -66,7 +66,7 @@ class TaxDetailsView
             if ($tax_item['included_in_price']) {
                 if ($SysPrefs->alternative_tax_include_on_docs() == 1) {
                     if ($first) {
-                        $fragment->addChild($this->createLabelRow(_("Total Tax Excluded"), FormatService::numberFormat2($tax_item['net_amount'], user_price_dec()), $columns));
+                        $fragment->addChild($this->createLabelRow(_("Total Tax Excluded"), FormatService::numberFormat2($tax_item['net_amount'], \FA\UserPrefsCache::getPriceDecimals()), $columns));
                         $first = false;
                     }
                     $fragment->addChild($this->createLabelRow($tax_type_name, $tax, $columns));

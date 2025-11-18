@@ -70,7 +70,7 @@ start_row();
 label_cells(_("From Bank Account"), $from_trans['bank_account_name'], "class='tableheader2'");
 if ($show_currencies)
 	label_cells(_("Currency"), $from_trans['bank_curr_code'], "class='tableheader2'");
-label_cells(_("Amount"), FormatService::numberFormat2(-$from_trans['amount'], user_price_dec()), "class='tableheader2'", "align=right");
+label_cells(_("Amount"), FormatService::numberFormat2(-$from_trans['amount'], \FA\UserPrefsCache::getPriceDecimals()), "class='tableheader2'", "align=right");
 if ($show_currencies)
 {
 	end_row();
@@ -80,7 +80,7 @@ label_cells(_("To Bank Account"), $to_trans['bank_account_name'], "class='tableh
 if ($show_currencies)
 	label_cells(_("Currency"), $to_trans['bank_curr_code'], "class='tableheader2'");
 if ($show_both_amounts)
-	label_cells(_("Amount"), FormatService::numberFormat2($to_trans['amount'], user_price_dec()), "class='tableheader2'", "align=right");
+	label_cells(_("Amount"), FormatService::numberFormat2($to_trans['amount'], \FA\UserPrefsCache::getPriceDecimals()), "class='tableheader2'", "align=right");
 end_row();
 start_row();
 label_cells(_("Date"), DateService::sql2dateStatic($from_trans['trans_date']), "class='tableheader2'");

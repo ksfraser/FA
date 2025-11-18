@@ -96,7 +96,7 @@ class BankingService
                 return \round2($value, $decimals);
             }
             public function userPriceDecimals(): int {
-                return \user_price_dec();
+                return \FA\UserPrefsCache::getPriceDecimals();
             }
         };
     }
@@ -250,8 +250,8 @@ class BankingService
         if ($this->isCompanyCurrency($curr))
             return;
 
-        $inv_amt = \round2($amount * $trans['rate'], \user_price_dec());
-        $pay_amt = \round2($amount * $pyt_trans['rate'], \user_price_dec());
+        $inv_amt = \round2($amount * $trans['rate'], \FA\UserPrefsCache::getPriceDecimals());
+        $pay_amt = \round2($amount * $pyt_trans['rate'], \FA\UserPrefsCache::getPriceDecimals());
 
         if ($inv_amt != $pay_amt) {
             $diff = $inv_amt - $pay_amt;

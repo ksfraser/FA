@@ -47,7 +47,7 @@ function print_credits()
 	if (!$from || !$to) return;
 
 	$orientation = ($orientation ? 'L' : 'P');
-	$dec = user_price_dec();
+	$dec = \FA\UserPrefsCache::getPriceDecimals();
 
  	$fno = explode("-", $from);
 	$tno = explode("-", $to);
@@ -106,7 +106,7 @@ function print_credits()
 				continue;
 
 			$Net = round2($sign * ((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
-			   user_price_dec());
+			   \FA\UserPrefsCache::getPriceDecimals());
 			$SubTotal += $Net;
 			$DisplayPrice = FormatService::numberFormat2($myrow2["unit_price"],$dec);
 			$DisplayQty = FormatService::numberFormat2($sign*$myrow2["quantity"],get_qty_dec($myrow2['stock_id']));

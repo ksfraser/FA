@@ -132,7 +132,7 @@ function print_customer_balances()
         $cust = _('All');
     else
         $cust = get_customer_name($fromcust);
-    $dec = user_price_dec();
+    $dec = \FA\UserPrefsCache::getPriceDecimals();
 
     if ($area == ALL_NUMERIC)
         $area = 0;

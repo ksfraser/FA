@@ -231,7 +231,7 @@ class ViewDispatch
                     $row->addAttribute(new HtmlAttribute('class', 'odd'));
                 }
 
-                $value = round2(((1 - $item["discount_percent"]) * $item["unit_price"] * $item["quantity"]), user_price_dec());
+                $value = round2(((1 - $item["discount_percent"]) * $item["unit_price"] * $item["quantity"]), \FA\UserPrefsCache::getPriceDecimals());
                 $subTotal += $value;
 
                 $displayDiscount = ($item["discount_percent"] == 0) ? "" : percent_format($item["discount_percent"] * 100) . "%";

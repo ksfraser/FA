@@ -98,7 +98,7 @@ function print_supplier_balances()
         $supp = _('All');
     else
         $supp = get_supplier_name($fromsupp);
-    $dec = user_price_dec();
+    $dec = \FA\UserPrefsCache::getPriceDecimals();
 
     if ($currency == ALL_TEXT)
     {

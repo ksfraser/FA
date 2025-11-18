@@ -73,7 +73,7 @@ function print_po()
 	if (!$from || !$to) return;
 
 	$orientation = ($orientation ? 'L' : 'P');
-	$dec = user_price_dec();
+	$dec = \FA\UserPrefsCache::getPriceDecimals();
 
 	$cols = array(4, 60, 225, 300, 340, 385, 450, 515);
 
@@ -128,11 +128,11 @@ function print_po()
 					$myrow2['units'] = $data['suppliers_uom'];
 				if ($data['conversion_factor'] != 1)
 				{
-					$myrow2['unit_price'] = round2($myrow2['unit_price'] * $data['conversion_factor'], user_price_dec());
+					$myrow2['unit_price'] = round2($myrow2['unit_price'] * $data['conversion_factor'], \FA\UserPrefsCache::getPriceDecimals());
 					$myrow2['quantity_ordered'] = round2($myrow2['quantity_ordered'] / $data['conversion_factor'], \FA\UserPrefsCache::getQtyDecimals());
 				}
 			}
-			$Net = round2(($myrow2["unit_price"] * $myrow2["quantity_ordered"]), user_price_dec());
+			$Net = round2(($myrow2["unit_price"] * $myrow2["quantity_ordered"]), \FA\UserPrefsCache::getPriceDecimals());
 			$prices[] = $Net;
 			$items[] = $myrow2['item_code'];
 			$SubTotal += $Net;

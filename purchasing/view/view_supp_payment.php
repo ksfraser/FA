@@ -60,9 +60,9 @@ end_row();
 start_row();
 if ($show_currencies)
 	label_cells(_("Payment Currency"), $receipt['bank_curr_code'], "class='tableheader2'");
-label_cells(_("Amount"), FormatService::numberFormat2(-$receipt['bank_amount'], user_price_dec()), "class='tableheader2'");
+label_cells(_("Amount"), FormatService::numberFormat2(-$receipt['bank_amount'], \FA\UserPrefsCache::getPriceDecimals()), "class='tableheader2'");
 if ($receipt['ov_discount'] != 0)
-	label_cells(_("Discount"), FormatService::numberFormat2(-$receipt['ov_discount']*$receipt['rate'], user_price_dec()), "class='tableheader2'");
+	label_cells(_("Discount"), FormatService::numberFormat2(-$receipt['ov_discount']*$receipt['rate'], \FA\UserPrefsCache::getPriceDecimals()), "class='tableheader2'");
 else
 	label_cells(_("Payment Type"), $bank_transfer_types[$receipt['BankTransType']], "class='tableheader2'");
 end_row();
@@ -72,7 +72,7 @@ if ($show_currencies)
 	label_cells(_("Supplier's Currency"), $receipt['curr_code'], "class='tableheader2'");
 }
 if ($show_both_amounts)
-	label_cells(_("Amount"), FormatService::numberFormat2(-$receipt['Total'], user_price_dec()), "class='tableheader2'");
+	label_cells(_("Amount"), FormatService::numberFormat2(-$receipt['Total'], \FA\UserPrefsCache::getPriceDecimals()), "class='tableheader2'");
 label_cells(_("Reference"), $receipt['ref'], "class='tableheader2'");
 end_row();
 if ($receipt['ov_discount'] != 0)

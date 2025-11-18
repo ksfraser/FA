@@ -46,7 +46,7 @@ function print_sales_quotations()
 	if (!$from || !$to) return;
 
 	$orientation = ($orientation ? 'L' : 'P');
-	$dec = user_price_dec();
+	$dec = \FA\UserPrefsCache::getPriceDecimals();
 
 	$pictures = $SysPrefs->print_item_images_on_quote();
 	// If you want a larger image, then increase pic_height f.i.
@@ -98,7 +98,7 @@ function print_sales_quotations()
 		while ($myrow2=db_fetch($result))
 		{
 			$Net = round2(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
-			   user_price_dec());
+			   \FA\UserPrefsCache::getPriceDecimals());
 			$prices[] = $Net;
 			$items[] = $myrow2['stk_code'];
 			$SubTotal += $Net;

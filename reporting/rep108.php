@@ -71,7 +71,7 @@ function print_statements()
 	$orientation = $_POST['PARAM_5'];
 
 	$orientation = ($orientation ? 'L' : 'P');
-	$dec = user_price_dec();
+	$dec = \FA\UserPrefsCache::getPriceDecimals();
 
 	$cols = array(4, 100, 130, 190,	250, 320, 385, 450, 515);
 

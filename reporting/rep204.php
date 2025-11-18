@@ -77,7 +77,7 @@ function print_outstanding_GRN()
 		$from = _('All');
 	else
 		$from = get_supplier_name($fromsupp);
-    $dec = user_price_dec();
+    $dec = \FA\UserPrefsCache::getPriceDecimals();
 
 	$cols = array(0, 40, 80, 190,	250, 320, 385, 450,	515);
 

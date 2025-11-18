@@ -117,7 +117,7 @@ function print_customer_balances()
 		$cust = _('All');
 	else
 		$cust = get_customer_name($fromcust);
-    $dec = user_price_dec();
+    $dec = \FA\UserPrefsCache::getPriceDecimals();
 
 	if ($show_balance) $sb = _('Yes');
 	else $sb = _('No');

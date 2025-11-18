@@ -90,7 +90,7 @@ function print_aged_customer_analysis()
 		$from = _('All');
 	else
 		$from = get_customer_name($fromcust);
-    	$dec = user_price_dec();
+    	$dec = \FA\UserPrefsCache::getPriceDecimals();
 
 	if ($summaryOnly == 1)
 		$summary = _('Summary Only');

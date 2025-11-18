@@ -100,7 +100,7 @@ function print_aged_supplier_analysis()
 		$from = _('All');
 	else
 		$from = get_supplier_name($fromsupp);
-    	$dec = user_price_dec();
+    	$dec = \FA\UserPrefsCache::getPriceDecimals();
 
 	if ($summaryOnly == 1)
 		$summary = _('Summary Only');

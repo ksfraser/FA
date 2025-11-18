@@ -86,7 +86,7 @@ class Dispatch
         $subTotal = 0;
         foreach ($this->lineItems as $item) {
             if ($item['quantity'] == 0) continue;
-            $value = round2(((1 - $item["discount_percent"]) * $item["unit_price"] * $item["quantity"]), user_price_dec());
+            $value = round2(((1 - $item["discount_percent"]) * $item["unit_price"] * $item["quantity"]), \FA\UserPrefsCache::getPriceDecimals());
             $subTotal += $value;
         }
         return $subTotal;

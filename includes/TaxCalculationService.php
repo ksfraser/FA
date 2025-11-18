@@ -95,7 +95,7 @@ class TaxCalculationService {
 
         $tax = 0;
         foreach ($taxArray as $taxitem) {
-            $tax += round($price * $taxitem['rate'] / (100 + $taxMultiplier), user_price_dec());
+            $tax += round($price * $taxitem['rate'] / (100 + $taxMultiplier), \FA\UserPrefsCache::getPriceDecimals());
         }
         return $price - $tax;
     }
@@ -140,7 +140,7 @@ class TaxCalculationService {
             $taxMultiplier += $taxitem["rate"];
         }
 
-        return round($price * (1 + ($taxMultiplier / 100)), user_price_dec());
+        return round($price * (1 + ($taxMultiplier / 100)), \FA\UserPrefsCache::getPriceDecimals());
     }
 
     /**
@@ -213,7 +213,7 @@ class TaxCalculationService {
             $retTaxArray = get_tax_group_items_as_array($taxGroup);
         }
 
-        $dec = user_price_dec();
+        $dec = \FA\UserPrefsCache::getPriceDecimals();
 
         $fullyExempt = true;
         foreach ($retTaxArray as $k => $t) {
@@ -224,7 +224,7 @@ class TaxCalculationService {
         }
 
         $retTaxArray['exempt'] = array('Value' => 0, 'Net' => 0, 'rate' => null, 'tax_type_id' => '', 'sales_gl_code' => '');
-        $dec = user_price_dec();
+        $dec = \FA\UserPrefsCache::getPriceDecimals();
         // loop for all items
         for ($i = 0; $i < count($items); $i++) {
             $itemTaxes = $this->getTaxesForItem($items[$i], $retTaxArray);

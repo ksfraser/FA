@@ -65,7 +65,7 @@ start_row();
 label_cells(_("From Bank Account"), $from_trans['bank_account_name'], "class='tableheader2'");
 if ($show_currencies)
 	label_cells(_("Currency"), $from_trans['bank_curr_code'], "class='tableheader2'");
-label_cells(_("Amount"), FormatService::numberFormat2(-$from_trans['amount'], user_price_dec()), "class='tableheader2'", "align=right");
+label_cells(_("Amount"), FormatService::numberFormat2(-$from_trans['amount'], \FA\UserPrefsCache::getPriceDecimals()), "class='tableheader2'", "align=right");
 label_cells(_("Date"), DateService::sql2dateStatic($from_trans['trans_date']), "class='tableheader2'");
 end_row();
 start_row();
@@ -73,7 +73,7 @@ label_cells(_("Pay To"), get_counterparty_name(ST_BANKPAYMENT, $from_trans['tran
 if ($show_currencies)
 {
 	label_cells(_("Settle currency"), $from_trans['settle_curr'], "class='tableheader2'");
-	label_cells(_("Settled amount"), FormatService::numberFormat2($from_trans['settled_amount'], user_price_dec()), "class='tableheader2'");
+	label_cells(_("Settled amount"), FormatService::numberFormat2($from_trans['settled_amount'], \FA\UserPrefsCache::getPriceDecimals()), "class='tableheader2'");
 }
 label_cells(_("Payment Type"), $bank_transfer_types[$from_trans['account_type']], "class='tableheader2'");
 end_row();
@@ -136,7 +136,7 @@ else
 		}
 	}
 
-	label_row(_("Total"), FormatService::numberFormat2($total_amount, user_price_dec()),"colspan=".(2+$dim)." align=right", "align=right");
+	label_row(_("Total"), FormatService::numberFormat2($total_amount, \FA\UserPrefsCache::getPriceDecimals()),"colspan=".(2+$dim)." align=right", "align=right");
 
 	end_table(1);
 

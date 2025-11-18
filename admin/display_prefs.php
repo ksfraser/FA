@@ -73,10 +73,10 @@ start_outer_table(TABLESTYLE2);
 table_section(1);
 table_section_title(_("Decimal Places"));
 
-number_list_row(_("Prices/Amounts:"), 'prices_dec', user_price_dec(), 0, 10);
-number_list_row(_("Quantities:"), 'qty_dec', user_qty_dec(), 0, 10);
-number_list_row(_("Exchange Rates:"), 'rates_dec', user_exrate_dec(), 0, 10);
-number_list_row(_("Percentages:"), 'percent_dec', user_percent_dec(), 0, 10);
+number_list_row(_("Prices/Amounts:"), 'prices_dec', \FA\UserPrefsCache::getPriceDecimals(), 0, 10);
+number_list_row(_("Quantities:"), 'qty_dec', \FA\UserPrefsCache::getQtyDecimals(), 0, 10);
+number_list_row(_("Exchange Rates:"), 'rates_dec', \FA\UserPrefsCache::getExrateDecimals(), 0, 10);
+number_list_row(_("Percentages:"), 'percent_dec', \FA\UserPrefsCache::getPercentDecimals(), 0, 10);
 
 table_section_title(_("Date Format and Separators"));
 

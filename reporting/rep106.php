@@ -83,7 +83,7 @@ function print_salesman_list()
 	else
 		$sum = _("Yes");
 
-	$dec = user_price_dec();
+	$dec = \FA\UserPrefsCache::getPriceDecimals();
 
 	$cols = array(0, 60, 150, 220, 325,	385, 450, 515);
 

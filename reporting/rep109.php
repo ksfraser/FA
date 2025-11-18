@@ -47,7 +47,7 @@ function print_sales_orders()
 	if (!$from || !$to) return;
 
 	$orientation = ($orientation ? 'L' : 'P');
-	$dec = user_price_dec();
+	$dec = \FA\UserPrefsCache::getPriceDecimals();
 
 	$cols = array(4, 60, 225, 300, 325, 385, 450, 515);
 
@@ -98,7 +98,7 @@ function print_sales_orders()
 		while ($myrow2=db_fetch($result))
 		{
 			$Net = round2(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
-			   user_price_dec());
+			   \FA\UserPrefsCache::getPriceDecimals());
 			$prices[] = $Net;
 			$items[] = $myrow2['stk_code'];
 			$SubTotal += $Net;

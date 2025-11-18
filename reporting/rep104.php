@@ -80,7 +80,7 @@ function print_price_listing()
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
 	$orientation = ($orientation ? 'L' : 'P');
-    $dec = user_price_dec();
+    $dec = \FA\UserPrefsCache::getPriceDecimals();
 
 	$home_curr = get_company_pref('curr_default');
 	if ($currency == ALL_TEXT)
