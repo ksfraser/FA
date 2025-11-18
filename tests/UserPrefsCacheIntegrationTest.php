@@ -194,6 +194,10 @@ class UserPrefsCacheIntegrationTest extends TestCase
             public function exrate_dec() {
                 return $this->prefs['exrate_dec'];
             }
+            
+            public function percent_dec() {
+                return $this->prefs['percent_dec'] ?? 1;
+            }
         };
         
         $mockUser = new class($mockPrefs) {
