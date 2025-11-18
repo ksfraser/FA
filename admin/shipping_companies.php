@@ -15,6 +15,7 @@ include($path_to_root . "/includes/session.inc");
 page(_($help_context = "Shipping Company"));
 include($path_to_root . "/includes/ui.inc");
 include($path_to_root . "/admin/db/shipping_db.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 
 simple_page_mode(true);
 //----------------------------------------------------------------------------------------------
@@ -23,7 +24,7 @@ function can_process()
 {
 	if (strlen($_POST['shipper_name']) == 0) 
 	{
-		UiMessageService::displayError(_("The shipping company name cannot be empty."));
+		UiMessageService::displayError(_(UI_TEXT_SHIPPING_COMPANY_NAME_CANNOT_BE_EMPTY_ERROR));
 		set_focus('shipper_name');
 		return false;
 	}
@@ -56,7 +57,7 @@ if ($Mode == 'Delete')
 	if (key_in_foreign_table($selected_id, 'sales_orders', 'ship_via'))
 	{
 		$cancel_delete = 1;
-		UiMessageService::displayError(_("Cannot delete this shipping company because sales orders have been created using this shipper."));
+		UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_SHIPPING_COMPANY_SALES_ORDERS_ERROR));
 	} 
 	else 
 	{
@@ -64,7 +65,7 @@ if ($Mode == 'Delete')
 		if (key_in_foreign_table($selected_id, 'debtor_trans', 'ship_via'))
 		{
 			$cancel_delete = 1;
-			UiMessageService::displayError(_("Cannot delete this shipping company because invoices have been created using this shipping company."));
+			UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_SHIPPING_COMPANY_INVOICES_ERROR));
 		} 
 		else 
 		{
@@ -88,7 +89,7 @@ $result = get_shippers(RequestService::checkValueStatic('show_inactive'));
 
 start_form();
 start_table(TABLESTYLE);
-$th = array(_("Name"), _("Contact Person"), _("Phone Number"), _("Secondary Phone"), _("Address"), "", "");
+$th = array(_(UI_TEXT_NAME), _(UI_TEXT_CONTACT_PERSON), _(UI_TEXT_PHONE_NUMBER), _(UI_TEXT_SECONDARY_PHONE), _(UI_TEXT_ADDRESS), "", "");
 inactive_control_column($th);
 table_header($th);
 
@@ -103,8 +104,8 @@ while ($myrow = db_fetch($result))
 	label_cell($myrow["phone2"]);
 	label_cell($myrow["address"]);
 	inactive_control_cell($myrow["shipper_id"], $myrow["inactive"], 'shippers', 'shipper_id');
- 	edit_button_cell("Edit".$myrow["shipper_id"], _("Edit"));
- 	delete_button_cell("Delete".$myrow["shipper_id"], _("Delete"));
+ 	edit_button_cell("Edit".$myrow["shipper_id"], _(UI_TEXT_EDIT));
+ 	delete_button_cell("Delete".$myrow["shipper_id"], _(UI_TEXT_DELETE));
 	end_row();
 }
 
@@ -131,15 +132,15 @@ if ($selected_id != -1)
 	hidden('selected_id', $selected_id);
 }
 
-text_row_ex(_("Name:"), 'shipper_name', 40);
+text_row_ex(_(UI_TEXT_NAME).':', 'shipper_name', 40);
 
-text_row_ex(_("Contact Person:"), 'contact', 30);
+text_row_ex(_(UI_TEXT_CONTACT_PERSON_LABEL), 'contact', 30);
 
-text_row_ex(_("Phone Number:"), 'phone', 32, 30);
+text_row_ex(_(UI_TEXT_PHONE_NUMBER_LABEL), 'phone', 32, 30);
 
-text_row_ex(_("Secondary Phone Number:"), 'phone2', 32, 30);
+text_row_ex(_(UI_TEXT_SECONDARY_PHONE_NUMBER_LABEL), 'phone2', 32, 30);
 
-text_row_ex(_("Address:"), 'address', 50);
+text_row_ex(_(UI_TEXT_ADDRESS_LABEL), 'address', 50);
 
 end_table(1);
 

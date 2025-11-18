@@ -221,4 +221,11 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_DELETE_PROFILE', 'Delete Profile');
     define('UI_TEXT_UPDATE_PRINTER_PROFILE', 'Update printer profile');
     define('UI_TEXT_DELETE_PRINTER_PROFILE', 'Delete printer profile (only if not used by any user)');
+    define('UI_TEXT_SHIPPING_COMPANY_NAME_CANNOT_BE_EMPTY_ERROR', 'The shipping company name cannot be empty.');
+    define('UI_TEXT_CANNOT_DELETE_SHIPPING_COMPANY_SALES_ORDERS_ERROR', 'Cannot delete this shipping company because sales orders have been created using this shipper.');
+    define('UI_TEXT_CANNOT_DELETE_SHIPPING_COMPANY_INVOICES_ERROR', 'Cannot delete this shipping company because invoices have been created using this shipping company.');
+    define('UI_TEXT_CONTACT_PERSON', 'Contact Person');
+    define('UI_TEXT_SECONDARY_PHONE', 'Secondary Phone');
+    define('UI_TEXT_CONTACT_PERSON_LABEL', 'Contact Person:');
+    define('UI_TEXT_SECONDARY_PHONE_NUMBER_LABEL', 'Secondary Phone Number:');
 }
