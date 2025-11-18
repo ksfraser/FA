@@ -16,6 +16,7 @@ include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/admin/db/transactions_db.inc");
 
@@ -30,7 +31,8 @@ if (user_use_date_picker())
 if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(800, 500);
 	
-page(_($help_context = "Void a Transaction"), false, false, "", $js);
+$help_context = UI_TEXT_VOID_TRANSACTION_TITLE;
+page(_($help_context), false, false, "", $js);
 
 simple_page_mode(true);
 //----------------------------------------------------------------------------------------

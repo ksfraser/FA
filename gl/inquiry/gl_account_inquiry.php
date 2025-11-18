@@ -18,6 +18,7 @@ include($path_to_root . "/includes/db_pager.inc");
 include_once($path_to_root . "/admin/db/fiscalyears_db.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/includes/CompanyPrefsService.php");
 include_once($path_to_root . "/includes/data_checks.inc");
 
@@ -30,7 +31,8 @@ if ($SysPrefs->use_popup_windows)
 if (user_use_date_picker())
 	$js .= get_js_date_picker();
 
-page(_($help_context = "General Ledger Inquiry"), false, false, '', $js);
+$help_context = UI_TEXT_GL_INQUIRY_TITLE;
+page(_($help_context), false, false, '', $js);
 
 //----------------------------------------------------------------------------------------------------
 // Ajax updates
@@ -69,23 +71,23 @@ function gl_inquiry_controls()
 
     start_table(TABLESTYLE_NOBORDER);
 	start_row();
-    gl_all_accounts_list_cells(_("Account:"), 'account', null, false, false, _("All Accounts"));
-	date_cells(_("from:"), 'TransFromDate', '', null, -user_transaction_days());
-	date_cells(_("to:"), 'TransToDate');
+	gl_all_accounts_list_cells(_(UI_TEXT_ACCOUNT_LABEL), 'account', null, false, false, _(UI_TEXT_ALL_ACCOUNTS));
+	date_cells(_(UI_TEXT_FROM_LABEL), 'TransFromDate', '', null, -user_transaction_days());
+	date_cells(_(UI_TEXT_TO_LABEL), 'TransToDate');
     end_row();
 	end_table();
 
 	start_table(TABLESTYLE_NOBORDER);
 	start_row();
 	if ($dim >= 1)
-		dimensions_list_cells(_("Dimension")." 1:", 'Dimension', null, true, " ", false, 1);
+		dimensions_list_cells(_(UI_TEXT_DIMENSION) . " 1:", 'Dimension', null, true, " ", false, 1);
 	if ($dim > 1)
-		dimensions_list_cells(_("Dimension")." 2:", 'Dimension2', null, true, " ", false, 2);
+		dimensions_list_cells(_(UI_TEXT_DIMENSION) . " 2:", 'Dimension2', null, true, " ", false, 2);
 
-	ref_cells(_("Memo:"), 'Memo', '',null, _('Enter memo fragment or leave empty'));
-	small_amount_cells(_("Amount min:"), 'amount_min', null, " ");
-	small_amount_cells(_("Amount max:"), 'amount_max', null, " ");
-	submit_cells('Show',_("Show"),'','', 'default');
+	ref_cells(_(UI_TEXT_MEMO_LABEL), 'Memo', '',null, _(UI_TEXT_MEMO_PLACEHOLDER));
+	small_amount_cells(_(UI_TEXT_AMOUNT_MIN), 'amount_min', null, " ");
+	small_amount_cells(_(UI_TEXT_AMOUNT_MAX), 'amount_max', null, " ");
+	submit_cells('Show',_(UI_TEXT_SHOW),'','', 'default');
 	end_row();
 	end_table();
 
@@ -126,24 +128,24 @@ function show_results()
 		
 	start_table(TABLESTYLE);
 	
-	$first_cols = array(_("Type"), _("#"), _("Reference"), _("Date"));
+	$first_cols = array(_(UI_TEXT_TYPE), _(UI_TEXT_NUMBER), _(UI_TEXT_REFERENCE), _(UI_TEXT_DATE));
 	
 	if ($_POST["account"] == null)
-	    $account_col = array(_("Account"));
+	    $account_col = array(_(UI_TEXT_ACCOUNT_COLUMN));
 	else
 	    $account_col = array();
 	
 	if ($dim == 2)
-		$dim_cols = array(_("Dimension")." 1", _("Dimension")." 2");
+		$dim_cols = array(_(UI_TEXT_DIMENSION) . " 1", _(UI_TEXT_DIMENSION) . " 2");
 	elseif ($dim == 1)
-		$dim_cols = array(_("Dimension"));
+		$dim_cols = array(_(UI_TEXT_DIMENSION));
 	else
 		$dim_cols = array();
 	
 	if ($show_balances)
-	    $remaining_cols = array(_("Person/Item"), _("Debit"), _("Credit"), _("Balance"), _("Memo"), "");
+	    $remaining_cols = array(_(UI_TEXT_PERSON_ITEM), _(UI_TEXT_DEBIT), _(UI_TEXT_CREDIT), _(UI_TEXT_BALANCE), _(UI_TEXT_MEMO), "");
 	else
-	    $remaining_cols = array(_("Person/Item"), _("Debit"), _("Credit"), _("Memo"), "");
+	    $remaining_cols = array(_(UI_TEXT_PERSON_ITEM), _(UI_TEXT_DEBIT), _(UI_TEXT_CREDIT), _(UI_TEXT_MEMO), "");
 	    
 	$th = array_merge($first_cols, $account_col, $dim_cols, $remaining_cols);
 			
@@ -162,7 +164,7 @@ function show_results()
 	if ($show_balances) {
 	    $bfw = get_gl_balance_from_to($begin, $_POST['TransFromDate'], $_POST["account"], $_POST['Dimension'], $_POST['Dimension2']);
     	start_row("class='inquirybg'");
-    	label_cell("<b>"._("Opening Balance")." - ".$_POST['TransFromDate']."</b>", "colspan=$colspan");
+	    label_cell("<b>"._(UI_TEXT_OPENING_BALANCE)." - ".$_POST['TransFromDate']."</b>", "colspan=$colspan");
     	display_debit_or_credit_cells($bfw, true);
     	label_cell("");
     	label_cell("");
