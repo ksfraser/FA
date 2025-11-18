@@ -34,7 +34,7 @@ function can_process()
 if ($Mode=='ADD_ITEM' && can_process()) 
 {
 	add_shipper($_POST['shipper_name'], $_POST['contact'], $_POST['phone'], $_POST['phone2'], $_POST['address']);
-	display_notification(_('New shipping company has been added'));
+	\FA\Services\UiMessageService::displayNotification(_('New shipping company has been added'));
 	$Mode = 'RESET';
 }
 
@@ -43,7 +43,7 @@ if ($Mode=='ADD_ITEM' && can_process())
 if ($Mode=='UPDATE_ITEM' && can_process()) 
 {
 	update_shipper($selected_id, $_POST['shipper_name'], $_POST['contact'], $_POST['phone'], $_POST['phone2'], $_POST['address']);
-	display_notification(_('Selected shipping company has been updated'));
+	\FA\Services\UiMessageService::displayNotification(_('Selected shipping company has been updated'));
 	$Mode = 'RESET';
 }
 
@@ -69,7 +69,7 @@ if ($Mode == 'Delete')
 		else 
 		{
 			delete_shipper($selected_id);
-			display_notification(_('Selected shipping company has been deleted'));
+			\FA\Services\UiMessageService::displayNotification(_('Selected shipping company has been deleted'));
 		}
 	}
 	$Mode = 'RESET';

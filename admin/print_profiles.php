@@ -115,7 +115,7 @@ if(RequestService::getPostStatic('delete'))
 {
  	if (!check_delete(RequestService::getPostStatic('name'))) {
 		delete_printer_profile($selected_id);
-		display_notification(_('Selected printing profile has been deleted'));
+		\FA\Services\UiMessageService::displayNotification(_('Selected printing profile has been deleted'));
 		clear_form();
  	}
 }

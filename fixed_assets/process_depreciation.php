@@ -72,7 +72,7 @@ if (isset($_GET['AddedID']))
   $trans_no = $_GET['AddedID'];
   $trans_type = ST_JOURNAL;
 
-  display_notification(_("The fixed asset has been depreciated for this year"));
+  \FA\Services\UiMessageService::displayNotification(_("The fixed asset has been depreciated for this year"));
 
   display_note(get_gl_view_str($trans_type, $trans_no, _("View the GL &Postings for this Depreciation")), 1, 0);
 

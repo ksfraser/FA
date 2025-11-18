@@ -41,12 +41,12 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     	{
     		update_fixed_asset_class($selected_id, $_POST['parent_id'], $_POST['description'], $_POST['long_description'],
     			RequestService::inputNumStatic('depreciation_rate'));
-			  display_notification(_('Selected fixed asset class has been updated'));
+			  \FA\Services\UiMessageService::displayNotification(_('Selected fixed asset class has been updated'));
     	} 
     	else 
     	{
     		add_fixed_asset_class($_POST['fa_class_id'], $_POST['parent_id'], $_POST['description'], $_POST['long_description'], RequestService::inputNumStatic('depreciation_rate'));
-			  display_notification(_('New fixed asset class has been added'));
+			  \FA\Services\UiMessageService::displayNotification(_('New fixed asset class has been added'));
     	}
 
 		$Mode = 'RESET';
@@ -71,7 +71,7 @@ if ($Mode == 'Delete')
 	if (can_delete($selected_id)) 
 	{
 		delete_fixed_asset_class($selected_id);
-		display_notification(_('Selected fixed asset class has been deleted'));
+		\FA\Services\UiMessageService::displayNotification(_('Selected fixed asset class has been deleted'));
 	} //end if Delete Location
 	$Mode = 'RESET';
 }

@@ -66,7 +66,7 @@ if ($Mode == 'Delete')
 	else 
 	{
 		delete_printer($selected_id);
-		display_notification(_('Selected printer definition has been deleted'));
+		\FA\Services\UiMessageService::displayNotification(_('Selected printer definition has been deleted'));
 	}
 	$Mode = 'RESET';
 }

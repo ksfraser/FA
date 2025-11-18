@@ -283,7 +283,7 @@ end_row();
 
 end_table(1);
 if (($pbal = round2($pbal, \FA\UserPrefsCache::getPriceDecimals())) != 0 && $_POST['Dimension'] == 0 && $_POST['Dimension2'] == 0)
-	display_warning(_("The Opening Balance is not in balance, probably due to a non closed Previous Fiscalyear."));
+	\FA\Services\UiMessageService::displayWarning(_("The Opening Balance is not in balance, probably due to a non closed Previous Fiscalyear."));
 div_end();
 
 //----------------------------------------------------------------------------------------------------

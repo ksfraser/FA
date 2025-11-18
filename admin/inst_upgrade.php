@@ -37,12 +37,10 @@ if (RequestService::getPostStatic('Upgrade'))
 		$patch = @$installers[$site_status[$comp]['version']];
 		if ($patch)
 		{
-			if (!$patch->upgrade_company($comp, RequestService::checkValueStatic('force')))
-				UiMessageService::displayError(implode('<hr>', $patch->errors));
-			else
-				display_notification(_("Company upgraded successfully."));
-
-			$site_status = get_site_status($db_connections); // update info
+		if (!$patch->upgrade_company($comp, RequestService::checkValueStatic('force')))
+			UiMessageService::displayError(implode('<hr>', $patch->errors));
+		else
+			\FA\Services\UiMessageService::displayNotification(_("Company upgraded successfully."));			$site_status = get_site_status($db_connections); // update info
 		    $Ajax->activate('_page_body');
 		}
 	}

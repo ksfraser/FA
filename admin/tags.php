@@ -70,12 +70,12 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     	if ($selected_id != -1) 
     	{
     		if( $ret = update_tag($selected_id, $_POST['name'], $_POST['description']))
-				display_notification(_('Selected tag settings have been updated'));
+				\FA\Services\UiMessageService::displayNotification(_('Selected tag settings have been updated'));
     	} 
     	else 
     	{
     		if( $ret = add_tag($_POST['type'], $_POST['name'], $_POST['description']))
-				display_notification(_('New tag has been added'));
+				\FA\Services\UiMessageService::displayNotification(_('New tag has been added'));
     	}
 		if ($ret) $Mode = 'RESET';
 	}
@@ -106,7 +106,7 @@ if ($Mode == 'Delete')
 	if (can_delete($selected_id))
 	{
 		delete_tag($selected_id);
-		display_notification(_('Selected tag has been deleted'));
+		\FA\Services\UiMessageService::displayNotification(_('Selected tag has been deleted'));
 	}
 	$Mode = 'RESET';
 }

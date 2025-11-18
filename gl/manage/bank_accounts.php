@@ -66,7 +66,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     			$_POST['bank_address'], $_POST['BankAccountCurrency'],
     			$_POST['dflt_curr_act'], $_POST['bank_charge_act']);
 			$Ajax->activate('bank_id'); // in case of status change
-			display_notification(_('Bank account has been updated'));
+			\FA\Services\UiMessageService::displayNotification(_('Bank account has been updated'));
     	} 
     	else 
     	{
@@ -76,7 +76,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     			$_POST['bank_account_number'], $_POST['bank_address'], 
 				$_POST['BankAccountCurrency'], $_POST['dflt_curr_act'], $_POST['bank_charge_act']);
 			$bank_id = $_POST['bank_id'] = db_insert_id();
-			display_notification(_('New bank account has been added'));
+			\FA\Services\UiMessageService::displayNotification(_('New bank account has been added'));
   			$Ajax->activate('_page_body');
   		}
  		$Mode = 'RESET';
@@ -103,7 +103,7 @@ elseif( $Mode == 'Delete')
 	if (!$cancel_delete) 
 	{
 		delete_bank_account($bank_id);
-		display_notification(_('Selected bank account has been deleted'));
+		\FA\Services\UiMessageService::displayNotification(_('Selected bank account has been deleted'));
 	} //end if Delete bank account
 	$Mode = 'RESET';
 } 

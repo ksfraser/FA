@@ -82,7 +82,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 			$note = _('New payment terms have been added');
     	}
     	//run the sql from either of the above possibilites
-		display_notification($note);
+		\FA\Services\UiMessageService::displayNotification($note);
  		$Mode = 'RESET';
 	}
 }
@@ -104,7 +104,7 @@ if ($Mode == 'Delete')
 		{
 			//only delete if used in neither customer or supplier accounts
 			delete_payment_terms($selected_id);
-			display_notification(_('Selected payment terms have been deleted'));
+			\FA\Services\UiMessageService::displayNotification(_('Selected payment terms have been deleted'));
 		}
 	}
 	//end if payment terms used in customer or supplier accounts

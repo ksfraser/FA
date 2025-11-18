@@ -251,7 +251,7 @@ function voiding_controls()
                     }
                 }
             }
-       		display_warning(_("Are you sure you want to void this transaction ? This action cannot be undone."), 0, 1);
+       		\FA\Services\UiMessageService::displayWarning(_("Are you sure you want to void this transaction ? This action cannot be undone."));
    			br();
     		submit_center_first('ConfirmVoiding', _("Proceed"), '', true);
     		submit_center_last('CancelVoiding', _("Cancel"), '', 'cancel');

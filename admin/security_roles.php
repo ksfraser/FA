@@ -102,7 +102,7 @@ if (RequestService::getPostStatic('addupdate'))
      	if ($new_role) 
        	{
 			add_security_role($_POST['name'], $_POST['description'], $sections, $areas); 
-			display_notification(_("New security role has been added."));
+			\FA\Services\UiMessageService::displayNotification(_("New security role has been added."));
        	} else
        	{
 			update_security_role($_POST['role'], $_POST['name'], $_POST['description'], 
@@ -110,7 +110,7 @@ if (RequestService::getPostStatic('addupdate'))
 			update_record_status($_POST['role'], RequestService::getPostStatic('inactive'),
 				'security_roles', 'id');
 
-	  		display_notification(_("Security role has been updated."));
+	  		\FA\Services\UiMessageService::displayNotification(_("Security role has been updated."));
        	}
 	$new_role = true;
 	clear_data();
@@ -126,7 +126,7 @@ if (RequestService::getPostStatic('delete'))
 		UiMessageService::displayError(_("This role is currently assigned to some users and cannot be deleted"));
  	} else {
 		delete_security_role(RequestService::getPostStatic('role'));
-		display_notification(_("Security role has been sucessfully deleted."));
+		\FA\Services\UiMessageService::displayNotification(_("Security role has been sucessfully deleted."));
 		unset($_POST['role']);
 	}
 	$Ajax->activate('_page_body');
