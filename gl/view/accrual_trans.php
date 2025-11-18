@@ -19,6 +19,7 @@ page($_SESSION['page_title'], true);
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/CompanyPrefsService.php");
 
 include_once($path_to_root . "/gl/includes/gl_db.inc");
 
@@ -47,7 +48,7 @@ display_heading($_SESSION['page_title']. " ".get_gl_account_name($_GET['act']));
 br();
 
 start_table(TABLESTYLE);
-$dim = get_company_pref('use_dimension');
+$dim = \FA\Services\CompanyPrefsService::getUseDimensions();
 
 $first_cols = array(_("Type"), "#", _("Date"));
 if ($dim == 2)

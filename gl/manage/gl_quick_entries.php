@@ -18,6 +18,7 @@ page(_($help_context = "Quick Entries"));
 include($path_to_root . "/gl/includes/gl_db.inc");
 
 include($path_to_root . "/includes/ui.inc");
+include($path_to_root . "/includes/CompanyPrefsService.php");
 
 simple_page_mode(true);
 simple_page_mode2(true);
@@ -263,7 +264,7 @@ if ($selected_id != -1)
 	$result = get_quick_entry_lines($selected_id);
 
 	start_table(TABLESTYLE2);
-	$dim = get_company_pref('use_dimension');
+	$dim = \FA\Services\CompanyPrefsService::getUseDimensions();
 	if ($dim == 2)
 		$th = array(_("Post"), _("Account/Tax Type"), _("Amount"), _("Memo"), _("Dimension"), _("Dimension")." 2", "", "");
 	elseif ($dim == 1)	

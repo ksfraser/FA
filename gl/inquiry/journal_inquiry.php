@@ -18,6 +18,7 @@ include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/CompanyPrefsService.php");
 $js = "";
 if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(800, 500);
@@ -52,7 +53,7 @@ end_row();
 start_row();
 ref_cells(_("Memo:"), 'Memo', '',null, _('Enter memo fragment or leave empty'));
 users_list_cells(_("User:"), 'userid', null, false);
-if (get_company_pref('use_dimension') && isset($_POST['dimension'])) // display dimension only, when started in dimension mode
+if (\FA\Services\CompanyPrefsService::getUseDimensions() && isset($_POST['dimension'])) // display dimension only, when started in dimension mode
 	dimensions_list_cells(_('Dimension:'), 'dimension', null, true, null, true);
 check_cells( _("Show closed:"), 'AlsoClosed', null);
 submit_cells('Search', _("Search"), '', '', 'default');

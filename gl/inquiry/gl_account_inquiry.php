@@ -18,6 +18,7 @@ include($path_to_root . "/includes/db_pager.inc");
 include_once($path_to_root . "/admin/db/fiscalyears_db.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/CompanyPrefsService.php");
 include_once($path_to_root . "/includes/data_checks.inc");
 
 include_once($path_to_root . "/gl/includes/gl_db.inc");
@@ -63,7 +64,7 @@ if (!isset($_POST["amount_max"]))
 
 function gl_inquiry_controls()
 {
-	$dim = get_company_pref('use_dimension');
+	$dim = \FA\Services\CompanyPrefsService::getUseDimensions();
     start_form();
 
     start_table(TABLESTYLE_NOBORDER);
@@ -102,7 +103,7 @@ function show_results()
 		$_POST["account"] = null;
 
 	$act_name = $_POST["account"] ? get_gl_account_name($_POST["account"]) : "";
-	$dim = get_company_pref('use_dimension');
+	$dim = \FA\Services\CompanyPrefsService::getUseDimensions();
 
     /*Now get the transactions  */
     if (!isset($_POST['Dimension']))

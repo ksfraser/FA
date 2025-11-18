@@ -17,6 +17,7 @@ page(_($help_context = "General Ledger Transaction Details"), true);
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/CompanyPrefsService.php");
 
 include_once($path_to_root . "/gl/includes/gl_db.inc");
 
@@ -92,7 +93,7 @@ if (db_num_rows($result) == 0)
 }
 
 /*show a table of the transactions returned by the sql */
-$dim = get_company_pref('use_dimension');
+$dim = \FA\Services\CompanyPrefsService::getUseDimensions();
 
 if ($dim == 2)
 	$th = array(_("Journal Date"), _("Account Code"), _("Account Name"), _("Dimension")." 1", _("Dimension")." 2",

@@ -17,6 +17,7 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
+include_once($path_to_root . "/includes/CompanyPrefsService.php");
 
 include_once($path_to_root . "/gl/includes/gl_db.inc");
 
@@ -120,7 +121,7 @@ function display_type ($type, $typename, $from, $to, $convert, $dimension, $dime
 	
 function inquiry_controls()
 {
-	$dim = get_company_pref('use_dimension');
+	$dim = \FA\Services\CompanyPrefsService::getUseDimensions();
     start_table(TABLESTYLE_NOBORDER);
 	date_cells(_("As at:"), 'TransToDate');
 	if ($dim >= 1)

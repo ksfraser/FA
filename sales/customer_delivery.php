@@ -23,6 +23,7 @@ include_once($path_to_root . "/sales/includes/sales_db.inc");
 include_once($path_to_root . "/sales/includes/sales_ui.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 include_once($path_to_root . "/taxes/tax_calc.inc");
+include_once($path_to_root . "/includes/CompanyPrefsService.php");
 
 // Modern OOP Services
 require_once($path_to_root . "/includes/DateService.php");
@@ -385,7 +386,7 @@ if (!isset($_POST['due_date']) || !$dateService->isDate($_POST['due_date'])) {
 }
 customer_credit_row($_SESSION['Items']->customer_id, $_SESSION['Items']->credit, "class='tableheader2'");
 
-$dim = get_company_pref('use_dimension');
+$dim = \FA\Services\CompanyPrefsService::getUseDimensions();
 if ($dim > 0) {
 	start_row();
 	label_cell(_("Dimension").":", "class='tableheader2'");

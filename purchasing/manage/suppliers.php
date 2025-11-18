@@ -25,6 +25,7 @@ page(_($help_context = "Suppliers"), @$_REQUEST['popup'], false, "", $js);
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/ui/contacts_view.inc");
 include_once($path_to_root . "/includes/ui/attachment.inc");
+include_once($path_to_root . "/includes/CompanyPrefsService.php");
 
 check_db_has_tax_groups(_("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
 
@@ -251,7 +252,7 @@ function supplier_settings(&$supplier_id)
 	}
 	else
 		table_section(2);
-	$dim = get_company_pref('use_dimension');
+	$dim = \FA\Services\CompanyPrefsService::getUseDimensions();
 	if ($dim >= 1)
 	{
 		table_section_title(_("Dimension"));

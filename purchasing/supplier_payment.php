@@ -17,6 +17,7 @@ include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/banking.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
+include_once($path_to_root . "/includes/CompanyPrefsService.php");
 include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 
@@ -332,7 +333,7 @@ start_form();
 	$row = get_supplier($_POST['supplier_id']);
 	$_POST['dimension_id'] = @$row['dimension_id'];
 	$_POST['dimension2_id'] = @$row['dimension2_id'];
-	$dim = get_company_pref('use_dimension');
+	$dim = \FA\Services\CompanyPrefsService::getUseDimensions();
 	if ($dim > 0)
 		dimensions_list_row(_("Dimension").":", 'dimension_id',
 			null, true, ' ', false, 1, false);

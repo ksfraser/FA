@@ -18,6 +18,7 @@ page(_($help_context = "View Bank Deposit"), true);
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/CompanyPrefsService.php");
 
 include_once($path_to_root . "/gl/includes/gl_db.inc");
 
@@ -102,7 +103,7 @@ else
 		display_heading2(_("Item Amounts are Shown in:") . " " . $company_currency);
 
     start_table(TABLESTYLE, "width='80%'");
-    $dim = get_company_pref('use_dimension');
+    $dim = \FA\Services\CompanyPrefsService::getUseDimensions();
     if ($dim == 2)
         $th = array(_("Account Code"), _("Account Description"), _("Dimension")." 1", _("Dimension")." 2",
             _("Amount"), _("Memo"));
