@@ -4,3 +4,6 @@
 [submodule "ksf-settings"]
 	path = ksf-settings
 	url = https://github.com/ksfraser/ksf_settings
+[submodule "libs/ksf_PrefCache"]
+	path = libs/ksf_PrefCache
+	url = https://github.com/ksfraser/ksf_PrefCache.git

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace FA\Services;
 
-use FA\Library\Cache\PreferenceCache;
+use KSF\PrefCache\PreferenceCache;
 use FA\Providers\FASessionPreferenceProvider;
 
 /**

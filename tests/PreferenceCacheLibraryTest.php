@@ -2,8 +2,8 @@
 declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
-use FA\Library\Cache\PreferenceCache;
-use FA\Library\Cache\PreferenceProviderInterface;
+use KSF\PrefCache\PreferenceCache;
+use KSF\PrefCache\PreferenceProviderInterface;
 
 /**
  * Tests for generic PreferenceCache library

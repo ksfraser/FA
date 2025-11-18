@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace FA\Providers;
 
-use FA\Library\Cache\PreferenceProviderInterface;
+use KSF\PrefCache\PreferenceProviderInterface;
 
 /**
  * Database Preference Provider (Example Implementation)

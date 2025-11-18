@@ -48,9 +48,9 @@ require_once __DIR__ . '/../includes/FormatService.php';
 require_once __DIR__ . '/../includes/UiMessageService.php';
 require_once __DIR__ . '/../includes/UserPrefsCache.php';
 
-// Generic preference cache library
-require_once __DIR__ . '/../includes/Library/Cache/PreferenceProviderInterface.php';
-require_once __DIR__ . '/../includes/Library/Cache/PreferenceCache.php';
+// Generic preference cache library (from submodule)
+require_once __DIR__ . '/../libs/ksf_PrefCache/src/PreferenceProviderInterface.php';
+require_once __DIR__ . '/../libs/ksf_PrefCache/src/PreferenceCache.php';
 
 // Preference providers
 require_once __DIR__ . '/../includes/Providers/FASessionPreferenceProvider.php';
