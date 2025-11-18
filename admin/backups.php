@@ -107,7 +107,7 @@ function get_backup_file_combo()
 
 function compress_list_row($label, $name, $value=null)
 {
-	$ar_comps = array('no'=>_("No"));
+	$ar_comps = array('no'=>(_(UI_TEXT_NO)));
 
     if (function_exists("gzcompress"))
     	$ar_comps['zip'] = "zip";
