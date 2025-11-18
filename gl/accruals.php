@@ -22,6 +22,7 @@ include_once($path_to_root . "/includes/ui/items_cart.inc");
 
 // Modern OOP Services
 require_once($path_to_root . "/includes/DateService.php");
+require_once($path_to_root . "/includes/CompanyPrefsService.php");
 use FA\Services\DateService;
 
 $js = get_js_open_window(800, 500);
@@ -104,7 +105,7 @@ if (isset($_POST['go']) || isset($_POST['show']))
 			else
 			{
 				start_table(TABLESTYLE);
-				$dim = get_company_pref('use_dimension');
+				$dim = \FA\Services\CompanyPrefsService::getUseDimensions();
 
 				$first_cols = array(_("Date"), _("Account"));
 				if ($dim == 2)
@@ -208,7 +209,7 @@ function frequency_list_row($label, $name, $selected=null)
 	echo "</tr\n";
 }
 
-$dim = get_company_pref('use_dimension');
+$dim = \FA\Services\CompanyPrefsService::getUseDimensions();
 
 start_form(false, false, "", "accrual");
 start_table(TABLESTYLE2);

@@ -19,6 +19,14 @@ $SysPrefs = new stdClass();
 $SysPrefs->date_system = 0; // Gregorian
 $SysPrefs->dateseps = array('/', '-', '.');
 $SysPrefs->go_debug = 0;
+$SysPrefs->dflt_date_fmt = 1; // DD/MM/YYYY
+$SysPrefs->dflt_date_sep = 1; // /
+$SysPrefs->prefs = [
+    'curr_default' => 'USD',
+    'use_dimension' => '1',
+    'past_due_days' => '30',
+    'company_name' => 'Test Company'
+];
 
 $tmonths = array(
     1 => 'January', 'February', 'March', 'April', 'May', 'June',
@@ -56,3 +64,6 @@ require_once __DIR__ . '/../libs/ksf_PrefCache/src/PreferenceCache.php';
 require_once __DIR__ . '/../includes/Providers/FASessionPreferenceProvider.php';
 require_once __DIR__ . '/../includes/Providers/DatabasePreferenceProvider.php';
 require_once __DIR__ . '/../includes/Providers/FACompanyPreferenceProvider.php';
+
+// Company preferences service
+require_once __DIR__ . '/../includes/CompanyPrefsService.php';

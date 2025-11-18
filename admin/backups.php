@@ -70,7 +70,7 @@ function generate_backup($conn, $ext='no', $comm='')
 
 	$filename = db_backup($conn, $ext, $comm, $SysPrefs->backup_dir());
 	if ($filename)
-		display_notification(_("Backup successfully generated."). ' '
+		\FA\Services\UiMessageService::displayNotification(_("Backup successfully generated."). ' '
 			. _("Filename") . ": " . $filename);
 	else
 		UiMessageService::displayError(_("Database backup failed."));
@@ -147,7 +147,7 @@ if (RequestService::getPostStatic('creat')) {
 if (RequestService::getPostStatic('restore')) {
 	if ($backup_name) {
 		if (db_import($backup_path, $conn, true, false, RequestService::checkValueStatic('protect')))
-			display_notification(_("Restore backup completed."));
+			\FA\Services\UiMessageService::displayNotification(_("Restore backup completed."));
 		$SysPrefs->refresh(); // re-read system setup
 	} else
 		UiMessageService::displayError(_("Select backup file first."));
@@ -156,7 +156,7 @@ if (RequestService::getPostStatic('restore')) {
 if (RequestService::getPostStatic('deldump')) {
 	if ($backup_name) {
 		if (unlink($backup_path)) {
-			display_notification(_("File successfully deleted.")." "
+			\FA\Services\UiMessageService::displayNotification(_("File successfully deleted.")." "
 					. _("Filename") . ": " . $backup_name);
 			$Ajax->activate('backups');
 		}
@@ -178,7 +178,7 @@ if (RequestService::getPostStatic('upload'))
 			UiMessageService::displayError(_("Filename contains forbidden chars. Please rename file and try again."));
 		elseif (is_uploaded_file($tmpname)) {
 			rename($tmpname, $SysPrefs->backup_dir() . $fname);
-			display_notification(_("File uploaded to backup directory"));
+			\FA\Services\UiMessageService::displayNotification(_("File uploaded to backup directory"));
 			$Ajax->activate('backups');
 		} else
 			UiMessageService::displayError(_("File was not uploaded into the system."));

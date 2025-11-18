@@ -23,6 +23,7 @@ $path_to_root="..";
 include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
+include_once($path_to_root . "/includes/CompanyPrefsService.php");
 
 //----------------------------------------------------------------------------------------------------
 
@@ -81,7 +82,7 @@ function print_receipts()
 
 	$params = array('comments' => $comments);
 
-	$cur = get_company_Pref('curr_default');
+	$cur = \FA\Services\CompanyPrefsService::getDefaultCurrency();
 
 	if ($email == 0)
 		$rep = new FrontReport(_('RECEIPT'), "ReceiptBulk", user_pagesize(), 9, $orientation);

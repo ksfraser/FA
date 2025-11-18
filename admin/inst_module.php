@@ -85,7 +85,7 @@ function handle_delete($id)
 	}
 	unset($extensions[$id]);
 	if (update_extensions($extensions)) {
-		display_notification(_("Selected extension has been successfully deleted"));
+		\FA\Services\UiMessageService::displayNotification(_("Selected extension has been successfully deleted"));
 	}
 	return true;
 }
@@ -206,7 +206,7 @@ if (RequestService::getPostStatic('Refresh')) {
 		{
 			if (RequestService::checkValueStatic('Active'.$i) && !check_src_ext_version($ext['version']))
 			{
-				display_warning(sprintf(_("Package '%s' is incompatible with current application version and cannot be activated.\n")
+				\FA\Services\UiMessageService::displayWarning(sprintf(_("Package '%s' is incompatible with current application version and cannot be activated.\n")
 					. _("Check Install/Activate page for newer package version."), $ext['name']));
 				continue;
 			}
@@ -226,7 +226,7 @@ if (RequestService::getPostStatic('Refresh')) {
 		UiMessageService::displayError(_('Status change for some extensions failed.'));
 		$Ajax->activate('ext_tbl'); // refresh settings display
 	}else
-		display_notification(_('Current active extensions set has been saved.'));
+		\FA\Services\UiMessageService::displayNotification(_('Current active extensions set has been saved.'));
 }
 
 if ($id = find_submit('Update', false))

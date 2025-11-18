@@ -57,12 +57,12 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     	if ($selected_id != -1) 
     	{    		
     		update_item_tax_type($selected_id, $_POST['name'], $_POST['exempt'], $exempt_from);
-			display_notification(_('Selected item tax type has been updated'));
+			\FA\Services\UiMessageService::displayNotification(_('Selected item tax type has been updated'));
     	} 
     	else 
     	{
     		add_item_tax_type($_POST['name'], $_POST['exempt'], $exempt_from);
-			display_notification(_('New item tax type has been added'));
+			\FA\Services\UiMessageService::displayNotification(_('New item tax type has been added'));
     	}
 		$Mode = 'RESET';
 	}
@@ -95,7 +95,7 @@ if ($Mode == 'Delete')
 	if (can_delete($selected_id))
 	{
 		delete_item_tax_type($selected_id);
-		display_notification(_('Selected item tax type has been deleted'));
+		\FA\Services\UiMessageService::displayNotification(_('Selected item tax type has been deleted'));
 	}
 	$Mode = 'RESET';
 }

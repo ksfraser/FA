@@ -45,7 +45,7 @@ if ($Mode=='ADD_ITEM' && can_process())
 {
 	add_sales_type($_POST['sales_type'], RequestService::checkValueStatic('tax_included'),
 	    RequestService::inputNumStatic('factor'));
-	display_notification(_('New sales type has been added'));
+	\FA\Services\UiMessageService::displayNotification(_('New sales type has been added'));
 	$Mode = 'RESET';
 }
 
@@ -56,7 +56,7 @@ if ($Mode=='UPDATE_ITEM' && can_process())
 
 	update_sales_type($selected_id, $_POST['sales_type'], RequestService::checkValueStatic('tax_included'),
 	     RequestService::inputNumStatic('factor'));
-	display_notification(_('Selected sales type has been updated'));
+	\FA\Services\UiMessageService::displayNotification(_('Selected sales type has been updated'));
 	$Mode = 'RESET';
 }
 

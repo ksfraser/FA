@@ -136,13 +136,13 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 		{
 			add_attachment($_POST['filterType'], $_POST['trans_no'], $_POST['description'],
 				$filename, $unique_name, $filesize, $filetype);
-			display_notification(_("Attachment has been inserted.")); 
+			\FA\Services\UiMessageService::displayNotification(_("Attachment has been inserted.")); 
 		}
 		else
 		{
 			update_attachment($selected_id, $_POST['filterType'], $_POST['trans_no'], $_POST['description'],
 				$filename, $unique_name, $filesize, $filetype); 
-			display_notification(_("Attachment has been updated.")); 
+			\FA\Services\UiMessageService::displayNotification(_("Attachment has been updated.")); 
 		}
 		reset_form();
 	}
@@ -157,7 +157,7 @@ if ($Mode == 'Delete')
 	if (file_exists($dir."/".$row['unique_name']))
 		unlink($dir."/".$row['unique_name']);
 	delete_attachment($selected_id);	
-	display_notification(_("Attachment has been deleted.")); 
+	\FA\Services\UiMessageService::displayNotification(_("Attachment has been deleted.")); 
 	reset_form();
 }
 

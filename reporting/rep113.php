@@ -22,6 +22,7 @@ $path_to_root="..";
 include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
+include_once($path_to_root . "/includes/CompanyPrefsService.php");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 
 //----------------------------------------------------------------------------------------------------
@@ -61,7 +62,7 @@ function print_credits()
 
 	$params = array('comments' => $comments);
 
-	$cur = get_company_Pref('curr_default');
+	$cur = \FA\Services\CompanyPrefsService::getDefaultCurrency();
 
 	if ($email == 0)
 		$rep = new FrontReport(_('CREDIT NOTE'), "InvoiceBulk", user_pagesize(), 9, $orientation);

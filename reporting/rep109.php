@@ -23,6 +23,7 @@ include_once($path_to_root . "/includes/session.inc");
 require_once($path_to_root . "/includes/InventoryService.php");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
+include_once($path_to_root . "/includes/CompanyPrefsService.php");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 include_once($path_to_root . "/taxes/tax_calc.inc");
 
@@ -56,7 +57,7 @@ function print_sales_orders()
 
 	$params = array('comments' => $comments, 'print_quote' => $print_as_quote);
 
-	$cur = get_company_Pref('curr_default');
+	$cur = \FA\Services\CompanyPrefsService::getDefaultCurrency();
 
     if ($orientation == 'L')
     	recalculate_cols($cols);

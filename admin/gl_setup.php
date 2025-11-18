@@ -121,7 +121,7 @@ if (isset($_POST['submit']) && can_process())
 		'po_over_receive' => 0.0, 'po_over_charge' => 0.0, 'default_credit_limit'=>0.0
 )));
 
-	display_notification(_("The general GL setup has been updated."));
+	\FA\Services\UiMessageService::displayNotification(_("The general GL setup has been updated."));
 
 } /* end of if submit */
 

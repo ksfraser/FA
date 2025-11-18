@@ -573,7 +573,7 @@ function check_item_data()
 			$price = $curr . " " . $price;
 			$std_cost = $curr . " " . FormatService::numberFormat2($cost, $dec);
 		}
-		display_warning(sprintf(_("Price %s is below Standard Cost %s"), $price, $std_cost));
+		\FA\Services\UiMessageService::displayWarning(sprintf(_("Price %s is below Standard Cost %s"), $price, $std_cost));
 	}	
 	return true;
 }
@@ -627,16 +627,16 @@ function  handle_cancel_order()
 
 
 	if ($_SESSION['Items']->trans_type == ST_CUSTDELIVERY) {
-		display_notification(_("Direct delivery entry has been cancelled as requested."), 1);
+		\FA\Services\UiMessageService::displayNotification(_("Direct delivery entry has been cancelled as requested."), 1);
 		submenu_option(_("Enter a New Sales Delivery"),	"/sales/sales_order_entry.php?NewDelivery=1");
 	} elseif ($_SESSION['Items']->trans_type == ST_SALESINVOICE) {
-		display_notification(_("Direct invoice entry has been cancelled as requested."), 1);
+		\FA\Services\UiMessageService::displayNotification(_("Direct invoice entry has been cancelled as requested."), 1);
 		submenu_option(_("Enter a New Sales Invoice"),	"/sales/sales_order_entry.php?NewInvoice=1");
 	} elseif ($_SESSION['Items']->trans_type == ST_SALESQUOTE)
 	{
 		if ($_SESSION['Items']->trans_no != 0) 
 			delete_sales_order(key($_SESSION['Items']->trans_no), $_SESSION['Items']->trans_type);
-		display_notification(_("This sales quotation has been cancelled as requested."), 1);
+		\FA\Services\UiMessageService::displayNotification(_("This sales quotation has been cancelled as requested."), 1);
 		submenu_option(_("Enter a New Sales Quotation"), "/sales/sales_order_entry.php?NewQuotation=Yes");
 	} else { // sales order
 		if ($_SESSION['Items']->trans_no != 0) {
@@ -644,12 +644,12 @@ function  handle_cancel_order()
 			if (sales_order_has_deliveries($order_no))
 			{
 				close_sales_order($order_no);
-				display_notification(_("Undelivered part of order has been cancelled as requested."), 1);
+				\FA\Services\UiMessageService::displayNotification(_("Undelivered part of order has been cancelled as requested."), 1);
 				submenu_option(_("Select Another Sales Order for Edition"), "/sales/inquiry/sales_orders_view.php?type=".ST_SALESORDER);
 			} else {
 				delete_sales_order(key($_SESSION['Items']->trans_no), $_SESSION['Items']->trans_type);
 
-				display_notification(_("This sales order has been cancelled as requested."), 1);
+				\FA\Services\UiMessageService::displayNotification(_("This sales order has been cancelled as requested."), 1);
 				submenu_option(_("Enter a New Sales Order"), "/sales/sales_order_entry.php?NewOrder=Yes");
 			}
 		} else {

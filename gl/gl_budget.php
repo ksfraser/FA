@@ -58,7 +58,7 @@ start_form();
 
 if (db_has_gl_accounts())
 {
-	$dim = get_company_pref('use_dimension');
+	$dim = \FA\Services\CompanyPrefsService::getUseDimensions();
 	start_table(TABLESTYLE2);
 	fiscalyears_list_row(_("Fiscal Year:"), 'fyear', null);
 	gl_all_accounts_list_row(_("Account Code:"), 'account', null);

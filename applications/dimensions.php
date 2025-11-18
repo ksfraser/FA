@@ -9,11 +9,13 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+require_once("includes/CompanyPrefsService.php");
+
 class dimensions_app extends application
 {
 	function __construct()
 	{
-		$dim = get_company_pref('use_dimension');
+		$dim = \FA\Services\CompanyPrefsService::getUseDimensions();
 		parent::__construct("proj", _($this->help_context = "&Dimensions"), $dim);
 
 		if ($dim > 0)

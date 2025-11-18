@@ -83,7 +83,7 @@ function handle_submit()
 		if ($ok)
 		{
    			update_fiscalyear($selected_id, $_POST['closed']);
-			display_notification(_('Selected fiscal year has been updated'));
+			\FA\Services\UiMessageService::displayNotification(_('Selected fiscal year has been updated'));
 		}	
 	}
 	else
@@ -91,7 +91,7 @@ function handle_submit()
 		if (!check_data())
 			return false;
    		add_fiscalyear($_POST['from_date'], $_POST['to_date'], $_POST['closed']);
-		display_notification(_('New fiscal year has been added'));
+		\FA\Services\UiMessageService::displayNotification(_('New fiscal year has been added'));
 	}
 	$Mode = 'RESET';
 }
@@ -122,7 +122,7 @@ function handle_delete()
 	if (check_can_delete($selected_id)) {
 	//only delete if used in neither customer or supplier, comp prefs, bank trans accounts
 		delete_this_fiscalyear($selected_id);
-		display_notification(_('Selected fiscal year has been deleted'));
+		\FA\Services\UiMessageService::displayNotification(_('Selected fiscal year has been deleted'));
 	}
 	$Mode = 'RESET';
 }

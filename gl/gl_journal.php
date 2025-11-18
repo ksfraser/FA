@@ -24,6 +24,7 @@ include_once($path_to_root . "/gl/includes/gl_ui.inc");
 
 // Modern OOP Services
 require_once($path_to_root . "/includes/DateService.php");
+require_once($path_to_root . "/includes/CompanyPrefsService.php");
 use FA\Services\DateService;
 
 $js = '';
@@ -245,7 +246,7 @@ if (isset($_POST['Process']))
    		set_focus('ref');
    		$input_error = 1;
 	}
-	if (RequestService::getPostStatic('currency') != get_company_pref('curr_default'))
+	if (RequestService::getPostStatic('currency') != \FA\Services\CompanyPrefsService::getDefaultCurrency())
 		if (isset($_POST['_ex_rate']) && !check_num('_ex_rate', 0.000001))
 		{
 			UiMessageService::displayError(_("The exchange rate must be numeric and greater than zero."));
@@ -313,7 +314,7 @@ if (isset($_POST['Process']))
 		$cart->memo_ = $_POST['memo_'];
 
 	$cart->currency = $_POST['currency'];
-	if ($cart->currency != get_company_pref('curr_default'))
+	if ($cart->currency != \FA\Services\CompanyPrefsService::getDefaultCurrency())
 		$cart->rate = RequestService::inputNumStatic('_ex_rate');
 
 	if (RequestService::checkValueStatic('taxable_trans'))

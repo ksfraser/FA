@@ -60,12 +60,12 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     	if ($selected_id != -1) 
     	{
 	   		update_tax_group($selected_id, $_POST['name'], $taxes, $tax_shippings);
-			display_notification(_('Selected tax group has been updated'));
+			\FA\Services\UiMessageService::displayNotification(_('Selected tax group has been updated'));
     	} 
     	else 
     	{
 	   		add_tax_group($_POST['name'], $taxes, $tax_shippings);
-			display_notification(_('New tax group has been added'));
+			\FA\Services\UiMessageService::displayNotification(_('New tax group has been added'));
     	}
 
 		$Mode = 'RESET';
@@ -103,7 +103,7 @@ if ($Mode == 'Delete')
 	if (can_delete($selected_id))
 	{
 		delete_tax_group($selected_id);
-		display_notification(_('Selected tax group has been deleted'));
+		\FA\Services\UiMessageService::displayNotification(_('Selected tax group has been deleted'));
 	}
 	$Mode = 'RESET';
 }

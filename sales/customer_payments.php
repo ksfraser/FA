@@ -349,7 +349,7 @@ read_customer_data();
 
 set_global_customer($_POST['customer_id']);
 if (isset($_POST['HoldAccount']) && $_POST['HoldAccount'] != 0)	
-	display_warning(_("This customer account is on hold."));
+	\FA\Services\UiMessageService::displayWarning(_("This customer account is on hold."));
 $display_discount_percent = \FA\Services\FormatService::percentFormat($_POST['pymt_discount']*100) . "%";
 
 table_section(2);

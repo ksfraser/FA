@@ -161,7 +161,7 @@ function handle_submit($selected_id)
 		$exts = get_company_extensions();
 		write_extensions($exts, $selected_id);
 	}
-	display_notification($new ? _('New company has been created.') : _('Company has been updated.'));
+	\FA\Services\UiMessageService::displayNotification($new ? _('New company has been created.') : _('Company has been updated.'));
 
 	$Mode = 'RESET';
 	return true;
@@ -229,7 +229,7 @@ function handle_delete($id)
 		UiMessageService::displayError(_("Cannot remove temporary renamed company data directory ") . $tmpname);
 		return;
 	}
-	display_notification(_("Selected company has been deleted"));
+	\FA\Services\UiMessageService::displayNotification(_("Selected company has been deleted"));
 	$Ajax->activate('_page_body');
 	$Mode = 'RESET';
 }

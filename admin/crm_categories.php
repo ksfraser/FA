@@ -47,7 +47,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 			$note = _('New contact category has been added');
     	}
 
-		display_notification($note);
+		\FA\Services\UiMessageService::displayNotification($note);
 		$Mode = 'RESET';
 	}
 } 
@@ -65,7 +65,7 @@ if ($Mode == 'Delete')
 	{
 		delete_crm_category($selected_id);
 
-		display_notification(_('Category has been deleted'));
+		\FA\Services\UiMessageService::displayNotification(_('Category has been deleted'));
 	}
 	$Mode = 'RESET';
 }

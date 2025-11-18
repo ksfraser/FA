@@ -60,9 +60,9 @@ if (isset($_POST['setprefs']))
 
 		
 		if ($SysPrefs->allow_demo_mode)  
-			display_warning(_("Display settings have been updated. Keep in mind that changed settings are restored on every login in demo mode."));
+			\FA\Services\UiMessageService::displayWarning(_("Display settings have been updated. Keep in mind that changed settings are restored on every login in demo mode."));
 		else
-			display_notification_centered(_("Display settings have been updated."));
+			\FA\Services\UiMessageService::displayNotification(_("Display settings have been updated."));
 	}
 }
 

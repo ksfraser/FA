@@ -22,6 +22,7 @@ include_once($path_to_root . "/gl/includes/gl_ui.inc");
 
 // Modern OOP Services
 require_once($path_to_root . "/includes/DateService.php");
+require_once($path_to_root . "/includes/CompanyPrefsService.php");
 use FA\Services\DateService;
 
 $js = "";
@@ -124,7 +125,7 @@ function gl_payment_controls($trans_no)
 
     ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_BANKTRANSFER, null, RequestService::getPostStatic('DatePaid')), false, ST_BANKTRANSFER,
     	array('date' => RequestService::getPostStatic('DatePaid')));
-	$dim = get_company_pref('use_dimension');
+	$dim = \FA\Services\CompanyPrefsService::getUseDimensions();
 	if ($dim > 0)
 		dimensions_list_row(_("Dimension").":", 'dimension_id', 
 			null, true, ' ', false, 1, false);

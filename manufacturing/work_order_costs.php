@@ -13,6 +13,7 @@ $page_security = 'SA_WORKORDERCOST';
 if (!isset($path_to_root)) $path_to_root = "..";
 include_once($path_to_root . "/includes/session.inc");
 require_once($path_to_root . "/includes/DateService.php");
+require_once($path_to_root . "/includes/CompanyPrefsService.php");
 include_once($path_to_root . "/includes/inventory.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
@@ -139,7 +140,7 @@ if (list_updated('PaymentType'))
 	$Ajax->activate('costs');
 
 $item = get_item($wo_details['stock_id']);
-$r = get_default_bank_account(get_company_pref('curr_default'));
+$r = get_default_bank_account(\FA\Services\CompanyPrefsService::getDefaultCurrency());
 $_POST['cr_acc'] = $r['account_code'];
 $_POST['costs'] = FormatService::priceFormat(RequestService::getPostStatic('PaymentType')==WO_OVERHEAD ? $item['overhead_cost'] : $item['labour_cost']);
 

@@ -72,7 +72,7 @@ class BankingService
         // If no dependencies injected, use global function wrappers for backward compatibility
         $this->prefs = $prefs ?? new class implements CompanyPreferencesInterface {
             public function get(string $key) {
-                return \get_company_pref($key);
+                return \FA\Services\CompanyPrefsService::get($key);
             }
             public function set(string $key, $value): void {
                 // Not implemented for backward compat wrapper
@@ -87,7 +87,10 @@ class BankingService
         
         $this->display = $display ?? new class implements DisplayServiceInterface {
             public function displayError(string $message, bool $exit = false): void {
-                \UiMessageService::displayError($message, $exit);
+                \FA\Services\UiMessageService::displayError($message);
+                if ($exit) {
+                    exit();
+                }
             }
         };
         

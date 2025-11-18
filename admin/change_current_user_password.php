@@ -59,24 +59,22 @@ function can_process()
 	return true;
 }
 
-if (isset($_POST['UPDATE_ITEM']) && check_csrf_token())
-{
-
-	if (can_process())
+	if (isset($_POST['UPDATE_ITEM']) && check_csrf_token())
 	{
-		if ($SysPrefs->allow_demo_mode) {
-		    display_warning(_("Password cannot be changed in demo mode."));
-		} else {
-			update_user_password($_SESSION["wa_current_user"]->user, 
-				$_SESSION["wa_current_user"]->username,
-				md5($_POST['password']));
-		    display_notification(_("Your password has been updated."));
-		}
-		$Ajax->activate('_page_body');
-	}
-}
 
-start_form();
+		if (can_process())
+		{
+			if ($SysPrefs->allow_demo_mode) {
+			    \FA\Services\UiMessageService::displayWarning(_("Password cannot be changed in demo mode."));
+			} else {
+				update_user_password($_SESSION["wa_current_user"]->user, 
+					$_SESSION["wa_current_user"]->username,
+					md5($_POST['password']));
+			    \FA\Services\UiMessageService::displayNotification(_("Your password has been updated."));
+			}
+			$Ajax->activate('_page_body');
+		}
+	}start_form();
 
 start_table(TABLESTYLE);
 

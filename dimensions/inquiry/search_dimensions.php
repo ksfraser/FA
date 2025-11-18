@@ -15,6 +15,7 @@ $path_to_root="../..";
 include($path_to_root . "/includes/db_pager.inc");
 include_once($path_to_root . "/includes/session.inc");
 require_once($path_to_root . "/includes/DateService.php");
+require_once($path_to_root . "/includes/CompanyPrefsService.php");
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
@@ -91,7 +92,7 @@ submit_cells('SearchOrders', _("Search"), '', '', 'default');
 end_row();
 end_table();
 
-$dim = get_company_pref('use_dimension');
+$dim = \FA\Services\CompanyPrefsService::getUseDimensions();
 
 function view_link($row) 
 {

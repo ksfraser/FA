@@ -59,9 +59,9 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     	}
 
     	if ($selected_id != -1) 
-			display_notification(_('Selected sales person data have been updated'));
+			\FA\Services\UiMessageService::displayNotification(_('Selected sales person data have been updated'));
 		else
-			display_notification(_('New sales person data have been added'));
+			\FA\Services\UiMessageService::displayNotification(_('New sales person data have been added'));
 		$Mode = 'RESET';
 	}
 }
@@ -78,7 +78,7 @@ if ($Mode == 'Delete')
 	else
 	{
 		delete_salesman($selected_id);
-		display_notification(_('Selected sales person data have been deleted'));
+		\FA\Services\UiMessageService::displayNotification(_('Selected sales person data have been deleted'));
 	}
 	$Mode = 'RESET';
 }

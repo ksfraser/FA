@@ -17,6 +17,7 @@ page(_($help_context = "Currencies"));
 
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/banking.inc");
+include_once($path_to_root . "/includes/CompanyPrefsService.php");
 
 simple_page_mode(false);
 
@@ -99,7 +100,7 @@ function check_can_delete($curr)
 		return false;
 	}
 
-	if ($curr == get_company_pref('curr_default'))
+	if ($curr == \FA\Services\CompanyPrefsService::getDefaultCurrency())
 	{
 		UiMessageService::displayError(_("Cannot delete this currency, because the company preferences uses this currency."));
 		return false;

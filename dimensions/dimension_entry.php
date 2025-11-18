@@ -13,6 +13,7 @@ $page_security = 'SA_DIMENSION';
 if (!isset($path_to_root)) $path_to_root = "..";
 include_once($path_to_root . "/includes/session.inc");
 require_once($path_to_root . "/includes/DateService.php");
+require_once($path_to_root . "/includes/CompanyPrefsService.php");
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
@@ -261,7 +262,7 @@ else
 
 text_row_ex(_("Name") . ":", 'name', 50, 75);
 
-$dim = get_company_pref('use_dimension');
+$dim = \FA\Services\CompanyPrefsService::getUseDimensions();
 
 number_list_row(_("Type"), 'type_', null, 1, $dim);
 

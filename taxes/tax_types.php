@@ -53,7 +53,7 @@ if ($Mode=='ADD_ITEM' && can_process())
 
 	add_tax_type($_POST['name'], $_POST['sales_gl_code'],
 		$_POST['purchasing_gl_code'], RequestService::inputNumStatic('rate', 0));
-	display_notification(_('New tax type has been added'));
+	\FA\Services\UiMessageService::displayNotification(_('New tax type has been added'));
 	$Mode = 'RESET';
 }
 
@@ -64,7 +64,7 @@ if ($Mode=='UPDATE_ITEM' && can_process())
 
 	update_tax_type($selected_id, $_POST['name'],
     	$_POST['sales_gl_code'], $_POST['purchasing_gl_code'], RequestService::inputNumStatic('rate'));
-	display_notification(_('Selected tax type has been updated'));
+	\FA\Services\UiMessageService::displayNotification(_('Selected tax type has been updated'));
 	$Mode = 'RESET';
 }
 
@@ -91,7 +91,7 @@ if ($Mode == 'Delete')
 	if (can_delete($selected_id))
 	{
 		delete_tax_type($selected_id);
-		display_notification(_('Selected tax type has been deleted'));
+		\FA\Services\UiMessageService::displayNotification(_('Selected tax type has been deleted'));
 	}
 	$Mode = 'RESET';
 }

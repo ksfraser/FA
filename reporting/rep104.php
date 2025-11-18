@@ -22,6 +22,7 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui/ui_input.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
+include_once($path_to_root . "/includes/CompanyPrefsService.php");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
@@ -80,9 +81,9 @@ function print_price_listing()
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
 	$orientation = ($orientation ? 'L' : 'P');
-    $dec = \FA\UserPrefsCache::getPriceDecimals();
+	$dec = \FA\UserPrefsCache::getPriceDecimals();
 
-	$home_curr = get_company_pref('curr_default');
+	$home_curr = \FA\Services\CompanyPrefsService::getDefaultCurrency();
 	if ($currency == ALL_TEXT)
 		$currency = $home_curr;
 	$curr = get_currency($currency);
