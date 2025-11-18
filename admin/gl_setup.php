@@ -21,6 +21,7 @@ page(_($help_context = "System and General GL Setup"), false, false, "", $js);
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/includes/data_checks.inc");
 
 include_once($path_to_root . "/admin/db/company_db.inc");
@@ -31,56 +32,56 @@ function can_process()
 {
     if (!check_num('past_due_days', 0, 100))
     {
-        UiMessageService::displayError(_("The past due days interval allowance must be between 0 and 100."));
+        UiMessageService::displayError(_(UI_TEXT_PAST_DUE_DAYS_INTERVAL_ALLOWANCE_ERROR));
         set_focus('past_due_days');
         return false;
     }
 
     if (!check_num('default_quote_valid_days', 0))
     {
-        UiMessageService::displayError(_("Quote Valid Days is not valid number."));
+        UiMessageService::displayError(_(UI_TEXT_QUOTE_VALID_DAYS_INVALID_ERROR));
         set_focus('default_quote_valid_days');
         return false;
     }
 
     if (!check_num('default_delivery_required', 0))
     {
-        UiMessageService::displayError(_("Delivery Required By is not valid number."));
+        UiMessageService::displayError(_(UI_TEXT_DELIVERY_REQUIRED_BY_INVALID_ERROR));
         set_focus('default_delivery_required');
         return false;
     }
 
     if (!check_num('default_receival_required', 0))
     {
-        UiMessageService::displayError(_("Receival Required By is not valid number."));
+        UiMessageService::displayError(_(UI_TEXT_RECEIVAL_REQUIRED_BY_INVALID_ERROR));
         set_focus('default_receival_required');
         return false;
     }
 
     if (!check_num('default_workorder_required', 0))
     {
-        UiMessageService::displayError(_("Work Order Required By After is not valid number."));
+        UiMessageService::displayError(_(UI_TEXT_WORK_ORDER_REQUIRED_BY_AFTER_INVALID_ERROR));
         set_focus('default_workorder_required');
         return false;
     }	
 
     if (!check_num('po_over_receive', 0, 100))
 	{
-		UiMessageService::displayError(_("The delivery over-receive allowance must be between 0 and 100."));
+		UiMessageService::displayError(_(UI_TEXT_DELIVERY_OVER_RECEIVE_ALLOWANCE_ERROR));
 		set_focus('po_over_receive');
 		return false;
 	}
 
 	if (!check_num('po_over_charge', 0, 100))
 	{
-		UiMessageService::displayError(_("The invoice over-charge allowance must be between 0 and 100."));
+		UiMessageService::displayError(_(UI_TEXT_INVOICE_OVER_CHARGE_ALLOWANCE_ERROR));
 		set_focus('po_over_charge');
 		return false;
 	}
 
 	if (!check_num('past_due_days', 0, 100))
 	{
-		UiMessageService::displayError(_("The past due days interval allowance must be between 0 and 100."));
+		UiMessageService::displayError(_(UI_TEXT_PAST_DUE_DAYS_INTERVAL_ALLOWANCE_ERROR));
 		set_focus('past_due_days');
 		return false;
 	}
@@ -91,14 +92,14 @@ function can_process()
 		$post_grn_act = 0;
 	if (($post_grn_act != $grn_act) && db_num_rows(get_grn_items(0, '', true)))
 	{
-		UiMessageService::displayError(_("Before GRN Clearing Account can be changed all GRNs have to be invoiced"));
+		UiMessageService::displayError(_(UI_TEXT_GRN_CLEARING_ACCOUNT_CHANGE_ERROR));
 		$_POST['grn_clearing_act'] = $grn_act;
 		set_focus('grn_clearing_account');
 		return false;
 	}
 	if (!is_account_balancesheet(RequestService::getPostStatic('retained_earnings_act')) || is_account_balancesheet(RequestService::getPostStatic('profit_loss_year_act')))
 	{
-		UiMessageService::displayError(_("The Retained Earnings Account should be a Balance Account or the Profit and Loss Year Account should be an Expense Account (preferred the last one in the Expense Class)"));
+		UiMessageService::displayError(_(UI_TEXT_RETAINED_EARNINGS_ACCOUNT_ERROR));
 		return false;
 	}
 	return true;
@@ -121,7 +122,7 @@ if (isset($_POST['submit']) && can_process())
 		'po_over_receive' => 0.0, 'po_over_charge' => 0.0, 'default_credit_limit'=>0.0
 )));
 
-	\FA\Services\UiMessageService::displayNotification(_("The general GL setup has been updated."));
+	\FA\Services\UiMessageService::displayNotification(_(UI_TEXT_GENERAL_GL_SETUP_UPDATED));
 
 } /* end of if submit */
 
@@ -186,127 +187,126 @@ $_POST['depreciation_period'] = $myrow['depreciation_period'];
 //---------------
 
 
-table_section_title(_("General GL"));
+table_section_title(_(UI_TEXT_GENERAL_GL));
 
-text_row(_("Past Due Days Interval:"), 'past_due_days', $_POST['past_due_days'], 6, 6, '', "", _("days"));
+text_row(_(UI_TEXT_PAST_DUE_DAYS_INTERVAL_LABEL), 'past_due_days', $_POST['past_due_days'], 6, 6, '', "", _(UI_TEXT_DAYS));
 
-accounts_type_list_row(_("Accounts Type:"), 'accounts_alpha', $_POST['accounts_alpha']); 
+accounts_type_list_row(_(UI_TEXT_ACCOUNTS_TYPE_LABEL), 'accounts_alpha', $_POST['accounts_alpha']); 
 
-gl_all_accounts_list_row(_("Retained Earnings:"), 'retained_earnings_act', $_POST['retained_earnings_act']);
+gl_all_accounts_list_row(_(UI_TEXT_RETAINED_EARNINGS_LABEL), 'retained_earnings_act', $_POST['retained_earnings_act']);
 
-gl_all_accounts_list_row(_("Profit/Loss Year:"), 'profit_loss_year_act', $_POST['profit_loss_year_act']);
+gl_all_accounts_list_row(_(UI_TEXT_PROFIT_LOSS_YEAR_LABEL), 'profit_loss_year_act', $_POST['profit_loss_year_act']);
 
-gl_all_accounts_list_row(_("Exchange Variances Account:"), 'exchange_diff_act', $_POST['exchange_diff_act']);
+gl_all_accounts_list_row(_(UI_TEXT_EXCHANGE_VARIANCES_ACCOUNT_LABEL), 'exchange_diff_act', $_POST['exchange_diff_act']);
 
-gl_all_accounts_list_row(_("Bank Charges Account:"), 'bank_charge_act', $_POST['bank_charge_act']);
+gl_all_accounts_list_row(_(UI_TEXT_BANK_CHARGES_ACCOUNT_LABEL), 'bank_charge_act', $_POST['bank_charge_act']);
 
-tax_algorithm_list_row(_("Tax Algorithm:"), 'tax_algorithm', $_POST['tax_algorithm']);
+tax_algorithm_list_row(_(UI_TEXT_TAX_ALGORITHM_LABEL), 'tax_algorithm', $_POST['tax_algorithm']);
 
 //---------------
 
-table_section_title(_("Dimension Defaults"));
+table_section_title(_(UI_TEXT_DIMENSION_DEFAULTS));
 
-text_row(_("Dimension Required By After:"), 'default_dim_required', $_POST['default_dim_required'], 6, 6, '', "", _("days"));
+text_row(_(UI_TEXT_DIMENSION_REQUIRED_BY_AFTER_LABEL), 'default_dim_required', $_POST['default_dim_required'], 6, 6, '', "", _(UI_TEXT_DAYS));
 
 //----------------
 
-table_section_title(_("Customers and Sales"));
+table_section_title(_(UI_TEXT_CUSTOMERS_AND_SALES));
 
-amount_row(_("Default Credit Limit:"), 'default_credit_limit', $_POST['default_credit_limit']);
+amount_row(_(UI_TEXT_DEFAULT_CREDIT_LIMIT_LABEL), 'default_credit_limit', $_POST['default_credit_limit']);
 
-yesno_list_row(_("Invoice Identification:"), 'print_invoice_no', $_POST['print_invoice_no'], $name_yes=_("Number"), $name_no=_("Reference"));
+yesno_list_row(_(UI_TEXT_INVOICE_IDENTIFICATION_LABEL), 'print_invoice_no', $_POST['print_invoice_no'], $name_yes=_(UI_TEXT_NUMBER_OPTION), $name_no=_(UI_TEXT_REFERENCE));
 
-check_row(_("Accumulate batch shipping:"), 'accumulate_shipping', null);
+check_row(_(UI_TEXT_ACCUMULATE_BATCH_SHIPPING_LABEL), 'accumulate_shipping', null);
 
-check_row(_("Print Item Image on Quote:"), 'print_item_images_on_quote', null);
+check_row(_(UI_TEXT_PRINT_ITEM_IMAGE_ON_QUOTE_LABEL), 'print_item_images_on_quote', null);
 
-textarea_row(_("Legal Text on Invoice:"), 'legal_text', $_POST['legal_text'], 32, 4);
+textarea_row(_(UI_TEXT_LEGAL_TEXT_ON_INVOICE_LABEL), 'legal_text', $_POST['legal_text'], 32, 4);
 
-gl_all_accounts_list_row(_("Shipping Charged Account:"), 'freight_act', $_POST['freight_act']);
+gl_all_accounts_list_row(_(UI_TEXT_SHIPPING_CHARGED_ACCOUNT_LABEL), 'freight_act', $_POST['freight_act']);
 
-gl_all_accounts_list_row(_("Deferred Income Account:"), 'deferred_income_act', $_POST['deferred_income_act'], true, false,
-	_("Not used"), false, false, false);
+gl_all_accounts_list_row(_(UI_TEXT_DEFERRED_INCOME_ACCOUNT_LABEL), 'deferred_income_act', $_POST['deferred_income_act'], true, false, _(UI_TEXT_NOT_USED), false, false, false);
 
 //---------------
 
-table_section_title(_("Customers and Sales Defaults"));
+table_section_title(_(UI_TEXT_CUSTOMERS_AND_SALES_DEFAULTS));
 // default for customer branch
-gl_all_accounts_list_row(_("Receivable Account:"), 'debtors_act');
+gl_all_accounts_list_row(_(UI_TEXT_RECEIVABLE_ACCOUNT_LABEL), 'debtors_act');
 
-gl_all_accounts_list_row(_("Sales Account:"), 'default_sales_act', null,
+gl_all_accounts_list_row(_(UI_TEXT_SALES_ACCOUNT_LABEL), 'default_sales_act', null,
 	false, false, true);
 
-gl_all_accounts_list_row(_("Sales Discount Account:"), 'default_sales_discount_act');
+gl_all_accounts_list_row(_(UI_TEXT_SALES_DISCOUNT_ACCOUNT_LABEL), 'default_sales_discount_act');
 
-gl_all_accounts_list_row(_("Prompt Payment Discount Account:"), 'default_prompt_payment_act');
+gl_all_accounts_list_row(_(UI_TEXT_PROMPT_PAYMENT_DISCOUNT_ACCOUNT_LABEL), 'default_prompt_payment_act');
 
-text_row(_("Quote Valid Days:"), 'default_quote_valid_days', $_POST['default_quote_valid_days'], 6, 6, '', "", _("days"));
+text_row(_(UI_TEXT_QUOTE_VALID_DAYS_LABEL), 'default_quote_valid_days', $_POST['default_quote_valid_days'], 6, 6, '', "", _(UI_TEXT_DAYS));
 
-text_row(_("Delivery Required By:"), 'default_delivery_required', $_POST['default_delivery_required'], 6, 6, '', "", _("days"));
+text_row(_(UI_TEXT_DELIVERY_REQUIRED_BY_LABEL), 'default_delivery_required', $_POST['default_delivery_required'], 6, 6, '', "", _(UI_TEXT_DAYS));
 
 //---------------
 
 table_section(2);
 
-table_section_title(_("Suppliers and Purchasing"));
+table_section_title(_(UI_TEXT_SUPPLIERS_AND_PURCHASING));
 
-percent_row(_("Delivery Over-Receive Allowance:"), 'po_over_receive');
+percent_row(_(UI_TEXT_DELIVERY_OVER_RECEIVE_ALLOWANCE_LABEL), 'po_over_receive');
 
-percent_row(_("Invoice Over-Charge Allowance:"), 'po_over_charge');
+percent_row(_(UI_TEXT_INVOICE_OVER_CHARGE_ALLOWANCE_LABEL), 'po_over_charge');
 
-table_section_title(_("Suppliers and Purchasing Defaults"));
+table_section_title(_(UI_TEXT_SUPPLIERS_AND_PURCHASING_DEFAULTS));
 
-gl_all_accounts_list_row(_("Payable Account:"), 'creditors_act', $_POST['creditors_act']);
+gl_all_accounts_list_row(_(UI_TEXT_PAYABLE_ACCOUNT_LABEL), 'creditors_act', $_POST['creditors_act']);
 
-gl_all_accounts_list_row(_("Purchase Discount Account:"), 'pyt_discount_act', $_POST['pyt_discount_act']);
+gl_all_accounts_list_row(_(UI_TEXT_PURCHASE_DISCOUNT_ACCOUNT_LABEL), 'pyt_discount_act', $_POST['pyt_discount_act']);
 
-gl_all_accounts_list_row(_("GRN Clearing Account:"), 'grn_clearing_act', RequestService::getPostStatic('grn_clearing_act'), true, false, _("No postings on GRN"));
+gl_all_accounts_list_row(_(UI_TEXT_GRN_CLEARING_ACCOUNT_LABEL), 'grn_clearing_act', RequestService::getPostStatic('grn_clearing_act'), true, false, _(UI_TEXT_NO_POSTINGS_ON_GRN));
 
-text_row(_("Receival Required By:"), 'default_receival_required', $_POST['default_receival_required'], 6, 6, '', "", _("days"));
+text_row(_(UI_TEXT_RECEIVAL_REQUIRED_BY_LABEL), 'default_receival_required', $_POST['default_receival_required'], 6, 6, '', "", _(UI_TEXT_DAYS));
 
-check_row(_("Show PO item codes:"), 'show_po_item_codes', null);
+check_row(_(UI_TEXT_SHOW_PO_ITEM_CODES_LABEL), 'show_po_item_codes', null);
 
-table_section_title(_("Inventory"));
+table_section_title(_(UI_TEXT_INVENTORY));
 
-check_row(_("Allow Negative Inventory:"), 'allow_negative_stock', null);
-label_row(null, _("Warning:  This may cause a delay in GL postings"), "", "class='stockmankofg' colspan=2"); 
+check_row(_(UI_TEXT_ALLOW_NEGATIVE_INVENTORY_LABEL), 'allow_negative_stock', null);
+label_row(null, _(UI_TEXT_WARNING_DELAY_IN_GL_POSTINGS), "", "class='stockmankofg' colspan=2"); 
 
-check_row(_("No zero-amounts (Service):"), 'no_zero_lines_amount', null);
+check_row(_(UI_TEXT_NO_ZERO_AMOUNTS_SERVICE_LABEL), 'no_zero_lines_amount', null);
 
-check_row(_("Location Notifications:"), 'loc_notification', null);
+check_row(_(UI_TEXT_LOCATION_NOTIFICATIONS_LABEL), 'loc_notification', null);
 
-check_row(_("Allow Negative Prices:"), 'allow_negative_prices', null);
+check_row(_(UI_TEXT_ALLOW_NEGATIVE_PRICES_LABEL), 'allow_negative_prices', null);
 
-table_section_title(_("Items Defaults"));
-gl_all_accounts_list_row(_("Sales Account:"), 'default_inv_sales_act', $_POST['default_inv_sales_act']);
+table_section_title(_(UI_TEXT_ITEMS_DEFAULTS));
+gl_all_accounts_list_row(_(UI_TEXT_SALES_ACCOUNT_LABEL), 'default_inv_sales_act', $_POST['default_inv_sales_act']);
 
-gl_all_accounts_list_row(_("Inventory Account:"), 'default_inventory_act', $_POST['default_inventory_act']);
+gl_all_accounts_list_row(_(UI_TEXT_INVENTORY_ACCOUNT_LABEL), 'default_inventory_act', $_POST['default_inventory_act']);
 // this one is default for items and suppliers (purchase account)
-gl_all_accounts_list_row(_("C.O.G.S. Account:"), 'default_cogs_act', $_POST['default_cogs_act']);
+gl_all_accounts_list_row(_(UI_TEXT_COGS_ACCOUNT_LABEL), 'default_cogs_act', $_POST['default_cogs_act']);
 
-gl_all_accounts_list_row(_("Inventory Adjustments Account:"), 'default_adj_act', $_POST['default_adj_act']);
+gl_all_accounts_list_row(_(UI_TEXT_INVENTORY_ADJUSTMENTS_ACCOUNT_LABEL), 'default_adj_act', $_POST['default_adj_act']);
 
-gl_all_accounts_list_row(_("WIP Account:"), 'default_wip_act', $_POST['default_wip_act']);
-
-//----------------
-
-table_section_title(_("Fixed Assets Defaults"));
-
-gl_all_accounts_list_row(_("Loss On Asset Disposal Account:"), 'default_loss_on_asset_disposal_act', $_POST['default_loss_on_asset_disposal_act']);
-
-array_selector_row (_("Depreciation Period:"), 'depreciation_period', $_POST['depreciation_period'], array(FA_MONTHLY => _("Monthly"), FA_YEARLY => _("Yearly")));
+gl_all_accounts_list_row(_(UI_TEXT_WIP_ACCOUNT_LABEL), 'default_wip_act', $_POST['default_wip_act']);
 
 //----------------
 
-table_section_title(_("Manufacturing Defaults"));
+table_section_title(_(UI_TEXT_FIXED_ASSETS_DEFAULTS));
 
-text_row(_("Work Order Required By After:"), 'default_workorder_required', $_POST['default_workorder_required'], 6, 6, '', "", _("days"));
+gl_all_accounts_list_row(_(UI_TEXT_LOSS_ON_ASSET_DISPOSAL_ACCOUNT_LABEL), 'default_loss_on_asset_disposal_act', $_POST['default_loss_on_asset_disposal_act']);
+
+array_selector_row (_(UI_TEXT_DEPRECIATION_PERIOD_LABEL), 'depreciation_period', $_POST['depreciation_period'], array(FA_MONTHLY => _(UI_TEXT_MONTHLY), FA_YEARLY => _(UI_TEXT_YEARLY)));
+
+//----------------
+
+table_section_title(_(UI_TEXT_MANUFACTURING_DEFAULTS));
+
+text_row(_(UI_TEXT_WORK_ORDER_REQUIRED_BY_AFTER_LABEL), 'default_workorder_required', $_POST['default_workorder_required'], 6, 6, '', "", _(UI_TEXT_DAYS));
 
 //----------------
 
 end_outer_table(1);
 
-submit_center('submit', _("Update"), true, '', 'default');
+submit_center('submit', _(UI_TEXT_UPDATE), true, '', 'default');
 
 end_form(2);
 
