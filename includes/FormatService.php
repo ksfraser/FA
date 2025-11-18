@@ -84,4 +84,18 @@ class FormatService
     {
         return self::numberFormat2($number, UserPrefsCache::getPercentDecimals());
     }
+    
+    /**
+     * Format number with maximum precision
+     * 
+     * Formats a number with automatic precision, stripping trailing insignificant zeros.
+     * This is useful for displaying exact values without unnecessary trailing zeros.
+     * 
+     * @param float|int $number The number to format
+     * @return string Formatted number string with trailing zeros removed
+     */
+    public static function maxprecFormat(float|int $number): string
+    {
+        return self::numberFormat2($number, 'max');
+    }
 }

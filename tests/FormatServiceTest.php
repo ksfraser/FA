@@ -188,4 +188,29 @@ class FormatServiceTest extends TestCase
         
         $this->assertEquals($original, $replacement, 'Original and replacement must return identical results');
     }
+
+    // Test maxprec_format
+    public function testMaxprecFormatWithDecimals(): void
+    {
+        $original = maxprec_format(1234.5000);
+        $replacement = FormatService::maxprecFormat(1234.5000);
+        
+        $this->assertEquals($original, $replacement, 'Original and replacement must return identical results');
+    }
+
+    public function testMaxprecFormatWholeNumber(): void
+    {
+        $original = maxprec_format(1234);
+        $replacement = FormatService::maxprecFormat(1234);
+        
+        $this->assertEquals($original, $replacement, 'Original and replacement must return identical results');
+    }
+
+    public function testMaxprecFormatManyDecimals(): void
+    {
+        $original = maxprec_format(0.123456789);
+        $replacement = FormatService::maxprecFormat(0.123456789);
+        
+        $this->assertEquals($original, $replacement, 'Original and replacement must return identical results');
+    }
 }
