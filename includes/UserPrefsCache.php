@@ -96,6 +96,20 @@ class UserPrefsCache
     }
     
     /**
+     * Get percent decimal places (cached)
+     * 
+     * @return int Number of decimal places for percentage formatting
+     */
+    public static function getPercentDecimals(): int
+    {
+        if (self::$cache === null) {
+            self::loadCache();
+        }
+        
+        return self::$cache['percent_dec'] ?? 1;
+    }
+    
+    /**
      * Load cache from session
      * 
      * Populates the cache with current user preferences from the session.
@@ -115,6 +129,7 @@ class UserPrefsCache
             self::$cache['tho_sep'] = $prefs->tho_sep();
             self::$cache['dec_sep'] = $prefs->dec_sep();
             self::$cache['exrate_dec'] = $prefs->exrate_dec();
+            self::$cache['percent_dec'] = $prefs->percent_dec();
         }
     }
     

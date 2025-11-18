@@ -57,4 +57,31 @@ class FormatService
     {
         return self::numberFormat2($number, UserPrefsCache::getPriceDecimals());
     }
+    
+    /**
+     * Format exchange rate with user's decimal precision
+     * 
+     * Formats an exchange rate using the user's configured exchange rate decimal places.
+     * 
+     * @param float|int $number The exchange rate to format
+     * @return string Formatted exchange rate string
+     */
+    public static function exrateFormat(float|int $number): string
+    {
+        return self::numberFormat2($number, UserPrefsCache::getExrateDecimals());
+    }
+    
+    /**
+     * Format percentage with user's decimal precision
+     * 
+     * Formats a percentage value using the user's configured percent decimal places.
+     * Note: This does NOT add the % symbol, just formats the number.
+     * 
+     * @param float|int $number The percentage to format
+     * @return string Formatted percentage string
+     */
+    public static function percentFormat(float|int $number): string
+    {
+        return self::numberFormat2($number, UserPrefsCache::getPercentDecimals());
+    }
 }
