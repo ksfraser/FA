@@ -165,7 +165,7 @@ function voiding_controls()
     start_table(TABLESTYLE_NOBORDER);
 	start_row();
 
-	systypes_list_cells(_("Transaction Type:"), 'filterType', null, true, $not_implemented);
+	systypes_list_cells(_(UI_TEXT_TRANSACTION_TYPE_LABEL), 'filterType', null, true, $not_implemented);
 	if (list_updated('filterType'))
 		$selected_id = -1;
 
@@ -174,11 +174,11 @@ function voiding_controls()
     if (!isset($_POST['ToTransNo']))
         $_POST['ToTransNo'] = "999999";
 
-    ref_cells(_("from #:"), 'FromTransNo');
+	ref_cells(_(UI_TEXT_FROM_LABEL), 'FromTransNo');
 
-    ref_cells(_("to #:"), 'ToTransNo');
+	ref_cells(_(UI_TEXT_TO_LABEL), 'ToTransNo');
 
-    submit_cells('ProcessSearch', _("Search"), '', '', 'default');
+	submit_cells('ProcessSearch', _(UI_TEXT_SEARCH), '', '', 'default');
 
 	end_row();
     end_table(1);
@@ -192,12 +192,12 @@ function voiding_controls()
 		_("#") => array('insert'=>true, 'fun'=>'view_link'),
 		_("Reference") => array('fun'=>'ref_view'),
 		_("Date") => array('type'=>'date', 'fun'=>'date_view'),
-		_("GL") => array('insert'=>true, 'fun'=>'gl_view'),
-		_("Select") => array('insert'=>true, 'fun'=>'select_link')
+		_(UI_TEXT_GL_LABEL) => array('insert'=>true, 'fun'=>'gl_view'),
+		_(UI_TEXT_SELECT) => array('insert'=>true, 'fun'=>'select_link')
 	);
 
 	$table =& new_db_pager('transactions', $sql, $cols);
-	$table->set_marker('is_selected', _("Marked transactions will be voided.")); //Added by Faisal
+	$table->set_marker('is_selected', _(UI_TEXT_MARKED_WILL_BE_VOIDED)); //Added by Faisal
 
 	$table->width = "40%";
 	display_db_pager($table);
@@ -214,21 +214,21 @@ function voiding_controls()
 		hidden('trans_no', '');
 		$_POST['memo_'] = '';
 	}	
-    label_row(_("Transaction #:"), ($selected_id==-1?'':$selected_id));
+	label_row(_(UI_TEXT_TRANSACTION_NUMBER), ($selected_id==-1?'':$selected_id));
 
-    date_row(_("Voiding Date:"), 'date_');
+	date_row(_(UI_TEXT_VOIDING_DATE), 'date_');
 
-    textarea_row(_("Memo:"), 'memo_', null, 30, 4);
+	textarea_row(_(UI_TEXT_MEMO_LABEL), 'memo_', null, 30, 4);
 
 	end_table(1);
 
     if (!isset($_POST['ProcessVoiding']))
-    	submit_center('ProcessVoiding', _("Void Transaction"), true, '', 'default');
+        	submit_center('ProcessVoiding', _(UI_TEXT_VOID_TRANSACTION_BUTTON), true, '', 'default');
     else 
     {
  		if (!exist_transaction($_POST['filterType'],$_POST['trans_no']))
  		{
-			UiMessageService::displayError(_("The entered transaction does not exist or cannot be voided."));
+				UiMessageService::displayError(_(UI_TEXT_ENTERED_TRANSACTION_NOT_FOUND));
 			unset($_POST['trans_no']);
 			unset($_POST['memo_']);
 			unset($_POST['date_']);
@@ -243,10 +243,10 @@ function voiding_controls()
                         if (InventoryService::isInventoryItem($myrow["item_code"])) {
                             if (check_negative_stock($myrow["item_code"], -$myrow["qty_recd"], null, $_POST['date_'])) {
                                 $stock = get_item($myrow["item_code"]);
-                                UiMessageService::displayError(_("The void cannot be processed because there is an insufficient quantity for item:") .
-                                    " " . $stock['stock_id'] . " - " . $stock['description'] . " - " .
-                                    _("Quantity On Hand") . " = " . FormatService::numberFormat2(get_qoh_on_date($stock['stock_id'], null, 
-                                    $_POST['date_']), get_qty_dec($stock['stock_id'])));
+										UiMessageService::displayError(_(UI_TEXT_INSUFFICIENT_QUANTITY_WARNING) .
+									 " " . $stock['stock_id'] . " - " . $stock['description'] . " - " .
+									 _(UI_TEXT_QUANTITY_ON_HAND) . " = " . FormatService::numberFormat2(get_qoh_on_date($stock['stock_id'], null, 
+									 $_POST['date_']), get_qty_dec($stock['stock_id'])));
                                 return false;
                             }
                         }
