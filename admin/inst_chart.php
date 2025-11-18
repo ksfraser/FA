@@ -23,6 +23,7 @@ include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/admin/db/company_db.inc");
 include_once($path_to_root . "/admin/db/maintenance_db.inc");
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 
 //---------------------------------------------------------------------------------------------
 
@@ -32,7 +33,7 @@ if ($id = find_submit('Delete', false))
 	if (($extensions[$id]['type']=='chart') && uninstall_package($extensions[$id]['package'])) {
 		unset($extensions[$id]);
 		if (update_extensions($extensions)) {
-			\FA\Services\UiMessageService::displayNotification(_("Selected chart has been successfully deleted"));
+			\FA\Services\UiMessageService::displayNotification(_(UI_TEXT_SELECTED_CHART_DELETED_SUCCESS));
 			meta_forward($_SERVER['PHP_SELF']);
 		}
 	}
@@ -54,12 +55,12 @@ start_form(true);
 	$mods = get_charts_list();
 
 	if (!$mods)
-		display_note(_("No optional chart of accounts is currently available."));
+		display_note(_(UI_TEXT_NO_OPTIONAL_CHART_AVAILABLE));
 	else
 	{
         uasort($mods, 'sortByOption');
 
-		$th = array(_("Chart"),  _("Installed"), _("Available"), _("Encoding"), "", "");
+		$th = array(_(UI_TEXT_CHART),  _(UI_TEXT_INSTALLED), _(UI_TEXT_AVAILABLE), _(UI_TEXT_ENCODING), "", "");
 		$k = 0;
 
 		start_table(TABLESTYLE);
@@ -75,13 +76,13 @@ start_form(true);
 
 			label_cell($available ? get_package_view_str($pkg_name, $ext['name']) : $ext['name']);
 
-			label_cell($id === null ? _("None") :
-				($available && $installed ? $installed : _("Unknown")));
-			label_cell($available ? $available : _("None"));
-			label_cell($encoding ? $encoding : _("Unknown"));
+			label_cell($id === null ? _(UI_TEXT_NONE) :
+				($available && $installed ? $installed : _(UI_TEXT_UNKNOWN)));
+			label_cell($available ? $available : _(UI_TEXT_NONE));
+			label_cell($encoding ? $encoding : _(UI_TEXT_UNKNOWN));
 
 			if ($available && check_pkg_upgrade($installed, $available)) // outdated or not installed theme in repo
-				button_cell('Update'.$pkg_name, $installed ? _("Update") : _("Install"),
+				button_cell('Update'.$pkg_name, $installed ? _(UI_TEXT_UPDATE) : _(UI_TEXT_INSTALL),
 					_('Upload and install latest extension package'), ICON_DOWN);
 			else
 				label_cell('');
@@ -89,7 +90,7 @@ start_form(true);
 			if ($id !== null) {
 				delete_button_cell('Delete'.$id, _('Delete'));
 				submit_js_confirm('Delete'.$id, 
-					sprintf(_("You are about to remove package \'%s\'.\nDo you want to continue ?"), 
+					sprintf(_(UI_TEXT_REMOVE_PACKAGE_CONFIRM), 
 						$ext['name']));
 			} else
 				label_cell('');
