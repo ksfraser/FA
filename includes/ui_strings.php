@@ -193,4 +193,22 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_PORT', 'Port');
     define('UI_TEXT_TIMEOUT', 'Timeout');
     define('UI_TEXT_SELECTED_PRINTER_DELETED_NOTICE', 'Selected printer definition has been deleted');
+    define('UI_TEXT_FISCAL_YEARS_TITLE', 'Fiscal Years');
+    define('UI_TEXT_INVALID_BEGIN_DATE_ERROR', 'Invalid BEGIN date in fiscal year.');
+    define('UI_TEXT_INVALID_END_DATE_ERROR', 'Invalid END date in fiscal year.');
+    define('UI_TEXT_INVALID_BEGIN_OR_END_DATE_ERROR', 'Invalid BEGIN or END date in fiscal year.');
+    define('UI_TEXT_BEGIN_DATE_BIGGER_THAN_END_ERROR', 'BEGIN date bigger than END date.');
+    define('UI_TEXT_CANNOT_CLOSE_YEAR_ERROR', 'Cannot CLOSE this year because there are open fiscal years before');
+    define('UI_TEXT_CANNOT_DELETE_FISCAL_YEAR_BEFORE_ERROR', 'Cannot delete this fiscal year because there are fiscal years before.');
+    define('UI_TEXT_CANNOT_DELETE_FISCAL_YEAR_NOT_CLOSED_ERROR', 'Cannot delete this fiscal year because the fiscal year is not closed.');
+    define('UI_TEXT_WARNING_DELETING_FISCAL_YEAR', 'Warning: Deleting a fiscal year all transactions');
+    define('UI_TEXT_FISCAL_YEAR_BEGIN', 'Fiscal Year Begin');
+    define('UI_TEXT_FISCAL_YEAR_END', 'Fiscal Year End');
+    define('UI_TEXT_CLOSED', 'Closed');
+    define('UI_TEXT_NO', 'No');
+    define('UI_TEXT_YES', 'Yes');
+    define('UI_TEXT_CONFIRM_DELETE_FISCAL_YEAR', 'Are you sure you want to delete fiscal year %s - %s? All transactions are deleted and converted into relevant balances. Do you want to continue ?');
+    define('UI_TEXT_CURRENT_FISCAL_YEAR_CANNOT_DELETE', 'The marked fiscal year is the current fiscal year which cannot be deleted.');
+    define('UI_TEXT_FISCAL_YEAR_BEGIN_LABEL', 'Fiscal Year Begin:');
+    define('UI_TEXT_FISCAL_YEAR_END_LABEL', 'Fiscal Year End:');
 }

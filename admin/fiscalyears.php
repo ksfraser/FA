@@ -17,6 +17,7 @@ include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/admin/db/company_db.inc");
 include_once($path_to_root . "/admin/db/fiscalyears_db.inc");
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/sales/includes/db/cust_trans_db.inc");
 include_once($path_to_root . "/admin/db/maintenance_db.inc");
 
@@ -26,7 +27,7 @@ use FA\Services\DateService;
 $js = "";
 if (user_use_date_picker())
 	$js .= get_js_date_picker();
-page(_($help_context = "Fiscal Years"), false, false, "", $js);
+page(_($help_context = UI_TEXT_FISCAL_YEARS_TITLE), false, false, "", $js);
 
 simple_page_mode(true);
 //---------------------------------------------------------------------------------------------
@@ -36,25 +37,25 @@ function check_data()
 	$dateService = new DateService();
 	if (!$dateService->isDate($_POST['from_date']) || is_date_in_fiscalyears($_POST['from_date']))
 	{
-		UiMessageService::displayError( _("Invalid BEGIN date in fiscal year."));
+		UiMessageService::displayError(_(UI_TEXT_INVALID_BEGIN_DATE_ERROR));
 		set_focus('from_date');
 		return false;
 	}
 	if (!$dateService->isDate($_POST['to_date']) || is_date_in_fiscalyears($_POST['to_date']))
 	{
-		UiMessageService::displayError( _("Invalid END date in fiscal year."));
+		UiMessageService::displayError(_(UI_TEXT_INVALID_END_DATE_ERROR));
 		set_focus('to_date');
 		return false;
 	}
 	if (!check_begin_end_date($_POST['from_date'], $_POST['to_date']))
 	{
-		UiMessageService::displayError( _("Invalid BEGIN or END date in fiscal year."));
+		UiMessageService::displayError(_(UI_TEXT_INVALID_BEGIN_OR_END_DATE_ERROR));
 		set_focus('from_date');
 		return false;
 	}
 	if (DateService::date1GreaterDate2Static($_POST['from_date'], $_POST['to_date']))
 	{
-		UiMessageService::displayError( _("BEGIN date bigger than END date."));
+		UiMessageService::displayError(_(UI_TEXT_BEGIN_DATE_BIGGER_THAN_END_ERROR));
 		set_focus('from_date');
 		return false;
 	}
@@ -72,7 +73,7 @@ function handle_submit()
 		{
 			if (check_years_before($_POST['from_date'], false))
 			{
-				UiMessageService::displayError( _("Cannot CLOSE this year because there are open fiscal years before"));
+				UiMessageService::displayError(_(UI_TEXT_CANNOT_CLOSE_YEAR_ERROR));
 				set_focus('closed');
 				return false;
 			}	
@@ -104,12 +105,12 @@ function check_can_delete($selected_id)
 	// PREVENT DELETES IF DEPENDENT RECORDS IN gl_trans
 	if (check_years_before(DateService::sql2dateStatic($myrow['begin']), true))
 	{
-		UiMessageService::displayError(_("Cannot delete this fiscal year because there are fiscal years before."));
+		UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_FISCAL_YEAR_BEFORE_ERROR));
 		return false;
 	}
 	if ($myrow['closed'] == 0)
 	{
-		UiMessageService::displayError(_("Cannot delete this fiscal year because the fiscal year is not closed."));
+		UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_FISCAL_YEAR_NOT_CLOSED_ERROR));
 		return false;
 	}
 	return true;
@@ -135,12 +136,12 @@ function display_fiscalyears()
 
 	$result = get_all_fiscalyears();
 	start_form();
-	display_note(_("Warning: Deleting a fiscal year all transactions 
-		are removed and converted into relevant balances. This process is irreversible!"), 
+	display_note(_(UI_TEXT_WARNING_DELETING_FISCAL_YEAR . 
+		' are removed and converted into relevant balances. This process is irreversible!'), 
 		0, 1, "class='currentfg'");
 	start_table(TABLESTYLE);
 
-	$th = array(_("Fiscal Year Begin"), _("Fiscal Year End"), _("Closed"), "", "");
+	$th = array(_(UI_TEXT_FISCAL_YEAR_BEGIN), _(UI_TEXT_FISCAL_YEAR_END), _(UI_TEXT_CLOSED), "", "");
 	table_header($th);
 
 	$k=0;
@@ -157,20 +158,20 @@ function display_fiscalyears()
 		$to = DateService::sql2dateStatic($myrow["end"]);
 		if ($myrow["closed"] == 0)
 		{
-			$closed_text = _("No");
+			$closed_text = _(UI_TEXT_NO);
 		}
 		else
 		{
-			$closed_text = _("Yes");
+			$closed_text = _(UI_TEXT_YES);
 		}
 		label_cell($from);
 		label_cell($to);
 		label_cell($closed_text);
-	 	edit_button_cell("Edit".$myrow['id'], _("Edit"));
+	 	edit_button_cell("Edit".$myrow['id'], _(UI_TEXT_EDIT));
 		if ($myrow["id"] != $company_year) {
- 			delete_button_cell("Delete".$myrow['id'], _("Delete"));
+ 			delete_button_cell("Delete".$myrow['id'], _(UI_TEXT_DELETE));
 			submit_js_confirm("Delete".$myrow['id'],
-				sprintf(_("Are you sure you want to delete fiscal year %s - %s? All transactions are deleted and converted into relevant balances. Do you want to continue ?"), $from, $to));
+				sprintf(_(UI_TEXT_CONFIRM_DELETE_FISCAL_YEAR), $from, $to));
 		} else
 			label_cell('');
 		end_row();
@@ -178,7 +179,7 @@ function display_fiscalyears()
 
 	end_table();
 	end_form();
-	display_note(_("The marked fiscal year is the current fiscal year which cannot be deleted."), 0, 0, "class='currentfg'");
+	display_note(_(UI_TEXT_CURRENT_FISCAL_YEAR_CANNOT_DELETE), 0, 0, "class='currentfg'");
 }
 
 //---------------------------------------------------------------------------------------------
@@ -202,8 +203,8 @@ function display_fiscalyear_edit($selected_id)
 		}
 		hidden('from_date');
 		hidden('to_date');
-		label_row(_("Fiscal Year Begin:"), $_POST['from_date']);
-		label_row(_("Fiscal Year End:"), $_POST['to_date']);
+		label_row(_(UI_TEXT_FISCAL_YEAR_BEGIN_LABEL), $_POST['from_date']);
+		label_row(_(UI_TEXT_FISCAL_YEAR_END_LABEL), $_POST['to_date']);
 	}
 	else
 	{
@@ -213,12 +214,12 @@ function display_fiscalyear_edit($selected_id)
 			$_POST['from_date'] = $begin;
 			$_POST['to_date'] = DateService::endMonthStatic(DateService::addMonthsStatic($begin, 11));
 		}
-		date_row(_("Fiscal Year Begin:"), 'from_date', '', null, 0, 0, 1001);
-		date_row(_("Fiscal Year End:"), 'to_date', '', null, 0, 0, 1001);
+		date_row(_(UI_TEXT_FISCAL_YEAR_BEGIN_LABEL), 'from_date', '', null, 0, 0, 1001);
+		date_row(_(UI_TEXT_FISCAL_YEAR_END_LABEL), 'to_date', '', null, 0, 0, 1001);
 	}
 	hidden('selected_id', $selected_id);
 
-	yesno_list_row(_("Is Closed:"), 'closed', null, "", "", false);
+	yesno_list_row(_(UI_TEXT_IS_CLOSED_LABEL), 'closed', null, "", "", false);
 
 	end_table(1);
 
