@@ -14,6 +14,7 @@ $path_to_root = "..";
 include($path_to_root . "/includes/session.inc");
 include($path_to_root . "/admin/db/printers_db.inc");
 include($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 
 page(_($help_context = "Printing Profiles"));
 
@@ -87,7 +88,7 @@ if ( RequestService::getPostStatic('submit'))
 	if ($_POST['profile_id'] == '' && empty($_POST['name']))
 	{
 		$error = 1;
-		UiMessageService::displayError( _("Printing profile name cannot be empty."));
+		UiMessageService::displayError( _(UI_TEXT_PRINTING_PROFILE_NAME_CANNOT_BE_EMPTY_ERROR));
 		set_focus('name');
 	} 
 
@@ -132,9 +133,9 @@ end_table();
 echo '<hr>';
 start_table();
 if (RequestService::getPostStatic('profile_id') == '')
-	text_row(_("Printing Profile Name").':', 'name', null, 30, 30);
+	text_row(_(UI_TEXT_PRINTING_PROFILE_NAME_LABEL).':', 'name', null, 30, 30);
 else
-	label_cells(_("Printing Profile Name").':', RequestService::getPostStatic('profile_id'));
+	label_cells(_(UI_TEXT_PRINTING_PROFILE_NAME_LABEL).':', RequestService::getPostStatic('profile_id'));
 end_table(1);
 
 $result = get_print_profile(RequestService::getPostStatic('profile_id'));
@@ -144,7 +145,7 @@ while ($myrow = db_fetch($result)) {
 }
 
 start_table(TABLESTYLE);
-$th = array(_("Report Id"), _("Description"), _("Printer"));
+$th = array(_(UI_TEXT_REPORT_ID), _(UI_TEXT_DESCRIPTION), _(UI_TEXT_PRINTER));
 table_header($th);
 
 $k = 0;
@@ -165,18 +166,18 @@ foreach(get_reports() as $rep => $descr)
 }
 end_table();
 if ($unkn)
-	display_note('<sup>1)</sup>&nbsp;-&nbsp;'._("no title was found in this report definition file."), 0, 1, '');
+	display_note('<sup>1)</sup>&nbsp;-&nbsp;'._(UI_TEXT_NO_TITLE_FOUND_IN_REPORT_DEFINITION), 0, 1, '');
 else
 	echo '<br>';
 
 div_start('controls');
 if (RequestService::getPostStatic('profile_id') == '') {
-	submit_center('submit', _("Add New Profile"), true, '', 'default');
+	submit_center('submit', _(UI_TEXT_ADD_NEW_PROFILE), true, '', 'default');
 } else {
-	submit_center_first('submit', _("Update Profile"), 
-	  _('Update printer profile'), 'default');
-	submit_center_last('delete', _("Delete Profile"), 
-	  _('Delete printer profile (only if not used by any user)'), true);
+	submit_center_first('submit', _(UI_TEXT_UPDATE_PROFILE), 
+	  _(UI_TEXT_UPDATE_PRINTER_PROFILE), 'default');
+	submit_center_last('delete', _(UI_TEXT_DELETE_PROFILE), 
+	  _(UI_TEXT_DELETE_PRINTER_PROFILE), true);
 }
 div_end();
 

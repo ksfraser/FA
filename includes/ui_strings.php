@@ -211,4 +211,14 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_CURRENT_FISCAL_YEAR_CANNOT_DELETE', 'The marked fiscal year is the current fiscal year which cannot be deleted.');
     define('UI_TEXT_FISCAL_YEAR_BEGIN_LABEL', 'Fiscal Year Begin:');
     define('UI_TEXT_FISCAL_YEAR_END_LABEL', 'Fiscal Year End:');
+    define('UI_TEXT_PRINTING_PROFILE_NAME_CANNOT_BE_EMPTY_ERROR', 'Printing profile name cannot be empty.');
+    define('UI_TEXT_PRINTING_PROFILE_NAME_LABEL', 'Printing Profile Name');
+    define('UI_TEXT_REPORT_ID', 'Report Id');
+    define('UI_TEXT_PRINTER', 'Printer');
+    define('UI_TEXT_NO_TITLE_FOUND_IN_REPORT_DEFINITION', 'no title was found in this report definition file.');
+    define('UI_TEXT_ADD_NEW_PROFILE', 'Add New Profile');
+    define('UI_TEXT_UPDATE_PROFILE', 'Update Profile');
+    define('UI_TEXT_DELETE_PROFILE', 'Delete Profile');
+    define('UI_TEXT_UPDATE_PRINTER_PROFILE', 'Update printer profile');
+    define('UI_TEXT_DELETE_PRINTER_PROFILE', 'Delete printer profile (only if not used by any user)');
 }
