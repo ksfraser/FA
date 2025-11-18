@@ -173,7 +173,7 @@ function create_cart($type=0, $trans_no=0)
 	$_POST['event_date'] = $cart->event_date;
 	$_POST['doc_date'] = $cart->doc_date;
 	$_POST['currency'] = $cart->currency;
-	$_POST['_ex_rate'] = exrate_format($cart->rate);
+	$_POST['_ex_rate'] = \FA\Services\FormatService::exrateFormat($cart->rate);
 	$_POST['source_ref'] = $cart->source_ref;
 	if (isset($cart->tax_info['net_amount']) || (!$trans_no && get_company_pref('default_gl_vat')))
 		$_POST['taxable_trans'] = true;

@@ -484,7 +484,7 @@ foreach ($_SESSION['Items']->line_items as $line=>$ln_itm) {
 	$_POST['Line'.$line]=$ln_itm->qty_dispatched; /// clear post so value displayed in the fiel is the 'new' quantity
 	small_qty_cells(null, 'Line'.$line, qty_format($ln_itm->qty_dispatched, $ln_itm->stock_id, $dec), null, null, $dec);
 
-	$display_discount_percent = percent_format($ln_itm->discount_percent*100) . "%";
+	$display_discount_percent = \FA\Services\FormatService::percentFormat($ln_itm->discount_percent*100) . "%";
 
 	$line_total = ($ln_itm->qty_dispatched * $ln_itm->price * (1 - $ln_itm->discount_percent));
 
