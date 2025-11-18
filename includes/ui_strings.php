@@ -228,4 +228,12 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_SECONDARY_PHONE', 'Secondary Phone');
     define('UI_TEXT_CONTACT_PERSON_LABEL', 'Contact Person:');
     define('UI_TEXT_SECONDARY_PHONE_NUMBER_LABEL', 'Secondary Phone Number:');
+    define('UI_TEXT_COMPANY_UPGRADED_SUCCESSFULLY', 'Company upgraded successfully.');
+    define('UI_TEXT_COMPANY', 'Company');
+    define('UI_TEXT_TABLE_SET', 'Table set');
+    define('UI_TEXT_CURRENT_VERSION', 'Current version');
+    define('UI_TEXT_LAST_LOG', 'Last log');
+    define('UI_TEXT_UPGRADE', 'Upgrade');
+    define('UI_TEXT_DO_YOU_REALLY_WANT_TO_CLEAR_THIS_UPGRADE_LOG', 'Do you really want to clear this upgrade log?');
+    define('UI_TEXT_SELECT_COMPANY_FOR_INCREMENTAL_UPGRADE', 'Select company for incremental upgrade.');
 }

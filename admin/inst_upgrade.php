@@ -23,6 +23,7 @@ include_once($path_to_root . "/admin/db/company_db.inc");
 include_once($path_to_root . "/admin/db/maintenance_db.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/admin/includes/fa_patch.class.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 
 $site_status = get_site_status($db_connections);
 $installers = get_installers();
@@ -40,7 +41,7 @@ if (RequestService::getPostStatic('Upgrade'))
 		if (!$patch->upgrade_company($comp, RequestService::checkValueStatic('force')))
 			UiMessageService::displayError(implode('<hr>', $patch->errors));
 		else
-			\FA\Services\UiMessageService::displayNotification(_("Company upgraded successfully."));			$site_status = get_site_status($db_connections); // update info
+			\FA\Services\UiMessageService::displayNotification(_(UI_TEXT_COMPANY_UPGRADED_SUCCESSFULLY));			$site_status = get_site_status($db_connections); // update info
 		    $Ajax->activate('_page_body');
 		}
 	}
@@ -58,7 +59,7 @@ if (RequestService::getPostStatic('_select_comp_update'))
 
 start_form();
 
-$th = array(_("Company"), _("Table set"), _("Current version"), _("Last log"), _('Upgrade'));
+$th = array(_(UI_TEXT_COMPANY), _(UI_TEXT_TABLE_SET), _(UI_TEXT_CURRENT_VERSION), _(UI_TEXT_LAST_LOG), _(UI_TEXT_UPGRADE));
 start_table(TABLESTYLE);
 table_header($th);
 $k = 0; //row colour counter
@@ -80,7 +81,7 @@ foreach($site_status as $i => $comp)
 	{
 		label_cell(viewer_link(_('View log'), "admin/view/view_upgrade_log.php?id=$i", null, $i, 'log.png')
 		  .button('Clear'.$i, _('Clear'), _('Clear log'), ICON_DELETE), 'align=center');
-		submit_js_confirm('Clear'.$i, _("Do you really want to clear this upgrade log?"));
+		submit_js_confirm('Clear'.$i, _(UI_TEXT_DO_YOU_REALLY_WANT_TO_CLEAR_THIS_UPGRADE_LOG));
 	} else
 		label_cell('-', 'align=center');
 
@@ -110,7 +111,7 @@ if ($uptodate)
 	display_note(_('All company database schemes are up to date.'));
 else {
 	if (RequestService::getPostStatic('select_comp') === '')
-		display_note(_("Select company for incremental upgrade."), 0, 1, "class='stockmankofg'");
+		display_note(_(UI_TEXT_SELECT_COMPANY_FOR_INCREMENTAL_UPGRADE), 0, 1, "class='stockmankofg'");
 	submit_center('Upgrade', _('Upgrade'), true, _('Save database and perform upgrade'), 'nonajax');
 }
 end_form();
