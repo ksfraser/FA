@@ -17,11 +17,11 @@ function write_supp_trans($type, $trans_no, $supplier_id, $date_, $due_date, $re
 	$amount, $amount_tax, $discount, $err_msg="", $rate=0, $included=0)
 {
 	$new = $trans_no==0;
-	$date = date2sql($date_);
+	$date = \FA\DateService::date2sqlStatic($date_);
 	if ($due_date == "")
 		$due_date = "0000-00-00";
 	else
-		$due_date = date2sql($due_date);
+		$due_date = \FA\DateService::date2sqlStatic($due_date);
 
 	if ($new)
 		$trans_no = get_next_trans_no($type);
@@ -214,8 +214,8 @@ function post_void_supp_trans($type, $type_no)
 
 function get_sql_for_supplier_inquiry($filter, $after_date, $to_date, $supplier_id=ALL_TEXT)
 {
-    $date_after = date2sql($after_date);
-    $date_to = date2sql($to_date);
+    $date_after = \FA\DateService::date2sqlStatic($after_date);
+    $date_to = \FA\DateService::date2sqlStatic($to_date);
 
     $sql = "SELECT trans.type, 
 		trans.trans_no,
@@ -231,7 +231,7 @@ function get_sql_for_supplier_inquiry($filter, $after_date, $to_date, $supplier_
   	OR (trans.type=".ST_JOURNAL." AND (trans.ov_amount + trans.ov_gst + trans.ov_discount)>0), 1, -1)*
     		(ABS(trans.ov_amount + trans.ov_gst + trans.ov_discount) - trans.alloc) Balance,
 		trans.alloc AS Allocated,
-		((trans.type = ".ST_SUPPINVOICE." OR trans.type = ".ST_SUPPCREDIT.") AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue,
+		((trans.type = ".ST_SUPPINVOICE." OR trans.type = ".ST_SUPPCREDIT.") AND trans.due_date < '" . \FA\DateService::date2sqlStatic(Today()) . "') AS OverDue,
     	(ABS(trans.ov_amount + trans.ov_gst  + trans.ov_discount) - trans.alloc <= ".FLOAT_COMP_DELTA.") AS Settled
     	FROM ".TB_PREF."supp_trans as trans, ".TB_PREF."suppliers as supplier
     	WHERE supplier.supplier_id = trans.supplier_id
@@ -296,7 +296,7 @@ function get_sql_for_supplier_inquiry($filter, $after_date, $to_date, $supplier_
 
    		if (($filter == '2') || ($filter == '5')) 
    		{
-   			$today =  date2sql(Today());
+   			$today =  \FA\DateService::date2sqlStatic(Today());
 			$sql .= " AND trans.due_date < '$today' ";
    		}
    	}

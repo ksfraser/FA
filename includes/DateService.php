@@ -325,17 +325,17 @@ class DateService
     /**
      * Static wrapper for sql2date
      */
-    public static function sql2dateStatic(string $date): string
+    public static function sql2dateStatic(?string $date): string
     {
-        return \sql2date($date);
+        return \sql2date($date ?? '');
     }
     
     /**
      * Static wrapper for date2sql
      */
-    public static function date2sqlStatic(string $date): string
+    public static function date2sqlStatic(?string $date): string
     {
-        return \date2sql($date);
+        return \date2sql($date ?? '');
     }
     
     /**

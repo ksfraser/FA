@@ -18,7 +18,7 @@ function add_sales_order(&$order)
 	begin_transaction();
 	hook_db_prewrite($order, $order->trans_type);
 	$order_no = get_next_trans_no($order->trans_type);
-	$del_date = date2sql($order->due_date);
+	$del_date = \FA\DateService::date2sqlStatic($order->due_date);
 	$order_type = 0; // this is default on new order
 	$total = $order->get_trans_total();
 	$sql = "INSERT INTO ".TB_PREF."sales_orders (order_no, type, debtor_no, trans_type, branch_code, customer_ref, reference, comments, ord_date,
@@ -29,7 +29,7 @@ function add_sales_order(&$order)
 			db_escape($order->cust_ref) .",". 
 			db_escape($order->reference) .",". 
 			db_escape($order->Comments) .",'" . 
-			date2sql($order->document_date) . "', " .
+			\FA\DateService::date2sqlStatic($order->document_date) . "', " .
 			db_escape($order->sales_type) . ", " .
 			db_escape($order->ship_via)."," . 
 			db_escape($order->deliver_to) . "," .
@@ -101,7 +101,7 @@ function delete_sales_order($order_no, $trans_type)
 		.db_escape($order_no) . " AND trans_type=".db_escape($trans_type);
 	db_query($sql, "order Detail Delete");
 
-	add_audit_trail($trans_type, $order_no, sql2date($order['ord_date']), _("Deleted."));
+	add_audit_trail($trans_type, $order_no, \FA\DateService::sql2dateStatic($order['ord_date']), _("Deleted."));
 	commit_transaction();
 }
 
@@ -123,8 +123,8 @@ function update_sales_order($order)
 {
 	global $SysPrefs, $path_to_root, $Refs;
 
-	$del_date = date2sql($order->due_date);
-	$ord_date = date2sql($order->document_date);
+	$del_date = \FA\DateService::date2sqlStatic($order->due_date);
+	$ord_date = \FA\DateService::date2sqlStatic($order->document_date);
 	$order_no =  key($order->trans_no);
 	$version= current($order->trans_no);
 	$total = $order->get_trans_total();
@@ -327,8 +327,8 @@ function read_sales_order($order_no, &$order, $trans_type)
 	$order->sales_type =$myrow["order_type"];
 	$order->reference = $myrow["reference"];
 	$order->Comments = $myrow["comments"];
-	$order->due_date = sql2date($myrow["delivery_date"]);
-	$order->document_date = sql2date($myrow["ord_date"]);
+	$order->due_date = \FA\DateService::sql2dateStatic($myrow["delivery_date"]);
+	$order->document_date = \FA\DateService::sql2dateStatic($myrow["ord_date"]);
 
 	$order->prepaid = $myrow["prepaid"];
 	$order->alloc = $myrow['alloc'];
@@ -529,8 +529,8 @@ function get_sql_for_sales_orders_view($trans_type, $trans_no, $filter,
 	{
 		if ($filter!='DeliveryTemplates' && $filter!='InvoiceTemplates' && $filter!='OutstandingOnly')
 		{
-			$date_after = date2sql($from);
-			$date_before = date2sql($to);
+			$date_after = \FA\DateService::date2sqlStatic($from);
+			$date_before = \FA\DateService::date2sqlStatic($to);
 			$by_date = $by_delivery ? 'delivery_date' : 'ord_date';
 			$sql .=  " AND sorder.$by_date >= '$date_after'"
 					." AND sorder.$by_date <= '$date_before'";
@@ -539,7 +539,7 @@ function get_sql_for_sales_orders_view($trans_type, $trans_no, $filter,
 		    $sql .= " AND sorder.reference != 'auto'";
 	}
 		if ($trans_type == ST_SALESQUOTE && !RequestService::checkValueStatic('show_all'))
-			$sql .= " AND sorder.delivery_date >= '".date2sql(Today())."' AND line.qty_sent=0"; // show only outstanding, not realized quotes
+			$sql .= " AND sorder.delivery_date >= '".\FA\DateService::date2sqlStatic(Today())."' AND line.qty_sent=0"; // show only outstanding, not realized quotes
 
 		//if ($selected_customer != -1)
 		//	$sql .= " AND sorder.debtor_no=".db_escape($selected_customer);

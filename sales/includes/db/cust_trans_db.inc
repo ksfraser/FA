@@ -64,11 +64,11 @@ function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 	if ($rate == 0)
 		$rate = BankingService::getExchangeRateFromHomeCurrency($curr, $date_);
 
-	$SQLDate = date2sql($date_);
+	$SQLDate = \FA\DateService::date2sqlStatic($date_);
 	if ($due_date == "")
 		$SQLDueDate = "0000-00-00";
 	else
-		$SQLDueDate = date2sql($due_date);
+		$SQLDueDate = \FA\DateService::date2sqlStatic($due_date);
 	
 	if ($trans_type == ST_BANKPAYMENT)
 		$Total = -$Total;
@@ -302,8 +302,8 @@ function post_void_customer_trans($type, $type_no)
 //----------------------------------------------------------------------------------------
 function get_sql_for_customer_inquiry($from, $to, $cust_id = ALL_TEXT, $filter = ALL_TEXT, $show_voided = 0, $ref='')
 {
-    $date_after = date2sql($from);
-    $date_to = date2sql($to);
+    $date_after = \FA\DateService::date2sqlStatic($from);
+    $date_to = \FA\DateService::date2sqlStatic($to);
 
   	$sql = "SELECT 
   		trans.type, 
@@ -331,7 +331,7 @@ function get_sql_for_customer_inquiry($from, $to, $cust_id = ALL_TEXT, $filter =
 
 		$sql .= "trans.alloc AS Allocated,
 		((trans.type = ".ST_SALESINVOICE." || trans.type = ".ST_JOURNAL.")
-			AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue ,
+			AND trans.due_date < '" . \FA\DateService::date2sqlStatic(Today()) . "') AS OverDue ,
 		Sum(line.quantity-line.qty_done) AS Outstanding,
 		Sum(line.qty_done) AS HasChild,
 		prep_amount
@@ -392,7 +392,7 @@ function get_sql_for_customer_inquiry($from, $to, $cust_id = ALL_TEXT, $filter =
 
     	if ($filter == '2')
     	{
-    		$today =  date2sql(Today());
+    		$today =  \FA\DateService::date2sqlStatic(Today());
     		$sql .= " AND trans.due_date < '$today'
 				AND (ABS(trans.ov_amount) + trans.ov_gst + trans.ov_freight_tax + 
 				trans.ov_freight + trans.ov_discount - trans.alloc > 0) ";
@@ -446,8 +446,8 @@ function get_sql_for_sales_deliveries_view($from, $to, $customer_id, $stock_item
 	}
 	else
 	{
-		$sql .= " AND trans.tran_date >= '".date2sql($from)."'";
-		$sql .= " AND trans.tran_date <= '".date2sql($to)."'";
+		$sql .= " AND trans.tran_date >= '".\FA\DateService::date2sqlStatic($from)."'";
+		$sql .= " AND trans.tran_date <= '".\FA\DateService::date2sqlStatic($to)."'";
 
 		if ($stock_item != ALL_TEXT)
 			$sql .= " AND line.stock_id=".db_escape($stock_item)." ";

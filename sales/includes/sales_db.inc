@@ -246,11 +246,11 @@ function read_sales_trans($doc_type, $trans_no, &$cart)
 		$cart->set_branch($myrow["branch_code"], $myrow["tax_group_id"],
 			$myrow["tax_group_name"]);
 
-		$cart->reference = $myrow["reference"];
-		$cart->prepaid = $myrow["prepaid"];
-		$cart->order_no = $myrow["order_"];
-		$cart->due_date = sql2date($myrow["due_date"]);
-		$cart->document_date = sql2date($myrow["tran_date"]);
+	$cart->reference = $myrow["reference"];
+	$cart->prepaid = $myrow["prepaid"];
+	$cart->order_no = $myrow["order_"];
+	$cart->due_date = \FA\DateService::sql2dateStatic($myrow["due_date"]);
+	$cart->document_date = \FA\DateService::sql2dateStatic($myrow["tran_date"]);
 		$cart->dimension_id = $myrow['dimension_id']; // added 2.1 Joe Hunt 2008-11-12
 		$cart->dimension2_id = $myrow['dimension2_id'];
 		$cart->Comments = '';
