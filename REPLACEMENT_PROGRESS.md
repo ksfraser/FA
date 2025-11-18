@@ -280,5 +280,47 @@ Before merging:
 
 ---
 
+## Technical Debt / Future Refactoring
+
+### 🔴 HIGH PRIORITY: Global State Refactoring
+
+#### Global $messages Array
+**Location**: `includes/errors.inc`, used throughout codebase  
+**Current State**:
+- Global array storing error/warning/notice messages
+- Messages added by: `UiMessageService`, `error_handler()`, `trigger_error()`
+- Messages displayed by: `fmt_errors()` in `errors.inc`
+
+**Issues**:
+- Global state makes testing difficult
+- No encapsulation or type safety
+- Message format is array: `[$errno, $errstr, $file, $line, $backtrace]`
+- Display logic mixed with error handling logic
+
+**Proposed Refactoring**:
+1. Create `MessageCollection` class to encapsulate the messages array
+2. Create `Message` value object for type-safe message handling
+3. Move `fmt_errors()` into a `MessageRenderer` or `DisplayService` class
+4. Update `UiMessageService` to use `MessageCollection` instead of global array
+5. Inject `MessageCollection` into rendering layer (page templates)
+
+**Benefits**:
+- Testable without global state
+- Type-safe message handling
+- Separation of concerns (collection vs rendering)
+- Easier to extend (custom message types, formatters)
+
+**Files to Modify**:
+- `includes/errors.inc` - Extract MessageCollection
+- `includes/UiMessageService.php` - Use MessageCollection
+- `includes/page/header.inc` - Inject MessageCollection
+- Template files that call `fmt_errors()`
+
+**Estimated Effort**: 4-6 hours  
+**Risk**: Medium (touches core error handling)  
+**Dependencies**: Should be done before major UI refactoring
+
+---
+
 **Last Updated**: November 17, 2025  
 **Next Update**: After next 5 replacements

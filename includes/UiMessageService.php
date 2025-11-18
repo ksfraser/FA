@@ -11,6 +11,11 @@ namespace FA\Services;
  * 
  * Directly adds messages to the global $messages array that is displayed by fmt_errors().
  * This bypasses trigger_error() and error_handler() for better performance and clarity.
+ * 
+ * TODO: REFACTOR - Move global $messages array into a proper message/display class
+ * The global $messages array should be encapsulated in a MessageCollection or DisplayService class.
+ * Current rendering via fmt_errors() in errors.inc should also be refactored into a display/rendering service.
+ * This will eliminate global state and make the message handling more testable and maintainable.
  */
 class UiMessageService
 {

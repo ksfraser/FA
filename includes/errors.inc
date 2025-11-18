@@ -9,6 +9,11 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+
+// TODO: REFACTOR - Replace global $messages with MessageCollection class
+// This global array should be encapsulated in a proper message/display service.
+// See REPLACEMENT_PROGRESS.md "Technical Debt / Future Refactoring" section for details.
+// Proposed: Create MessageCollection class, Message value object, and MessageRenderer service.
 $messages = array(); // container for system messages
 $before_box = ''; // temporary container for output html data before error box
 
@@ -111,6 +116,10 @@ function exception_handler($exception)
 //------------------------------------------------------------------------------
 //	Formats system messages before insert them into message <div>
 // FIX center is unused now
+// TODO: REFACTOR - Move this function into MessageRenderer service
+// This should be a method on a MessageRenderer/DisplayService class that accepts
+// a MessageCollection instance, not operate on global $messages array.
+// See REPLACEMENT_PROGRESS.md "Technical Debt / Future Refactoring" section.
 function fmt_errors($center=false) {
     global $messages, $path_to_root, $SysPrefs;
 
