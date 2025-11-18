@@ -557,4 +557,17 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_PRICING_AND_COSTS', 'Pricing and Costs');
     define('UI_TEXT_PURCHASING_PRICING', 'Purchasing &Pricing');
     define('UI_TEXT_STANDARD_COSTS', 'Standard &Costs');
+    define('UI_TEXT_FIXED_ASSETS', '&Fixed Assets');
+    define('UI_TEXT_FIXED_ASSETS_PURCHASE', 'Fixed Assets &Purchase');
+    define('UI_TEXT_FIXED_ASSETS_LOCATION_TRANSFERS', 'Fixed Assets Location &Transfers');
+    define('UI_TEXT_FIXED_ASSETS_DISPOSAL', 'Fixed Assets &Disposal');
+    define('UI_TEXT_FIXED_ASSETS_SALE', 'Fixed Assets &Sale');
+    define('UI_TEXT_PROCESS_DEPRECIATION', 'Process &Depreciation');
+    define('UI_TEXT_FIXED_ASSETS_MOVEMENTS', 'Fixed Assets &Movements');
+    define('UI_TEXT_FIXED_ASSETS_INQUIRY', 'Fixed Assets In&quiry');
+    define('UI_TEXT_FIXED_ASSETS_REPORTS', 'Fixed Assets &Reports');
+    define('UI_TEXT_FIXED_ASSETS_MENU', 'Fixed &Assets');
+    define('UI_TEXT_FIXED_ASSETS_LOCATIONS', 'Fixed Assets &Locations');
+    define('UI_TEXT_FIXED_ASSETS_CATEGORIES', 'Fixed Assets &Categories');
+    define('UI_TEXT_FIXED_ASSETS_CLASSES', 'Fixed Assets Cl&asses');
 };
