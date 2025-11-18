@@ -275,7 +275,7 @@ function get_sql_for_supplier_allocation_inquiry()
 		supplier.curr_code, 
     	(trans.ov_amount + trans.ov_gst  + trans.ov_discount) AS TotalAmount, 
 		trans.alloc AS Allocated,
-		((trans.type = ".ST_SUPPINVOICE." OR trans.type = ".ST_SUPPCREDIT.") AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue,
+		((trans.type = ".ST_SUPPINVOICE." OR trans.type = ".ST_SUPPCREDIT.") AND trans.due_date < '" . \FA\DateService::date2sqlStatic(\FA\DateService::todayStatic()) . "') AS OverDue,
 		trans.supplier_id
     	FROM "
 			.TB_PREF."supp_trans as trans
@@ -310,7 +310,7 @@ function get_sql_for_supplier_allocation_inquiry()
 
    		if (($_POST['filterType'] == '2') || ($_POST['filterType'] == '5')) // overdude 
    		{
-   			$today =  date2sql(Today());
+   			$today =  \FA\DateService::date2sqlStatic(\FA\DateService::todayStatic());
 			$sql .= " AND trans.due_date < '$today' ";
    		}
    	}

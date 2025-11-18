@@ -313,7 +313,7 @@ function get_sql_for_po_search_completed($from, $to, $supplier_id=ALL_TEXT, $loc
 		porder.ord_date, 
 		supplier.curr_code, 
 		Sum(line.unit_price*line.quantity_ordered) AS OrderValue,
-		Sum(line.delivery_date < '". date2sql(Today()) ."'
+		Sum(line.delivery_date < '". \FA\DateService::date2sqlStatic(\FA\DateService::todayStatic()) ."'
 		AND (line.quantity_ordered > line.quantity_received)) As OverDue,
 		porder.into_stock_location,
 		chk.isopen
@@ -375,7 +375,7 @@ function get_sql_for_po_search($from, $to, $supplier_id=ALL_TEXT, $location=ALL_
 		porder.ord_date,
 		supplier.curr_code,
 		Sum(line.unit_price*line.quantity_ordered) AS OrderValue,
-		Sum(line.delivery_date < '". date2sql(Today()) ."'
+		Sum(line.delivery_date < '". \FA\DateService::date2sqlStatic(\FA\DateService::todayStatic()) ."'
 		AND (line.quantity_ordered > line.quantity_received)) As OverDue
 		FROM ".TB_PREF."purch_orders as porder,"
 			.TB_PREF."purch_order_details as line, "

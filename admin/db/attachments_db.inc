@@ -15,7 +15,7 @@
 function add_attachment($filterType, $trans_no, $description,
 	$filename, $unique_name, $filesize, $filetype)
 {
-	$date = date2sql(Today());
+	$date = \FA\DateService::date2sqlStatic(\FA\DateService::todayStatic());
 	$sql = "INSERT INTO ".TB_PREF."attachments (type_no, trans_no, description, filename, unique_name,
 		filesize, filetype, tran_date) VALUES (".db_escape($filterType).","
 		.db_escape($trans_no).",".db_escape($description).", "
@@ -28,7 +28,7 @@ function add_attachment($filterType, $trans_no, $description,
 function update_attachment($selected_id, $filterType, $trans_no, $description,
 	$filename, $unique_name, $filesize, $filetype)
 {
-	$date = date2sql(Today());
+	$date = \FA\DateService::date2sqlStatic(\FA\DateService::todayStatic());
 	$sql = "UPDATE ".TB_PREF."attachments SET
 		type_no=".db_escape($filterType).",
 		trans_no=".db_escape($trans_no).",

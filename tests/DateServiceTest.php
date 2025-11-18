@@ -150,6 +150,63 @@ class DateServiceTest extends TestCase
         $this->assertEquals($sqlDate, $backToSql2, 'Should convert back to original SQL date');
     }
     
+    public function testTodayStatic(): void
+    {
+        $original = Today();
+        $replacement = \FA\DateService::todayStatic();
+        
+        $this->assertEquals($original, $replacement, 'Both should return today\'s date');
+        $this->assertMatchesRegularExpression('/^\d{2}\/\d{2}\/\d{4}$/', $replacement, 'Should be in MM/DD/YYYY format');
+    }
+    
+    public function testAddDaysStatic(): void
+    {
+        $date = '11/17/2025';
+        $result = \FA\DateService::addDaysStatic($date, 5);
+        
+        $this->assertEquals('11/22/2025', $result, 'Should add 5 days correctly');
+    }
+    
+    public function testAddDaysStaticNegative(): void
+    {
+        $date = '11/17/2025';
+        $result = \FA\DateService::addDaysStatic($date, -10);
+        
+        $this->assertEquals('11/07/2025', $result, 'Should subtract 10 days correctly');
+    }
+    
+    public function testAddMonthsStatic(): void
+    {
+        $date = '11/17/2025';
+        $result = \FA\DateService::addMonthsStatic($date, 2);
+        
+        $this->assertEquals('01/17/2026', $result, 'Should add 2 months correctly');
+    }
+    
+    public function testAddMonthsStaticNegative(): void
+    {
+        $date = '11/17/2025';
+        $result = \FA\DateService::addMonthsStatic($date, -3);
+        
+        $this->assertEquals('08/17/2025', $result, 'Should subtract 3 months correctly');
+    }
+    
+    public function testBeginMonthStatic(): void
+    {
+        $date = '11/17/2025';
+        $result = \FA\DateService::beginMonthStatic($date);
+        
+        $this->assertEquals('11/01/2025', $result, 'Should return first day of month');
+    }
+    
+    public function testEndMonthStatic(): void
+    {
+        $date = '11/17/2025';
+        $result = \FA\DateService::endMonthStatic($date);
+        
+        $this->assertEquals('11/30/2025', $result, 'Should return last day of month');
+    }
+    
     private function createMockUser(): object
     {
         $mockPrefs = new class {

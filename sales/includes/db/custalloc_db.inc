@@ -295,7 +295,7 @@ function get_sql_for_customer_allocation_inquiry($from, $to, $customer, $filterT
 			+ trans.ov_freight_tax + trans.ov_discount)	AS TotalAmount,
 		trans.alloc AS Allocated,
 		((trans.type = ".ST_SALESINVOICE.")
-			AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue,
+			AND trans.due_date < '" . \FA\DateService::date2sqlStatic(\FA\DateService::todayStatic()) . "') AS OverDue,
 		trans.debtor_no
     	FROM "
 			.TB_PREF."debtor_trans as trans, "
@@ -330,7 +330,7 @@ function get_sql_for_customer_allocation_inquiry($from, $to, $customer, $filterT
 
     	if ($filterType == '2')
     	{
-    		$today =  date2sql(Today());
+    		$today =  \FA\DateService::date2sqlStatic(\FA\DateService::todayStatic());
     		$sql .= " AND trans.due_date < '$today'
 				AND (round(abs(trans.ov_amount) + "
 				."trans.ov_gst + trans.ov_freight + "
