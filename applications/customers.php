@@ -9,72 +9,74 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+include_once($path_to_root . "/includes/ui_strings.php");
+
 class customers_app extends application 
 {
 	function __construct() 
 	{
-		parent::__construct("orders", _($this->help_context = "&Sales"));
+		parent::__construct("orders", _($this->help_context = _(UI_TEXT_SALES)));
 	
-		$this->add_module(_("Transactions"));
-		$this->add_lapp_function(0, _("Sales &Quotation Entry"),
+		$this->add_module(_(UI_TEXT_TRANSACTIONS));
+		$this->add_lapp_function(0, _(UI_TEXT_SALES_QUOTATION_ENTRY),
 			"sales/sales_order_entry.php?NewQuotation=Yes", 'SA_SALESQUOTE', MENU_TRANSACTION);
-		$this->add_lapp_function(0, _("Sales &Order Entry"),
+		$this->add_lapp_function(0, _(UI_TEXT_SALES_ORDER_ENTRY),
 			"sales/sales_order_entry.php?NewOrder=Yes", 'SA_SALESORDER', MENU_TRANSACTION);
-		$this->add_lapp_function(0, _("Direct &Delivery"),
+		$this->add_lapp_function(0, _(UI_TEXT_DIRECT_DELIVERY),
 			"sales/sales_order_entry.php?NewDelivery=0", 'SA_SALESDELIVERY', MENU_TRANSACTION);
-		$this->add_lapp_function(0, _("Direct &Invoice"),
+		$this->add_lapp_function(0, _(UI_TEXT_DIRECT_INVOICE),
 			"sales/sales_order_entry.php?NewInvoice=0", 'SA_SALESINVOICE', MENU_TRANSACTION);
 		$this->add_lapp_function(0, "","");
-		$this->add_lapp_function(0, _("&Delivery Against Sales Orders"),
+		$this->add_lapp_function(0, _(UI_TEXT_DELIVERY_AGAINST_SALES_ORDERS),
 			"sales/inquiry/sales_orders_view.php?OutstandingOnly=1", 'SA_SALESDELIVERY', MENU_TRANSACTION);
-		$this->add_lapp_function(0, _("&Invoice Against Sales Delivery"),
+		$this->add_lapp_function(0, _(UI_TEXT_INVOICE_AGAINST_SALES_DELIVERY),
 			"sales/inquiry/sales_deliveries_view.php?OutstandingOnly=1", 'SA_SALESINVOICE', MENU_TRANSACTION);
 
-		$this->add_rapp_function(0, _("&Template Delivery"),
+		$this->add_rapp_function(0, _(UI_TEXT_TEMPLATE_DELIVERY),
 			"sales/inquiry/sales_orders_view.php?DeliveryTemplates=Yes", 'SA_SALESDELIVERY', MENU_TRANSACTION);
-		$this->add_rapp_function(0, _("&Template Invoice"),
+		$this->add_rapp_function(0, _(UI_TEXT_TEMPLATE_INVOICE),
 			"sales/inquiry/sales_orders_view.php?InvoiceTemplates=Yes", 'SA_SALESINVOICE', MENU_TRANSACTION);
-		$this->add_rapp_function(0, _("&Create and Print Recurrent Invoices"),
+		$this->add_rapp_function(0, _(UI_TEXT_CREATE_PRINT_RECURRENT_INVOICES),
 			"sales/create_recurrent_invoices.php?", 'SA_SALESINVOICE', MENU_TRANSACTION);
 		$this->add_rapp_function(0, "","");
-		$this->add_rapp_function(0, _("Customer &Payments"),
+		$this->add_rapp_function(0, _(UI_TEXT_CUSTOMER_PAYMENTS),
 			"sales/customer_payments.php?", 'SA_SALESPAYMNT', MENU_TRANSACTION);
-		$this->add_lapp_function(0, _("Invoice &Prepaid Orders"),
+		$this->add_lapp_function(0, _(UI_TEXT_INVOICE_PREPAID_ORDERS),
 			"sales/inquiry/sales_orders_view.php?PrepaidOrders=Yes", 'SA_SALESINVOICE', MENU_TRANSACTION);
-		$this->add_rapp_function(0, _("Customer &Credit Notes"),
+		$this->add_rapp_function(0, _(UI_TEXT_CUSTOMER_CREDIT_NOTES),
 			"sales/credit_note_entry.php?NewCredit=Yes", 'SA_SALESCREDIT', MENU_TRANSACTION);
-		$this->add_rapp_function(0, _("&Allocate Customer Payments or Credit Notes"),
+		$this->add_rapp_function(0, _(UI_TEXT_ALLOCATE_CUSTOMER_PAYMENTS_CREDIT_NOTES),
 			"sales/allocations/customer_allocation_main.php?", 'SA_SALESALLOC', MENU_TRANSACTION);
 
-		$this->add_module(_("Inquiries and Reports"));
-		$this->add_lapp_function(1, _("Sales Quotation I&nquiry"),
+		$this->add_module(_(UI_TEXT_INQUIRIES_AND_REPORTS));
+		$this->add_lapp_function(1, _(UI_TEXT_SALES_QUOTATION_INQUIRY),
 			"sales/inquiry/sales_orders_view.php?type=32", 'SA_SALESTRANSVIEW', MENU_INQUIRY);
-		$this->add_lapp_function(1, _("Sales Order &Inquiry"),
+		$this->add_lapp_function(1, _(UI_TEXT_SALES_ORDER_INQUIRY),
 			"sales/inquiry/sales_orders_view.php?type=30", 'SA_SALESTRANSVIEW', MENU_INQUIRY);
-		$this->add_lapp_function(1, _("Customer Transaction &Inquiry"),
+		$this->add_lapp_function(1, _(UI_TEXT_CUSTOMER_TRANSACTION_INQUIRY),
 			"sales/inquiry/customer_inquiry.php?", 'SA_SALESTRANSVIEW', MENU_INQUIRY);
-		$this->add_lapp_function(1, _("Customer Allocation &Inquiry"),
+		$this->add_lapp_function(1, _(UI_TEXT_CUSTOMER_ALLOCATION_INQUIRY),
 			"sales/inquiry/customer_allocation_inquiry.php?", 'SA_SALESALLOC', MENU_INQUIRY);
 
-		$this->add_rapp_function(1, _("Customer and Sales &Reports"),
+		$this->add_rapp_function(1, _(UI_TEXT_CUSTOMER_SALES_REPORTS),
 			"reporting/reports_main.php?Class=0", 'SA_SALESTRANSVIEW', MENU_REPORT);
 
-		$this->add_module(_("Maintenance"));
-		$this->add_lapp_function(2, _("Add and Manage &Customers"),
+		$this->add_module(_(UI_TEXT_MAINTENANCE));
+		$this->add_lapp_function(2, _(UI_TEXT_ADD_MANAGE_CUSTOMERS),
 			"sales/manage/customers.php?", 'SA_CUSTOMER', MENU_ENTRY);
-		$this->add_lapp_function(2, _("Customer &Branches"),
+		$this->add_lapp_function(2, _(UI_TEXT_CUSTOMER_BRANCHES),
 			"sales/manage/customer_branches.php?", 'SA_CUSTOMER', MENU_ENTRY);
-		$this->add_lapp_function(2, _("Sales &Groups"),
+		$this->add_lapp_function(2, _(UI_TEXT_SALES_GROUPS),
 			"sales/manage/sales_groups.php?", 'SA_SALESGROUP', MENU_MAINTENANCE);
-		$this->add_lapp_function(2, _("Recurrent &Invoices"),
+		$this->add_lapp_function(2, _(UI_TEXT_RECURRENT_INVOICES),
 			"sales/manage/recurrent_invoices.php?", 'SA_SRECURRENT', MENU_MAINTENANCE);
-		$this->add_rapp_function(2, _("Sales T&ypes"),
+		$this->add_rapp_function(2, _(UI_TEXT_SALES_TYPES),
 			"sales/manage/sales_types.php?", 'SA_SALESTYPES', MENU_MAINTENANCE);
-		$this->add_rapp_function(2, _("Sales &Persons"),
+		$this->add_rapp_function(2, _(UI_TEXT_SALES_PERSONS),
 			"sales/manage/sales_people.php?", 'SA_SALESMAN', MENU_MAINTENANCE);
-		$this->add_rapp_function(2, _("Sales &Areas"),
+		$this->add_rapp_function(2, _(UI_TEXT_SALES_AREAS),
 			"sales/manage/sales_areas.php?", 'SA_SALESAREA', MENU_MAINTENANCE);
-		$this->add_rapp_function(2, _("Credit &Status Setup"),
+		$this->add_rapp_function(2, _(UI_TEXT_CREDIT_STATUS_SETUP),
 			"sales/manage/credit_status.php?", 'SA_CRSTATUS', MENU_MAINTENANCE);
 
 		$this->add_extensions();
