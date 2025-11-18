@@ -58,7 +58,7 @@ function print_fixed_assets_valuation_report()
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 	$detail = !$detail;
-    $dec = user_price_dec();
+    $dec = \FA\UserPrefsCache::getPriceDecimals();
 
 	$orientation = ($orientation ? 'L' : 'P');
 	if ($class == ALL_NUMERIC)

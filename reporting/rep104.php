@@ -158,7 +158,7 @@ function print_price_listing()
 				$disp = ($price2 - $myrow['Standardcost']) * 100 / $price2;
 			else
 				$disp = 0.0;
-			$rep->TextCol(4, 5,	FormatService::numberFormat2($disp, user_percent_dec()) . " %");
+			$rep->TextCol(4, 5,	FormatService::numberFormat2($disp, \FA\UserPrefsCache::getPercentDecimals()) . " %");
 		}
 		if ($pictures)
 		{

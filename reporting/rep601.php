@@ -71,7 +71,7 @@ function print_bank_transactions()
 
 	$orientation = ($orientation ? 'L' : 'P');
 	$rep = new FrontReport(_('Bank Statement'), "BankStatement", user_pagesize(), 9, $orientation);
-	$dec = user_price_dec();
+	$dec = \FA\UserPrefsCache::getPriceDecimals();
 
 	$cols = array(0, 90, 120, 170, 225, 350, 400, 460, 520);
 

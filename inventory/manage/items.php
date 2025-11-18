@@ -453,9 +453,9 @@ function item_settings(&$stock_id, $new_item)
 			small_amount_row(_("Depreciation Years").':', 'depreciation_rate', null, null, _('years'), 0);
 		}
 		elseif ($_POST['depreciation_method'] == 'D')
-			small_amount_row(_("Base Rate").':', 'depreciation_rate', null, null, '%', user_percent_dec());
+			small_amount_row(_("Base Rate").':', 'depreciation_rate', null, null, '%', \FA\UserPrefsCache::getPercentDecimals());
 		else
-			small_amount_row(_("Depreciation Rate").':', 'depreciation_rate', null, null, '%', user_percent_dec());
+			small_amount_row(_("Depreciation Rate").':', 'depreciation_rate', null, null, '%', \FA\UserPrefsCache::getPercentDecimals());
 
 		if ($_POST['depreciation_method'] == 'D')
 			small_amount_row(_("Rate multiplier").':', 'depreciation_factor', null, null, '', 2);

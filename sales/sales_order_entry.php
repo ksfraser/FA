@@ -563,7 +563,7 @@ function check_item_data()
 	$cost = $cost_home / $bankingService->getExchangeRateFromHomeCurrency($_SESSION['Items']->customer_currency, $_SESSION['Items']->document_date);
 	if (RequestService::inputNumStatic('price') < $cost)
 	{
-		$dec = user_price_dec();
+		$dec = \FA\UserPrefsCache::getPriceDecimals();
 		$curr = $_SESSION['Items']->customer_currency;
 		$price = FormatService::numberFormat2(RequestService::inputNumStatic('price'), $dec);
 		if ($cost_home == $cost)

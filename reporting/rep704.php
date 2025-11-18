@@ -69,7 +69,7 @@ function print_GL_transactions()
 	$orientation = ($orientation ? 'L' : 'P');
 
 	$rep = new FrontReport(_('GL Account Transactions'), "GLAccountTransactions", user_pagesize(), 9, $orientation);
-	$dec = user_price_dec();
+	$dec = \FA\UserPrefsCache::getPriceDecimals();
 
 	if ($dim == 2)
 	{

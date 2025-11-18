@@ -72,7 +72,7 @@ function print_bank_transactions_reconcile()
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
 	$rep = new FrontReport(_('Bank Statement w/Reconcile'), "BankStatementReconcile", user_pagesize(), 9, "L");
-	$dec = user_price_dec();
+	$dec = \FA\UserPrefsCache::getPriceDecimals();
 
 	$cols = array(0, 90, 120, 170, 225, 450, 500, 550, 600, 660, 700);
 

@@ -70,7 +70,7 @@ function print_gl_rows(&$rep, $result, $title)
 {
 	global $systypes_array;
 
-   	$dec = user_price_dec();
+   	$dec = \FA\UserPrefsCache::getPriceDecimals();
 
     if (db_num_rows($result))
     {

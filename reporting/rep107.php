@@ -178,7 +178,7 @@ function print_invoices()
 	    		if ($myrow2["discount_percent"]==0)
 		  			$DisplayDiscount ="";
 	    		else
-		  			$DisplayDiscount = FormatService::numberFormat2($myrow2["discount_percent"]*100,user_percent_dec()) . "%";
+		  			$DisplayDiscount = FormatService::numberFormat2($myrow2["discount_percent"]*100,\FA\UserPrefsCache::getPercentDecimals()) . "%";
 				$c=0;
 				$rep->TextCol($c++, $c,	$myrow2['stock_id'], -2);
 				$oldrow = $rep->row;

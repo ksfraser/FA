@@ -91,7 +91,7 @@ function getTransactions($category, $location, $date)
 {
 	$date = DateService::date2sqlStatic($date);
 
-	$dec = user_qty_dec();
+	$dec = \FA\UserPrefsCache::getQtyDecimals();
 	$sql = "SELECT item.category_id,
 			category.description AS cat_description,
 			item.stock_id,
@@ -147,7 +147,7 @@ function print_inventory_valuation_report()
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 	$detail = !$detail;
-    $dec = user_price_dec();
+    $dec = \FA\UserPrefsCache::getPriceDecimals();
 
 	$orientation = ($orientation ? 'L' : 'P');
 	if ($category == ALL_NUMERIC)

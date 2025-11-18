@@ -291,7 +291,7 @@ if ($selected_id != -1)
 			if ($act_type == '=') 
 				label_cell('');
 			elseif ($act_type == '%') 
-				label_cell(FormatService::numberFormat2($myrow['amount'], user_exrate_dec()), "nowrap align=right ");
+				label_cell(FormatService::numberFormat2($myrow['amount'], \FA\UserPrefsCache::getExrateDecimals()), "nowrap align=right ");
 			else
 				amount_cell($myrow['amount']);
 		}
@@ -343,7 +343,7 @@ if ($selected_id != -1)
 		if ($actn != '=') 
 		{
 			if ($actn == '%') 
-				small_amount_row(_("Part").":", 'amount', FormatService::priceFormat(0), null, "%", user_exrate_dec());
+				small_amount_row(_("Part").":", 'amount', FormatService::priceFormat(0), null, "%", \FA\UserPrefsCache::getExrateDecimals());
 			else
 				amount_row(_("Amount").":", 'amount', FormatService::priceFormat(0));
 		}

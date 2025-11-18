@@ -94,7 +94,7 @@ function print_tax_report()
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
 	$orientation = ($orientation ? 'L' : 'P');
-	$dec = user_price_dec();
+	$dec = \FA\UserPrefsCache::getPriceDecimals();
 
 	$rep = new FrontReport(_('Tax Report'), "TaxReport", user_pagesize(), 9, $orientation);
 	if ($summaryOnly == 1)

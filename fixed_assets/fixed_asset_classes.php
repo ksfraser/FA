@@ -136,7 +136,7 @@ else
 
 text_row(_("Description:"), 'description', null, 42, 200);
 textarea_row(_('Long description:'), 'long_description', null, 42, 3);
-small_amount_row(_("Basic Depreciation Rate").':', 'depreciation_rate', null, null, '%', user_percent_dec());
+small_amount_row(_("Basic Depreciation Rate").':', 'depreciation_rate', null, null, '%', \FA\UserPrefsCache::getPercentDecimals());
 //text_row(_("Parent id:"), 'parent_id', null, 3, 3);
 
 end_table(1);

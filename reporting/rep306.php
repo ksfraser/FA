@@ -109,7 +109,7 @@ function print_inventory_purchase()
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
 	$orientation = ($orientation ? 'L' : 'P');
-    $dec = user_price_dec();
+    $dec = \FA\UserPrefsCache::getPriceDecimals();
 
 	if ($category == ALL_NUMERIC)
 		$category = 0;

@@ -46,7 +46,7 @@ function print_list_of_journal_entries()
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
 	$orientation = ($orientation ? 'L' : 'P');
-    $dec = user_price_dec();
+    $dec = \FA\UserPrefsCache::getPriceDecimals();
 
     $cols = array(0, 100, 240, 300, 400, 460, 520, 580);
 

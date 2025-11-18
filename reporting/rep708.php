@@ -177,7 +177,7 @@ function print_trial_balance()
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 	$orientation = ($orientation ? 'L' : 'P');
-	$dec = user_price_dec();
+	$dec = \FA\UserPrefsCache::getPriceDecimals();
 
 	$cols2 = array(0, 50, 190, 310, 430, 530);
 	//-------------0--1---2----3----4----5--

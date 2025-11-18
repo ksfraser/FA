@@ -108,7 +108,7 @@ function print_sales_orders()
 			if ($myrow2["discount_percent"]==0)
 				$DisplayDiscount ="";
 			else
-				$DisplayDiscount = FormatService::numberFormat2($myrow2["discount_percent"]*100,user_percent_dec()) . "%";
+				$DisplayDiscount = FormatService::numberFormat2($myrow2["discount_percent"]*100,\FA\UserPrefsCache::getPercentDecimals()) . "%";
 			$rep->TextCol(0, 1,	$myrow2['stk_code'], -2);
 			$oldrow = $rep->row;
 			$rep->TextColLines(1, 2, $myrow2['description'], -2);

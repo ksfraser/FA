@@ -180,7 +180,7 @@ function print_balance_sheet()
 	if (!$decimals)
 		$dec = 0;
 	else
-		$dec = user_price_dec();
+		$dec = \FA\UserPrefsCache::getPriceDecimals();
 
 	$cols = array(0, 60, 200, 350, 425,	500);
 	//------------0--1---2----3----4----5--
