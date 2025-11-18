@@ -597,4 +597,9 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_SALES_PERSONS', 'Sales &Persons');
     define('UI_TEXT_SALES_AREAS', 'Sales &Areas');
     define('UI_TEXT_CREDIT_STATUS_SETUP', 'Credit &Status Setup');
+    define('UI_TEXT_DIMENSION_ENTRY', 'Dimension &Entry');
+    define('UI_TEXT_OUTSTANDING_DIMENSIONS', '&Outstanding Dimensions');
+    define('UI_TEXT_DIMENSION_INQUIRY', 'Dimension &Inquiry');
+    define('UI_TEXT_DIMENSION_REPORTS', 'Dimension &Reports');
+    define('UI_TEXT_DIMENSION_TAGS', 'Dimension &Tags');
 };

@@ -10,6 +10,7 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 require_once("includes/CompanyPrefsService.php");
+include_once("includes/ui_strings.php");
 
 class dimensions_app extends application
 {
@@ -20,21 +21,21 @@ class dimensions_app extends application
 
 		if ($dim > 0)
 		{
-			$this->add_module(_("Transactions"));
-			$this->add_lapp_function(0, _("Dimension &Entry"),
+			$this->add_module(_(UI_TEXT_TRANSACTIONS));
+			$this->add_lapp_function(0, _(UI_TEXT_DIMENSION_ENTRY),
 				"dimensions/dimension_entry.php?", 'SA_DIMENSION', MENU_ENTRY);
-			$this->add_lapp_function(0, _("&Outstanding Dimensions"),
+			$this->add_lapp_function(0, _(UI_TEXT_OUTSTANDING_DIMENSIONS),
 				"dimensions/inquiry/search_dimensions.php?outstanding_only=1", 'SA_DIMTRANSVIEW', MENU_TRANSACTION);
 
-			$this->add_module(_("Inquiries and Reports"));
-			$this->add_lapp_function(1, _("Dimension &Inquiry"),
+			$this->add_module(_(UI_TEXT_INQUIRIES_AND_REPORTS));
+			$this->add_lapp_function(1, _(UI_TEXT_DIMENSION_INQUIRY),
 				"dimensions/inquiry/search_dimensions.php?", 'SA_DIMTRANSVIEW', MENU_INQUIRY);
 
-			$this->add_rapp_function(1, _("Dimension &Reports"),
+			$this->add_rapp_function(1, _(UI_TEXT_DIMENSION_REPORTS),
 				"reporting/reports_main.php?Class=4", 'SA_DIMENSIONREP', MENU_REPORT);
 			
-			$this->add_module(_("Maintenance"));
-			$this->add_lapp_function(2, _("Dimension &Tags"),
+			$this->add_module(_(UI_TEXT_MAINTENANCE));
+			$this->add_lapp_function(2, _(UI_TEXT_DIMENSION_TAGS),
 				"admin/tags.php?type=dimension", 'SA_DIMTAGS', MENU_MAINTENANCE);
 
 			$this->add_extensions();
