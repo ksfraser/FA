@@ -460,7 +460,7 @@ class Cart
 		foreach ($this->line_items as $ln_itm) {
 			$price = $ln_itm->line_price();
 			$total += round($ln_itm->quantity * $price * (1 - $ln_itm->discount_percent), 
-			   user_price_dec());
+			   \FA\UserPrefsCache::getPriceDecimals());
 		}
 		return $total;
 	}
@@ -472,7 +472,7 @@ class Cart
 		foreach ($this->line_items as $ln_itm) {
 			$price = $ln_itm->line_price();
 			$total += round(($ln_itm->qty_dispatched * $price * (1 - $ln_itm->discount_percent)), 
-			   user_price_dec());
+			   \FA\UserPrefsCache::getPriceDecimals());
 		}
 		return $total;
 	}
@@ -521,7 +521,7 @@ class Cart
 			$items[] = $ln_itm->stock_id;
 			$prices[] = round(((
 				$this->trans_type==ST_SALESORDER ? 	$ln_itm->quantity : $ln_itm->qty_dispatched) *
-				$ln_itm->line_price()* (1 - $ln_itm->discount_percent)),  user_price_dec());
+				$ln_itm->line_price()* (1 - $ln_itm->discount_percent)),  \FA\UserPrefsCache::getPriceDecimals());
 		}
 
 		$taxes = get_tax_for_items($items, $prices, $shipping_cost,
@@ -560,9 +560,9 @@ class Cart
 			}
 		}
 		if($this->tax_included)
-			return round($this->freight_cost*$tax_rate/($tax_rate+100),  user_price_dec());
+			return round($this->freight_cost*$tax_rate/($tax_rate+100),  \FA\UserPrefsCache::getPriceDecimals());
 		else
-			return round($this->freight_cost*$tax_rate/100,  user_price_dec());
+			return round($this->freight_cost*$tax_rate/100,  \FA\UserPrefsCache::getPriceDecimals());
 	}
 	/*
 		Returns transaction value including all taxes
@@ -570,7 +570,7 @@ class Cart
 	function get_trans_total() {
 		
 		$total = $this->get_items_total() + $this->freight_cost;
-		$dec = user_price_dec();
+		$dec = \FA\UserPrefsCache::getPriceDecimals();
 		if (!$this->tax_included ) {
 			$taxes = $this->get_taxes();
 			foreach($taxes as $tax)

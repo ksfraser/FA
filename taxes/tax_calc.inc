@@ -49,7 +49,7 @@ function get_tax_free_price_for_item($stock_id, $price, $tax_group, $tax_include
 	$tax = 0;
 	foreach ($tax_array as $taxitem)
 	{
-		$tax += round($price*$taxitem['rate']/(100+$tax_multiplier), user_price_dec());
+		$tax += round($price*$taxitem['rate']/(100+$tax_multiplier), \FA\UserPrefsCache::getPriceDecimals());
 	}
 	return $price-$tax;
 }
@@ -87,7 +87,7 @@ function get_full_price_for_item($stock_id, $price, $tax_group, $tax_included, $
 			$tax_multiplier += $taxitem["rate"];
 	}
 	
-	return round($price * (1 + ($tax_multiplier / 100)),  user_price_dec());
+	return round($price * (1 + ($tax_multiplier / 100)),  \FA\UserPrefsCache::getPriceDecimals());
 }
 
 //---------------------------------------------------------------------------------
@@ -151,7 +151,7 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_inc
 	else
 	  	$ret_tax_array = get_tax_group_items_as_array($tax_group);
 
-	$dec = user_price_dec();
+	$dec = \FA\UserPrefsCache::getPriceDecimals();
 
 	$fully_exempt = true;
 	foreach($ret_tax_array as $k=>$t)
@@ -162,7 +162,7 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_inc
 	}
 	
 	$ret_tax_array['exempt'] = array('Value'=>0, 'Net'=>0, 'rate' => null, 'tax_type_id' => '', 'sales_gl_code' => '');
-	$dec = user_price_dec();
+	$dec = \FA\UserPrefsCache::getPriceDecimals();
 	// loop for all items
 	for ($i = 0; $i < count($items); $i++)
 	{

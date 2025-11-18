@@ -51,14 +51,14 @@ function get_calculated_price($stock_id, $add_pct)
 	$avg = get_unit_cost($stock_id);
 	if ($avg == 0)
 		return 0;
-	return round2($avg * (1 + $add_pct / 100), user_price_dec());
+	return round2($avg * (1 + $add_pct / 100), \FA\UserPrefsCache::getPriceDecimals());
 }
 
 function round_to_nearest($price, $round_to)
 {
 	if ($price == 0)
 		return 0;
-	$pow = pow(10, user_price_dec());
+	$pow = pow(10, \FA\UserPrefsCache::getPriceDecimals());
 	if ($pow >= $round_to)
 		$mod = ($pow % $round_to);
 	else
@@ -94,7 +94,7 @@ function get_price ($stock_id, $currency, $sales_type_id, $factor=null, $date=nu
 	$result = db_query($sql, "There was a problem retrieving the pricing information for the part $stock_id for customer");
 	$num_rows = db_num_rows($result);
 	$rate = round2(BankingService::getExchangeRateFromHomeCurrency($currency, $date),
-	    user_exrate_dec());
+	    \FA\UserPrefsCache::getExrateDecimals());
 	$round_to = get_company_pref('round_to');
 	$prices = array();
 	while($myrow = db_fetch($result)) 
@@ -131,7 +131,7 @@ function get_price ($stock_id, $currency, $sales_type_id, $factor=null, $date=nu
 	elseif ($round_to != 1)	
 		return round_to_nearest($price, $round_to);
 	else
-		return round2($price, user_price_dec());
+		return round2($price, \FA\UserPrefsCache::getPriceDecimals());
 }
 //----------------------------------------------------------------------------------------
 //
