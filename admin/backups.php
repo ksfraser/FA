@@ -15,6 +15,7 @@ $path_to_root="..";
 include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/admin/db/maintenance_db.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 
 if (RequestService::getPostStatic('view')) {
 	if (!RequestService::getPostStatic('backups')) {
@@ -44,7 +45,7 @@ if (RequestService::getPostStatic('download')) {
 		download_file($SysPrefs->backup_dir().clean_file_name(RequestService::getPostStatic('backups')));
 		exit;
 	} else
-		UiMessageService::displayError(_("Select backup file first."));
+		UiMessageService::displayError(_(UI_TEXT_SELECT_BACKUP_FILE_FIRST));
 }
 
 page(_($help_context = "Backup and Restore Database"), false, false, '', '');
@@ -56,9 +57,9 @@ function check_paths()
   global $SysPrefs;
 
 	if (!file_exists($SysPrefs->backup_dir())) {
-		display_error (_("Backup paths have not been set correctly.") 
-			._("Please contact System Administrator.")."<br>" 
-			. _("cannot find backup directory") . " - " . $SysPrefs->backup_dir() . "<br>");
+		display_error (_(UI_TEXT_BACKUP_PATHS_NOT_SET_CORRECTLY) 
+			._(UI_TEXT_PLEASE_CONTACT_SYSTEM_ADMINISTRATOR)."<br>" 
+			. _(UI_TEXT_CANNOT_FIND_BACKUP_DIRECTORY) . " - " . $SysPrefs->backup_dir() . "<br>");
 		end_page();
 		exit;
 	}
@@ -70,10 +71,10 @@ function generate_backup($conn, $ext='no', $comm='')
 
 	$filename = db_backup($conn, $ext, $comm, $SysPrefs->backup_dir());
 	if ($filename)
-		\FA\Services\UiMessageService::displayNotification(_("Backup successfully generated."). ' '
-			. _("Filename") . ": " . $filename);
+		\FA\Services\UiMessageService::displayNotification(_(UI_TEXT_BACKUP_SUCCESSFULLY_GENERATED). ' '
+			. _(UI_TEXT_FILENAME) . ": " . $filename);
 	else
-		UiMessageService::displayError(_("Database backup failed."));
+		UiMessageService::displayError(_(UI_TEXT_DATABASE_BACKUP_FAILED));
 
 	return $filename;
 }
@@ -146,24 +147,24 @@ if (RequestService::getPostStatic('creat')) {
 
 if (RequestService::getPostStatic('restore')) {
 	if ($backup_name) {
-		if (db_import($backup_path, $conn, true, false, RequestService::checkValueStatic('protect')))
-			\FA\Services\UiMessageService::displayNotification(_("Restore backup completed."));
-		$SysPrefs->refresh(); // re-read system setup
-	} else
-		UiMessageService::displayError(_("Select backup file first."));
+	if (db_import($backup_path, $conn, true, false, RequestService::checkValueStatic('protect')))
+		\FA\Services\UiMessageService::displayNotification(_(UI_TEXT_RESTORE_BACKUP_COMPLETED));
+	$SysPrefs->refresh(); // re-read system setup
+} else
+	UiMessageService::displayError(_(UI_TEXT_SELECT_BACKUP_FILE_FIRST));
 }
 
 if (RequestService::getPostStatic('deldump')) {
 	if ($backup_name) {
 		if (unlink($backup_path)) {
-			\FA\Services\UiMessageService::displayNotification(_("File successfully deleted.")." "
-					. _("Filename") . ": " . $backup_name);
+			\FA\Services\UiMessageService::displayNotification(_(UI_TEXT_FILE_SUCCESSFULLY_DELETED)." "
+					. _(UI_TEXT_FILENAME) . ": " . $backup_name);
 			$Ajax->activate('backups');
 		}
 		else
-			UiMessageService::displayError(_("Can't delete backup file."));
+			UiMessageService::displayError(_(UI_TEXT_CANT_DELETE_BACKUP_FILE));
 	} else
-		UiMessageService::displayError(_("Select backup file first."));
+		UiMessageService::displayError(_(UI_TEXT_SELECT_BACKUP_FILE_FIRST));
 }
 
 if (RequestService::getPostStatic('upload'))
@@ -172,44 +173,42 @@ if (RequestService::getPostStatic('upload'))
 	$fname = trim(basename($_FILES['uploadfile']['name']));
 
 	if ($fname) {
-		if (!preg_match("/\.sql(\.zip|\.gz)?$/", $fname))
-			UiMessageService::displayError(_("You can only upload *.sql backup files"));
-		elseif ($fname != clean_file_name($fname))
-			UiMessageService::displayError(_("Filename contains forbidden chars. Please rename file and try again."));
-		elseif (is_uploaded_file($tmpname)) {
-			rename($tmpname, $SysPrefs->backup_dir() . $fname);
-			\FA\Services\UiMessageService::displayNotification(_("File uploaded to backup directory"));
-			$Ajax->activate('backups');
-		} else
-			UiMessageService::displayError(_("File was not uploaded into the system."));
+	if (!preg_match("/\.sql(\.zip|\.gz)?$/", $fname))
+		UiMessageService::displayError(_(UI_TEXT_YOU_CAN_ONLY_UPLOAD_SQL_BACKUP_FILES));
+	elseif ($fname != clean_file_name($fname))
+		UiMessageService::displayError(_(UI_TEXT_FILENAME_CONTAINS_FORBIDDEN_CHARS));
+	elseif (is_uploaded_file($tmpname)) {
+		rename($tmpname, $SysPrefs->backup_dir() . $fname);
+		\FA\Services\UiMessageService::displayNotification(_(UI_TEXT_FILE_UPLOADED_TO_BACKUP_DIRECTORY));
+		$Ajax->activate('backups');
 	} else
-		UiMessageService::displayError(_("Select backup file first."));
-
-}
+		UiMessageService::displayError(_(UI_TEXT_FILE_WAS_NOT_UPLOADED_INTO_THE_SYSTEM));
+} else
+	UiMessageService::displayError(_(UI_TEXT_SELECT_BACKUP_FILE_FIRST));}
 //-------------------------------------------------------------------------------
 start_form(true, true);
 start_outer_table(TABLESTYLE2);
 table_section(1);
-table_section_title(_("Create backup"));
-	textarea_row(_("Comments:"), 'comments', null, 30, 8);
-	compress_list_row(_("Compression:"),'comp');
+table_section_title(_(UI_TEXT_CREATE_BACKUP));
+	textarea_row(_(UI_TEXT_COMMENTS_LABEL), 'comments', null, 30, 8);
+	compress_list_row(_(UI_TEXT_COMPRESSION_LABEL),'comp');
 	vertical_space("height='20px'");
-	submit_row('creat',_("Create Backup"), false, "colspan=2 align='center'", '', 'process');
+	submit_row('creat',_(UI_TEXT_CREATE_BACKUP), false, "colspan=2 align='center'", '', 'process');
 table_section(2);
-table_section_title(_("Backup scripts maintenance"));
+table_section_title(_(UI_TEXT_BACKUP_SCRIPTS_MAINTENANCE));
 
 	start_row();
 	echo "<td style='padding-left:20px' align='left'>".get_backup_file_combo()."</td>";
 	echo "<td style='padding-left:20px' valign='top'>";
 	start_table();
-	submit_row('view',_("View Backup"), false, '', '', false);
-	submit_row('download',_("Download Backup"), false, '', '', 'download');
-	submit_row('restore',_("Restore Backup"), false, '','', 'process');
-	submit_js_confirm('restore',_("You are about to restore database from backup file.\nDo you want to continue?"));
+	submit_row('view',_(UI_TEXT_VIEW_BACKUP), false, '', '', false);
+	submit_row('download',_(UI_TEXT_DOWNLOAD_BACKUP), false, '', '', 'download');
+	submit_row('restore',_(UI_TEXT_RESTORE_BACKUP), false, '','', 'process');
+	submit_js_confirm('restore',_(UI_TEXT_YOU_ARE_ABOUT_TO_RESTORE_DATABASE_FROM_BACKUP_FILE));
 
-	submit_row('deldump', _("Delete Backup"), false, '','', true);
+	submit_row('deldump', _(UI_TEXT_DELETE_BACKUP), false, '','', true);
 	// don't use 'delete' name or IE js errors appear
-	submit_js_confirm('deldump', sprintf(_("You are about to remove selected backup file.\nDo you want to continue ?")));
+	submit_js_confirm('deldump', sprintf(_(UI_TEXT_YOU_ARE_ABOUT_TO_REMOVE_SELECTED_BACKUP_FILE)));
 	end_table();
 	echo "</td>";
 	end_row();
@@ -220,7 +219,7 @@ start_row();
 end_row();
 start_row();
 	echo "<td style='padding-left:20px' align='left'><input name='uploadfile' type='file'></td>";
-	submit_cells('upload',_("Upload file"),"style='padding-left:20px'", '', true);
+	submit_cells('upload',_(UI_TEXT_UPLOAD_FILE),"style='padding-left:20px'", '', true);
 end_row();
 end_outer_table();
 
