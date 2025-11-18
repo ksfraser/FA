@@ -285,4 +285,21 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_PACKAGE_IS_INCOMPATIBLE_WITH_CURRENT_APPLICATION_VERSION', 'Package \'%s\' is incompatible with current application version and cannot be activated.\nCheck Install/Activate page for newer package version.');
     define('UI_TEXT_NO_OPTIONAL_EXTENSION_MODULE_IS_CURRENTLY_AVAILABLE', 'No optional extension module is currently available.');
     define('UI_TEXT_INSTALL_THIRD_PARTY_EXTENSION', 'Install third-party extension.');
+    define('UI_TEXT_LANGUAGE', 'Language');
+    define('UI_TEXT_ENCODING', 'Encoding');
+    define('UI_TEXT_RIGHT_TO_LEFT', 'Right To Left');
+    define('UI_TEXT_DEFAULT', 'Default');
+    define('UI_TEXT_SUPPORTED', 'Supported');
+    define('UI_TEXT_YOU_ARE_ABOUT_TO_REMOVE_LANGUAGE', 'You are about to remove language \'%s\'.\nDo you want to continue ?');
+    define('UI_TEXT_THE_MARKED_LANGUAGE_IS_THE_CURRENT_LANGUAGE_WHICH_CANNOT_BE_DELETED', 'The marked language is the current language which cannot be deleted.');
+    define('UI_TEXT_UPDATE_DEFAULT', 'Update default');
+    define('UI_TEXT_EDIT_NON_STANDARD_LANGUAGE_CONFIGURATION', 'Edit non standard language configuration');
+    define('UI_TEXT_ADD_NEW_LANGUAGE_MANUALLY', 'Add new language manually');
+    define('UI_TEXT_LANGUAGE_NAME_CODE_NOR_ENCODING_CANNOT_BE_EMPTY', 'Language name, code nor encoding cannot be empty');
+    define('UI_TEXT_LANGUAGE_CODE', 'Language Code');
+    define('UI_TEXT_LANGUAGE_NAME', 'Language Name');
+    define('UI_TEXT_RIGHT_TO_LEFT_LABEL', 'Right To Left');
+    define('UI_TEXT_DEFAULT_LANGUAGE', 'Default Language');
+    define('UI_TEXT_LANGUAGE_FILE', 'Language File');
+    define('UI_TEXT_SELECT_YOUR_LANGUAGE_FILES_FROM_YOUR_LOCAL_HARDDISK', 'Select your language files from your local harddisk.');
 }

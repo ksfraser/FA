@@ -16,6 +16,7 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root."/includes/packages.inc");
 include_once($path_to_root . "/admin/db/maintenance_db.inc");
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 
 if ($SysPrefs->use_popup_windows)
 	$js = get_js_open_window(900, 500);
@@ -32,8 +33,8 @@ function display_languages()
 {
 	global $installed_languages, $dflt_lang, $GetText;
 	
-	$th = array(_("Language"), _("Name"), _("Encoding"), _("Right To Left"),
-		_("Installed"), _("Available"), _("Default"), "", "");
+	$th = array(_(UI_TEXT_LANGUAGE), _(UI_TEXT_NAME), _(UI_TEXT_ENCODING), _(UI_TEXT_RIGHT_TO_LEFT),
+		_(UI_TEXT_INSTALLED), _(UI_TEXT_AVAILABLE), _(UI_TEXT_DEFAULT), "", "");
 	$currlang = $_SESSION["language"]->code;
 
 	div_start('lang_tbl');
@@ -44,7 +45,7 @@ function display_languages()
 	if (function_exists('gettext'))
 	{
 		if (RequestService::checkValueStatic('DisplayAll'))
-			 array_insert($th, 7, _("Supported"));
+			 array_insert($th, 7, _(UI_TEXT_SUPPORTED));
 		start_table();
 		check_row(_('Display also languages not supported by server locales'), 'DisplayAll', null, true);
 		end_table();
@@ -82,25 +83,25 @@ function display_languages()
 		label_cell($lang);
 		label_cell($available ? get_package_view_str($lang, $lang_name) : $lang_name);
 		label_cell($charset);
-		label_cell($rtl ? _("Yes") : _("No"));
+		label_cell($rtl ? _(UI_TEXT_YES) : _(UI_TEXT_NO));
 		
-		label_cell($id === null ? _("None") :
-			($available && $installed ? $installed : _("Unknown")));
+		label_cell($id === null ? _(UI_TEXT_NONE) :
+			($available && $installed ? $installed : _(UI_TEXT_UNKNOWN)));
 
-		label_cell($available ? $available : _("None"));
+		label_cell($available ? $available : _(UI_TEXT_NONE));
 
 		label_cell($id === null ? '' :
 			radio(null, 'CurDflt', $id, $dflt_lang == $lang, true),
 			"align='center'");
 		
 		if (function_exists('gettext') && RequestService::checkValueStatic('DisplayAll'))
-			label_cell($support ? _("Yes") :_("No"));
+			label_cell($support ? _(UI_TEXT_YES) :_(UI_TEXT_NO));
 
 		if (!$available && ($lang != 'C'))	// manually installed language
-			button_cell('Edit'.$id, _("Edit"), _('Edit non standard language configuration'), 
+			button_cell('Edit'.$id, _(UI_TEXT_EDIT), _(UI_TEXT_EDIT_NON_STANDARD_LANGUAGE_CONFIGURATION), 
 				ICON_EDIT);
 		elseif (check_pkg_upgrade($installed, $available)) // outdated or not installed language in repo
-			button_cell('Update'.$pkg_name, $installed ? _("Update") : _("Install"),
+			button_cell('Update'.$pkg_name, $installed ? _(UI_TEXT_UPDATE) : _(UI_TEXT_INSTALL),
 				_('Upload and install latest language package'), ICON_DOWN);
 		else
 			label_cell('');
@@ -108,18 +109,18 @@ function display_languages()
 		if (($id !== null) && ($lang != $currlang) && ($lang != 'C')) {
 			delete_button_cell('Delete'.$id, _('Delete'));
 			submit_js_confirm('Delete'.$id, 
-				sprintf(_("You are about to remove language \'%s\'.\nDo you want to continue ?"), 
+				sprintf(_(UI_TEXT_YOU_ARE_ABOUT_TO_REMOVE_LANGUAGE), 
 					$lang_name));
 		} else
 			label_cell('');
 		end_row();
 	}
 	end_table();
-	display_note(_("The marked language is the current language which cannot be deleted."), 0, 0, "class='currentfg'");
+	display_note(_(UI_TEXT_THE_MARKED_LANGUAGE_IS_THE_CURRENT_LANGUAGE_WHICH_CANNOT_BE_DELETED), 0, 0, "class='currentfg'");
 	br();
-	submit_center_first('Refresh', _("Update default"), '', null);
+	submit_center_first('Refresh', _(UI_TEXT_UPDATE_DEFAULT), '', null);
 
-	submit_center_last('Add', _("Add new language manually"), '', false);
+	submit_center_last('Add', _(UI_TEXT_ADD_NEW_LANGUAGE_MANUALLY), '', false);
 
 	end_form();
 	div_end();
@@ -132,7 +133,7 @@ function check_data()
 	global $installed_languages;
 
 	if (RequestService::getPostStatic('code') == '' || RequestService::getPostStatic('name') == '' || RequestService::getPostStatic('encoding') == '') {
-		UiMessageService::displayError(_("Language name, code nor encoding cannot be empty"));
+		UiMessageService::displayError(_(UI_TEXT_LANGUAGE_NAME_CODE_NOR_ENCODING_CANNOT_BE_EMPTY));
 		return false;
 	}
 	$id = array_search_value($_POST['code'], $installed_languages, 'code');
@@ -215,18 +216,18 @@ function display_language_edit($selected_id)
 		$_POST['dflt'] = $dflt_lang == $lang['code'];
 		hidden('selected_id', $selected_id);
 	}
-	text_row_ex(_("Language Code"), 'code', 20);
-	text_row_ex(_("Language Name"), 'name', 20);
-	text_row_ex(_("Encoding"), 'encoding', 20);
+	text_row_ex(_(UI_TEXT_LANGUAGE_CODE), 'code', 20);
+	text_row_ex(_(UI_TEXT_LANGUAGE_NAME), 'name', 20);
+	text_row_ex(_(UI_TEXT_ENCODING), 'encoding', 20);
 
-	yesno_list_row(_("Right To Left"), 'rtl', null, "", "", false);
-	yesno_list_row(_("Default Language"), 'dflt', null, "", "", false);
+	yesno_list_row(_(UI_TEXT_RIGHT_TO_LEFT_LABEL), 'rtl', null, "", "", false);
+	yesno_list_row(_(UI_TEXT_DEFAULT_LANGUAGE), 'dflt', null, "", "", false);
 
-	file_row(_("Language File") . " (PO)", 'uploadfile');
-	file_row(_("Language File") . " (MO)", 'uploadfile2');
+	file_row(_(UI_TEXT_LANGUAGE_FILE) . " (PO)", 'uploadfile');
+	file_row(_(UI_TEXT_LANGUAGE_FILE) . " (MO)", 'uploadfile2');
 
 	end_table(0);
-	display_note(_("Select your language files from your local harddisk."), 0, 1);
+	display_note(_(UI_TEXT_SELECT_YOUR_LANGUAGE_FILES_FROM_YOUR_LOCAL_HARDDISK), 0, 1);
 
 	submit_add_or_update_center(false, '', 'both');
 
