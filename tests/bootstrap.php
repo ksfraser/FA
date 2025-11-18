@@ -47,3 +47,11 @@ require_once __DIR__ . '/../includes/RequestService.php';
 require_once __DIR__ . '/../includes/FormatService.php';
 require_once __DIR__ . '/../includes/UiMessageService.php';
 require_once __DIR__ . '/../includes/UserPrefsCache.php';
+
+// Generic preference cache library
+require_once __DIR__ . '/../includes/Library/Cache/PreferenceProviderInterface.php';
+require_once __DIR__ . '/../includes/Library/Cache/PreferenceCache.php';
+
+// Preference providers
+require_once __DIR__ . '/../includes/Providers/FASessionPreferenceProvider.php';
+require_once __DIR__ . '/../includes/Providers/DatabasePreferenceProvider.php';
