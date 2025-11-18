@@ -17,6 +17,7 @@ include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/admin/db/company_db.inc");
 include_once($path_to_root . "/admin/db/maintenance_db.inc");
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 
 page(_($help_context = "Create/Update Company"));
 
@@ -34,18 +35,18 @@ function check_data($selected_id)
 	if ($selected_id != -1) {
 		if ($_POST['name'] == "")
 		{
-			UiMessageService::displayError(_("Database settings are not specified."));
+			UiMessageService::displayError(_(UI_TEXT_DATABASE_SETTINGS_NOT_SPECIFIED));
 	 		return false;
 		}
 	} else {
 		if (!RequestService::getPostStatic('name') || !RequestService::getPostStatic('host') || !RequestService::getPostStatic('dbuser') || !RequestService::getPostStatic('dbname'))
 		{
-			UiMessageService::displayError(_("Database settings are not specified."));
+			UiMessageService::displayError(_(UI_TEXT_DATABASE_SETTINGS_NOT_SPECIFIED));
 	 		return false;
 		}
 		if ($_POST['port'] != '' && !is_numeric($_POST['port'])) 
 		{
-			UiMessageService::displayError(_('Database port has to be numeric or empty.'));
+			UiMessageService::displayError(_(UI_TEXT_DATABASE_PORT_NUMERIC));
 			return false;
 		}
 	
@@ -56,12 +57,12 @@ function check_data($selected_id)
 	  		{
 				if ($_POST['tbpref'] == $con['tbpref'])
 				{
-					UiMessageService::displayError(_("This database settings are already used by another company."));
+					UiMessageService::displayError(_(UI_TEXT_DATABASE_SETTINGS_ALREADY_USED));
 					return false;
 				}
 				if (($_POST['tbpref'] == 0) ^ ($con['tbpref'] == ''))
 				{
-					UiMessageService::displayError(_("You cannot have table set without prefix together with prefixed sets in the same database."));
+					UiMessageService::displayError(_(UI_TEXT_CANNOT_HAVE_TABLE_SET_WITHOUT_PREFIX));
 					return false;
 				}
 		  	}
@@ -121,7 +122,7 @@ function handle_submit($selected_id)
 		$conn = $db_connections[$selected_id];
 		if (($db = db_create_db($conn)) === false)
 		{
-			UiMessageService::displayError(_("Error creating Database: ") . $conn['dbname'] . _(", Please create it manually"));
+			UiMessageService::displayError(_(UI_TEXT_ERROR_CREATING_DATABASE) . $conn['dbname'] . _(UI_TEXT_PLEASE_CREATE_MANUALLY));
 			$error = true;
 		} else {
 			if (strncmp(db_get_version(), "5.6", 3) >= 0) 
@@ -145,11 +146,11 @@ function handle_submit($selected_id)
 	$error = write_config_db($new);
 
 	if ($error == -1)
-		UiMessageService::displayError(_("Cannot open the configuration file - ") . $path_to_root . "/config_db.php");
+		UiMessageService::displayError(_(UI_TEXT_CANNOT_OPEN_CONFIG_FILE) . $path_to_root . "/config_db.php");
 	else if ($error == -2)
-		UiMessageService::displayError(_("Cannot write to the configuration file - ") . $path_to_root . "/config_db.php");
+		UiMessageService::displayError(_(UI_TEXT_CANNOT_WRITE_CONFIG_FILE) . $path_to_root . "/config_db.php");
 	else if ($error == -3)
-		UiMessageService::displayError(_("The configuration file ") . $path_to_root . "/config_db.php" . _(" is not writable. Change its permissions so it is, then re-run the operation."));
+		UiMessageService::displayError(_(UI_TEXT_CONFIG_FILE) . $path_to_root . "/config_db.php" . _(UI_TEXT_CONFIG_FILE_NOT_WRITABLE));
 	if ($error != 0)
 	{
 		return false;
@@ -185,7 +186,7 @@ function handle_delete($id)
 	// make sure config file is writable
 	if (!is_writeable($path_to_root . "/config_db.php"))
 	{
-		UiMessageService::displayError(_("The configuration file ") . $path_to_root . "/config_db.php" . _(" is not writable. Change its permissions so it is, then re-run the operation."));
+		UiMessageService::displayError(_(UI_TEXT_CONFIG_FILE) . $path_to_root . "/config_db.php" . _(UI_TEXT_CONFIG_FILE_NOT_WRITABLE));
 		return;
 	}
 	// rename directory to temporary name to ensure all
@@ -200,24 +201,24 @@ function handle_delete($id)
 	// 'shift' company directories names
 	for ($i = $id+1; $i < count($db_connections); $i++) {
 		if (!rename(company_path($i), company_path($i-1))) {
-			UiMessageService::displayError(_("Cannot rename company subdirectory"));
+			UiMessageService::displayError(_(UI_TEXT_CANNOT_RENAME_COMPANY_SUBDIRECTORY));
 			return;
 		}
 	}
 	$err = remove_connection($id);
 	if ($err == 0)
-		UiMessageService::displayError(_("Error removing Database: ") . $id . _(", please remove it manually"));
+		UiMessageService::displayError(_(UI_TEXT_ERROR_REMOVING_DATABASE) . $id . _(UI_TEXT_PLEASE_REMOVE_MANUALLY));
 
 	if ($def_coy == $id)
 		$def_coy = 0;
 
 	$error = write_config_db();
 	if ($error == -1)
-		UiMessageService::displayError(_("Cannot open the configuration file - ") . $path_to_root . "/config_db.php");
+		UiMessageService::displayError(_(UI_TEXT_CANNOT_OPEN_CONFIG_FILE) . $path_to_root . "/config_db.php");
 	else if ($error == -2)
-		UiMessageService::displayError(_("Cannot write to the configuration file - ") . $path_to_root . "/config_db.php");
+		UiMessageService::displayError(_(UI_TEXT_CANNOT_WRITE_CONFIG_FILE) . $path_to_root . "/config_db.php");
 	else if ($error == -3)
-		UiMessageService::displayError(_("The configuration file ") . $path_to_root . "/config_db.php" . _(" is not writable. Change its permissions so it is, then re-run the operation."));
+		UiMessageService::displayError(_(UI_TEXT_CONFIG_FILE) . $path_to_root . "/config_db.php" . _(UI_TEXT_CONFIG_FILE_NOT_WRITABLE));
 	if ($error != 0) {
 		@rename($tmpname, $cdir);
 		return;
@@ -226,10 +227,10 @@ function handle_delete($id)
 	@flush_dir($tmpname, true);
 	if (!@rmdir($tmpname))
 	{
-		UiMessageService::displayError(_("Cannot remove temporary renamed company data directory ") . $tmpname);
+		UiMessageService::displayError(_(UI_TEXT_CANNOT_REMOVE_TEMP_RENAMED_COMPANY_DIR) . $tmpname);
 		return;
 	}
-	\FA\Services\UiMessageService::displayNotification(_("Selected company has been deleted"));
+	\FA\Services\UiMessageService::displayNotification(_(UI_TEXT_SELECTED_COMPANY_DELETED));
 	$Ajax->activate('_page_body');
 	$Mode = 'RESET';
 }
@@ -244,8 +245,8 @@ function display_companies()
 
 	start_table(TABLESTYLE);
 
-	$th = array(_("Company"), _("Database Host"), _("Database Port"), _("Database User"),
-		_("Database Name"), _("Table Pref"), _("Charset"), _("Default"), "", "");
+	$th = array(_(UI_TEXT_COMPANY), _(UI_TEXT_DATABASE_HOST), _(UI_TEXT_DATABASE_PORT), _(UI_TEXT_DATABASE_USER),
+		_(UI_TEXT_DATABASE_NAME), _(UI_TEXT_TABLE_PREF), _(UI_TEXT_CHARSET), _(UI_TEXT_DEFAULT), "", "");
 	table_header($th);
 
 	$k=0;
@@ -265,13 +266,13 @@ function display_companies()
 		label_cell($conn[$i]['dbname']);
 		label_cell($conn[$i]['tbpref']);
 		label_cell(isset($conn[$i]['collation']) ? $supported_collations[$conn[$i]['collation']] : '');
-		label_cell($i == $def_coy ? _("Yes") : _("No"));
-	 	edit_button_cell("Edit".$i, _("Edit"));
+		label_cell($i == $def_coy ? _(UI_TEXT_YES) : _(UI_TEXT_NO));
+	 	edit_button_cell("Edit".$i, _(UI_TEXT_EDIT));
 		if ($i != $coyno)
 		{
-	 		delete_button_cell("Delete".$i, _("Delete"));
+	 		delete_button_cell("Delete".$i, _(UI_TEXT_DELETE));
 			submit_js_confirm("Delete".$i, 
-				sprintf(_("You are about to remove company \'%s\'.\nDo you want to continue ?"), 
+				sprintf(_(UI_TEXT_CONFIRM_REMOVE_COMPANY), 
 					$conn[$i]['name']));
 	 	} else
 	 		label_cell('');
@@ -279,9 +280,9 @@ function display_companies()
 	}
 
 	end_table();
-    display_note(_("The marked company is the current company which cannot be deleted."), 0, 0, "class='currentfg'");
-    display_note(_("If no Admin Password is entered, the new Admin Password will be '<b>password</b>' by default "));
-    display_note(_("Set Only Port value if you cannot use the default port 3306."));
+    display_note(_(UI_TEXT_MARKED_COMPANY_CURRENT_CANNOT_DELETE), 0, 0, "class='currentfg'");
+    display_note(_(UI_TEXT_ADMIN_PASSWORD_DEFAULT));
+    display_note(_(UI_TEXT_SET_PORT_IF_NOT_DEFAULT));
 }
 
 //---------------------------------------------------------------------------------------------
@@ -324,31 +325,31 @@ function display_company_edit($selected_id)
 		unset($_POST['def']);
 	}
 
-	text_row_ex(_("Company"), 'name', 50);
+	text_row_ex(_(UI_TEXT_COMPANY), 'name', 50);
 
 	if ($selected_id == -1)
 	{
-		text_row_ex(_("Host"), 'host', 30, 60);
-		text_row_ex(_("Port"), 'port', 30, 60);
-		text_row_ex(_("Database User"), 'dbuser', 30);
-		text_row_ex(_("Database Password"), 'dbpassword', 30);
-		text_row_ex(_("Database Name"), 'dbname', 30);
-		collations_list_row(_("Database Collation:"), 'collation');
-		yesno_list_row(_("Table Pref"), 'tbpref', 1, $_POST['tbpref'], _("None"), false);
-		check_row(_("Default Company"), 'def');
-		coa_list_row(_("Database Script"), 'coa');
-		text_row_ex(_("New script Admin Password"), 'admpassword', 20);
+		text_row_ex(_(UI_TEXT_HOST), 'host', 30, 60);
+		text_row_ex(_(UI_TEXT_PORT), 'port', 30, 60);
+		text_row_ex(_(UI_TEXT_DATABASE_USER), 'dbuser', 30);
+		text_row_ex(_(UI_TEXT_DATABASE_PASSWORD), 'dbpassword', 30);
+		text_row_ex(_(UI_TEXT_DATABASE_NAME), 'dbname', 30);
+		collations_list_row(_(UI_TEXT_DATABASE_COLLATION), 'collation');
+		yesno_list_row(_(UI_TEXT_TABLE_PREF), 'tbpref', 1, $_POST['tbpref'], _(UI_TEXT_NONE), false);
+		check_row(_(UI_TEXT_DEFAULT_COMPANY), 'def');
+		coa_list_row(_(UI_TEXT_DATABASE_SCRIPT), 'coa');
+		text_row_ex(_(UI_TEXT_NEW_SCRIPT_ADMIN_PASSWORD), 'admpassword', 20);
 	} else {
-		label_row(_("Host"), $_POST['host']);
-		label_row(_("Port"), $_POST['port']);
-		label_row(_("Database User"), $_POST['dbuser']);
-		label_row(_("Database Name"), $_POST['dbname']);
-		collations_list_row(_("Database Collation:"), 'collation');
-		label_row(_("Table Pref"), $_POST['tbpref']);
+		label_row(_(UI_TEXT_HOST), $_POST['host']);
+		label_row(_(UI_TEXT_PORT), $_POST['port']);
+		label_row(_(UI_TEXT_DATABASE_USER), $_POST['dbuser']);
+		label_row(_(UI_TEXT_DATABASE_NAME), $_POST['dbname']);
+		collations_list_row(_(UI_TEXT_DATABASE_COLLATION), 'collation');
+		label_row(_(UI_TEXT_TABLE_PREF), $_POST['tbpref']);
 		if (!RequestService::getPostStatic('def'))
-			check_row(_("Default Company"), 'def');
+			check_row(_(UI_TEXT_DEFAULT_COMPANY), 'def');
 		else
-			label_row(_("Default Company"), _("Yes"));
+			label_row(_(UI_TEXT_DEFAULT_COMPANY), _(UI_TEXT_YES));
 	}
 
 	end_table(1);
