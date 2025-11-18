@@ -15,9 +15,10 @@ include_once($path_to_root . "/includes/session.inc");
 
 add_access_extensions();
 
-page(_($help_context = "Access setup"));
+page(_($help_context = UI_TEXT_ACCESS_SETUP_TITLE));
 
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/includes/access_levels.inc");
 include_once($path_to_root . "/admin/db/security_db.inc");
 
@@ -60,20 +61,20 @@ if (RequestService::getPostStatic('addupdate'))
 	if ($_POST['description'] == '')
    	{
       	$input_error = 1;
-      	UiMessageService::displayError( _("Role description cannot be empty."));
+      	UiMessageService::displayError(_(UI_TEXT_ROLE_DESCRIPTION_EMPTY_ERROR));
 		set_focus('description');
    	}
    	elseif ($_POST['name'] == '')
    	{
       	$input_error = 1;
-      	UiMessageService::displayError( _("Role name cannot be empty."));
+      	UiMessageService::displayError(_(UI_TEXT_ROLE_NAME_EMPTY_ERROR));
 		set_focus('name');
    	}
 		// prevent accidental editor lockup by removing SA_SECROLES
 	if (RequestService::getPostStatic('role') == $_SESSION['wa_current_user']->access) {
 		if (!isset($_POST['Area'.$security_areas['SA_SECROLES'][0]])
 			|| !isset($_POST['Section'.SS_SETUP])) {
-			UiMessageService::displayError(_("Access level edition in Company setup section have to be enabled for your account."));
+			UiMessageService::displayError(_(UI_TEXT_ACCESS_LEVEL_EDITION_DISABLED_ERROR));
 	      	$input_error = 1;
 	      	set_focus(!isset($_POST['Section'.SS_SETUP]) 
 	      		? 'Section'.SS_SETUP : 'Area'.$security_areas['SA_SECROLES'][0]);
@@ -102,7 +103,7 @@ if (RequestService::getPostStatic('addupdate'))
      	if ($new_role) 
        	{
 			add_security_role($_POST['name'], $_POST['description'], $sections, $areas); 
-			\FA\Services\UiMessageService::displayNotification(_("New security role has been added."));
+			\FA\Services\UiMessageService::displayNotification(_(UI_TEXT_NEW_SECURITY_ROLE_ADDED_NOTICE));
        	} else
        	{
 			update_security_role($_POST['role'], $_POST['name'], $_POST['description'], 
@@ -110,7 +111,7 @@ if (RequestService::getPostStatic('addupdate'))
 			update_record_status($_POST['role'], RequestService::getPostStatic('inactive'),
 				'security_roles', 'id');
 
-	  		\FA\Services\UiMessageService::displayNotification(_("Security role has been updated."));
+	  		\FA\Services\UiMessageService::displayNotification(_(UI_TEXT_SECURITY_ROLE_UPDATED_NOTICE));
        	}
 	$new_role = true;
 	clear_data();
@@ -123,10 +124,10 @@ if (RequestService::getPostStatic('addupdate'))
 if (RequestService::getPostStatic('delete'))
 {
 	if (check_role_used(RequestService::getPostStatic('role'))) {
-		UiMessageService::displayError(_("This role is currently assigned to some users and cannot be deleted"));
+		UiMessageService::displayError(_(UI_TEXT_ROLE_ASSIGNED_CANNOT_DELETE_ERROR));
  	} else {
 		delete_security_role(RequestService::getPostStatic('role'));
-		\FA\Services\UiMessageService::displayNotification(_("Security role has been sucessfully deleted."));
+		\FA\Services\UiMessageService::displayNotification(_(UI_TEXT_SECURITY_ROLE_DELETED_NOTICE));
 		unset($_POST['role']);
 	}
 	$Ajax->activate('_page_body');
@@ -172,9 +173,9 @@ start_form();
 
 start_table(TABLESTYLE_NOBORDER);
 start_row();
-security_roles_list_cells(_("Role:"). "&nbsp;", 'role', null, true, true, RequestService::checkValueStatic('show_inactive'));
+security_roles_list_cells(_(UI_TEXT_ROLE_LABEL). "&nbsp;", 'role', null, true, true, RequestService::checkValueStatic('show_inactive'));
 $new_role = RequestService::getPostStatic('role')=='';
-check_cells(_("Show inactive:"), 'show_inactive', null, true);
+check_cells(_(UI_TEXT_SHOW_INACTIVE_LABEL), 'show_inactive', null, true);
 end_row();
 end_table();
 echo "<hr>";
@@ -189,9 +190,9 @@ if (find_submit('_Section')) {
 //-----------------------------------------------------------------------------------------------
 div_start('details');
 start_table(TABLESTYLE2);
-	text_row(_("Role name:"), 'name', null, 20, 22);
-	text_row(_("Role description:"), 'description', null, 50, 52);
-	record_status_list_row(_("Current status:"), 'inactive');
+	text_row(_(UI_TEXT_ROLE_NAME_LABEL), 'name', null, 20, 22);
+	text_row(_(UI_TEXT_ROLE_DESCRIPTION_LABEL), 'description', null, 50, 52);
+	record_status_list_row(_(UI_TEXT_CURRENT_STATUS_LABEL), 'inactive');
 end_table(1);
 
 	start_table(TABLESTYLE, "width='40%'");
@@ -213,7 +214,7 @@ end_table(1);
 			$m = $parms[0] & ~0xff;
 			label_row($security_sections[$m].':', 
 				checkbox( null, 'Section'.$m, null, true, 
-					_("On/off set of features")),
+					_(UI_TEXT_ON_OFF_SET_OF_FEATURES)),
 			"class='tableheader2'", "class='tableheader'");
 		}
 		if (RequestService::checkValueStatic('Section'.$m)) {
@@ -232,16 +233,16 @@ div_start('controls');
 
 if ($new_role) 
 {
-	submit_center_first('Update', _("Update view"), '', null);
-	submit_center_last('addupdate', _("Insert New Role"), '', 'default');
+	submit_center_first('Update', _(UI_TEXT_UPDATE_VIEW_BUTTON), '', null);
+	submit_center_last('addupdate', _(UI_TEXT_INSERT_NEW_ROLE_BUTTON), '', 'default');
 } 
 else 
 {
-	submit_center_first('addupdate', _("Save Role"), '', 'default');
-	submit('Update', _("Update view"), true, '', null);
-	submit('clone', _("Clone This Role"), true, '', true);
-	submit('delete', _("Delete This Role"), true, '', true);
-	submit_center_last('cancel', _("Cancel"), _("Cancel Edition"), 'cancel');
+	submit_center_first('addupdate', _(UI_TEXT_SAVE_ROLE_BUTTON), '', 'default');
+	submit('Update', _(UI_TEXT_UPDATE_VIEW_BUTTON), true, '', null);
+	submit('clone', _(UI_TEXT_CLONE_THIS_ROLE_BUTTON), true, '', true);
+	submit('delete', _(UI_TEXT_DELETE_THIS_ROLE_BUTTON), true, '', true);
+	submit_center_last('cancel', _(UI_TEXT_CANCEL), _(UI_TEXT_CANCEL_EDITION), 'cancel');
 }
 
 div_end();

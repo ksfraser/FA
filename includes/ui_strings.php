@@ -158,4 +158,24 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_MAX_DAY_RANGE_IN_DOCUMENTS_LABEL', 'Max day range in documents');
     define('UI_TEXT_DAYS', 'days.');
     define('UI_TEXT_UPDATE_BUTTON', 'Update');
+    define('UI_TEXT_ACCESS_SETUP_TITLE', 'Access setup');
+    define('UI_TEXT_ROLE_DESCRIPTION_EMPTY_ERROR', 'Role description cannot be empty.');
+    define('UI_TEXT_ROLE_NAME_EMPTY_ERROR', 'Role name cannot be empty.');
+    define('UI_TEXT_ACCESS_LEVEL_EDITION_DISABLED_ERROR', 'Access level edition in Company setup section have to be enabled for your account.');
+    define('UI_TEXT_NEW_SECURITY_ROLE_ADDED_NOTICE', 'New security role has been added.');
+    define('UI_TEXT_SECURITY_ROLE_UPDATED_NOTICE', 'Security role has been updated.');
+    define('UI_TEXT_ROLE_ASSIGNED_CANNOT_DELETE_ERROR', 'This role is currently assigned to some users and cannot be deleted');
+    define('UI_TEXT_SECURITY_ROLE_DELETED_NOTICE', 'Security role has been sucessfully deleted.');
+    define('UI_TEXT_ROLE_LABEL', 'Role:');
+    define('UI_TEXT_SHOW_INACTIVE_LABEL', 'Show inactive:');
+    define('UI_TEXT_ROLE_NAME_LABEL', 'Role name:');
+    define('UI_TEXT_ROLE_DESCRIPTION_LABEL', 'Role description:');
+    define('UI_TEXT_CURRENT_STATUS_LABEL', 'Current status:');
+    define('UI_TEXT_ON_OFF_SET_OF_FEATURES', 'On/off set of features');
+    define('UI_TEXT_UPDATE_VIEW_BUTTON', 'Update view');
+    define('UI_TEXT_INSERT_NEW_ROLE_BUTTON', 'Insert New Role');
+    define('UI_TEXT_SAVE_ROLE_BUTTON', 'Save Role');
+    define('UI_TEXT_CLONE_THIS_ROLE_BUTTON', 'Clone This Role');
+    define('UI_TEXT_DELETE_THIS_ROLE_BUTTON', 'Delete This Role');
+    define('UI_TEXT_CANCEL_EDITION', 'Cancel Edition');
 }
