@@ -178,4 +178,19 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_CLONE_THIS_ROLE_BUTTON', 'Clone This Role');
     define('UI_TEXT_DELETE_THIS_ROLE_BUTTON', 'Delete This Role');
     define('UI_TEXT_CANCEL_EDITION', 'Cancel Edition');
+    define('UI_TEXT_PRINTER_LOCATIONS_TITLE', 'Printer Locations');
+    define('UI_TEXT_PRINTER_NAME_EMPTY_ERROR', 'Printer name cannot be empty.');
+    define('UI_TEXT_PRINTING_TO_SERVER_AT_USER_IP_NOTICE', 'You have selected printing to server at user IP.');
+    define('UI_TEXT_TIMEOUT_INVALID_ERROR', 'Timeout cannot be less than zero nor longer than 60 (sec).');
+    define('UI_TEXT_CANNOT_DELETE_PRINTER_ERROR', 'Cannot delete this printer definition, because print profile have been created using it.');
+    define('UI_TEXT_NAME', 'Name');
+    define('UI_TEXT_DESCRIPTION', 'Description');
+    define('UI_TEXT_HOST', 'Host');
+    define('UI_TEXT_PRINTER_QUEUE', 'Printer Queue');
+    define('UI_TEXT_PRINTER_NAME', 'Printer Name');
+    define('UI_TEXT_PRINTER_DESCRIPTION', 'Printer Description');
+    define('UI_TEXT_HOST_NAME_OR_IP', 'Host name or IP');
+    define('UI_TEXT_PORT', 'Port');
+    define('UI_TEXT_TIMEOUT', 'Timeout');
+    define('UI_TEXT_SELECTED_PRINTER_DELETED_NOTICE', 'Selected printer definition has been deleted');
 }

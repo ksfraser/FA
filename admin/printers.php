@@ -13,10 +13,11 @@ $page_security = 'SA_PRINTERS';
 $path_to_root="..";
 include($path_to_root . "/includes/session.inc");
 
-page(_($help_context = "Printer Locations"));
+page(_($help_context = UI_TEXT_PRINTER_LOCATIONS_TITLE));
 
 include($path_to_root . "/admin/db/printers_db.inc");
 include($path_to_root . "/includes/ui.inc");
+include($path_to_root . "/includes/ui_strings.php");
 
 simple_page_mode(true);
 //-------------------------------------------------------------------------------------------
@@ -28,17 +29,17 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if (empty($_POST['name']))
 	{
 		$error = 1;
-		UiMessageService::displayError( _("Printer name cannot be empty."));
+		UiMessageService::displayError(_(UI_TEXT_PRINTER_NAME_EMPTY_ERROR));
 		set_focus('name');
 	} 
 	elseif (empty($_POST['host'])) 
 	{
-		display_notification_centered( _("You have selected printing to server at user IP."));
+		display_notification_centered(_(UI_TEXT_PRINTING_TO_SERVER_AT_USER_IP_NOTICE));
 	} 
 	elseif (!check_num('tout', 0, 60)) 
 	{
 		$error = 1;
-		UiMessageService::displayError( _("Timeout cannot be less than zero nor longer than 60 (sec)."));
+		UiMessageService::displayError(_(UI_TEXT_TIMEOUT_INVALID_ERROR));
 		set_focus('tout');
 	} 
 
@@ -61,12 +62,12 @@ if ($Mode == 'Delete')
 
 	if (key_in_foreign_table($selected_id, 'print_profiles', 'printer'))
 	{
-		UiMessageService::displayError(_("Cannot delete this printer definition, because print profile have been created using it."));
+		UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_PRINTER_ERROR));
 	} 
 	else 
 	{
 		delete_printer($selected_id);
-		\FA\Services\UiMessageService::displayNotification(_('Selected printer definition has been deleted'));
+		\FA\Services\UiMessageService::displayNotification(_(UI_TEXT_SELECTED_PRINTER_DELETED_NOTICE));
 	}
 	$Mode = 'RESET';
 }
@@ -81,7 +82,7 @@ if ($Mode == 'RESET')
 $result = get_all_printers();
 start_form();
 start_table(TABLESTYLE);
-$th = array(_("Name"), _("Description"), _("Host"), _("Printer Queue"),'','');
+$th = array(_(UI_TEXT_NAME), _(UI_TEXT_DESCRIPTION), _(UI_TEXT_HOST), _(UI_TEXT_PRINTER_QUEUE),'','');
 table_header($th);
 
 $k = 0; //row colour counter
@@ -93,8 +94,8 @@ while ($myrow = db_fetch($result))
     label_cell($myrow['description']);
     label_cell($myrow['host']);
     label_cell($myrow['queue']);
- 	edit_button_cell("Edit".$myrow['id'], _("Edit"));
- 	delete_button_cell("Delete".$myrow['id'], _("Delete"));
+ 	edit_button_cell("Edit".$myrow['id'], _(UI_TEXT_EDIT));
+ 	delete_button_cell("Delete".$myrow['id'], _(UI_TEXT_DELETE));
     end_row();
 
 
@@ -129,12 +130,12 @@ if ($selected_id != -1)
 		$_POST['port'] = '515';
 }
 
-text_row(_("Printer Name").':', 'name', null, 20, 20);
-text_row(_("Printer Description").':', 'descr', null, 40, 60);
-text_row(_("Host name or IP").':', 'host', null, 30, 40);
-text_row(_("Port").':', 'port', null, 5, 5);
-text_row(_("Printer Queue").':', 'queue', null, 20, 20);
-text_row(_("Timeout").':', 'tout', null, 5, 5);
+text_row(_(UI_TEXT_PRINTER_NAME).':', 'name', null, 20, 20);
+text_row(_(UI_TEXT_PRINTER_DESCRIPTION).':', 'descr', null, 40, 60);
+text_row(_(UI_TEXT_HOST_NAME_OR_IP).':', 'host', null, 30, 40);
+text_row(_(UI_TEXT_PORT).':', 'port', null, 5, 5);
+text_row(_(UI_TEXT_PRINTER_QUEUE).':', 'queue', null, 20, 20);
+text_row(_(UI_TEXT_TIMEOUT).':', 'tout', null, 5, 5);
 
 end_table(1);
 
