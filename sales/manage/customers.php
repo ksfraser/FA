@@ -26,6 +26,7 @@ include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/banking.inc");
 include_once($path_to_root . "/includes/CompanyPrefsService.php");
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/includes/ui/contacts_view.inc");
 include_once($path_to_root . "/includes/ui/attachment.inc");
 
@@ -41,35 +42,35 @@ function can_process()
 {
 	if (strlen($_POST['CustName']) == 0) 
 	{
-		UiMessageService::displayError(_("The customer name cannot be empty."));
+		UiMessageService::displayError(_(UI_TEXT_THE_CUSTOMER_NAME_CANNOT_BE_EMPTY));
 		set_focus('CustName');
 		return false;
 	} 
 
 	if (strlen($_POST['cust_ref']) == 0) 
 	{
-		UiMessageService::displayError(_("The customer short name cannot be empty."));
+		UiMessageService::displayError(_(UI_TEXT_THE_CUSTOMER_SHORT_NAME_CANNOT_BE_EMPTY));
 		set_focus('cust_ref');
 		return false;
 	} 
 	
 	if (!check_num('credit_limit', 0))
 	{
-		UiMessageService::displayError(_("The credit limit must be numeric and not less than zero."));
+		UiMessageService::displayError(_(UI_TEXT_THE_CREDIT_LIMIT_MUST_BE_NUMERIC_AND_NOT_LESS_THAN_ZERO));
 		set_focus('credit_limit');
 		return false;		
 	} 
 	
 	if (!check_num('pymt_discount', 0, 100)) 
 	{
-		UiMessageService::displayError(_("The payment discount must be numeric and is expected to be less than 100% and greater than or equal to 0."));
+		UiMessageService::displayError(_(UI_TEXT_THE_PAYMENT_DISCOUNT_MUST_BE_NUMERIC_AND_IS_EXPECTED_TO_BE_LESS_THAN_100_PERCENT_AND_GREATER_THAN_OR_EQUAL_TO_0));
 		set_focus('pymt_discount');
 		return false;		
 	} 
 	
 	if (!check_num('discount', 0, 100)) 
 	{
-		UiMessageService::displayError(_("The discount percentage must be numeric and is expected to be less than 100% and greater than or equal to 0."));
+		UiMessageService::displayError(_(UI_TEXT_THE_DISCOUNT_PERCENTAGE_MUST_BE_NUMERIC_AND_IS_EXPECTED_TO_BE_LESS_THAN_100_PERCENT_AND_GREATER_THAN_OR_EQUAL_TO_0));
 		set_focus('discount');
 		return false;		
 	} 
@@ -97,7 +98,7 @@ function handle_submit(&$selected_id)
 			'debtors_master', 'debtor_no');
 
 		$Ajax->activate('customer_id'); // in case of status change
-		display_notification(_("Customer has been updated."));
+		display_notification(_(UI_TEXT_CUSTOMER_HAS_BEEN_UPDATED));
 	} 
 	else 
 	{ 	//it is a new customer
@@ -129,10 +130,10 @@ function handle_submit(&$selected_id)
 		}
 		commit_transaction();
 
-		display_notification(_("A new customer has been added."));
+		display_notification(_(UI_TEXT_A_NEW_CUSTOMER_HAS_BEEN_ADDED));
 
 		if (isset($SysPrefs->auto_create_branch) && $SysPrefs->auto_create_branch == 1)
-			display_notification(_("A default Branch has been automatically created, please check default Branch values by using link below."));
+			display_notification(_(UI_TEXT_A_DEFAULT_BRANCH_HAS_BEEN_AUTOMATICALLY_CREATED_PLEASE_CHECK_DEFAULT_BRANCH_VALUES_BY_USING_LINK_BELOW));
 		
 		$Ajax->activate('_page_body');
 	}
@@ -155,21 +156,21 @@ if (isset($_POST['delete']))
 	if (key_in_foreign_table($selected_id, 'debtor_trans', 'debtor_no'))
 	{
 		$cancel_delete = 1;
-		UiMessageService::displayError(_("This customer cannot be deleted because there are transactions that refer to it."));
+		UiMessageService::displayError(_(UI_TEXT_THIS_CUSTOMER_CANNOT_BE_DELETED_BECAUSE_THERE_ARE_TRANSACTIONS_THAT_REFER_TO_IT));
 	} 
 	else 
 	{
 		if (key_in_foreign_table($selected_id, 'sales_orders', 'debtor_no'))
 		{
 			$cancel_delete = 1;
-			UiMessageService::displayError(_("Cannot delete the customer record because orders have been created against it."));
+			UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_THE_CUSTOMER_RECORD_BECAUSE_ORDERS_HAVE_BEEN_CREATED_AGAINST_IT));
 		} 
 		else 
 		{
 			if (key_in_foreign_table($selected_id, 'cust_branch', 'debtor_no'))
 			{
 				$cancel_delete = 1;
-				UiMessageService::displayError(_("Cannot delete this customer because there are branch records set up against it."));
+				UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_THIS_CUSTOMER_BECAUSE_THERE_ARE_BRANCH_RECORDS_SET_UP_AGAINST_IT));
 				//echo "<br> There are " . $myrow[0] . " branch records relating to this customer";
 			}
 		}
@@ -180,7 +181,7 @@ if (isset($_POST['delete']))
 	
 		delete_customer($selected_id);
 
-		display_notification(_("Selected customer has been deleted."));
+		display_notification(_(UI_TEXT_SELECTED_CUSTOMER_HAS_BEEN_DELETED));
 		unset($_POST['customer_id']);
 		$selected_id = '';
 		$Ajax->activate('_page_body');
@@ -229,54 +230,54 @@ function customer_settings($selected_id)
 
 	start_outer_table(TABLESTYLE2);
 	table_section(1);
-	table_section_title(_("Name and Address"));
+	table_section_title(_(UI_TEXT_NAME_AND_ADDRESS));
 
-	text_row(_("Customer Name:"), 'CustName', $_POST['CustName'], 40, 80);
-	text_row(_("Customer Short Name:"), 'cust_ref', null, 30, 30);
-	textarea_row(_("Address:"), 'address', $_POST['address'], 35, 5);
+	text_row(_(UI_TEXT_CUSTOMER_NAME_LABEL), 'CustName', $_POST['CustName'], 40, 80);
+	text_row(_(UI_TEXT_CUSTOMER_SHORT_NAME_LABEL), 'cust_ref', null, 30, 30);
+	textarea_row(_(UI_TEXT_ADDRESS_LABEL), 'address', $_POST['address'], 35, 5);
 
-	text_row(_("GSTNo:"), 'tax_id', null, 40, 40);
+	text_row(_(UI_TEXT_GSTNO_LABEL), 'tax_id', null, 40, 40);
 
 
 	if (!$selected_id || is_new_customer($selected_id) || (!key_in_foreign_table($selected_id, 'debtor_trans', 'debtor_no') &&
 		!key_in_foreign_table($selected_id, 'sales_orders', 'debtor_no'))) 
 	{
-		currencies_list_row(_("Customer's Currency:"), 'curr_code', $_POST['curr_code']);
+		currencies_list_row(_(UI_TEXT_CUSTOMERS_CURRENCY_LABEL), 'curr_code', $_POST['curr_code']);
 	} 
 	else 
 	{
-		label_row(_("Customer's Currency:"), $_POST['curr_code']);
+		label_row(_(UI_TEXT_CUSTOMERS_CURRENCY_LABEL), $_POST['curr_code']);
 		hidden('curr_code', $_POST['curr_code']);				
 	}
-	sales_types_list_row(_("Sales Type/Price List:"), 'sales_type', $_POST['sales_type']);
+	sales_types_list_row(_(UI_TEXT_SALES_TYPE_PRICE_LIST_LABEL), 'sales_type', $_POST['sales_type']);
 
 	if($selected_id)
-		record_status_list_row(_("Customer status:"), 'inactive');
+		record_status_list_row(_(UI_TEXT_CUSTOMER_STATUS_LABEL), 'inactive');
 	elseif (isset($SysPrefs->auto_create_branch) && $SysPrefs->auto_create_branch == 1)
 	{
-		table_section_title(_("Branch"));
-		text_row(_("Phone:"), 'phone', null, 32, 30);
-		text_row(_("Secondary Phone Number:"), 'phone2', null, 32, 30);
-		text_row(_("Fax Number:"), 'fax', null, 32, 30);
-		email_row(_("E-mail:"), 'email', null, 35, 55);
-		text_row(_("Bank Account Number:"), 'bank_account', null, 30, 60);
-		sales_persons_list_row( _("Sales Person:"), 'salesman', null);
+		table_section_title(_(UI_TEXT_BRANCH));
+		text_row(_(UI_TEXT_PHONE_LABEL), 'phone', null, 32, 30);
+		text_row(_(UI_TEXT_SECONDARY_PHONE_NUMBER_LABEL), 'phone2', null, 32, 30);
+		text_row(_(UI_TEXT_FAX_NUMBER_LABEL), 'fax', null, 32, 30);
+		email_row(_(UI_TEXT_E_MAIL_LABEL), 'email', null, 35, 55);
+		text_row(_(UI_TEXT_BANK_ACCOUNT_NUMBER_LABEL), 'bank_account', null, 30, 60);
+		sales_persons_list_row( _(UI_TEXT_SALES_PERSON_LABEL), 'salesman', null);
 	}
 	table_section(2);
 
-	table_section_title(_("Sales"));
+	table_section_title(_(UI_TEXT_SALES));
 
-	percent_row(_("Discount Percent:"), 'discount', $_POST['discount']);
-	percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $_POST['pymt_discount']);
-	amount_row(_("Credit Limit:"), 'credit_limit', $_POST['credit_limit']);
+	percent_row(_(UI_TEXT_DISCOUNT_PERCENT_LABEL), 'discount', $_POST['discount']);
+	percent_row(_(UI_TEXT_PROMPT_PAYMENT_DISCOUNT_PERCENT_LABEL), 'pymt_discount', $_POST['pymt_discount']);
+	amount_row(_(UI_TEXT_CREDIT_LIMIT_LABEL), 'credit_limit', $_POST['credit_limit']);
 
-	payment_terms_list_row(_("Payment Terms:"), 'payment_terms', $_POST['payment_terms']);
-	credit_status_list_row(_("Credit Status:"), 'credit_status', $_POST['credit_status']); 
+	payment_terms_list_row(_(UI_TEXT_PAYMENT_TERMS_LABEL), 'payment_terms', $_POST['payment_terms']);
+	credit_status_list_row(_(UI_TEXT_CREDIT_STATUS_LABEL), 'credit_status', $_POST['credit_status']); 
 	$dim = \FA\Services\CompanyPrefsService::getUseDimensions();
 	if ($dim >= 1)
-		dimensions_list_row(_("Dimension")." 1:", 'dimension_id', $_POST['dimension_id'], true, " ", false, 1);
+		dimensions_list_row(_(UI_TEXT_DIMENSION)." 1:", 'dimension_id', $_POST['dimension_id'], true, " ", false, 1);
 	if ($dim > 1)
-		dimensions_list_row(_("Dimension")." 2:", 'dimension2_id', $_POST['dimension2_id'], true, " ", false, 2);
+		dimensions_list_row(_(UI_TEXT_DIMENSION)." 2:", 'dimension2_id', $_POST['dimension2_id'], true, " ", false, 2);
 	if ($dim < 1)
 		hidden('dimension_id', 0);
 	if ($dim < 2)
@@ -286,19 +287,19 @@ function customer_settings($selected_id)
 		start_row();
 		echo '<td class="label">'._('Customer branches').':</td>';
 	  	hyperlink_params_td($path_to_root . "/sales/manage/customer_branches.php",
-			'<b>'. ($page_nested ?  _("Select or &Add") : _("&Add or Edit ")).'</b>', 
+			'<b>'. ($page_nested ?  _(UI_TEXT_SELECT_OR_ADD) : _(UI_TEXT_ADD_OR_EDIT)).'</b>', 
 			"debtor_no=".$selected_id.($page_nested ? '&popup=1':''));
 		end_row();
 	}
 
-	textarea_row(_("General Notes:"), 'notes', null, 35, 5);
+	textarea_row(_(UI_TEXT_GENERAL_NOTES_LABEL), 'notes', null, 35, 5);
 	if (!$selected_id && isset($SysPrefs->auto_create_branch) && $SysPrefs->auto_create_branch == 1)
 	{
-		table_section_title(_("Branch"));
-		locations_list_row(_("Default Inventory Location:"), 'location');
-		shippers_list_row(_("Default Shipping Company:"), 'ship_via');
-		sales_areas_list_row( _("Sales Area:"), 'area', null);
-		tax_groups_list_row(_("Tax Group:"), 'tax_group_id', null);
+		table_section_title(_(UI_TEXT_BRANCH));
+		locations_list_row(_(UI_TEXT_DEFAULT_INVENTORY_LOCATION_LABEL), 'location');
+		shippers_list_row(_(UI_TEXT_DEFAULT_SHIPPING_COMPANY_LABEL), 'ship_via');
+		sales_areas_list_row( _(UI_TEXT_SALES_AREA_LABEL), 'area', null);
+		tax_groups_list_row(_(UI_TEXT_TAX_GROUP_LABEL), 'tax_group_id', null);
 	}
 	end_outer_table(1);
 
@@ -306,14 +307,14 @@ function customer_settings($selected_id)
 	if (@$_REQUEST['popup']) hidden('popup', 1);
 	if (!$selected_id)
 	{
-		submit_center('submit', _("Add New Customer"), true, '', false);
+		submit_center('submit', _(UI_TEXT_ADD_NEW_CUSTOMER), true, '', false);
 	} 
 	else 
 	{
-		submit_center_first('submit', _("Update Customer"), 
+		submit_center_first('submit', _(UI_TEXT_UPDATE_CUSTOMER), 
 		  _('Update customer data'), $page_nested ? true : false);
-		submit_return('select', $selected_id, _("Select this customer and return to document entry."));
-		submit_center_last('delete', _("Delete Customer"), 
+		submit_return('select', $selected_id, _(UI_TEXT_SELECT_THIS_CUSTOMER_AND_RETURN_TO_DOCUMENT_ENTRY));
+		submit_center_last('delete', _(UI_TEXT_DELETE_CUSTOMER), 
 		  _('Delete customer data if have been never used'), true);
 	}
 	div_end();
@@ -321,7 +322,7 @@ function customer_settings($selected_id)
 
 //--------------------------------------------------------------------------------------------
 
-check_db_has_sales_types(_("There are no sales types defined. Please define at least one sales type before adding a customer."));
+check_db_has_sales_types(_(UI_TEXT_THERE_ARE_NO_SALES_TYPES_DEFINED_PLEASE_DEFINE_AT_LEAST_ONE_SALES_TYPE_BEFORE_ADDING_A_CUSTOMER));
  
 start_form(true);
 
@@ -329,9 +330,9 @@ if (db_has_customers())
 {
 	start_table(TABLESTYLE_NOBORDER);
 	start_row();
-	customer_list_cells(_("Select a customer: "), 'customer_id', null,
+	customer_list_cells(_(UI_TEXT_SELECT_A_CUSTOMER_LABEL), 'customer_id', null,
 		_('New customer'), true, RequestService::checkValueStatic('show_inactive'));
-	check_cells(_("Show inactive:"), 'show_inactive', null, true);
+	check_cells(_(UI_TEXT_SHOW_INACTIVE_LABEL), 'show_inactive', null, true);
 	end_row();
 	end_table();
 
