@@ -1147,4 +1147,13 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_TOTAL_INVOICE', 'TOTAL INVOICE');
     define('UI_TEXT_PREPAYMENT_AMOUNT_INVOICED', 'PREPAYMENT AMOUNT INVOICED');
     define('UI_TEXT_THIS_INVOICE_HAS_BEEN_VOIDED', 'This invoice has been voided.');
+    define('UI_TEXT_CUSTOMER_PAYMENT_FORMAT', 'Customer Payment #%d');
+    define('UI_TEXT_FROM_CUSTOMER', 'From Customer');
+    define('UI_TEXT_DATE_OF_DEPOSIT', 'Date of Deposit');
+    define('UI_TEXT_CUSTOMER_CURRENCY', 'Customer Currency');
+    define('UI_TEXT_AMOUNT', 'Amount');
+    define('UI_TEXT_INTO_BANK_ACCOUNT', 'Into Bank Account');
+    define('UI_TEXT_BANK_AMOUNT', 'Bank Amount');
+    define('UI_TEXT_PAYMENT_TYPE', 'Payment Type');
+    define('UI_TEXT_THIS_CUSTOMER_PAYMENT_HAS_BEEN_VOIDED', 'This customer payment has been voided.');
 };

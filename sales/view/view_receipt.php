@@ -15,6 +15,7 @@ include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 
 $js = "";
@@ -33,30 +34,30 @@ $receipt = get_customer_trans($trans_id, ST_CUSTPAYMENT);
 if (!empty($SysPrefs->prefs['company_logo_on_views']))
 	company_logo_on_view();
 
-display_heading(sprintf(_("Customer Payment #%d"),$trans_id));
+display_heading(sprintf(_(UI_TEXT_CUSTOMER_PAYMENT_FORMAT),$trans_id));
 
 echo "<br>";
 start_table(TABLESTYLE, "width='80%'");
 start_row();
-label_cells(_("From Customer"), $receipt['DebtorName'], "class='tableheader2'");
-label_cells(_("Reference"), $receipt['reference'], "class='tableheader2'");
-label_cells(_("Date of Deposit"), DateService::sql2dateStatic($receipt['tran_date']), "class='tableheader2'");
+label_cells(_(UI_TEXT_FROM_CUSTOMER), $receipt['DebtorName'], "class='tableheader2'");
+label_cells(_(UI_TEXT_REFERENCE), $receipt['reference'], "class='tableheader2'");
+label_cells(_(UI_TEXT_DATE_OF_DEPOSIT), DateService::sql2dateStatic($receipt['tran_date']), "class='tableheader2'");
 end_row();
 start_row();
-label_cells(_("Customer Currency"), $receipt['curr_code'], "class='tableheader2'");
-label_cells(_("Amount"), FormatService::priceFormat($receipt['Total'] - $receipt['ov_discount']), "class='tableheader2'");
-label_cells(_("Discount"), FormatService::priceFormat($receipt['ov_discount']), "class='tableheader2'");
+label_cells(_(UI_TEXT_CUSTOMER_CURRENCY), $receipt['curr_code'], "class='tableheader2'");
+label_cells(_(UI_TEXT_AMOUNT), FormatService::priceFormat($receipt['Total'] - $receipt['ov_discount']), "class='tableheader2'");
+label_cells(_(UI_TEXT_DISCOUNT), FormatService::priceFormat($receipt['ov_discount']), "class='tableheader2'");
 end_row();
 start_row();
-label_cells(_("Into Bank Account"), $receipt['bank_account_name'].' ['.$receipt['bank_curr_code'].']', "class='tableheader2'");
-label_cells(_("Bank Amount"), FormatService::priceFormat($receipt['bank_amount']), "class='tableheader2'");
-label_cells(_("Payment Type"), $bank_transfer_types[$receipt['BankTransType']], "class='tableheader2'");
+label_cells(_(UI_TEXT_INTO_BANK_ACCOUNT), $receipt['bank_account_name'].' ['.$receipt['bank_curr_code'].']', "class='tableheader2'");
+label_cells(_(UI_TEXT_BANK_AMOUNT), FormatService::priceFormat($receipt['bank_amount']), "class='tableheader2'");
+label_cells(_(UI_TEXT_PAYMENT_TYPE), $bank_transfer_types[$receipt['BankTransType']], "class='tableheader2'");
 end_row();
 comments_display_row(ST_CUSTPAYMENT, $trans_id);
 
 end_table(1);
 
-$voided = is_voided_display(ST_CUSTPAYMENT, $trans_id, _("This customer payment has been voided."));
+$voided = is_voided_display(ST_CUSTPAYMENT, $trans_id, _(UI_TEXT_THIS_CUSTOMER_PAYMENT_HAS_BEEN_VOIDED));
 
 if (!$voided)
 {
