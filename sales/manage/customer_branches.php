@@ -22,6 +22,7 @@ if ($SysPrefs->use_popup_windows && $SysPrefs->use_popup_search)
 page(_($help_context = "Customer Branches"), @$_REQUEST['popup'], false, "", $js);
 
 include($path_to_root . "/includes/ui.inc");
+include($path_to_root . "/includes/ui_strings.php");
 include($path_to_root . "/includes/ui/contacts_view.inc");
 
 //-----------------------------------------------------------------------------------------------

@@ -1026,4 +1026,17 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_DELETE_CUSTOMER', 'Delete Customer');
     define('UI_TEXT_THERE_ARE_NO_SALES_TYPES_DEFINED_PLEASE_DEFINE_AT_LEAST_ONE_SALES_TYPE_BEFORE_ADDING_A_CUSTOMER', 'There are no sales types defined. Please define at least one sales type before adding a customer.');
     define('UI_TEXT_SHOW_INACTIVE_LABEL', 'Show inactive:');
+    define('UI_TEXT_THERE_ARE_NO_CUSTOMERS_DEFINED_IN_THE_SYSTEM_PLEASE_DEFINE_A_CUSTOMER_TO_ADD_CUSTOMER_BRANCHES', 'There are no customers defined in the system. Please define a customer to add customer branches.');
+    define('UI_TEXT_THERE_ARE_NO_SALES_PEOPLE_DEFINED_IN_THE_SYSTEM_AT_LEAST_ONE_SALES_PERSON_IS_REQUIRED_BEFORE_PROCEEDING', 'There are no sales people defined in the system. At least one sales person is required before proceeding.');
+    define('UI_TEXT_THERE_ARE_NO_SALES_AREAS_DEFINED_IN_THE_SYSTEM_AT_LEAST_ONE_SALES_AREA_IS_REQUIRED_BEFORE_PROCEEDING', 'There are no sales areas defined in the system. At least one sales area is required before proceeding.');
+    define('UI_TEXT_THERE_ARE_NO_SHIPPING_COMPANIES_DEFINED_IN_THE_SYSTEM_AT_LEAST_ONE_SHIPPING_COMPANY_IS_REQUIRED_BEFORE_PROCEEDING', 'There are no shipping companies defined in the system. At least one shipping company is required before proceeding.');
+    define('UI_TEXT_THERE_ARE_NO_TAX_GROUPS_DEFINED_IN_THE_SYSTEM_AT_LEAST_ONE_TAX_GROUP_IS_REQUIRED_BEFORE_PROCEEDING', 'There are no tax groups defined in the system. At least one tax group is required before proceeding.');
+    define('UI_TEXT_THE_BRANCH_NAME_CANNOT_BE_EMPTY', 'The Branch name cannot be empty.');
+    define('UI_TEXT_THE_BRANCH_SHORT_NAME_CANNOT_BE_EMPTY', 'The Branch short name cannot be empty.');
+    define('UI_TEXT_CANNOT_DELETE_THIS_BRANCH_BECAUSE_CUSTOMER_TRANSACTIONS_HAVE_BEEN_CREATED_TO_THIS_BRANCH', 'Cannot delete this branch because customer transactions have been created to this branch.');
+    define('UI_TEXT_CANNOT_DELETE_THIS_BRANCH_BECAUSE_SALES_ORDERS_EXIST_FOR_IT_PURGE_OLD_SALES_ORDERS_FIRST', 'Cannot delete this branch because sales orders exist for it. Purge old sales orders first.');
+    define('UI_TEXT_NAME_AND_CONTACT', 'Name and Contact');
+    define('UI_TEXT_BRANCH_NAME_LABEL', 'Branch Name:');
+    define('UI_TEXT_BRANCH_SHORT_NAME_LABEL', 'Branch Short Name:');
+    define('UI_TEXT_SALES_GROUP_LABEL', 'Sales Group:');
 };

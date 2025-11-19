@@ -65,6 +65,45 @@ This refactoring aims to make FrontAccounting more robust, easier to maintain, a
 
 ---
 
+## Post-Refactoring Expansion Requirements
+
+After completing the refactoring, the following business requirements will be implemented to expand FrontAccounting's capabilities:
+
+### Event Handler/Workflow System
+- Implement a configurable event-driven workflow system similar to SuiteCRM
+- Allow administrators to define custom workflows triggered by business events
+- Support conditional logic, approvals, and automated actions in workflows
+
+### Plugin/Extension System
+- Develop a registration/plugin architecture similar to WordPress
+- Enable third-party developers to create and install extensions
+- Provide hooks and APIs for extending core functionality without modifying base code
+
+### Universal Pre/Post Database Action Integration
+- Extend the existing preDB and postDB action system (currently only in Sales module) to ALL modules
+- Ensure consistent event triggering across Customers, Suppliers, Inventory, Purchasing, etc.
+- Allow plugins to hook into these events for custom integrations
+
+### Cross-Application Data Synchronization
+- **Customer Integration**: Automatically send new customer data to external web applications
+- **Product Integration**: Push product additions/updates to SuiteCRM, SquareUp, WooCommerce, and other platforms
+- **Supplier Integration**: Sync supplier information with external systems
+- Implement configurable webhooks and API integrations for real-time data sharing
+
+### REST API Expansion
+- Implement a comprehensive REST API using Slim Framework for all modules
+- Provide standardized endpoints for CRUD operations across Customers, Suppliers, Inventory, Sales, Purchasing, etc.
+- Enable third-party integrations and mobile app connectivity
+- Include authentication, rate limiting, and API versioning
+
+### Employee Management Extension
+- Extend FrontAccounting to include comprehensive employee management
+- Reuse and enhance the existing Contact system architecture
+- Allow a single contact record to serve as Customer, Supplier, and/or Employee
+- Add employee-specific fields and relationships while maintaining data integrity
+
+---
+
 ![FrontAccounting ERP](./themes/default/images/logo_frontaccounting.jpg  "FrontAccounting ERP")
 
 FrontAccounting ERP is open source, web-based accounting software for small and medium enterprises.
