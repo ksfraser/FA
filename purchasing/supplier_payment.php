@@ -17,6 +17,8 @@ include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/banking.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
+
+include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/includes/CompanyPrefsService.php");
 include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
@@ -42,9 +44,9 @@ if (isset($_GET['supplier_id']))
 
 //----------------------------------------------------------------------------------------
 
-check_db_has_suppliers(_("There are no suppliers defined in the system."));
+check_db_has_suppliers(_(UI_TEXT_NO_SUPPLIERS_DEFINED));
 
-check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
+check_db_has_bank_accounts(_(UI_TEXT_NO_BANK_ACCOUNTS_DEFINED));
 
 //----------------------------------------------------------------------------------------
 
@@ -86,30 +88,30 @@ if (!isset($_POST['bank_account'])) { // first page call
 			}
 			unset($inv);
 		} else
-			UiMessageService::displayError(_("Invalid purchase invoice number."));
+			UiMessageService::displayError(_(UI_TEXT_INVALID_PURCHASE_INVOICE_NUMBER));
 	}
 }
 if (isset($_GET['AddedID'])) {
 	$payment_id = $_GET['AddedID'];
 
-   	display_notification_centered( _("Payment has been sucessfully entered"));
+   	display_notification_centered( _(UI_TEXT_PAYMENT_HAS_BEEN_SUCCESSFULLY_ENTERED));
 
-	submenu_print(_("&Print This Remittance"), ST_SUPPAYMENT, $payment_id."-".ST_SUPPAYMENT, 'prtopt');
-	submenu_print(_("&Email This Remittance"), ST_SUPPAYMENT, $payment_id."-".ST_SUPPAYMENT, null, 1);
+	submenu_print(_(UI_TEXT_PRINT_THIS_REMITTANCE), ST_SUPPAYMENT, $payment_id."-".ST_SUPPAYMENT, 'prtopt');
+	submenu_print(_(UI_TEXT_EMAIL_THIS_REMITTANCE), ST_SUPPAYMENT, $payment_id."-".ST_SUPPAYMENT, null, 1);
 
-	submenu_view(_("View this Payment"), ST_SUPPAYMENT, $payment_id);
-    display_note(get_gl_view_str(ST_SUPPAYMENT, $payment_id, _("View the GL &Journal Entries for this Payment")), 0, 1);
+	submenu_view(_(UI_TEXT_VIEW_THIS_PAYMENT), ST_SUPPAYMENT, $payment_id);
+    display_note(get_gl_view_str(ST_SUPPAYMENT, $payment_id, _(UI_TEXT_VIEW_GL_JOURNAL_ENTRIES_FOR_THIS_PAYMENT)), 0, 1);
 
-	submenu_option(_("Enter another supplier &payment"), "/purchasing/supplier_payment.php?supplier_id=".$_POST['supplier_id']);
+	submenu_option(_(UI_TEXT_ENTER_ANOTHER_SUPPLIER_PAYMENT), "/purchasing/supplier_payment.php?supplier_id=".$_POST['supplier_id']);
 
-	submenu_option(_("Enter &Supplier Invoice"), "/purchasing/supplier_invoice.php?New=1");
-	submenu_option(_("Enter direct &Invoice"), "/purchasing/po_entry_items.php?NewInvoice=Yes");
+	submenu_option(_(UI_TEXT_ENTER_SUPPLIER_INVOICE), "/purchasing/supplier_invoice.php?New=1");
+	submenu_option(_(UI_TEXT_ENTER_DIRECT_INVOICE), "/purchasing/po_entry_items.php?NewInvoice=Yes");
 
-	submenu_option(_("Enter Other &Payment"), "/gl/gl_bank.php?NewPayment=Yes");
-	submenu_option(_("Enter &Customer Payment"), "/sales/customer_payments.php");
-	submenu_option(_("Enter Other &Deposit"), "/gl/gl_bank.php?NewDeposit=Yes");
-	submenu_option(_("Bank Account &Transfer"), "/gl/bank_transfer.php");
-	submenu_option(_("Add an Attachment"), "/admin/attachments.php?filterType=".ST_SUPPAYMENT."&trans_no=$payment_id");
+	submenu_option(_(UI_TEXT_ENTER_OTHER_PAYMENT), "/gl/gl_bank.php?NewPayment=Yes");
+	submenu_option(_(UI_TEXT_ENTER_CUSTOMER_PAYMENT), "/sales/customer_payments.php");
+	submenu_option(_(UI_TEXT_ENTER_OTHER_DEPOSIT), "/gl/gl_bank.php?NewDeposit=Yes");
+	submenu_option(_(UI_TEXT_BANK_ACCOUNT_TRANSFER), "/gl/bank_transfer.php");
+	submenu_option(_(UI_TEXT_ADD_AN_ATTACHMENT), "/admin/attachments.php?filterType=".ST_SUPPAYMENT."&trans_no=$payment_id");
 
 	display_footer_exit();
 }
@@ -133,7 +135,7 @@ function check_inputs()
 
 	if (!RequestService::getPostStatic('supplier_id')) 
 	{
-		UiMessageService::displayError(_("There is no supplier selected."));
+		UiMessageService::displayError(_(UI_TEXT_NO_SUPPLIER_SELECTED));
 		set_focus('supplier_id');
 		return false;
 	} 
@@ -145,13 +147,13 @@ function check_inputs()
 
 	if (!check_num('amount', 0))
 	{
-		UiMessageService::displayError(_("The entered amount is invalid or less than zero."));
+		UiMessageService::displayError(_(UI_TEXT_ENTERED_AMOUNT_INVALID_OR_LESS_THAN_ZERO));
 		set_focus('amount');
 		return false;
 	}
 
 	if (isset($_POST['charge']) && !check_num('charge', 0)) {
-		UiMessageService::displayError(_("The entered amount is invalid or less than zero."));
+		UiMessageService::displayError(_(UI_TEXT_ENTERED_AMOUNT_INVALID_OR_LESS_THAN_ZERO));
 		set_focus('charge');
 		return false;
 	}
@@ -159,7 +161,7 @@ function check_inputs()
 	if (isset($_POST['charge']) && RequestService::inputNumStatic('charge') > 0) {
 		$charge_acct = get_bank_charge_account($_POST['bank_account']);
 		if (get_gl_account($charge_acct) == false) {
-			UiMessageService::displayError(_("The Bank Charge Account has not been set in System and General GL Setup."));
+			UiMessageService::displayError(_(UI_TEXT_BANK_CHARGE_ACCOUNT_NOT_SET));
 			set_focus('charge');
 			return false;
 		}	
@@ -172,7 +174,7 @@ function check_inputs()
 
 	if (!check_num('discount', 0))
 	{
-		UiMessageService::displayError(_("The entered discount is invalid or less than zero."));
+		UiMessageService::displayError(_(UI_TEXT_ENTERED_DISCOUNT_INVALID_OR_LESS_THAN_ZERO));
 		set_focus('amount');
 		return false;
 	}
@@ -180,14 +182,14 @@ function check_inputs()
 	//if (RequestService::inputNumStatic('amount') - RequestService::inputNumStatic('discount') <= 0) 
 	if (RequestService::inputNumStatic('amount') <= 0) 
 	{
-		UiMessageService::displayError(_("The total of the amount and the discount is zero or negative. Please enter positive values."));
+		UiMessageService::displayError(_(UI_TEXT_TOTAL_AMOUNT_AND_DISCOUNT_ZERO_OR_NEGATIVE));
 		set_focus('amount');
 		return false;
 	}
 
 	if (isset($_POST['bank_amount']) && RequestService::inputNumStatic('bank_amount')<=0)
 	{
-		UiMessageService::displayError(_("The entered bank amount is zero or negative."));
+		UiMessageService::displayError(_(UI_TEXT_ENTERED_BANK_AMOUNT_ZERO_OR_NEGATIVE));
 		set_focus('bank_amount');
 		return false;
 	}
@@ -196,13 +198,13 @@ function check_inputs()
 
    	if (!$dateService->isDate($_POST['DatePaid']))
    	{
-		UiMessageService::displayError(_("The entered date is invalid."));
+		UiMessageService::displayError(_(UI_TEXT_ENTERED_DATE_INVALID));
 		set_focus('DatePaid');
 		return false;
 	} 
 	elseif (!DateService::isDateInFiscalYear($_POST['DatePaid'])) 
 	{
-		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_(UI_TEXT_ENTERED_DATE_OUT_OF_FISCAL_YEAR_OR_CLOSED));
 		set_focus('DatePaid');
 		return false;
 	}
@@ -211,7 +213,7 @@ function check_inputs()
 
 	if (($limit !== null) && (floatcmp($limit, RequestService::inputNumStatic('amount')) < 0))
 	{
-		UiMessageService::displayError(sprintf(_("The total bank amount exceeds allowed limit (%s)."), FormatService::priceFormat($limit)));
+		UiMessageService::displayError(sprintf(_(UI_TEXT_TOTAL_BANK_AMOUNT_EXCEEDS_ALLOWED_LIMIT), FormatService::priceFormat($limit)));
 		set_focus('amount');
 		return false;
 	}
@@ -278,7 +280,7 @@ start_form();
 
 	table_section(1);
 
-    supplier_list_row(_("Payment To:"), 'supplier_id', null, false, true);
+    supplier_list_row(_(UI_TEXT_PAYMENT_TO), 'supplier_id', null, false, true);
 
 	if (list_updated('supplier_id')) {
 		$_POST['amount'] = FormatService::priceFormat(0);
@@ -303,15 +305,15 @@ start_form();
 		$_POST['amount'] = FormatService::priceFormat(0);
 	}
 
-    bank_accounts_list_row(_("From Bank Account:"), 'bank_account', null, true);
+    bank_accounts_list_row(_(UI_TEXT_FROM_BANK_ACCOUNT), 'bank_account', null, true);
 
 	bank_balance_row($_POST['bank_account']);
 
 	table_section(2);
 
-    date_row(_("Date Paid") . ":", 'DatePaid', '', true, 0, 0, 0, null, true);
+    date_row(_(UI_TEXT_DATE_PAID) . ":", 'DatePaid', '', true, 0, 0, 0, null, true);
 
-    ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_SUPPAYMENT, null, 
+    ref_row(_(UI_TEXT_REFERENCE), 'ref', '', $Refs->get_next(ST_SUPPAYMENT, null, 
     	array('supplier'=>RequestService::getPostStatic('supplier_id'), 'date'=>RequestService::getPostStatic('DatePaid'))), false, ST_SUPPAYMENT);
 
 
@@ -325,22 +327,22 @@ start_form();
 
 	if ($bank_currency != $supplier_currency) 
 	{
-		amount_row(_("Bank Amount:"), 'bank_amount', null, '', $bank_currency);
+		amount_row(_(UI_TEXT_BANK_AMOUNT), 'bank_amount', null, '', $bank_currency);
 	}
 
-	amount_row(_("Bank Charge:"), 'charge', null, '', $bank_currency);
+	amount_row(_(UI_TEXT_BANK_CHARGE), 'charge', null, '', $bank_currency);
 
 	$row = get_supplier($_POST['supplier_id']);
 	$_POST['dimension_id'] = @$row['dimension_id'];
 	$_POST['dimension2_id'] = @$row['dimension2_id'];
 	$dim = \FA\Services\CompanyPrefsService::getUseDimensions();
 	if ($dim > 0)
-		dimensions_list_row(_("Dimension").":", 'dimension_id',
+		dimensions_list_row(_(UI_TEXT_DIMENSION).":", 'dimension_id',
 			null, true, ' ', false, 1, false);
 	else
 		hidden('dimension_id', 0);
 	if ($dim > 1)
-		dimensions_list_row(_("Dimension")." 2:", 'dimension2_id',
+		dimensions_list_row(_(UI_TEXT_DIMENSION)." 2:", 'dimension2_id',
 			null, true, ' ', false, 2, false);
 	else
 		hidden('dimension2_id', 0);
@@ -352,12 +354,12 @@ start_form();
 	div_end();
 
 	start_table(TABLESTYLE, "width='60%'");
-	amount_row(_("Amount of Discount:"), 'discount', null, '', $supplier_currency);
-	amount_row(_("Amount of Payment:"), 'amount', null, '', $supplier_currency);
-	textarea_row(_("Memo:"), 'memo_', null, 22, 4);
+	amount_row(_(UI_TEXT_AMOUNT_OF_DISCOUNT), 'discount', null, '', $supplier_currency);
+	amount_row(_(UI_TEXT_AMOUNT_OF_PAYMENT), 'amount', null, '', $supplier_currency);
+	textarea_row(_(UI_TEXT_MEMO), 'memo_', null, 22, 4);
 	end_table(1);
 
-	submit_center('ProcessSuppPayment',_("Enter Payment"), true, '', 'default');
+	submit_center('ProcessSuppPayment',_(UI_TEXT_ENTER_PAYMENT), true, '', 'default');
 
 end_form();
 
