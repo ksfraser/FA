@@ -885,4 +885,10 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_BACK_TO_ALLOCATIONS', 'Back to Allocations');
     define('UI_TEXT_ABANDON_ALLOCATIONS', 'Abandon allocations and return to selection of allocatable amounts');
     define('UI_TEXT_NO_UNSETTLED_TRANSACTIONS', 'There are no unsettled transactions to allocate.');
+    define('UI_TEXT_SHOW_SETTLED_ITEMS', 'Show Settled Items:');
+    define('UI_TEXT_ALLOCATE', 'Allocate');
+    define('UI_TEXT_TRANSACTION_TYPE', 'Transaction Type');
+    define('UI_TEXT_NUMBER', '#');
+    define('UI_TEXT_LEFT_TO_ALLOCATE', 'Left to Allocate');
+    define('UI_TEXT_MARKED_ITEMS_ARE_SETTLED', 'Marked items are settled.');
 };

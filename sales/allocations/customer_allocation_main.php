@@ -16,6 +16,7 @@ include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/sales/includes/sales_ui.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 $js = "";
 if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 500);
@@ -29,10 +30,10 @@ start_form();
 if (!isset($_POST['customer_id']))
 	$_POST['customer_id'] = get_global_customer();
 
-echo "<center>" . _("Select a customer: ") . "&nbsp;&nbsp;";
+echo "<center>" . _(UI_TEXT_SELECT_A_CUSTOMER_LABEL) . "&nbsp;&nbsp;";
 echo customer_list('customer_id', $_POST['customer_id'], true, true);
 echo "<br>";
-check(_("Show Settled Items:"), 'ShowSettled', null, true);
+check(_(UI_TEXT_SHOW_SETTLED_ITEMS), 'ShowSettled', null, true);
 echo "</center><br><br>";
 
 set_global_customer($_POST['customer_id']);
@@ -65,7 +66,7 @@ function trans_view($trans)
 
 function alloc_link($row)
 {
-	return pager_link(_("Allocate"),
+	return pager_link(_(UI_TEXT_ALLOCATE),
 		"/sales/allocations/customer_allocate.php?trans_no="
 			.$row["trans_no"] . "&trans_type=" . $row["type"]. "&debtor_no=" . $row["debtor_no"], ICON_ALLOC);
 }
@@ -89,24 +90,24 @@ function check_settled($row)
 $sql = get_allocatable_from_cust_sql($customer_id, $settled);
 
 $cols = array(
-	_("Transaction Type") => array('fun'=>'systype_name'),
-	_("#") => array('fun'=>'trans_view', 'align'=>'right'),
-	_("Reference"), 
-	_("Date") => array('name'=>'tran_date', 'type'=>'date', 'ord'=>'asc'),
-	_("Customer") => array('ord'=>''),
-	_("Currency") => array('align'=>'center'),
-	_("Total") => array('align'=>'right','fun'=>'amount_total'), 
-	_("Left to Allocate") => array('align'=>'right','insert'=>true, 'fun'=>'amount_left'), 
+	_(UI_TEXT_TRANSACTION_TYPE) => array('fun'=>'systype_name'),
+	_(UI_TEXT_NUMBER) => array('fun'=>'trans_view', 'align'=>'right'),
+	_(UI_TEXT_REFERENCE), 
+	_(UI_TEXT_DATE) => array('name'=>'tran_date', 'type'=>'date', 'ord'=>'asc'),
+	_(UI_TEXT_CUSTOMER) => array('ord'=>''),
+	_(UI_TEXT_CURRENCY) => array('align'=>'center'),
+	_(UI_TEXT_TOTAL) => array('align'=>'right','fun'=>'amount_total'), 
+	_(UI_TEXT_LEFT_TO_ALLOCATE) => array('align'=>'right','insert'=>true, 'fun'=>'amount_left'), 
 	array('insert'=>true, 'fun'=>'alloc_link')
 	);
 
 if (isset($_POST['customer_id'])) {
-	$cols[_("Customer")] = 'skip';
-	$cols[_("Currency")] = 'skip';
+	$cols[_(UI_TEXT_CUSTOMER)] = 'skip';
+	$cols[_(UI_TEXT_CURRENCY)] = 'skip';
 }
 
 $table =& new_db_pager('alloc_tbl', $sql, $cols);
-$table->set_marker('check_settled', _("Marked items are settled."), 'settledbg', 'settledfg');
+$table->set_marker('check_settled', _(UI_TEXT_MARKED_ITEMS_ARE_SETTLED), 'settledbg', 'settledfg');
 
 $table->width = "75%";
 
