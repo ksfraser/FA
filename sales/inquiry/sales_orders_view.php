@@ -15,6 +15,7 @@ include_once($path_to_root . "/includes/db_pager.inc");
 include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/sales/includes/sales_ui.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 
 $page_security = 'SA_SALESTRANSVIEW';
 
@@ -99,7 +100,7 @@ function view_link($dummy, $order_no)
 function prt_link($row)
 {
 	global $trans_type;
-	return print_document_link($row['order_no'], _("Print"), true, $trans_type, ICON_PRINT);
+	return print_document_link($row['order_no'], _(UI_TEXT_PRINT), true, $trans_type, ICON_PRINT);
 }
 
 function edit_link($row) 
@@ -122,13 +123,13 @@ function dispatch_link($row)
 	if ($trans_type == ST_SALESORDER)
 	{
 		if ($row['TotDelivered'] < $row['TotQuantity'] && !$page_nested)
-			return pager_link( _("Dispatch"),
+			return pager_link( _(UI_TEXT_DISPATCH),
 				"/sales/customer_delivery.php?OrderNumber=" .$row['order_no'], ICON_DOC);
 		else
 			return '';
 	}		
 	else
-  		return pager_link( _("Sales Order"),
+  		return pager_link( _(UI_TEXT_SALES_ORDER),
 			"/sales/sales_order_entry.php?OrderNumber=" .$row['order_no'], ICON_DOC);
 }
 
@@ -136,7 +137,7 @@ function invoice_link($row)
 {
 	global $trans_type;
 	if ($trans_type == ST_SALESORDER)
-  		return pager_link( _("Invoice"),
+  		return pager_link( _(UI_TEXT_INVOICE),
 			"/sales/sales_order_entry.php?NewInvoice=" .$row["order_no"], ICON_DOC);
 	else
 		return '';
@@ -144,13 +145,13 @@ function invoice_link($row)
 
 function delivery_link($row)
 {
-  return pager_link( _("Delivery"),
+  return pager_link( _(UI_TEXT_DELIVERY),
 	"/sales/sales_order_entry.php?NewDelivery=" .$row['order_no'], ICON_DOC);
 }
 
 function order_link($row)
 {
-  return pager_link( _("Sales Order"),
+  return pager_link( _(UI_TEXT_SALES_ORDER),
 	"/sales/sales_order_entry.php?NewQuoteToSalesOrder=" .$row['order_no'], ICON_DOC);
 }
 
@@ -193,7 +194,7 @@ function invoice_prep_link($row)
 	// invoicing should be available only for partially allocated orders
 	return 
 		$row['inv_payments'] < $row['total'] ?
-		pager_link($row['ord_payments']  ? _("Prepayment Invoice") : _("Final Invoice"),
+		pager_link($row['ord_payments']  ? _(UI_TEXT_PREPAYMENT_INVOICE) : _(UI_TEXT_FINAL_INVOICE),
 		"/sales/customer_invoice.php?InvoicePrepayments=" .$row['order_no'], ICON_DOC) : '';
 }
 
@@ -230,20 +231,20 @@ start_form();
 
 start_table(TABLESTYLE_NOBORDER);
 start_row();
-ref_cells(_("#:"), 'OrderNumber', '',null, '', true);
-ref_cells(_("Ref"), 'OrderReference', '',null, '', true);
+ref_cells(_(UI_TEXT_ORDER_NUMBER_LABEL), 'OrderNumber', '',null, '', true);
+ref_cells(_(UI_TEXT_REF), 'OrderReference', '',null, '', true);
 
 if ($show_dates)
-    yesno_list_cells('', 'by_delivery', null, ($trans_type==ST_SALESORDER ? _("Delivery date") : _("Valid until")).':',
-         ($trans_type==ST_SALESORDER ? _("Order date") : _("Quotation date")).':');
+    yesno_list_cells('', 'by_delivery', null, ($trans_type==ST_SALESORDER ? _(UI_TEXT_DELIVERY_DATE) : _(UI_TEXT_VALID_UNTIL)).':',
+         ($trans_type==ST_SALESORDER ? _(UI_TEXT_ORDER_DATE) : _(UI_TEXT_QUOTATION_DATE)).':');
 
 if ($show_dates)
 {
-  	date_cells(_("from:"), 'OrdersAfterDate', '', null, -user_transaction_days());
-  	date_cells(_("to:"), 'OrdersToDate', '', null, 1);
+  	date_cells(_(UI_TEXT_FROM_LABEL), 'OrdersAfterDate', '', null, -user_transaction_days());
+  	date_cells(_(UI_TEXT_TO_LABEL), 'OrdersToDate', '', null, 1);
 }
 
-locations_list_cells(_("Location:"), 'StockLocation', null, true, true);
+locations_list_cells(_(UI_TEXT_LOCATION_LABEL), 'StockLocation', null, true, true);
 
 if($show_dates) {
 	end_row();
@@ -252,18 +253,18 @@ if($show_dates) {
 	start_table(TABLESTYLE_NOBORDER);
 	start_row();
 }
-stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true, true);
+stock_items_list_cells(_(UI_TEXT_ITEM_LABEL), 'SelectStockFromList', null, true, true);
 
 if (!$page_nested)
-	customer_list_cells(_("Select a customer: "), 'customer_id', null, true, true);
+	customer_list_cells(_(UI_TEXT_SELECT_A_CUSTOMER_LABEL), 'customer_id', null, true, true);
 if ($trans_type == ST_SALESQUOTE)
-	check_cells(_("Show All:"), 'show_all');
+	check_cells(_(UI_TEXT_SHOW_ALL_LABEL), 'show_all');
 if ($trans_type == ST_SALESORDER)
-	check_cells(_("Zero values"), 'show_voided');
+	check_cells(_(UI_TEXT_ZERO_VALUES), 'show_voided');
 if ($show_dates && $trans_type == ST_SALESORDER)
-	check_cells(_("No auto"), 'no_auto');
+	check_cells(_(UI_TEXT_NO_AUTO), 'no_auto');
 
-submit_cells('SearchOrders', _("Search"),'',_('Select documents'), 'default');
+submit_cells('SearchOrders', _(UI_TEXT_SEARCH),'',_(UI_TEXT_SELECT_DOCUMENTS), 'default');
 hidden('order_view_mode', $_POST['order_view_mode']);
 hidden('type', $trans_type);
 
@@ -279,31 +280,31 @@ $sql = get_sql_for_sales_orders_view($trans_type, RequestService::getPostStatic(
 
 if ($trans_type == ST_SALESORDER)
 	$cols = array(
-		_("Order #") => array('fun'=>'view_link', 'align'=>'right', 'ord' =>''),
-		_("Ref") => array('type' => 'sorder.reference', 'ord' => '') ,
-		_("Customer") => array('type' => 'debtor.name' , 'ord' => '') ,
-		_("Branch"), 
-		_("Cust Order Ref"),
-		_("Order Date") => array('type' =>  'date', 'ord' => ''),
-		_("Required By") =>array('type'=>'date', 'ord'=>''),
-		_("Delivery To"), 
-		_("Order Total") => array('type'=>'amount', 'ord'=>''),
+		_(UI_TEXT_ORDER_NUMBER) => array('fun'=>'view_link', 'align'=>'right', 'ord' =>''),
+		_(UI_TEXT_REF) => array('type' => 'sorder.reference', 'ord' => '') ,
+		_(UI_TEXT_CUSTOMER) => array('type' => 'debtor.name' , 'ord' => '') ,
+		_(UI_TEXT_BRANCH), 
+		_(UI_TEXT_CUST_ORDER_REF),
+		_(UI_TEXT_ORDER_DATE) => array('type' =>  'date', 'ord' => ''),
+		_(UI_TEXT_REQUIRED_BY) =>array('type'=>'date', 'ord'=>''),
+		_(UI_TEXT_DELIVERY_TO), 
+		_(UI_TEXT_ORDER_TOTAL) => array('type'=>'amount', 'ord'=>''),
 		'Type' => 'skip',
-		_("Currency") => array('align'=>'center')
+		_(UI_TEXT_CURRENCY) => array('align'=>'center')
 	);
 else
 	$cols = array(
-		_("Quote #") => array('fun'=>'view_link', 'align'=>'right', 'ord' => ''),
-		_("Ref"),
-		_("Customer"),
-		_("Branch"), 
-		_("Cust Order Ref"),
-		_("Quote Date") => 'date',
-		_("Valid until") =>array('type'=>'date', 'ord'=>''),
-		_("Delivery To"), 
-		_("Quote Total") => array('type'=>'amount', 'ord'=>''),
+		_(UI_TEXT_QUOTE_NUMBER) => array('fun'=>'view_link', 'align'=>'right', 'ord' => ''),
+		_(UI_TEXT_REF),
+		_(UI_TEXT_CUSTOMER),
+		_(UI_TEXT_BRANCH), 
+		_(UI_TEXT_CUST_ORDER_REF),
+		_(UI_TEXT_QUOTATION_DATE) => 'date',
+		_(UI_TEXT_VALID_UNTIL) =>array('type'=>'date', 'ord'=>''),
+		_(UI_TEXT_DELIVERY_TO), 
+		_(UI_TEXT_QUOTE_TOTAL) => array('type'=>'amount', 'ord'=>''),
 		'Type' => 'skip',
-		_("Currency") => array('align'=>'center')
+		_(UI_TEXT_CURRENCY) => array('align'=>'center')
 	);
 if ($_POST['order_view_mode'] == 'OutstandingOnly') {
 	array_append($cols, array(
@@ -312,17 +313,17 @@ if ($_POST['order_view_mode'] == 'OutstandingOnly') {
 		array('insert'=>true, 'fun'=>'prt_link')));
 
 } elseif ($_POST['order_view_mode'] == 'InvoiceTemplates') {
-	array_substitute($cols, 4, 1, _("Description"));
+	array_substitute($cols, 4, 1, _(UI_TEXT_DESCRIPTION));
 	array_append($cols, array( array('insert'=>true, 'fun'=>'invoice_link')));
 
 } else if ($_POST['order_view_mode'] == 'DeliveryTemplates') {
-	array_substitute($cols, 4, 1, _("Description"));
+	array_substitute($cols, 4, 1, _(UI_TEXT_DESCRIPTION));
 	array_append($cols, array(
 			array('insert'=>true, 'fun'=>'delivery_link'))
 	);
 } else if ($_POST['order_view_mode'] == 'PrepaidOrders') {
 	array_append($cols, array(
-		_("New Payments") => array('insert'=>true, 'fun'=>'unallocated_prepayments'),
+		_(UI_TEXT_NEW_PAYMENTS) => array('insert'=>true, 'fun'=>'unallocated_prepayments'),
 		array('insert'=>true, 'fun'=>'invoice_prep_link'))
 	);
 
@@ -333,7 +334,7 @@ if ($_POST['order_view_mode'] == 'OutstandingOnly') {
 					array('insert'=>true, 'fun'=>'prt_link')));
 } elseif ($trans_type == ST_SALESORDER) {
 	 array_append($cols,array(
-			_("Tmpl") => array('insert'=>true, 'fun'=>'tmpl_checkbox'),
+			_(UI_TEXT_TMPL) => array('insert'=>true, 'fun'=>'tmpl_checkbox'),
 					array('insert'=>true, 'fun'=>'edit_link'),
 					array('insert'=>true, 'fun'=>'dispatch_link'),
 					array('insert'=>true, 'fun'=>'prt_link')));
@@ -341,12 +342,12 @@ if ($_POST['order_view_mode'] == 'OutstandingOnly') {
 
 
 $table =& new_db_pager('orders_tbl', $sql, $cols);
-$table->set_marker('check_overdue', _("Marked items are overdue."));
+$table->set_marker('check_overdue', _(UI_TEXT_MARKED_ITEMS_ARE_OVERDUE));
 
 $table->width = "80%";
 
 display_db_pager($table);
-submit_center('Update', _("Update"), true, '', null);
+submit_center('Update', _(UI_TEXT_UPDATE_BUTTON), true, '', null);
 
 end_form();
 end_page();
