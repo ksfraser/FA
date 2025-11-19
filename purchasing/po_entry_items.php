@@ -16,6 +16,7 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 include_once($path_to_root . "/purchasing/includes/db/suppliers_db.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 
 // Modern OOP Services
 require_once($path_to_root . "/includes/DateService.php");
@@ -74,7 +75,7 @@ if (isset($_GET['ModifyOrderNumber']))
 
 //---------------------------------------------------------------------------------------------------
 
-check_db_has_suppliers(_("There are no suppliers defined in the system."));
+check_db_has_suppliers(_(UI_TEXT_NO_SUPPLIERS_DEFINED_IN_SYSTEM));
 
 //---------------------------------------------------------------------------------------------------------------
 
@@ -84,23 +85,23 @@ if (isset($_GET['AddedID']))
 	$trans_type = ST_PURCHORDER;	
 
 	if (!isset($_GET['Updated']))
-		display_notification_centered(_("Purchase Order has been entered"));
+		display_notification_centered(_(UI_TEXT_PURCHASE_ORDER_ENTERED));
 	else
-		display_notification_centered(_("Purchase Order has been updated") . " #$order_no");
-	display_note(get_trans_view_str($trans_type, $order_no, _("&View this order")), 0, 1);
+		display_notification_centered(_(UI_TEXT_PURCHASE_ORDER_UPDATED) . " #$order_no");
+	display_note(get_trans_view_str($trans_type, $order_no, _(UI_TEXT_VIEW_THIS_ORDER)), 0, 1);
 
-	display_note(print_document_link($order_no, _("&Print This Order"), true, $trans_type), 0, 1);
+	display_note(print_document_link($order_no, _(UI_TEXT_PRINT_THIS_ORDER), true, $trans_type), 0, 1);
 
-	display_note(print_document_link($order_no, _("&Email This Order"), true, $trans_type, false, "printlink", "", 1));
+	display_note(print_document_link($order_no, _(UI_TEXT_EMAIL_THIS_ORDER), true, $trans_type, false, "printlink", "", 1));
 
-	hyperlink_params($path_to_root . "/purchasing/po_receive_items.php", _("&Receive Items on this Purchase Order"), "PONumber=$order_no");
+	hyperlink_params($path_to_root . "/purchasing/po_receive_items.php", _(UI_TEXT_RECEIVE_ITEMS_ON_THIS_PURCHASE_ORDER), "PONumber=$order_no");
 
   // TODO, for fixed asset
-	hyperlink_params($_SERVER['PHP_SELF'], _("Enter &Another Purchase Order"), "NewOrder=yes");
+	hyperlink_params($_SERVER['PHP_SELF'], _(UI_TEXT_ENTER_ANOTHER_PURCHASE_ORDER), "NewOrder=yes");
 	
-	hyperlink_no_params($path_to_root."/purchasing/inquiry/po_search.php", _("Select An &Outstanding Purchase Order"));
+	hyperlink_no_params($path_to_root."/purchasing/inquiry/po_search.php", _(UI_TEXT_SELECT_AN_OUTSTANDING_PURCHASE_ORDER));
 	
-	hyperlink_params("$path_to_root/admin/attachments.php", _("Add an Attachment"), 
+	hyperlink_params("$path_to_root/admin/attachments.php", _(UI_TEXT_ADD_AN_ATTACHMENT), 
 		"filterType=$trans_type&trans_no=$order_no");
 
 	display_footer_exit();	
@@ -110,20 +111,20 @@ if (isset($_GET['AddedID']))
 	$trans_no = $_GET['AddedGRN'];
 	$trans_type = ST_SUPPRECEIVE;
 
-	display_notification_centered(_("Direct GRN has been entered"));
+	display_notification_centered(_(UI_TEXT_DIRECT_GRN_ENTERED));
 
-	display_note(get_trans_view_str($trans_type, $trans_no, _("&View this GRN")), 0);
+	display_note(get_trans_view_str($trans_type, $trans_no, _(UI_TEXT_VIEW_THIS_GRN)), 0);
 
     $clearing_act = get_company_pref('grn_clearing_act');
 	if ($clearing_act)	
-		display_note(get_gl_view_str($trans_type, $trans_no, _("View the GL Journal Entries for this Delivery")), 1);
+		display_note(get_gl_view_str($trans_type, $trans_no, _(UI_TEXT_VIEW_GL_JOURNAL_ENTRIES_FOR_THIS_DELIVERY)), 1);
 
 	hyperlink_params("$path_to_root/purchasing/supplier_invoice.php",
-		_("Entry purchase &invoice for this receival"), "New=1");
+		_(UI_TEXT_ENTRY_PURCHASE_INVOICE_FOR_THIS_RECEIVAL), "New=1");
 
-	hyperlink_params($_SERVER['PHP_SELF'], _("Enter &Another GRN"), "NewGRN=Yes");
+	hyperlink_params($_SERVER['PHP_SELF'], _(UI_TEXT_ENTER_ANOTHER_GRN), "NewGRN=Yes");
 	
-	hyperlink_params("$path_to_root/admin/attachments.php", _("Add an Attachment"), 
+	hyperlink_params("$path_to_root/admin/attachments.php", _(UI_TEXT_ADD_AN_ATTACHMENT), 
 		"filterType=$trans_type&trans_no=$trans_no");
 
 	display_footer_exit();	
@@ -133,27 +134,27 @@ if (isset($_GET['AddedID']))
 	$trans_no = $_GET['AddedPI'];
 	$trans_type = ST_SUPPINVOICE;
 
-	display_notification_centered(_("Direct Purchase Invoice has been entered"));
+	display_notification_centered(_(UI_TEXT_DIRECT_PURCHASE_INVOICE_ENTERED));
 
-	display_note(get_trans_view_str($trans_type, $trans_no, _("&View this Invoice")), 0);
+	display_note(get_trans_view_str($trans_type, $trans_no, _(UI_TEXT_VIEW_THIS_INVOICE)), 0);
 
-	display_note(get_gl_view_str($trans_type, $trans_no, _("View the GL Journal Entries for this Invoice")), 1);
+	display_note(get_gl_view_str($trans_type, $trans_no, _(UI_TEXT_VIEW_GL_JOURNAL_ENTRIES_FOR_THIS_INVOICE)), 1);
 
-	hyperlink_params("$path_to_root/purchasing/supplier_payment.php", _("Entry supplier &payment for this invoice"),
+	hyperlink_params("$path_to_root/purchasing/supplier_payment.php", _(UI_TEXT_ENTRY_SUPPLIER_PAYMENT_FOR_THIS_INVOICE),
 		"trans_type=$trans_type&PInvoice=".$trans_no);
 
-	hyperlink_params($_SERVER['PHP_SELF'], _("Enter &Another Direct Invoice"), "NewInvoice=Yes");
+	hyperlink_params($_SERVER['PHP_SELF'], _(UI_TEXT_ENTER_ANOTHER_DIRECT_INVOICE), "NewInvoice=Yes");
 	
-	hyperlink_params("$path_to_root/admin/attachments.php", _("Add an Attachment"), 
+	hyperlink_params("$path_to_root/admin/attachments.php", _(UI_TEXT_ADD_AN_ATTACHMENT), 
 		"filterType=$trans_type&trans_no=$trans_no");
 
 	display_footer_exit();	
 }
 
 if ($_SESSION['PO']->fixed_asset)
-  check_db_has_purchasable_fixed_assets(_("There are no purchasable fixed assets defined in the system."));
+  check_db_has_purchasable_fixed_assets(_(UI_TEXT_NO_PURCHASABLE_FIXED_ASSETS_DEFINED_IN_SYSTEM));
 else
-  check_db_has_purchasable_items(_("There are no purchasable inventory items defined in the system."));
+  check_db_has_purchasable_items(_(UI_TEXT_NO_PURCHASABLE_INVENTORY_ITEMS_DEFINED_IN_SYSTEM));
 //--------------------------------------------------------------------------------------------------
 
 function line_start_focus() {
@@ -182,7 +183,7 @@ function handle_delete_item($line_no)
 	} 
 	else 
 	{
-		UiMessageService::displayError(_("This item cannot be deleted because some of it has already been received."));
+		UiMessageService::displayError(_(UI_TEXT_ITEM_CANNOT_BE_DELETED_ALREADY_RECEIVED));
 	}	
     line_start_focus();
 }
@@ -197,8 +198,8 @@ function handle_cancel_po()
 	if(($_SESSION['PO']->order_no != 0) && 
 		$_SESSION['PO']->any_already_received() == 1)
 	{
-		UiMessageService::displayError(_("This order cannot be cancelled because some of it has already been received.") 
-			. "<br>" . _("The line item quantities may be modified to quantities more than already received. prices cannot be altered for lines that have already been received and quantities cannot be reduced below the quantity already received."));
+		UiMessageService::displayError(_(UI_TEXT_ORDER_CANNOT_BE_CANCELLED_ALREADY_RECEIVED) 
+			. "<br>" . _(UI_TEXT_LINE_ITEM_QUANTITIES_MODIFICATION_RULES));
 		return;
 	}
 
@@ -218,9 +219,9 @@ function handle_cancel_po()
 	$_SESSION['PO']->clear_items();
 	$_SESSION['PO'] = new purch_order;
 
-	display_notification(_("This purchase order has been cancelled."));
+	display_notification(_(UI_TEXT_PURCHASE_ORDER_CANCELLED));
 
-	hyperlink_params($path_to_root . "/purchasing/po_entry_items.php", _("Enter a new purchase order"), "NewOrder=Yes");
+	hyperlink_params($path_to_root . "/purchasing/po_entry_items.php", _(UI_TEXT_ENTER_NEW_PURCHASE_ORDER), "NewOrder=Yes");
 	echo "<br>";
 
 	end_page();
@@ -232,7 +233,7 @@ function handle_cancel_po()
 function check_data()
 {
 	if(!RequestService::getPostStatic('stock_id_text', true)) {
-		UiMessageService::displayError( _("Item description cannot be empty."));
+		UiMessageService::displayError( _(UI_TEXT_ITEM_DESCRIPTION_CANNOT_BE_EMPTY));
 		set_focus('stock_id_edit');
 		return false;
 	}
@@ -242,20 +243,20 @@ function check_data()
     if (!check_num('qty',$min))
     {
     	$min = FormatService::numberFormat2($min, $dec);
-	   	UiMessageService::displayError(_("The quantity of the order item must be numeric and not less than ").$min);
+	   	UiMessageService::displayError(_(UI_TEXT_QUANTITY_MUST_BE_NUMERIC_NOT_LESS_THAN).$min);
 		set_focus('qty');
 	   	return false;
     }
 
     if (!check_num('price', 0))
     {
-	   	UiMessageService::displayError(_("The price entered must be numeric and not less than zero."));
+	   	UiMessageService::displayError(_(UI_TEXT_PRICE_MUST_BE_NUMERIC_NOT_LESS_THAN_ZERO));
 		set_focus('price');
 	   	return false;	   
     }
     $dateService = new DateService();
     if ($_SESSION['PO']->trans_type == ST_PURCHORDER && !$dateService->isDate($_POST['req_del_date'])){
-    		UiMessageService::displayError(_("The date entered is in an invalid format."));
+    		UiMessageService::displayError(_(UI_TEXT_DATE_ENTERED_INVALID_FORMAT));
 		set_focus('req_del_date');
    		return false;    	 
     }
@@ -274,8 +275,8 @@ function handle_update_item()
 		if ($_SESSION['PO']->line_items[$_POST['line_no']]->qty_inv > RequestService::inputNumStatic('qty') ||
 			$_SESSION['PO']->line_items[$_POST['line_no']]->qty_received > RequestService::inputNumStatic('qty'))
 		{
-			UiMessageService::displayError(_("You are attempting to make the quantity ordered a quantity less than has already been invoiced or received.  This is prohibited.") .
-				"<br>" . _("The quantity received can only be modified by entering a negative receipt and the quantity invoiced can only be reduced by entering a credit note against this item."));
+			UiMessageService::displayError(_(UI_TEXT_QUANTITY_ORDERED_LESS_THAN_INVOICED_RECEIVED_PROHIBITED) .
+				"<br>" . _(UI_TEXT_QUANTITY_RECEIVED_INVOICED_MODIFICATION_RULES));
 			set_focus('qty');
 			return;
 		}
@@ -303,7 +304,7 @@ function handle_add_new_item()
     			is not already on this order */
    			    if (($order_item->stock_id == $_POST['stock_id'])) 
    			    {
-					display_warning(_("The selected item is already on this order."));
+					display_warning(_(UI_TEXT_SELECTED_ITEM_ALREADY_ON_ORDER));
 			    }
 		    } /* end of the foreach loop to look for pre-existing items of the same code */
 		}
@@ -329,7 +330,7 @@ function handle_add_new_item()
 	   		} 
 	   		else 
 	   		{
-			     UiMessageService::displayError(_("The selected item does not exist or it is a kit part and therefore cannot be purchased."));
+			     UiMessageService::displayError(_(UI_TEXT_SELECTED_ITEM_DOES_NOT_EXIST_OR_KIT));
 		   	}
 
 		} /* end of if not already on the order and allow input was true*/
@@ -343,7 +344,7 @@ function can_commit()
 {
 	if (!RequestService::getPostStatic('supplier_id')) 
 	{
-		UiMessageService::displayError(_("There is no supplier selected."));
+		UiMessageService::displayError(_(UI_TEXT_NO_SUPPLIER_SELECTED));
 		set_focus('supplier_id');
 		return false;
 	} 
@@ -351,20 +352,20 @@ function can_commit()
 
 	if (!$dateService->isDate($_POST['OrderDate'])) 
 	{
-		UiMessageService::displayError(_("The entered order date is invalid."));
+		UiMessageService::displayError(_(UI_TEXT_ENTERED_ORDER_DATE_INVALID));
 		set_focus('OrderDate');
 		return false;
 	} 
 	if (($_SESSION['PO']->trans_type == ST_SUPPRECEIVE || $_SESSION['PO']->trans_type == ST_SUPPINVOICE) 
 		&& !DateService::isDateInFiscalYear($_POST['OrderDate'])) {
-		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_(UI_TEXT_ENTERED_DATE_OUT_OF_FISCAL_YEAR));
 		set_focus('OrderDate');
 		return false;
 	}
 
 	if (($_SESSION['PO']->trans_type==ST_SUPPINVOICE) && !$dateService->isDate($_POST['due_date'])) 
 	{
-		UiMessageService::displayError(_("The entered due date is invalid."));
+		UiMessageService::displayError(_(UI_TEXT_ENTERED_DUE_DATE_INVALID));
 		set_focus('due_date');
 		return false;
 	} 
@@ -380,26 +381,26 @@ function can_commit()
 
 	if ($_SESSION['PO']->trans_type == ST_SUPPINVOICE && trim(RequestService::getPostStatic('supp_ref')) == false)
 	{
-		UiMessageService::displayError(_("You must enter a supplier's invoice reference."));
+		UiMessageService::displayError(_(UI_TEXT_MUST_ENTER_SUPPLIER_INVOICE_REFERENCE));
 		set_focus('supp_ref');
 		return false;
 	}
 	if ($_SESSION['PO']->trans_type==ST_SUPPINVOICE 
 		&& is_reference_already_there($_SESSION['PO']->supplier_id, RequestService::getPostStatic('supp_ref'), $_SESSION['PO']->order_no))
 	{
-		UiMessageService::displayError(_("This invoice number has already been entered. It cannot be entered again.") . " (" . RequestService::getPostStatic('supp_ref') . ")");
+		UiMessageService::displayError(_(UI_TEXT_INVOICE_NUMBER_ALREADY_ENTERED) . " (" . RequestService::getPostStatic('supp_ref') . ")");
 		set_focus('supp_ref');
 		return false;
 	}
 	if ($_SESSION['PO']->trans_type == ST_PURCHORDER && RequestService::getPostStatic('delivery_address') == '')
 	{
-		UiMessageService::displayError(_("There is no delivery address specified."));
+		UiMessageService::displayError(_(UI_TEXT_NO_DELIVERY_ADDRESS_SPECIFIED));
 		set_focus('delivery_address');
 		return false;
 	} 
 	if (RequestService::getPostStatic('StkLocation') == '')
 	{
-		UiMessageService::displayError(_("There is no location specified to move any items into."));
+		UiMessageService::displayError(_(UI_TEXT_NO_LOCATION_SPECIFIED_TO_MOVE_ITEMS));
 		set_focus('StkLocation');
 		return false;
 	} 
@@ -407,12 +408,12 @@ function can_commit()
 		return false;
 	if ($_SESSION['PO']->order_has_items() == false)
 	{
-     	display_error (_("The order cannot be placed because there are no lines entered on this order."));
+     	display_error (_(UI_TEXT_ORDER_CANNOT_BE_PLACED_NO_LINES));
      	return false;
 	}
 	if (floatcmp(RequestService::inputNumStatic('prep_amount'), $_SESSION['PO']->get_trans_total()) > 0)
 	{
-		UiMessageService::displayError(_("Required prepayment is greater than total invoice value."));
+		UiMessageService::displayError(_(UI_TEXT_REQUIRED_PREPAYMENT_GREATER_THAN_TOTAL));
 		set_focus('prep_amount');
 		return false;
 	}
@@ -489,26 +490,26 @@ start_table(TABLESTYLE2);
 
 
 if ($_SESSION['PO']->trans_type == ST_SUPPINVOICE) {
-	cash_accounts_list_row(_("Payment:"), 'cash_account', null, false, _('Delayed'));
+	cash_accounts_list_row(_(UI_TEXT_PAYMENT_LABEL), 'cash_account', null, false, _(UI_TEXT_DELAYED));
 }
 
-textarea_row(_("Memo:"), 'Comments', null, 70, 4);
+textarea_row(_(UI_TEXT_MEMO_LABEL), 'Comments', null, 70, 4);
 
 end_table(1);
 
 div_start('controls', 'items_table');
-$process_txt = _("Place Order");
-$update_txt = _("Update Order");
-$cancel_txt = _("Cancel Order");
+$process_txt = _(UI_TEXT_PLACE_ORDER);
+$update_txt = _(UI_TEXT_UPDATE_ORDER);
+$cancel_txt = _(UI_TEXT_CANCEL_ORDER);
 if ($_SESSION['PO']->trans_type == ST_SUPPRECEIVE) {
-	$process_txt = _("Process GRN");
-	$update_txt = _("Update GRN");
-	$cancel_txt = _("Cancel GRN");
+	$process_txt = _(UI_TEXT_PROCESS_GRN);
+	$update_txt = _(UI_TEXT_UPDATE_GRN);
+	$cancel_txt = _(UI_TEXT_CANCEL_GRN);
 }	
 elseif ($_SESSION['PO']->trans_type == ST_SUPPINVOICE) {
-	$process_txt = _("Process Invoice");
-	$update_txt = _("Update Invoice");
-	$cancel_txt = _("Cancel Invoice");
+	$process_txt = _(UI_TEXT_PROCESS_INVOICE);
+	$update_txt = _(UI_TEXT_UPDATE_INVOICE);
+	$cancel_txt = _(UI_TEXT_CANCEL_INVOICE);
 }	
 if ($_SESSION['PO']->order_has_items()) 
 {
