@@ -16,6 +16,7 @@ include_once($path_to_root . "/purchasing/includes/po_class.inc");
 include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
 include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 
 // Modern OOP Services
 require_once($path_to_root . "/includes/DateService.php");
@@ -35,19 +36,19 @@ if (isset($_GET['AddedID']))
 	$grn = $_GET['AddedID'];
 	$trans_type = ST_SUPPRECEIVE;
 
-	display_notification_centered(_("Purchase Order Delivery has been processed"));
+	display_notification_centered(_(UI_TEXT_PURCHASE_ORDER_DELIVERY_PROCESSED));
 
-	display_note(get_trans_view_str($trans_type, $grn, _("&View this Delivery")));
+	display_note(get_trans_view_str($trans_type, $grn, _(UI_TEXT_VIEW_THIS_DELIVERY)));
 	
     $clearing_act = get_company_pref('grn_clearing_act');
 	if ($clearing_act)	
-		display_note(get_gl_view_str($trans_type, $grn, _("View the GL Journal Entries for this Delivery")), 1);
+		display_note(get_gl_view_str($trans_type, $grn, _(UI_TEXT_VIEW_GL_JOURNAL_ENTRIES_FOR_THIS_DELIVERY)), 1);
 
-	hyperlink_params("$path_to_root/purchasing/supplier_invoice.php", _("Entry purchase &invoice for this receival"), "New=1");
+	hyperlink_params("$path_to_root/purchasing/supplier_invoice.php", _(UI_TEXT_ENTRY_PURCHASE_INVOICE_FOR_THIS_RECEIVAL), "New=1");
 
-	hyperlink_no_params("$path_to_root/purchasing/inquiry/po_search.php", _("Select a different &purchase order for receiving items against"));
+	hyperlink_no_params("$path_to_root/purchasing/inquiry/po_search.php", _(UI_TEXT_SELECT_DIFFERENT_PURCHASE_ORDER_FOR_RECEIVING));
 
-	hyperlink_params("$path_to_root/admin/attachments.php", _("Add an Attachment"), 
+	hyperlink_params("$path_to_root/admin/attachments.php", _(UI_TEXT_ADD_AN_ATTACHMENT), 
 		"filterType=$trans_type&trans_no=$grn");
 
 	display_footer_exit();
@@ -57,7 +58,7 @@ if (isset($_GET['AddedID']))
 
 if ((!isset($_GET['PONumber']) || $_GET['PONumber'] == 0) && !isset($_SESSION['PO']))
 {
-	die (_("This page can only be opened if a purchase order has been selected. Please select a purchase order first."));
+	die (_(UI_TEXT_PAGE_CAN_ONLY_OPEN_IF_PO_SELECTED));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -66,8 +67,8 @@ function display_po_receive_items()
 {
 	div_start('grn_items');
     start_table(TABLESTYLE, "colspan=7 width='90%'");
-    $th = array(_("Item Code"), _("Description"), _("Ordered"), _("Units"), _("Received"),
-    	_("Outstanding"), _("This Delivery"), _("Price"), _("Total"));
+    $th = array(_(UI_TEXT_ITEM_CODE), _(UI_TEXT_DESCRIPTION), _(UI_TEXT_ORDERED), _(UI_TEXT_UNITS), _(UI_TEXT_RECEIVED),
+    	_(UI_TEXT_OUTSTANDING), _(UI_TEXT_THIS_DELIVERY), _(UI_TEXT_PRICE), _(UI_TEXT_TOTAL));
     table_header($th);
 
     /*show the line items on the order with the quantity being received for modification */
@@ -118,7 +119,7 @@ function display_po_receive_items()
 
 	$display_sub_total = FormatService::priceFormat($total/* + RequestService::inputNumStatic('freight_cost')*/);
 
-	label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right","align=right");
+	label_row(_(UI_TEXT_SUB_TOTAL), $display_sub_total, "colspan=$colspan align=right","align=right");
 	$taxes = $_SESSION['PO']->get_taxes(RequestService::inputNumStatic('freight_cost'), true);
 	
 	$tax_total = display_edit_tax_items($taxes, $colspan, $_SESSION['PO']->tax_included);
@@ -126,7 +127,7 @@ function display_po_receive_items()
 	$display_total = FormatService::priceFormat(($total + RequestService::inputNumStatic('freight_cost') + $tax_total));
 
 	start_row();
-	label_cells(_("Amount Total"), $display_total, "colspan=$colspan align='right'","align='right'");
+	label_cells(_(UI_TEXT_AMOUNT_TOTAL), $display_total, "colspan=$colspan align='right'","align='right'");
 	end_row();
     end_table();
 	div_end();
@@ -172,19 +173,19 @@ function can_process()
 	
 	if (count($_SESSION['PO']->line_items) <= 0)
 	{
-        UiMessageService::displayError(_("There is nothing to process. Please enter valid quantities greater than zero."));
+        UiMessageService::displayError(_(UI_TEXT_NOTHING_TO_PROCESS_ENTER_VALID_QUANTITIES));
     	return false;
 	}
 	$dateService = new DateService();
 
 	if (!$dateService->isDate($_POST['DefaultReceivedDate']))
 	{
-		UiMessageService::displayError(_("The entered date is invalid."));
+		UiMessageService::displayError(_(UI_TEXT_DATE_ENTERED_INVALID_FORMAT));
 		set_focus('DefaultReceivedDate');
 		return false;
 	}
 	if (!DateService::isDateInFiscalYear($_POST['DefaultReceivedDate'])) {
-		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_(UI_TEXT_ENTERED_DATE_OUT_OF_FISCAL_YEAR));
 		set_focus('DefaultReceivedDate');
 		return false;
 	}
@@ -219,14 +220,14 @@ function can_process()
 
     if ($something_received == 0)
     { 	/*Then dont bother proceeding cos nothing to do ! */
-        UiMessageService::displayError(_("There is nothing to process. Please enter valid quantities greater than zero."));
+        UiMessageService::displayError(_(UI_TEXT_NOTHING_TO_PROCESS_ENTER_VALID_QUANTITIES));
     	return false;
     }
     elseif ($delivery_qty_too_large == 1)
     {
-    	UiMessageService::displayError(_("Entered quantities cannot be greater than the quantity entered on the purchase order including the allowed over-receive percentage") . " (" . $SysPrefs->over_receive_allowance() ."%)."
+    	UiMessageService::displayError(_(UI_TEXT_ENTERED_QUANTITIES_CANNOT_BE_GREATER_THAN_ORDERED) . " (" . $SysPrefs->over_receive_allowance() ."%)."
     		. "<br>" .
-    	 	_("Modify the ordered items on the purchase order if you wish to increase the quantities."));
+    	 	_(UI_TEXT_MODIFY_ORDERED_ITEMS_TO_INCREASE_QUANTITIES));
     	return false;
     }
 
@@ -244,13 +245,13 @@ function process_receive_po()
 
 	if (check_po_changed())
 	{
-		UiMessageService::displayError(_("This order has been changed or invoiced since this delivery was started to be actioned. Processing halted. To enter a delivery against this purchase order, it must be re-selected and re-read again to update the changes made by the other user."));
+		UiMessageService::displayError(_(UI_TEXT_ORDER_CHANGED_OR_INVOICED_SINCE_DELIVERY_STARTED));
 
 		hyperlink_no_params("$path_to_root/purchasing/inquiry/po_search.php",
-		 _("Select a different purchase order for receiving goods against"));
+		 _(UI_TEXT_SELECT_DIFFERENT_PURCHASE_ORDER_FOR_RECEIVING_GOODS));
 
 		hyperlink_params("$path_to_root/purchasing/po_receive_items.php", 
-			 _("Re-Read the updated purchase order for receiving goods against"),
+			 _(UI_TEXT_RE_READ_UPDATED_PURCHASE_ORDER_FOR_RECEIVING),
 			 "PONumber=" . $_SESSION['PO']->order_no);
 
 		unset($_SESSION['PO']->line_items);
@@ -326,12 +327,12 @@ if (isset($_POST['ProcessGoodsReceived']))
 start_form();
 
 edit_grn_summary($_SESSION['PO'], true);
-display_heading(_("Items to Receive"));
+display_heading(_(UI_TEXT_ITEMS_TO_RECEIVE));
 display_po_receive_items();
 
 echo '<br>';
-submit_center_first('Update', _("Update"), '', true);
-submit_center_last('ProcessGoodsReceived', _("Process Receive Items"), _("Clear all GL entry fields"), 'default');
+submit_center_first('Update', _(UI_TEXT_UPDATE), '', true);
+submit_center_last('ProcessGoodsReceived', _(UI_TEXT_PROCESS_RECEIVE_ITEMS), _(UI_TEXT_CLEAR_ALL_GL_ENTRY_FIELDS), 'default');
 
 end_form();
 
