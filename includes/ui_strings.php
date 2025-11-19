@@ -1181,4 +1181,6 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_CREDIT_NOTES', 'Credit Notes');
     define('UI_TEXT_THIS_SALES_ORDER_IS_USED_AS_A_TEMPLATE', 'This Sales Order is used as a Template.');
     define('UI_TEXT_LINE_DETAILS', 'Line Details');
+    define('UI_TEXT_QUANTITY_DELIVERED', 'Quantity Delivered');
+    define('UI_TEXT_AMOUNT_TOTAL', 'Amount Total');
 };

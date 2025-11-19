@@ -106,10 +106,10 @@ if ($_GET['trans_type'] != ST_SALESQUOTE)
 	echo "</td><td valign='top'>";
 
 	start_table(TABLESTYLE);
-	display_heading2(_("Delivery Notes"));
+	display_heading2(_(UI_TEXT_DELIVERY_NOTES));
 
 
-	$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
+	$th = array(_(UI_TEXT_NUMBER_SIGN), _(UI_TEXT_REF), _(UI_TEXT_DATE), _(UI_TEXT_TOTAL));
 	table_header($th);
 
 	$dn_numbers = array();
@@ -140,9 +140,9 @@ if ($_GET['trans_type'] != ST_SALESQUOTE)
 	echo "</td><td valign='top'>";
 
 	start_table(TABLESTYLE);
-	display_heading2(_("Sales Invoices"));
+	display_heading2(_(UI_TEXT_SALES_INVOICES));
 
-	$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
+	$th = array(_(UI_TEXT_NUMBER_SIGN), _(UI_TEXT_REF), _(UI_TEXT_DATE), _(UI_TEXT_TOTAL));
 	table_header($th);
 	
 	$inv_numbers = array();
@@ -176,10 +176,10 @@ if ($_GET['trans_type'] != ST_SALESQUOTE)
 
 	end_table();
 
-	display_heading2(_("Credit Notes"));
+	display_heading2(_(UI_TEXT_CREDIT_NOTES));
 
 	start_table(TABLESTYLE);
-	$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
+	$th = array(_(UI_TEXT_NUMBER_SIGN), _(UI_TEXT_REF), _(UI_TEXT_DATE), _(UI_TEXT_TOTAL));
 	table_header($th);
 
 	$credits_total = 0;
@@ -215,12 +215,12 @@ if ($_GET['trans_type'] != ST_SALESQUOTE)
 }
 echo "<center>";
 if ($_SESSION['View']->so_type == 1)
-	display_note(_("This Sales Order is used as a Template."), 0, 0, "class='currentfg'");
-display_heading2(_("Line Details"));
+	display_note(_(UI_TEXT_THIS_SALES_ORDER_IS_USED_AS_A_TEMPLATE), 0, 0, "class='currentfg'");
+display_heading2(_(UI_TEXT_LINE_DETAILS));
 
 start_table(TABLESTYLE, "width='95%'");
-$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"),
-	_("Price"), _("Discount"), _("Total"), _("Quantity Delivered"));
+$th = array(_(UI_TEXT_ITEM_CODE), _(UI_TEXT_ITEM_DESCRIPTION), _(UI_TEXT_QUANTITY), _(UI_TEXT_UNIT),
+	_(UI_TEXT_PRICE), _(UI_TEXT_DISCOUNT), _(UI_TEXT_TOTAL), _(UI_TEXT_QUANTITY_DELIVERED));
 table_header($th);
 
 $k = 0;  //row colour counter
@@ -246,14 +246,14 @@ foreach ($_SESSION['View']->line_items as $stock_item) {
 }
 
 if ($_SESSION['View']->freight_cost != 0.0)
-	label_row(_("Shipping"), FormatService::priceFormat($_SESSION['View']->freight_cost),
+	label_row(_(UI_TEXT_SHIPPING), FormatService::priceFormat($_SESSION['View']->freight_cost),
 		"align=right colspan=6", "nowrap align=right", 1);
 
 $sub_tot = $_SESSION['View']->get_items_total() + $_SESSION['View']->freight_cost;
 
 $display_sub_tot = FormatService::priceFormat($sub_tot);
 
-label_row(_("Sub Total"), $display_sub_tot, "align=right colspan=6",
+label_row(_(UI_TEXT_SUB_TOTAL), $display_sub_tot, "align=right colspan=6",
 	"nowrap align=right", 1);
 
 $taxes = $_SESSION['View']->get_taxes();
@@ -263,7 +263,7 @@ $tax_total = display_edit_tax_items($taxes, 6, $_SESSION['View']->tax_included,2
 $display_total = FormatService::priceFormat($sub_tot + $tax_total);
 
 start_row();
-label_cells(_("Amount Total"), $display_total, "colspan=6 align='right'","align='right'");
+label_cells(_(UI_TEXT_AMOUNT_TOTAL), $display_total, "colspan=6 align='right'","align='right'");
 label_cell('', "colspan=2");
 end_row();
 end_table();
