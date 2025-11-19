@@ -970,4 +970,13 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_NEW_PAYMENTS', 'New Payments');
     define('UI_TEXT_TMPL', 'Tmpl');
     define('UI_TEXT_UPDATE', 'Update');
+    define('UI_TEXT_THE_CREDIT_STATUS_DESCRIPTION_CANNOT_BE_EMPTY', 'The credit status description cannot be empty.');
+    define('UI_TEXT_CANNOT_DELETE_THIS_CREDIT_STATUS_BECAUSE_CUSTOMER_ACCOUNTS_HAVE_BEEN_CREATED_REFERRING_TO_IT', 'Cannot delete this credit status because customer accounts have been created referring to it.');
+    define('UI_TEXT_DISALLOW_INVOICES', 'Dissallow Invoices');
+    define('UI_TEXT_INVOICE_OK', 'Invoice OK');
+    define('UI_TEXT_NO_INVOICING', 'NO INVOICING');
+    define('UI_TEXT_EDIT', 'Edit');
+    define('UI_TEXT_DELETE', 'Delete');
+    define('UI_TEXT_DESCRIPTION_LABEL', 'Description:');
+    define('UI_TEXT_DISALLOW_INVOICING_QUESTION', 'Dissallow invoicing ?');
 };

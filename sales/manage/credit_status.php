@@ -18,6 +18,7 @@ page(_($help_context = "Credit Status"));
 include($path_to_root . "/sales/includes/db/credit_status_db.inc");
 
 include($path_to_root . "/includes/ui.inc");
+include($path_to_root . "/includes/ui_strings.php");
 
 simple_page_mode(true);
 //-----------------------------------------------------------------------------------
@@ -27,7 +28,7 @@ function can_process()
 	
 	if (strlen($_POST['reason_description']) == 0) 
 	{
-		UiMessageService::displayError(_("The credit status description cannot be empty."));
+		UiMessageService::displayError(_(UI_TEXT_THE_CREDIT_STATUS_DESCRIPTION_CANNOT_BE_EMPTY));
 		set_focus('reason_description');
 		return false;
 	}	
@@ -60,7 +61,7 @@ function can_delete($selected_id)
 {
 	if (key_in_foreign_table($selected_id, 'debtors_master', 'credit_status'))
 	{
-		UiMessageService::displayError(_("Cannot delete this credit status because customer accounts have been created referring to it."));
+		UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_THIS_CREDIT_STATUS_BECAUSE_CUSTOMER_ACCOUNTS_HAVE_BEEN_CREATED_REFERRING_TO_IT));
 		return false;
 	}
 	
@@ -94,7 +95,7 @@ $result = get_all_credit_status(RequestService::checkValueStatic('show_inactive'
 
 start_form();
 start_table(TABLESTYLE, "width=40%");
-$th = array(_("Description"), _("Dissallow Invoices"),'','');
+$th = array(_(UI_TEXT_DESCRIPTION), _(UI_TEXT_DISALLOW_INVOICES),'','');
 inactive_control_column($th);
 table_header($th);
 
@@ -106,18 +107,18 @@ while ($myrow = db_fetch($result))
 
 	if ($myrow["dissallow_invoices"] == 0) 
 	{
-		$disallow_text = _("Invoice OK");
+		$disallow_text = _(UI_TEXT_INVOICE_OK);
 	} 
 	else 
 	{
-		$disallow_text = "<b>" . _("NO INVOICING") . "</b>";
+		$disallow_text = "<b>" . _(UI_TEXT_NO_INVOICING) . "</b>";
 	}
 	
 	label_cell($myrow["reason_description"]);
 	label_cell($disallow_text);
 	inactive_control_cell($myrow["id"], $myrow["inactive"], 'credit_status', 'id');
- 	edit_button_cell("Edit".$myrow['id'], _("Edit"));
- 	delete_button_cell("Delete".$myrow['id'], _("Delete"));
+ 	edit_button_cell("Edit".$myrow['id'], _(UI_TEXT_EDIT));
+ 	delete_button_cell("Delete".$myrow['id'], _(UI_TEXT_DELETE));
 	end_row();
 }
 
@@ -142,9 +143,9 @@ if ($selected_id != -1)
 	hidden('selected_id', $selected_id);
 } 
 
-text_row_ex(_("Description:"), 'reason_description', 50);
+text_row_ex(_(UI_TEXT_DESCRIPTION_LABEL), 'reason_description', 50);
 
-yesno_list_row(_("Dissallow invoicing ?"), 'DisallowInvoices', null); 
+yesno_list_row(_(UI_TEXT_DISALLOW_INVOICING_QUESTION), 'DisallowInvoices', null); 
 
 end_table(1);
 
