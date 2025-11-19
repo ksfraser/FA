@@ -24,6 +24,7 @@ include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
 include_once($path_to_root . "/sales/includes/ui/sales_credit_ui.inc");
 include_once($path_to_root . "/sales/includes/ui/sales_order_ui.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 
 // Modern OOP Services
 require_once($path_to_root . "/includes/DateService.php");
@@ -38,10 +39,10 @@ if (user_use_date_picker()) {
 }
 
 if(isset($_GET['NewCredit'])) {
-	$_SESSION['page_title'] = _($help_context = "Customer Credit Note");
+	$_SESSION['page_title'] = _(UI_TEXT_CUSTOMER_CREDIT_NOTE);
 	handle_new_credit(0);
 } elseif (isset($_GET['ModifyCredit'])) {
-	$_SESSION['page_title'] = sprintf(_("Modifying Customer Credit Note #%d"), $_GET['ModifyCredit']);
+	$_SESSION['page_title'] = sprintf(_(UI_TEXT_MODIFYING_CUSTOMER_CREDIT_NOTE), $_GET['ModifyCredit']);
 	handle_new_credit($_GET['ModifyCredit']);
 	$help_context = "Modifying Customer Credit Note";
 }
@@ -50,9 +51,9 @@ page($_SESSION['page_title'],false, false, "", $js);
 
 //-----------------------------------------------------------------------------
 
-check_db_has_stock_items(_("There are no items defined in the system."));
+check_db_has_stock_items(_(UI_TEXT_NO_ITEMS_DEFINED));
 
-check_db_has_customer_branches(_("There are no customers, or there are no customers with branches. Please define customers and customer branches."));
+check_db_has_customer_branches(_(UI_TEXT_NO_CUSTOMERS_OR_BRANCHES));
 
 //-----------------------------------------------------------------------------
 
@@ -67,18 +68,18 @@ if (isset($_GET['AddedID'])) {
 	$credit_no = $_GET['AddedID'];
 	$trans_type = ST_CUSTCREDIT;
 
-	display_notification_centered(sprintf(_("Credit Note # %d has been processed"),$credit_no));
+	display_notification_centered(sprintf(_(UI_TEXT_CREDIT_NOTE_PROCESSED),$credit_no));
 
-	display_note(get_customer_trans_view_str($trans_type, $credit_no, _("&View this credit note")), 0, 1);
+	display_note(get_customer_trans_view_str($trans_type, $credit_no, _(UI_TEXT_VIEW_THIS_CREDIT_NOTE)), 0, 1);
 
-	display_note(print_document_link($credit_no."-".$trans_type, _("&Print This Credit Invoice"), true, ST_CUSTCREDIT),0, 1);
-	display_note(print_document_link($credit_no."-".$trans_type, _("&Email This Credit Invoice"), true, ST_CUSTCREDIT, false, "printlink", "", 1),0, 1);
+	display_note(print_document_link($credit_no."-".$trans_type, _(UI_TEXT_PRINT_THIS_CREDIT_INVOICE), true, ST_CUSTCREDIT),0, 1);
+	display_note(print_document_link($credit_no."-".$trans_type, _(UI_TEXT_EMAIL_THIS_CREDIT_INVOICE), true, ST_CUSTCREDIT, false, "printlink", "", 1),0, 1);
 
-	display_note(get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")));
+	display_note(get_gl_view_str($trans_type, $credit_no, _(UI_TEXT_VIEW_GL_JOURNAL_ENTRIES_CREDIT_NOTE)));
 
-	hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another &Credit Note"), "NewCredit=yes");
+	hyperlink_params($_SERVER['PHP_SELF'], _(UI_TEXT_ENTER_ANOTHER_CREDIT_NOTE), "NewCredit=yes");
 
-	hyperlink_params("$path_to_root/admin/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$credit_no");
+	hyperlink_params("$path_to_root/admin/attachments.php", _(UI_TEXT_ADD_AN_ATTACHMENT), "filterType=$trans_type&trans_no=$credit_no");
 
 	display_footer_exit();
 } else
@@ -146,26 +147,26 @@ function can_process()
 
 	if (!RequestService::getPostStatic('customer_id')) 
 	{
-		UiMessageService::displayError(_("There is no customer selected."));
+		UiMessageService::displayError(_(UI_TEXT_NO_CUSTOMER_SELECTED));
 		set_focus('customer_id');
 		return false;
 	} 
 	
 	if (!RequestService::getPostStatic('branch_id')) 
 	{
-		UiMessageService::displayError(_("This customer has no branch defined."));
+		UiMessageService::displayError(_(UI_TEXT_CUSTOMER_NO_BRANCH));
 		set_focus('branch_id');
 		return false;
 	} 
 	if ($_SESSION['Items']->count_items() == 0 && !RequestService::inputNumStatic('ChargeFreightCost',0))
 	{
-		UiMessageService::displayError(_("You must enter at least one non empty item line."));
+		UiMessageService::displayError(_(UI_TEXT_ENTER_AT_LEAST_ONE_ITEM));
 		set_focus('AddItem');
 		return false;
 	}
 	if($_SESSION['Items']->trans_no == 0) {
 	    if (!$Refs->is_valid($_POST['ref'], ST_CUSTCREDIT)) {
-			UiMessageService::displayError( _("You must enter a reference."));
+		UiMessageService::displayError( _(UI_TEXT_ENTER_REFERENCE));
 			set_focus('ref');
 			$input_error = 1;
 		}
@@ -173,11 +174,11 @@ function can_process()
 	$dateService = new DateService();
 
 	if (!$dateService->isDate($_POST['OrderDate'])) {
-		UiMessageService::displayError(_("The entered date for the credit note is invalid."));
+		UiMessageService::displayError(_(UI_TEXT_INVALID_CREDIT_NOTE_DATE));
 		set_focus('OrderDate');
 		$input_error = 1;
 	} elseif (!DateService::isDateInFiscalYear($_POST['OrderDate'])) {
-		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_(UI_TEXT_DATE_OUT_OF_FISCAL_YEAR));
 		set_focus('OrderDate');
 		$input_error = 1;
 	}
@@ -190,8 +191,8 @@ if (isset($_POST['ProcessCredit']) && can_process()) {
 	copy_to_cn();
 	if ($_POST['CreditType'] == "WriteOff" && (!isset($_POST['WriteOffGLCode']) ||
 		$_POST['WriteOffGLCode'] == '')) {
-		display_note(_("For credit notes created to write off the stock, a general ledger account is required to be selected."), 1, 0);
-		display_note(_("Please select an account to write the cost of the stock off to, then click on Process again."), 1, 0);
+		display_note(_(UI_TEXT_GL_ACCOUNT_REQUIRED_FOR_WRITE_OFF), 1, 0);
+		display_note(_(UI_TEXT_SELECT_ACCOUNT_FOR_WRITE_OFF), 1, 0);
 		exit;
 	}
 	if (!isset($_POST['WriteOffGLCode'])) {
@@ -201,7 +202,7 @@ if (isset($_POST['ProcessCredit']) && can_process()) {
 	$credit_no = $_SESSION['Items']->write($_POST['WriteOffGLCode']);
 	if ($credit_no == -1)
 	{
-		UiMessageService::displayError(_("The entered reference is already in use."));
+		UiMessageService::displayError(_(UI_TEXT_REFERENCE_ALREADY_IN_USE));
 		set_focus('ref');
 	}
 	else
@@ -217,17 +218,17 @@ if (isset($_POST['ProcessCredit']) && can_process()) {
 function check_item_data()
 {
 	if (!check_num('qty',0)) {
-		UiMessageService::displayError(_("The quantity must be greater than zero."));
+		UiMessageService::displayError(_(UI_TEXT_QUANTITY_GREATER_THAN_ZERO));
 		set_focus('qty');
 		return false;
 	}
 	if (!check_num('price',0)) {
-		UiMessageService::displayError(_("The entered price is negative or invalid."));
+		UiMessageService::displayError(_(UI_TEXT_INVALID_NEGATIVE_PRICE));
 		set_focus('price');
 		return false;
 	}
 	if (!check_num('Disc', 0, 100)) {
-		UiMessageService::displayError(_("The entered discount percent is negative, greater than 100 or invalid."));
+		UiMessageService::displayError(_(UI_TEXT_INVALID_DISCOUNT_PERCENT));
 		set_focus('Disc');
 		return false;
 	}
@@ -295,7 +296,7 @@ $customer_error = display_credit_header($_SESSION['Items']);
 if ($customer_error == "") {
 	start_table(TABLESTYLE, "width='80%'", 10);
 	echo "<tr><td>";
-	display_credit_items(_("Credit Note Items"), $_SESSION['Items']);
+	display_credit_items(_(UI_TEXT_CREDIT_NOTE_ITEMS), $_SESSION['Items']);
 	credit_options_controls($_SESSION['Items']);
 	echo "</td></tr>";
 	end_table();
@@ -304,8 +305,8 @@ if ($customer_error == "") {
 }
 
 echo "<br><center><table><tr>";
-submit_cells('Update', _("Update"));
-submit_cells('ProcessCredit', _("Process Credit Note"), '', false, 'default');
+submit_cells('Update', _(UI_TEXT_UPDATE_BUTTON));
+submit_cells('ProcessCredit', _(UI_TEXT_PROCESS_CREDIT_NOTE), '', false, 'default');
 echo "</tr></table></center>";
 
 end_form();
