@@ -14,6 +14,7 @@ if (!isset($path_to_root)) $path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
 require_once($path_to_root . "/includes/DateService.php");
 include($path_to_root . "/includes/ui.inc");
+include($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 
 $js = "";
@@ -24,8 +25,7 @@ if (user_use_date_picker())
 
 page(_($help_context = "Recurrent Invoices"), false, false, "", $js);
 
-check_db_has_template_orders(_("There is no template order in database.
-	You have to create at least one sales order marked as template to be able to define recurrent invoices."));
+check_db_has_template_orders(_(UI_TEXT_THERE_IS_NO_TEMPLATE_ORDER_IN_DATABASE_YOU_HAVE_TO_CREATE_AT_LEAST_ONE_SALES_ORDER_MARKED_AS_TEMPLATE_TO_BE_ABLE_TO_DEFINE_RECURRENT_INVOICES));
 
 simple_page_mode(true);
 
@@ -38,44 +38,44 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	{
 		$input_error = 1;
 		if (RequestService::getPostStatic('debtor_no'))
-			UiMessageService::displayError(_("This customer has no branches. Please define at least one branch for this customer first."));
+			UiMessageService::displayError(_(UI_TEXT_THIS_CUSTOMER_HAS_NO_BRANCHES_PLEASE_DEFINE_AT_LEAST_ONE_BRANCH_FOR_THIS_CUSTOMER_FIRST));
 		else
-			UiMessageService::displayError(_("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
+			UiMessageService::displayError(_(UI_TEXT_THERE_ARE_NO_TAX_GROUPS_DEFINED_IN_THE_SYSTEM_AT_LEAST_ONE_TAX_GROUP_IS_REQUIRED_BEFORE_PROCEEDING));
 		set_focus('debtor_no');
 	}
 	if (strlen($_POST['description']) == 0) 
 	{
 		$input_error = 1;
-		UiMessageService::displayError(_("The invoice description cannot be empty."));
+		UiMessageService::displayError(_(UI_TEXT_THE_INVOICE_DESCRIPTION_CANNOT_BE_EMPTY));
 		set_focus('description');
 	}
 	if (!check_recurrent_invoice_description($_POST['description'], $selected_id))
 	{
 		$input_error = 1;
-		UiMessageService::displayError(_("This recurrent invoice description is already in use."));
+		UiMessageService::displayError(_(UI_TEXT_THIS_RECURRENT_INVOICE_DESCRIPTION_IS_ALREADY_IN_USE));
 		set_focus('description');
 	}
 	if (!DateService::isDate($_POST['begin']))
 	{
 		$input_error = 1;
-		UiMessageService::displayError(_("The entered date is invalid."));
+		UiMessageService::displayError(_(UI_TEXT_THE_ENTERED_DATE_IS_INVALID));
 		set_focus('begin');
 	}
 	if (!DateService::isDate($_POST['end']))
 	{
 		$input_error = 1;
-		UiMessageService::displayError(_("The entered date is invalid."));
+		UiMessageService::displayError(_(UI_TEXT_THE_ENTERED_DATE_IS_INVALID));
 		set_focus('end');
 	}
 	if (isset($_POST['last_sent']) && !DateService::isDate($_POST['last_sent'])) {
 		$input_error = 1;
-		UiMessageService::displayError(_("The entered date is invalid."));
+		UiMessageService::displayError(_(UI_TEXT_THE_ENTERED_DATE_IS_INVALID));
 		set_focus('last_sent');
 	}
 	if (!$_POST['days'] && !$_POST['monthly'])
 	{
 		$input_error = 1;
-		UiMessageService::displayError(_("No recurence interval has been entered."));
+		UiMessageService::displayError(_(UI_TEXT_NO_RECURENCE_INTERVAL_HAS_BEEN_ENTERED));
 		set_focus('days');
 	}
 
@@ -126,7 +126,7 @@ $result = get_recurrent_invoices();
 
 start_form();
 start_table(TABLESTYLE, "width=70%");
-$th = array(_("Description"), _("Template No"),_("Customer"),_("Branch")."/"._("Group"),_("Days"),_("Monthly"),_("Begin"),_("End"),_("Last Created"),"", "");
+$th = array(_(UI_TEXT_DESCRIPTION), _(UI_TEXT_TEMPLATE_NO),_(UI_TEXT_CUSTOMER),_(UI_TEXT_BRANCH)."/"._(UI_TEXT_GROUP),_(UI_TEXT_DAYS),_(UI_TEXT_MONTHLY),_(UI_TEXT_BEGIN),_(UI_TEXT_END),_(UI_TEXT_LAST_CREATED),"", "");
 table_header($th);
 $k = 0;
 while ($myrow = db_fetch($result)) 
@@ -154,8 +154,8 @@ while ($myrow = db_fetch($result))
 	label_cell($begin);
 	label_cell($end);
 	label_cell($last_sent);
- 	edit_button_cell("Edit".$myrow["id"], _("Edit"));
- 	delete_button_cell("Delete".$myrow["id"], _("Delete"));
+ 	edit_button_cell("Edit".$myrow["id"], _(UI_TEXT_EDIT));
+ 	delete_button_cell("Delete".$myrow["id"], _(UI_TEXT_DELETE));
  	end_row();
 }
 end_table();
@@ -189,27 +189,27 @@ if ($selected_id != -1)
 }
 
 
-text_row_ex(_("Description:"), 'description', 50); 
+text_row_ex(_(UI_TEXT_DESCRIPTION_LABEL), 'description', 50); 
 
-templates_list_row(_("Template:"), 'order_no');
+templates_list_row(_(UI_TEXT_TEMPLATE_LABEL), 'order_no');
 
-customer_list_row(_("Customer:"), 'debtor_no', null, " ", true);
+customer_list_row(_(UI_TEXT_CUSTOMER_LABEL), 'debtor_no', null, " ", true);
 
 if ($_POST['debtor_no'] > 0)
-	customer_branches_list_row(_("Branch:"), $_POST['debtor_no'], 'group_no', null, false);
+	customer_branches_list_row(_(UI_TEXT_BRANCH_LABEL), $_POST['debtor_no'], 'group_no', null, false);
 else	
-	sales_groups_list_row(_("Sales Group:"), 'group_no', null);
+	sales_groups_list_row(_(UI_TEXT_SALES_GROUP_LABEL), 'group_no', null);
 
-small_amount_row(_("Days:"), 'days', 0, null, null, 0);
+small_amount_row(_(UI_TEXT_DAYS_LABEL), 'days', 0, null, null, 0);
 
-small_amount_row(_("Monthly:"), 'monthly', 0, null, null, 0);
+small_amount_row(_(UI_TEXT_MONTHLY_LABEL), 'monthly', 0, null, null, 0);
 
-date_row(_("Begin:"), 'begin');
+date_row(_(UI_TEXT_BEGIN_LABEL), 'begin');
 
-date_row(_("End:"), 'end', null, null, 0, 0, 5);
+date_row(_(UI_TEXT_END_LABEL), 'end', null, null, 0, 0, 5);
 
 if ($selected_id != -1 && @$_POST['last_sent'] != "")
-	date_row(_("Last Created"), 'last_sent');
+	date_row(_(UI_TEXT_LAST_CREATED_LABEL), 'last_sent');
 
 end_table(1);
 
