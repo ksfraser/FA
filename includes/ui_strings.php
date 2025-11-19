@@ -874,4 +874,15 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_CREATE_INVOICES', 'Create %s Invoice(s)');
     define('UI_TEXT_MARKED_ITEMS_ARE_DUE', 'Marked items are due.');
     define('UI_TEXT_NO_RECURRENT_INVOICES_ARE_DUE', 'No recurrent invoices are due.');
+    define('UI_TEXT_ALLOCATION_OF', 'Allocation of %s # %d');
+    define('UI_TEXT_DATE_LABEL', 'Date:');
+    define('UI_TEXT_TOTAL_LABEL', 'Total:');
+    define('UI_TEXT_AMOUNT_TO_BE_SETTLED', 'Amount to be settled:');
+    define('UI_TEXT_REFRESH', 'Refresh');
+    define('UI_TEXT_START_AGAIN_ALLOCATION', 'Start again allocation of selected amount');
+    define('UI_TEXT_PROCESS', 'Process');
+    define('UI_TEXT_PROCESS_ALLOCATIONS', 'Process allocations');
+    define('UI_TEXT_BACK_TO_ALLOCATIONS', 'Back to Allocations');
+    define('UI_TEXT_ABANDON_ALLOCATIONS', 'Abandon allocations and return to selection of allocatable amounts');
+    define('UI_TEXT_NO_UNSETTLED_TRANSACTIONS', 'There are no unsettled transactions to allocate.');
 };
