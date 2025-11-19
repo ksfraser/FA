@@ -16,6 +16,7 @@ include_once($path_to_root . "/includes/session.inc");
 page(_($help_context = "POS settings"));
 
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/sales/includes/db/sales_points_db.inc");
 
 simple_page_mode(true);
@@ -25,7 +26,7 @@ function can_process()
 {
 	if (strlen($_POST['name']) == 0)
 	{
-		UiMessageService::displayError(_("The POS name cannot be empty."));
+		UiMessageService::displayError(_(UI_TEXT_THE_POS_NAME_CANNOT_BE_EMPTY));
 		set_focus('pos_name');
 		return false;
 	}
@@ -59,7 +60,7 @@ if ($Mode == 'Delete')
 {
 	if (key_in_foreign_table($selected_id, 'users', 'pos'))
 	{
-		UiMessageService::displayError(_("Cannot delete this POS because it is used in users setup."));
+		UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_THIS_POS_BECAUSE_IT_IS_USED_IN_USERS_SETUP));
 	} else {
 		delete_sales_point($selected_id);
 		display_notification(_('Selected point of sale has been deleted'));
@@ -96,8 +97,8 @@ while ($myrow = db_fetch($result))
 	label_cell($myrow["location_name"], "");
 	label_cell($myrow["bank_account_name"], "");
 	inactive_control_cell($myrow["id"], $myrow["inactive"], "sales_pos", 'id');
- 	edit_button_cell("Edit".$myrow['id'], _("Edit"));
- 	delete_button_cell("Delete".$myrow['id'], _("Delete"));
+ 	edit_button_cell("Edit".$myrow['id'], _(UI_TEXT_EDIT));
+ 	delete_button_cell("Delete".$myrow['id'], _(UI_TEXT_DELETE));
 	end_row();
 }
 
@@ -107,7 +108,7 @@ end_table(1);
 
 $cash = db_has_cash_accounts();
 
-if (!$cash) display_note(_("To have cash POS first define at least one cash bank account."));
+if (!$cash) display_note(_(UI_TEXT_TO_HAVE_CASH_POS_FIRST_DEFINE_AT_LEAST_ONE_CASH_BANK_ACCOUNT));
 
 start_table(TABLESTYLE2);
 
@@ -126,17 +127,17 @@ if ($selected_id != -1)
 	hidden('selected_id', $selected_id);
 } 
 
-text_row_ex(_("Point of Sale Name").':', 'name', 20, 30);
+text_row_ex(_(UI_TEXT_POINT_OF_SALE_NAME).':', 'name', 20, 30);
 if($cash) {
 	check_row(_('Allowed credit sale terms selection:'), 'credit', RequestService::checkValueStatic('credit_sale'));
 	check_row(_('Allowed cash sale terms selection:'), 'cash',  RequestService::checkValueStatic('cash_sale'));
-	cash_accounts_list_row(_("Default cash account").':', 'account');
+	cash_accounts_list_row(_(UI_TEXT_DEFAULT_CASH_ACCOUNT_LABEL), 'account');
 } else {
 	hidden('credit', 1);
 	hidden('account', 0);
 }
 
-locations_list_row(_("POS location").':', 'location');
+locations_list_row(_(UI_TEXT_POS_LOCATION_LABEL), 'location');
 end_table(1);
 
 submit_add_or_update_center($selected_id == -1, '', 'both');

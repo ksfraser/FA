@@ -1123,4 +1123,10 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_FAX_NUMBER_LABEL', 'Fax number:');
     define('UI_TEXT_E_MAIL_LABEL', 'E-mail:');
     define('UI_TEXT_TURNOVER_BREAK_PT_LEVEL_LABEL', 'Turnover Break Pt Level:');
+    define('UI_TEXT_THE_POS_NAME_CANNOT_BE_EMPTY', 'The POS name cannot be empty.');
+    define('UI_TEXT_CANNOT_DELETE_THIS_POS_BECAUSE_IT_IS_USED_IN_USERS_SETUP', 'Cannot delete this POS because it is used in users setup.');
+    define('UI_TEXT_TO_HAVE_CASH_POS_FIRST_DEFINE_AT_LEAST_ONE_CASH_BANK_ACCOUNT', 'To have cash POS first define at least one cash bank account.');
+    define('UI_TEXT_POINT_OF_SALE_NAME', 'Point of Sale Name');
+    define('UI_TEXT_DEFAULT_CASH_ACCOUNT_LABEL', 'Default cash account:');
+    define('UI_TEXT_POS_LOCATION_LABEL', 'POS location:');
 };
