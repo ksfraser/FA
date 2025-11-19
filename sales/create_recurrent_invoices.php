@@ -17,6 +17,7 @@ require_once($path_to_root . "/includes/DateService.php");
 include_once($path_to_root . "/sales/includes/ui/sales_order_ui.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 
 $js = "";
 if ($SysPrefs->use_popup_windows)
@@ -90,7 +91,7 @@ function calculate_next($myrow)
 $id = find_submit("confirmed");
 if ($id != -1 && DateService::isDateClosedStatic($_POST['trans_date']))
 {
-	UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
+	UiMessageService::displayError(_(UI_TEXT_DATE_OUT_OF_FISCAL_YEAR));
 	set_focus('trans_date');
 	$_POST['create'.$id] = 1;	//re-display current page
 	$id = -1;
@@ -145,14 +146,14 @@ if ($id != -1)
 	}
 	else 
 		$min = $max = 0;
-	display_notification(sprintf(_("%s recurrent invoice(s) created, # %s - # %s."), count($invs), $min, $max));
+	display_notification(sprintf(_(UI_TEXT_RECURRENT_INVOICES_CREATED), count($invs), $min, $max));
 	if (count($invs) > 0)
 	{
 		$ar = array('PARAM_0' => $min."-".ST_SALESINVOICE,	'PARAM_1' => $max."-".ST_SALESINVOICE, 'PARAM_2' => "",
 			'PARAM_3' => 0,	'PARAM_4' => 0,	'PARAM_5' => "", 'PARAM_6' => "", 'PARAM_7' => user_def_print_orientation());
-		display_note(print_link(sprintf(_("&Print Recurrent Invoices # %s - # %s"), $min, $max), 107, $ar), 0, 1);
+		display_note(print_link(sprintf(_(UI_TEXT_PRINT_RECURRENT_INVOICES), $min, $max), 107, $ar), 0, 1);
 		$ar['PARAM_3'] = 1; // email
-		display_note(print_link(sprintf(_("&Email Recurrent Invoices # %s - # %s"), $min, $max), 107, $ar), 0, 1);
+		display_note(print_link(sprintf(_(UI_TEXT_EMAIL_RECURRENT_INVOICES), $min, $max), 107, $ar), 0, 1);
 	}
 }
 
@@ -168,13 +169,13 @@ if ($id != -1)
 	$to = DateService::addDaysStatic($to, $myrow['days']);
 
 	if (!DateService::isDateInFiscalYear($date))
-		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_(UI_TEXT_DATE_OUT_OF_FISCAL_YEAR));
 	elseif (!DateService::date1GreaterDate2Static(DateService::addDaysStatic(DateService::todayStatic(), 1), $to))
-		UiMessageService::displayError(_("Recurrent invoice cannot be generated before last day of covered period."));
+		UiMessageService::displayError(_(UI_TEXT_RECURRENT_INVOICE_CANNOT_GENERATE_BEFORE_LAST_DAY));
 	elseif (check_recurrent_invoice_prices($id))
-		UiMessageService::displayError(_("Recurrent invoices cannot be generated because some items have no price defined in customer currency."));
+		UiMessageService::displayError(_(UI_TEXT_RECURRENT_INVOICES_NO_PRICE_DEFINED));
 	elseif (!check_sales_order_type($myrow['order_no']))
-		UiMessageService::displayError(_("Recurrent invoices cannot be generated because selected sales order template uses prepayment sales terms. Change payment terms and try again."));
+		UiMessageService::displayError(_(UI_TEXT_RECURRENT_INVOICES_PREPAYMENT_TERMS));
 	else {
 		$count = recurrent_invoice_count($id);
 
@@ -187,7 +188,7 @@ if ($id != -1)
 		date_row(_('Invoice date:'), 'trans_date');
 		$newto = DateService::addMonthsStatic($to, $myrow['monthly']);
 		$newto = DateService::addDaysStatic($newto, $myrow['days']);
-		text_row(_('Invoice notice:'), 'memo', sprintf(_("Recurrent Invoice covers period %s - %s."), $to,	 DateService::addDaysStatic($newto, -1)), 100, 100);
+		text_row(_(UI_TEXT_INVOICE_NOTICE_LABEL), 'memo', sprintf(_(UI_TEXT_RECURRENT_INVOICE_COVERS_PERIOD), $to,	DateService::addDaysStatic($newto, -1)), 100, 100);
 		//text_row(_('Invoice notice:'), 'memo', sprintf(_("Recurrent Invoice covers period %s - %s."), //$from, DateService::addDaysStatic($to, -1)), 100, 100);
 		end_table();
 		hidden('from', $from, true);
@@ -195,7 +196,7 @@ if ($id != -1)
 		br();
 		submit_center_first('confirmed'.$id, _('Create'), _('Create recurrent invoices'), false, ICON_OK);
 		submit_center_last('cancel', _('Cancel'), _('Return to recurrent invoices'), false, ICON_ESCAPE);
-		submit_js_confirm("do_create".$id, sprintf(_("You are about to issue %s invoices.\n Do you want to continue?"), $count));
+		submit_js_confirm("do_create".$id, sprintf(_(UI_TEXT_CONFIRM_ISSUE_INVOICES), $count));
 		end_form();
 
 		display_footer_exit();
@@ -207,7 +208,7 @@ $result = get_recurrent_invoices(DateService::todayStatic());
 
 start_form();
 start_table(TABLESTYLE, "width=70%");
-$th = array(_("Description"), _("Template No"),_("Customer"),_("Branch")."/"._("Group"),_("Days"),_("Monthly"),_("Begin"),_("End"),_("Next invoice"),"");
+$th = array(_(UI_TEXT_DESCRIPTION), _(UI_TEXT_TEMPLATE_NO),_(UI_TEXT_CUSTOMER),_(UI_TEXT_BRANCH)."/"._(UI_TEXT_GROUP),_(UI_TEXT_DAYS),_(UI_TEXT_MONTHLY),_(UI_TEXT_BEGIN),_(UI_TEXT_END),_(UI_TEXT_NEXT_INVOICE),"");
 table_header($th);
 $k = 0;
 $due = false;
@@ -244,7 +245,7 @@ while ($myrow = db_fetch($result))
 		$count = recurrent_invoice_count($myrow['id']);
 		if ($count)
 		{
-			button_cell("create".$myrow["id"], sprintf(_("Create %s Invoice(s)"), $count), "", ICON_DOC, 'process');
+			button_cell("create".$myrow["id"], sprintf(_(UI_TEXT_CREATE_INVOICES), $count), "", ICON_DOC, 'process');
 		} else {
 			label_cell('');
 		}
@@ -256,9 +257,9 @@ while ($myrow = db_fetch($result))
 end_table();
 end_form();
 if ($due)
-	display_note(_("Marked items are due."), 1, 0, "class='overduefg'");
+	display_note(_(UI_TEXT_MARKED_ITEMS_ARE_DUE), 1, 0, "class='overduefg'");
 else
-	display_note(_("No recurrent invoices are due."), 1, 0);
+	display_note(_(UI_TEXT_NO_RECURRENT_INVOICES_ARE_DUE), 1, 0);
 
 br();
 }
