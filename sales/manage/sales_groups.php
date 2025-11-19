@@ -16,6 +16,7 @@ include($path_to_root . "/includes/session.inc");
 page(_($help_context = "Sales Groups"));
 
 include($path_to_root . "/includes/ui.inc");
+include($path_to_root . "/includes/ui_strings.php");
 
 simple_page_mode(true);
 
@@ -27,7 +28,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if (strlen($_POST['description']) == 0) 
 	{
 		$input_error = 1;
-		UiMessageService::displayError(_("The sales group description cannot be empty."));
+		UiMessageService::displayError(_(UI_TEXT_THE_SALES_GROUP_DESCRIPTION_CANNOT_BE_EMPTY));
 		set_focus('description');
 	}
 
@@ -59,7 +60,7 @@ if ($Mode == 'Delete')
 	if (key_in_foreign_table($selected_id, 'cust_branch', 'group_no'))
 	{
 		$cancel_delete = 1;
-		UiMessageService::displayError(_("Cannot delete this group because customers have been created using this group."));
+		UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_THIS_GROUP_BECAUSE_CUSTOMERS_HAVE_BEEN_CREATED_USING_THIS_GROUP));
 	} 
 	if ($cancel_delete == 0) 
 	{
@@ -82,7 +83,7 @@ $result = get_sales_groups(RequestService::checkValueStatic('show_inactive'));
 
 start_form();
 start_table(TABLESTYLE, "width='30%'");
-$th = array(_("ID"), _("Group Name"), "", "");
+$th = array(_(UI_TEXT_ID), _(UI_TEXT_GROUP_NAME), "", "");
 inactive_control_column($th);
 
 table_header($th);
@@ -96,8 +97,8 @@ while ($myrow = db_fetch($result))
 	label_cell($myrow["id"], "nowrap align='right'");
 	label_cell($myrow["description"]);
 	inactive_control_cell($myrow["id"], $myrow["inactive"], 'groups', 'id');
- 	edit_button_cell("Edit".$myrow["id"], _("Edit"));
- 	delete_button_cell("Delete".$myrow["id"], _("Delete"));
+ 	edit_button_cell("Edit".$myrow["id"], _(UI_TEXT_EDIT));
+ 	delete_button_cell("Delete".$myrow["id"], _(UI_TEXT_DELETE));
 	end_row();
 }
 
@@ -117,10 +118,10 @@ if ($selected_id != -1)
 		$_POST['description']  = $myrow["description"];
 	}
 	hidden("selected_id", $selected_id);
-	label_row(_("ID"), $myrow["id"]);
+	label_row(_(UI_TEXT_ID), $myrow["id"]);
 } 
 
-text_row_ex(_("Group Name:"), 'description', 30); 
+text_row_ex(_(UI_TEXT_GROUP_NAME_LABEL), 'description', 30); 
 
 end_table(1);
 

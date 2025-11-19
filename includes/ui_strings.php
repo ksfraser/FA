@@ -1103,4 +1103,9 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_CANNOT_DELETE_THIS_AREA_BECAUSE_CUSTOMER_BRANCHES_HAVE_BEEN_CREATED_USING_THIS_AREA', 'Cannot delete this area because customer branches have been created using this area.');
     define('UI_TEXT_AREA_NAME', 'Area Name');
     define('UI_TEXT_AREA_NAME_LABEL', 'Area Name:');
+    define('UI_TEXT_THE_SALES_GROUP_DESCRIPTION_CANNOT_BE_EMPTY', 'The sales group description cannot be empty.');
+    define('UI_TEXT_CANNOT_DELETE_THIS_GROUP_BECAUSE_CUSTOMERS_HAVE_BEEN_CREATED_USING_THIS_GROUP', 'Cannot delete this group because customers have been created using this group.');
+    define('UI_TEXT_ID', 'ID');
+    define('UI_TEXT_GROUP_NAME', 'Group Name');
+    define('UI_TEXT_GROUP_NAME_LABEL', 'Group Name:');
 };
