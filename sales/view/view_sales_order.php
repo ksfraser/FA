@@ -14,6 +14,7 @@ $path_to_root = "../..";
 include_once($path_to_root . "/sales/includes/cart_class.inc");
 
 include_once($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/includes/date_functions.inc");
 
 include_once($path_to_root . "/sales/includes/sales_ui.inc");
@@ -26,12 +27,12 @@ if ($SysPrefs->use_popup_windows)
 if ($_GET['trans_type'] == ST_SALESQUOTE)
 {
 	page(_($help_context = "View Sales Quotation"), true, false, "", $js);
-	display_heading(sprintf(_("Sales Quotation #%d"),$_GET['trans_no']));
+	display_heading(sprintf(_(UI_TEXT_SALES_QUOTATION_FORMAT),$_GET['trans_no']));
 }	
 else
 {
 	page(_($help_context = "View Sales Order"), true, false, "", $js);
-	display_heading(sprintf(_("Sales Order #%d"),$_GET['trans_no']));
+	display_heading(sprintf(_(UI_TEXT_SALES_ORDER_FORMAT),$_GET['trans_no']));
 }
 
 if (isset($_SESSION['View']))
@@ -46,58 +47,58 @@ start_table(TABLESTYLE2, "width='95%'", 5);
 if ($_GET['trans_type'] != ST_SALESQUOTE)
 {
 	echo "<tr valign=top><td>";
-	display_heading2(_("Order Information"));
+	display_heading2(_(UI_TEXT_ORDER_INFORMATION));
 	echo "</td><td>";
-	display_heading2(_("Deliveries"));
+	display_heading2(_(UI_TEXT_DELIVERIES));
 	echo "</td><td>";
-	display_heading2(_("Invoices/Credits"));
+	display_heading2(_(UI_TEXT_INVOICES_CREDITS));
 	echo "</td></tr>";
 }	
 
 echo "<tr valign=top><td>";
 
 start_table(TABLESTYLE, "width='95%'");
-label_row(_("Customer Name"), $_SESSION['View']->customer_name, "class='tableheader2'",
+label_row(_(UI_TEXT_CUSTOMER_NAME), $_SESSION['View']->customer_name, "class='tableheader2'",
 	"colspan=3");
 start_row();
-label_cells(_("Customer Order Ref."), $_SESSION['View']->cust_ref, "class='tableheader2'");
-label_cells(_("Deliver To Branch"), $_SESSION['View']->deliver_to, "class='tableheader2'");
+label_cells(_(UI_TEXT_CUSTOMER_ORDER_REF), $_SESSION['View']->cust_ref, "class='tableheader2'");
+label_cells(_(UI_TEXT_DELIVER_TO_BRANCH), $_SESSION['View']->deliver_to, "class='tableheader2'");
 end_row();
 start_row();
-label_cells(_("Ordered On"), $_SESSION['View']->document_date, "class='tableheader2'");
+label_cells(_(UI_TEXT_ORDERED_ON), $_SESSION['View']->document_date, "class='tableheader2'");
 if ($_GET['trans_type'] == ST_SALESQUOTE)
-	label_cells(_("Valid until"), $_SESSION['View']->due_date, "class='tableheader2'");
+	label_cells(_(UI_TEXT_VALID_UNTIL), $_SESSION['View']->due_date, "class='tableheader2'");
 elseif ($_SESSION['View']->reference == "auto")
-	label_cells(_("Due Date"), $_SESSION['View']->due_date, "class='tableheader2'");
+	label_cells(_(UI_TEXT_DUE_DATE), $_SESSION['View']->due_date, "class='tableheader2'");
 else
-	label_cells(_("Requested Delivery"), $_SESSION['View']->due_date, "class='tableheader2'");
+	label_cells(_(UI_TEXT_REQUESTED_DELIVERY), $_SESSION['View']->due_date, "class='tableheader2'");
 end_row();
 start_row();
-label_cells(_("Order Currency"), $_SESSION['View']->customer_currency, "class='tableheader2'");
-label_cells(_("Deliver From Location"), $_SESSION['View']->location_name, "class='tableheader2'");
+label_cells(_(UI_TEXT_ORDER_CURRENCY), $_SESSION['View']->customer_currency, "class='tableheader2'");
+label_cells(_(UI_TEXT_DELIVER_FROM_LOCATION), $_SESSION['View']->location_name, "class='tableheader2'");
 end_row();
 
 
 if ($_SESSION['View']->payment_terms['days_before_due']<0)
 {
 start_row();
-label_cells(_("Payment Terms"), $_SESSION['View']->payment_terms['terms'], "class='tableheader2'");
-label_cells(_("Required Pre-Payment"), FormatService::priceFormat($_SESSION['View']->prep_amount), "class='tableheader2'");
+label_cells(_(UI_TEXT_PAYMENT_TERMS), $_SESSION['View']->payment_terms['terms'], "class='tableheader2'");
+label_cells(_(UI_TEXT_REQUIRED_PRE_PAYMENT), FormatService::priceFormat($_SESSION['View']->prep_amount), "class='tableheader2'");
 end_row();
 start_row();
-label_cells(_("Non-Invoiced Prepayments"), FormatService::priceFormat($_SESSION['View']->alloc), "class='tableheader2'");
-label_cells(_("All Payments Allocated"), FormatService::priceFormat($_SESSION['View']->sum_paid), "class='tableheader2'");
+label_cells(_(UI_TEXT_NON_INVOICED_PREPAYMENTS), FormatService::priceFormat($_SESSION['View']->alloc), "class='tableheader2'");
+label_cells(_(UI_TEXT_ALL_PAYMENTS_ALLOCATED), FormatService::priceFormat($_SESSION['View']->sum_paid), "class='tableheader2'");
 end_row();
 } else
-	label_row(_("Payment Terms"), $_SESSION['View']->payment_terms['terms'], "class='tableheader2'", "colspan=3");
+	label_row(_(UI_TEXT_PAYMENT_TERMS), $_SESSION['View']->payment_terms['terms'], "class='tableheader2'", "colspan=3");
 
-label_row(_("Delivery Address"), nl2br($_SESSION['View']->delivery_address),
+label_row(_(UI_TEXT_DELIVERY_ADDRESS), nl2br($_SESSION['View']->delivery_address),
 	"class='tableheader2'", "colspan=3");
-label_row(_("Reference"), $_SESSION['View']->reference, "class='tableheader2'", "colspan=3");
-label_row(_("Telephone"), $_SESSION['View']->phone, "class='tableheader2'", "colspan=3");
-label_row(_("E-mail"), "<a href='mailto:" . $_SESSION['View']->email . "'>" . $_SESSION['View']->email . "</a>",
+label_row(_(UI_TEXT_REFERENCE), $_SESSION['View']->reference, "class='tableheader2'", "colspan=3");
+label_row(_(UI_TEXT_TELEPHONE), $_SESSION['View']->phone, "class='tableheader2'", "colspan=3");
+label_row(_(UI_TEXT_E_MAIL), "<a href='mailto:" . $_SESSION['View']->email . "'>" . $_SESSION['View']->email . "</a>",
 	"class='tableheader2'", "colspan=3");
-label_row(_("Comments"), !empty($_SESSION['View']->Comments) ? nl2br($_SESSION['View']->Comments) : "", "class='tableheader2'", "colspan=3");
+label_row(_(UI_TEXT_COMMENTS), !empty($_SESSION['View']->Comments) ? nl2br($_SESSION['View']->Comments) : "", "class='tableheader2'", "colspan=3");
 end_table();
 
 if ($_GET['trans_type'] != ST_SALESQUOTE)
