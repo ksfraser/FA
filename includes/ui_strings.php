@@ -895,4 +895,16 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_SHORT_NAME', 'Short Name');
     define('UI_TEXT_ADDRESS', 'Address');
     define('UI_TEXT_TAX_ID', 'Tax ID');
+    define('UI_TEXT_SHOW_SETTLED', 'show settled:');
+    define('UI_TEXT_REFRESH_INQUIRY', 'Refresh Inquiry');
+    define('UI_TEXT_ALLOCATION', 'Allocation');
+    define('UI_TEXT_PAYMENT', 'Payment');
+    define('UI_TEXT_ORDER', 'Order');
+    define('UI_TEXT_DUE_DATE', 'Due Date');
+    define('UI_TEXT_DEBIT', 'Debit');
+    define('UI_TEXT_CREDIT', 'Credit');
+    define('UI_TEXT_ALLOCATED', 'Allocated');
+    define('UI_TEXT_BALANCE', 'Balance');
+    define('UI_TEXT_TYPE_LABEL', 'Type:');
+    define('UI_TEXT_MARKED_ITEMS_ARE_OVERDUE', 'Marked items are overdue.');
 };
