@@ -907,4 +907,8 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_BALANCE', 'Balance');
     define('UI_TEXT_TYPE_LABEL', 'Type:');
     define('UI_TEXT_MARKED_ITEMS_ARE_OVERDUE', 'Marked items are overdue.');
+    define('UI_TEXT_SEARCH_BRANCHES', 'Search branches');
+    define('UI_TEXT_REF', 'Ref');
+    define('UI_TEXT_CONTACT', 'Contact');
+    define('UI_TEXT_PHONE', 'Phone');
 };
