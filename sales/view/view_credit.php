@@ -16,6 +16,8 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 
+include_once($path_to_root . "/includes/ui_strings.php");
+
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 
 use FA\ViewCreditNote;
@@ -61,7 +63,7 @@ $additional->addChild($taxView->render($taxItems, 6));
 // Voided check
 $voidEntry = get_voided_entry(ST_CUSTCREDIT, $trans_id);
 $voidedView = new VoidedView();
-$voidedElement = $voidedView->render($voidEntry, _("This credit note has been voided."));
+$voidedElement = $voidedView->render($voidEntry, _(UI_TEXT_THIS_CREDIT_NOTE_HAS_BEEN_VOIDED));
 if ($voidedElement) {
     $additional->addChild($voidedElement);
 }
@@ -74,7 +76,7 @@ if (!$voidEntry) { // If not voided
         $allocRows[] = $allocRow;
     }
     $allocView = new AllocationsView();
-    $additional->addChild($allocView->render($allocRows, $myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"], _("Allocations")));
+    $additional->addChild($allocView->render($allocRows, $myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"], _(UI_TEXT_ALLOCATIONS)));
 }
 
 echo $additional->getHtml();

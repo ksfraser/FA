@@ -1129,4 +1129,6 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_POINT_OF_SALE_NAME', 'Point of Sale Name');
     define('UI_TEXT_DEFAULT_CASH_ACCOUNT_LABEL', 'Default cash account:');
     define('UI_TEXT_POS_LOCATION_LABEL', 'POS location:');
+    define('UI_TEXT_THIS_CREDIT_NOTE_HAS_BEEN_VOIDED', 'This credit note has been voided.');
+    define('UI_TEXT_ALLOCATIONS', 'Allocations');
 };
