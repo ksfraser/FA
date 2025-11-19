@@ -18,6 +18,8 @@ include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/data_checks.inc");
 
+include_once($path_to_root . "/includes/ui_strings.php");
+
 include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
 include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 
@@ -34,7 +36,7 @@ if (user_use_date_picker())
 
 if (isset($_GET['ModifyCredit'])) {
     check_is_editable(ST_SUPPCREDIT, $_GET['ModifyCredit']);
-    $_SESSION['page_title'] = sprintf( _("Modifying Supplier Credit # %d"), $_GET['ModifyCredit']);
+    $_SESSION['page_title'] = sprintf( _(UI_TEXT_MODIFYING_SUPPLIER_CREDIT), $_GET['ModifyCredit']);
     $_SESSION['supp_trans'] = new supp_trans(ST_SUPPCREDIT, $_GET['ModifyCredit']);
 }
 
@@ -60,17 +62,17 @@ if (isset($_GET['New']))
 		$_SESSION['supp_trans']->supp_reference = '';
 		$_SESSION['supp_trans']->reference = '';
 		$help_context = "Supplier Credit Note";
-		$_SESSION['page_title'] = _("Supplier Credit Note");
+		$_SESSION['page_title'] = _(UI_TEXT_SUPPLIER_CREDIT_NOTE);
 
 	} else {
 		$help_context = "Supplier Credit Note";
-		$_SESSION['page_title'] = _("Supplier Credit Note");
+		$_SESSION['page_title'] = _(UI_TEXT_SUPPLIER_CREDIT_NOTE);
 		$_SESSION['supp_trans'] = new supp_trans(ST_SUPPCREDIT);
 	}
 }
 page($_SESSION['page_title'], false, false, "", $js);
 
-check_db_has_suppliers(_("There are no suppliers defined in the system."));
+check_db_has_suppliers(_(UI_TEXT_NO_SUPPLIERS_DEFINED));
 
 //---------------------------------------------------------------------------------------------------------------
 
@@ -81,13 +83,13 @@ if (isset($_GET['AddedID']))
 
 
     echo "<center>";
-    display_notification_centered(_("Supplier credit note has been processed."));
-    display_note(get_trans_view_str($trans_type, $invoice_no, _("View this Credit Note")));
+    display_notification_centered(_(UI_TEXT_SUPPLIER_CREDIT_NOTE_PROCESSED));
+    display_note(get_trans_view_str($trans_type, $invoice_no, _(UI_TEXT_VIEW_THIS_CREDIT_NOTE)));
 
-	display_note(get_gl_view_str($trans_type, $invoice_no, _("View the GL Journal Entries for this Credit Note")), 1);
+	display_note(get_gl_view_str($trans_type, $invoice_no, _(UI_TEXT_VIEW_GL_JOURNAL_ENTRIES_FOR_THIS_CREDIT_NOTE)), 1);
 
-    hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Credit Note"), "New=1");
-	hyperlink_params("$path_to_root/admin/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
+    hyperlink_params($_SERVER['PHP_SELF'], _(UI_TEXT_ENTER_ANOTHER_CREDIT_NOTE), "New=1");
+	hyperlink_params("$path_to_root/admin/attachments.php", _(UI_TEXT_ADD_AN_ATTACHMENT), "filterType=$trans_type&trans_no=$invoice_no");
 
 	display_footer_exit();
 }
@@ -131,7 +133,7 @@ if (isset($_POST['AddGLCodeToTrans'])) {
 	$result = get_gl_account_info($_POST['gl_code']);
 	if (db_num_rows($result) == 0)
 	{
-		UiMessageService::displayError(_("The account code entered is not a valid code, this line cannot be added to the transaction."));
+		UiMessageService::displayError(_(UI_TEXT_INVALID_ACCOUNT_CODE_FOR_TRANSACTION));
 		set_focus('gl_code');
 		$input_error = true;
 	}
@@ -141,14 +143,14 @@ if (isset($_POST['AddGLCodeToTrans'])) {
 		$gl_act_name = $myrow[1];
 		if (!check_num('amount'))
 		{
-			UiMessageService::displayError(_("The amount entered is not numeric. This line cannot be added to the transaction."));
+			UiMessageService::displayError(_(UI_TEXT_NON_NUMERIC_AMOUNT_FOR_TRANSACTION));
 			set_focus('amount');
 			$input_error = true;
 		}
 	}
 
 	if (!is_tax_gl_unique(RequestService::getPostStatic('gl_code'))) {
-   		UiMessageService::displayError(_("Cannot post to GL account used by more than one tax type."));
+   		UiMessageService::displayError(_(UI_TEXT_CANNOT_POST_TO_GL_ACCOUNT_USED_BY_MULTIPLE_TAX_TYPES));
 		set_focus('gl_code');
    		$input_error = true;
 	}
@@ -172,14 +174,14 @@ function check_data()
 
 	if (!RequestService::getPostStatic('supplier_id')) 
 	{
-		UiMessageService::displayError(_("There is no supplier selected."));
+		UiMessageService::displayError(_(UI_TEXT_NO_SUPPLIER_SELECTED));
 		set_focus('supplier_id');
 		return false;
 	} 
 
 	if (!$_SESSION['supp_trans']->is_valid_trans_to_post())
 	{
-		UiMessageService::displayError(_("The credit note cannot be processed because the there are no items or values on the invoice.  Credit notes are expected to have a charge."));
+		UiMessageService::displayError(_(UI_TEXT_CREDIT_NOTE_NO_ITEMS_OR_VALUES));
 		set_focus('');
 		return false;
 	}
@@ -193,33 +195,33 @@ function check_data()
 
 	if (!$dateService->isDate($_SESSION['supp_trans']->tran_date))
 	{
-		UiMessageService::displayError(_("The credit note as entered cannot be processed because the date entered is not valid."));
+		UiMessageService::displayError(_(UI_TEXT_INVALID_DATE_FOR_CREDIT_NOTE));
 		set_focus('tran_date');
 		return false;
 	} 
 	elseif (!DateService::isDateInFiscalYear($_SESSION['supp_trans']->tran_date)) 
 	{
-		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_(UI_TEXT_DATE_OUT_OF_FISCAL_YEAR_OR_CLOSED));
 		set_focus('tran_date');
 		return false;
 	}
 	if (!$dateService->isDate( $_SESSION['supp_trans']->due_date))
 	{
-		UiMessageService::displayError(_("The invoice as entered cannot be processed because the due date is in an incorrect format."));
+		UiMessageService::displayError(_(UI_TEXT_INVALID_DUE_DATE_FORMAT_FOR_INVOICE));
 		set_focus('due_date');
 		return false;
 	}
 
 	if (trim(RequestService::getPostStatic('supp_reference')) == false)
 	{
-		UiMessageService::displayError(_("You must enter a supplier's invoice reference."));
+		UiMessageService::displayError(_(UI_TEXT_MUST_ENTER_SUPPLIER_INVOICE_REFERENCE));
 		set_focus('supp_reference');
 		return false;
 	}
 
 	if (is_reference_already_there($_SESSION['supp_trans']->supplier_id, $_POST['supp_reference'], $_SESSION['supp_trans']->trans_no))
 	{ 	/*Transaction reference already entered */
-		UiMessageService::displayError(_("This invoice number has already been entered. It cannot be entered again.") . " (" . $_POST['supp_reference'] . ")");
+		UiMessageService::displayError(_(UI_TEXT_INVOICE_NUMBER_ALREADY_ENTERED) . " (" . $_POST['supp_reference'] . ")");
 		set_focus('supp_reference');
 		return false;
 	}
@@ -231,9 +233,9 @@ function check_data()
 				if (check_negative_stock($item->item_code, -$item->this_quantity_inv, null, $_SESSION['supp_trans']->tran_date))
 				{
 					$stock = get_item($item->item_code);
-					UiMessageService::displayError(_("The return cannot be processed because there is an insufficient quantity for item:") .
+					UiMessageService::displayError(_(UI_TEXT_INSUFFICIENT_QUANTITY_FOR_ITEM_RETURN) .
 						" " . $stock['stock_id'] . " - " . $stock['description'] . " - " .
-						_("Quantity On Hand") . " = " . FormatService::numberFormat2(get_qoh_on_date($stock['stock_id'], null, 
+						_(UI_TEXT_QUANTITY_ON_HAND) . " = " . FormatService::numberFormat2(get_qoh_on_date($stock['stock_id'], null, 
 						$_SESSION['supp_trans']->tran_date), get_qty_dec($stock['stock_id'])));
 					return false;
 				}
@@ -272,14 +274,14 @@ function check_item_data($n)
 
 	if (!check_num('This_QuantityCredited'.$n, 0))
 	{
-		UiMessageService::displayError(_("The quantity to credit must be numeric and greater than zero."));
+		UiMessageService::displayError(_(UI_TEXT_QUANTITY_TO_CREDIT_MUST_BE_NUMERIC_AND_GREATER_THAN_ZERO));
 		set_focus('This_QuantityCredited'.$n);
 		return false;
 	}
 
 	if (!check_num('ChgPrice'.$n, 0))
 	{
-		UiMessageService::displayError(_("The price is either not numeric or negative."));
+		UiMessageService::displayError(_(UI_TEXT_PRICE_NOT_NUMERIC_OR_NEGATIVE));
 		set_focus('ChgPrice'.$n);
 		return false;
 	}
@@ -381,7 +383,7 @@ if (RequestService::getPostStatic('AddGLCodeToTrans'))
 	$Ajax->activate('inv_tot');
 
 br();
-submit_center('PostCreditNote', _("Enter Credit Note"), true, '', 'default');
+submit_center('PostCreditNote', _(UI_TEXT_ENTER_CREDIT_NOTE), true, '', 'default');
 br();
 
 end_form();
