@@ -28,6 +28,7 @@ include_once($path_to_root . "/sales/includes/ui/sales_order_ui.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 
 // Modern OOP Services
 use FA\Services\BankingService;
@@ -81,13 +82,13 @@ if (isset($_GET['NewDelivery']) && is_numeric($_GET['NewDelivery'])) {
 } elseif (isset($_GET['ModifyOrderNumber']) && is_numeric($_GET['ModifyOrderNumber'])) {
 
 	$help_context = 'Modifying Sales Order';
-	$_SESSION['page_title'] = sprintf( _("Modifying Sales Order # %d"), $_GET['ModifyOrderNumber']);
+	$_SESSION['page_title'] = sprintf( _(UI_TEXT_MODIFYING_SALES_ORDER), $_GET['ModifyOrderNumber']);
 	create_cart(ST_SALESORDER, $_GET['ModifyOrderNumber']);
 
 } elseif (isset($_GET['ModifyQuotationNumber']) && is_numeric($_GET['ModifyQuotationNumber'])) {
 
 	$help_context = 'Modifying Sales Quotation';
-	$_SESSION['page_title'] = sprintf( _("Modifying Sales Quotation # %d"), $_GET['ModifyQuotationNumber']);
+	$_SESSION['page_title'] = sprintf( _(UI_TEXT_MODIFYING_SALES_QUOTATION), $_GET['ModifyQuotationNumber']);
 	create_cart(ST_SALESQUOTE, $_GET['ModifyQuotationNumber']);
 
 } elseif (isset($_GET['NewOrder'])) {
@@ -107,7 +108,7 @@ page($_SESSION['page_title'], false, false, "", $js);
 
 if (isset($_GET['ModifyOrderNumber']) && is_prepaid_order_open($_GET['ModifyOrderNumber']))
 {
-	UiMessageService::displayError(_("This order cannot be edited because there are invoices or payments related to it, and prepayment terms were used."));
+	UiMessageService::displayError(_(UI_TEXT_ORDER_CANNOT_EDIT));
 	end_page(); exit;
 }
 if (isset($_GET['ModifyOrderNumber']))
@@ -127,20 +128,20 @@ if (list_updated('branch_id')) {
 if (isset($_GET['AddedID'])) {
 	$order_no = $_GET['AddedID'];
 
-	display_notification_centered(sprintf( _("Order # %d has been entered."),$order_no));
+	display_notification_centered(sprintf( _(UI_TEXT_ORDER_ENTERED),$order_no));
 
-	submenu_view(_("&View This Order"), ST_SALESORDER, $order_no);
+	submenu_view(_(UI_TEXT_VIEW_THIS_ORDER), ST_SALESORDER, $order_no);
 
-	submenu_print(_("&Print This Order"), ST_SALESORDER, $order_no, 'prtopt');
-	submenu_print(_("&Email This Order"), ST_SALESORDER, $order_no, null, 1);
+	submenu_print(_(UI_TEXT_PRINT_THIS_ORDER), ST_SALESORDER, $order_no, 'prtopt');
+	submenu_print(_(UI_TEXT_EMAIL_THIS_ORDER), ST_SALESORDER, $order_no, null, 1);
 	set_focus('prtopt');
 	
-	submenu_option(_("Make &Delivery Against This Order"),
+	submenu_option(_(UI_TEXT_MAKE_DELIVERY_AGAINST_ORDER),
 		"/sales/customer_delivery.php?OrderNumber=$order_no");
 
-	submenu_option(_("Work &Order Entry"),	"/manufacturing/work_order_entry.php?");
+	submenu_option(_(UI_TEXT_WORK_ORDER_ENTRY),	"/manufacturing/work_order_entry.php?");
 
-	submenu_option(_("Enter a &New Order"),	"/sales/sales_order_entry.php?NewOrder=0");
+	submenu_option(_(UI_TEXT_ENTER_NEW_ORDER),	"/sales/sales_order_entry.php?NewOrder=0");
 
 	$order = get_sales_order_header($order_no, ST_SALESORDER);
 	$customer_id = $order['debtor_no'];	
@@ -148,125 +149,125 @@ if (isset($_GET['AddedID'])) {
 	{
 		$row = db_fetch(db_query(get_allocatable_sales_orders($customer_id, $order_no, ST_SALESORDER)));
 		if ($row === false)
-			submenu_option(_("Receive Customer Payment"), "/sales/customer_payments.php?customer_id=$customer_id");
+			submenu_option(_(UI_TEXT_RECEIVE_CUSTOMER_PAYMENT), "/sales/customer_payments.php?customer_id=$customer_id");
 	}
-	submenu_option(_("Add an Attachment"), "/admin/attachments.php?filterType=".ST_SALESORDER."&trans_no=$order_no");
+	submenu_option(_(UI_TEXT_ADD_ATTACHMENT), "/admin/attachments.php?filterType=".ST_SALESORDER."&trans_no=$order_no");
 
 	display_footer_exit();
 
 } elseif (isset($_GET['UpdatedID'])) {
 	$order_no = $_GET['UpdatedID'];
 
-	display_notification_centered(sprintf( _("Order # %d has been updated."),$order_no));
+	display_notification_centered(sprintf( _(UI_TEXT_ORDER_UPDATED),$order_no));
 
-	submenu_view(_("&View This Order"), ST_SALESORDER, $order_no);
+	submenu_view(_(UI_TEXT_VIEW_THIS_ORDER), ST_SALESORDER, $order_no);
 
-	submenu_print(_("&Print This Order"), ST_SALESORDER, $order_no, 'prtopt');
-	submenu_print(_("&Email This Order"), ST_SALESORDER, $order_no, null, 1);
+	submenu_print(_(UI_TEXT_PRINT_THIS_ORDER), ST_SALESORDER, $order_no, 'prtopt');
+	submenu_print(_(UI_TEXT_EMAIL_THIS_ORDER), ST_SALESORDER, $order_no, null, 1);
 	set_focus('prtopt');
 
-	submenu_option(_("Confirm Order Quantities and Make &Delivery"),
+	submenu_option(_(UI_TEXT_CONFIRM_QUANTITIES_MAKE_DELIVERY),
 		"/sales/customer_delivery.php?OrderNumber=$order_no");
 
-	submenu_option(_("Select A Different &Order"),
+	submenu_option(_(UI_TEXT_SELECT_DIFFERENT_ORDER),
 		"/sales/inquiry/sales_orders_view.php?OutstandingOnly=1");
 
 	display_footer_exit();
 
 } elseif (isset($_GET['AddedQU'])) {
 	$order_no = $_GET['AddedQU'];
-	display_notification_centered(sprintf( _("Quotation # %d has been entered."),$order_no));
+	display_notification_centered(sprintf( _(UI_TEXT_QUOTATION_ENTERED),$order_no));
 
-	submenu_view(_("&View This Quotation"), ST_SALESQUOTE, $order_no);
+	submenu_view(_(UI_TEXT_VIEW_THIS_QUOTATION), ST_SALESQUOTE, $order_no);
 
-	submenu_print(_("&Print This Quotation"), ST_SALESQUOTE, $order_no, 'prtopt');
-	submenu_print(_("&Email This Quotation"), ST_SALESQUOTE, $order_no, null, 1);
+	submenu_print(_(UI_TEXT_PRINT_THIS_QUOTATION), ST_SALESQUOTE, $order_no, 'prtopt');
+	submenu_print(_(UI_TEXT_EMAIL_THIS_QUOTATION), ST_SALESQUOTE, $order_no, null, 1);
 	set_focus('prtopt');
 	
-	submenu_option(_("Make &Sales Order Against This Quotation"),
+	submenu_option(_(UI_TEXT_MAKE_SALES_ORDER_AGAINST_QUOTATION),
 		"/sales/sales_order_entry.php?NewQuoteToSalesOrder=$order_no");
 
-	submenu_option(_("Enter a New &Quotation"),	"/sales/sales_order_entry.php?NewQuotation=0");
+	submenu_option(_(UI_TEXT_ENTER_NEW_QUOTATION),	"/sales/sales_order_entry.php?NewQuotation=0");
 
-	submenu_option(_("Add an Attachment"), "/admin/attachments.php?filterType=".ST_SALESQUOTE."&trans_no=$order_no");
+	submenu_option(_(UI_TEXT_ADD_ATTACHMENT), "/admin/attachments.php?filterType=".ST_SALESQUOTE."&trans_no=$order_no");
 
 	display_footer_exit();
 
 } elseif (isset($_GET['UpdatedQU'])) {
 	$order_no = $_GET['UpdatedQU'];
 
-	display_notification_centered(sprintf( _("Quotation # %d has been updated."),$order_no));
+	display_notification_centered(sprintf( _(UI_TEXT_QUOTATION_UPDATED),$order_no));
 
-	submenu_view(_("&View This Quotation"), ST_SALESQUOTE, $order_no);
+	submenu_view(_(UI_TEXT_VIEW_THIS_QUOTATION), ST_SALESQUOTE, $order_no);
 
-	submenu_print(_("&Print This Quotation"), ST_SALESQUOTE, $order_no, 'prtopt');
-	submenu_print(_("&Email This Quotation"), ST_SALESQUOTE, $order_no, null, 1);
+	submenu_print(_(UI_TEXT_PRINT_THIS_QUOTATION), ST_SALESQUOTE, $order_no, 'prtopt');
+	submenu_print(_(UI_TEXT_EMAIL_THIS_QUOTATION), ST_SALESQUOTE, $order_no, null, 1);
 	set_focus('prtopt');
 
-	submenu_option(_("Make &Sales Order Against This Quotation"),
+	submenu_option(_(UI_TEXT_MAKE_SALES_ORDER_AGAINST_QUOTATION),
 		"/sales/sales_order_entry.php?NewQuoteToSalesOrder=$order_no");
 
-	submenu_option(_("Select A Different &Quotation"),
+	submenu_option(_(UI_TEXT_SELECT_DIFFERENT_QUOTATION),
 		"/sales/inquiry/sales_orders_view.php?type=".ST_SALESQUOTE);
 
 	display_footer_exit();
 } elseif (isset($_GET['AddedDN'])) {
 	$delivery = $_GET['AddedDN'];
 
-	display_notification_centered(sprintf(_("Delivery # %d has been entered."),$delivery));
+	display_notification_centered(sprintf(_(UI_TEXT_DELIVERY_ENTERED),$delivery));
 
-	submenu_view(_("&View This Delivery"), ST_CUSTDELIVERY, $delivery);
+	submenu_view(_(UI_TEXT_VIEW_THIS_DELIVERY), ST_CUSTDELIVERY, $delivery);
 
-	submenu_print(_("&Print Delivery Note"), ST_CUSTDELIVERY, $delivery, 'prtopt');
-	submenu_print(_("&Email Delivery Note"), ST_CUSTDELIVERY, $delivery, null, 1);
-	submenu_print(_("P&rint as Packing Slip"), ST_CUSTDELIVERY, $delivery, 'prtopt', null, 1);
-	submenu_print(_("E&mail as Packing Slip"), ST_CUSTDELIVERY, $delivery, null, 1, 1);
+	submenu_print(_(UI_TEXT_PRINT_DELIVERY_NOTE), ST_CUSTDELIVERY, $delivery, 'prtopt');
+	submenu_print(_(UI_TEXT_EMAIL_DELIVERY_NOTE), ST_CUSTDELIVERY, $delivery, null, 1);
+	submenu_print(_(UI_TEXT_PRINT_PACKING_SLIP), ST_CUSTDELIVERY, $delivery, 'prtopt', null, 1);
+	submenu_print(_(UI_TEXT_EMAIL_PACKING_SLIP), ST_CUSTDELIVERY, $delivery, null, 1, 1);
 	set_focus('prtopt');
 
-	display_note(get_gl_view_str(ST_CUSTDELIVERY, $delivery, _("View the GL Journal Entries for this Dispatch")),0, 1);
+	display_note(get_gl_view_str(ST_CUSTDELIVERY, $delivery, _(UI_TEXT_VIEW_GL_JOURNAL_DISPATCH)),0, 1);
 
-	submenu_option(_("Make &Invoice Against This Delivery"),
+	submenu_option(_(UI_TEXT_MAKE_INVOICE_AGAINST_DELIVERY),
 		"/sales/customer_invoice.php?DeliveryNumber=$delivery");
 
 	if ((isset($_GET['Type']) && $_GET['Type'] == 1))
-		submenu_option(_("Enter a New Template &Delivery"),
+		submenu_option(_(UI_TEXT_ENTER_NEW_TEMPLATE_DELIVERY),
 			"/sales/inquiry/sales_orders_view.php?DeliveryTemplates=Yes");
 	else
-		submenu_option(_("Enter a &New Delivery"), 
+		submenu_option(_(UI_TEXT_ENTER_NEW_DELIVERY), 
 			"/sales/sales_order_entry.php?NewDelivery=0");
 
-	submenu_option(_("Add an Attachment"), "/admin/attachments.php?filterType=".ST_CUSTDELIVERY."&trans_no=$delivery");
+	submenu_option(_(UI_TEXT_ADD_ATTACHMENT), "/admin/attachments.php?filterType=".ST_CUSTDELIVERY."&trans_no=$delivery");
 
 	display_footer_exit();
 
 } elseif (isset($_GET['AddedDI'])) {
 	$invoice = $_GET['AddedDI'];
 
-	display_notification_centered(sprintf(_("Invoice # %d has been entered."), $invoice));
+	display_notification_centered(sprintf(_(UI_TEXT_INVOICE_ENTERED), $invoice));
 
-	submenu_view(_("&View This Invoice"), ST_SALESINVOICE, $invoice);
+	submenu_view(_(UI_TEXT_VIEW_THIS_INVOICE), ST_SALESINVOICE, $invoice);
 
-	submenu_print(_("&Print Sales Invoice"), ST_SALESINVOICE, $invoice."-".ST_SALESINVOICE, 'prtopt');
-	submenu_print(_("&Email Sales Invoice"), ST_SALESINVOICE, $invoice."-".ST_SALESINVOICE, null, 1);
+	submenu_print(_(UI_TEXT_PRINT_SALES_INVOICE), ST_SALESINVOICE, $invoice."-".ST_SALESINVOICE, 'prtopt');
+	submenu_print(_(UI_TEXT_EMAIL_SALES_INVOICE), ST_SALESINVOICE, $invoice."-".ST_SALESINVOICE, null, 1);
 	set_focus('prtopt');
 
 	$row = db_fetch(get_allocatable_from_cust_transactions(null, $invoice, ST_SALESINVOICE));
 	if ($row !== false)
-		submenu_print(_("Print &Receipt"), $row['type'], $row['trans_no']."-".$row['type'], 'prtopt');
+		submenu_print(_(UI_TEXT_PRINT_RECEIPT), $row['type'], $row['trans_no']."-".$row['type'], 'prtopt');
 
-	display_note(get_gl_view_str(ST_SALESINVOICE, $invoice, _("View the GL &Journal Entries for this Invoice")),0, 1);
+	display_note(get_gl_view_str(ST_SALESINVOICE, $invoice, _(UI_TEXT_VIEW_GL_JOURNAL_INVOICE)),0, 1);
 
 	if ((isset($_GET['Type']) && $_GET['Type'] == 1))
-		submenu_option(_("Enter a &New Template Invoice"), 
+		submenu_option(_(UI_TEXT_ENTER_NEW_TEMPLATE_INVOICE), 
 			"/sales/inquiry/sales_orders_view.php?InvoiceTemplates=Yes");
 	else
-		submenu_option(_("Enter a &New Direct Invoice"),
+		submenu_option(_(UI_TEXT_ENTER_NEW_DIRECT_INVOICE),
 			"/sales/sales_order_entry.php?NewInvoice=0");
 
 	if ($row === false)
-		submenu_option(_("Entry &customer payment for this invoice"), "/sales/customer_payments.php?SInvoice=".$invoice);
+		submenu_option(_(UI_TEXT_ENTRY_CUSTOMER_PAYMENT_INVOICE), "/sales/customer_payments.php?SInvoice=".$invoice);
 
-	submenu_option(_("Add an Attachment"), "/admin/attachments.php?filterType=".ST_SALESINVOICE."&trans_no=$invoice");
+	submenu_option(_(UI_TEXT_ADD_ATTACHMENT), "/admin/attachments.php?filterType=".ST_SALESINVOICE."&trans_no=$invoice");
 
 	display_footer_exit();
 } else
@@ -376,53 +377,53 @@ function can_process() {
 
 	if (!RequestService::getPostStatic('customer_id')) 
 	{
-		UiMessageService::displayError(_("There is no customer selected."));
+		UiMessageService::displayError(_(UI_TEXT_NO_CUSTOMER_SELECTED));
 		set_focus('customer_id');
 		return false;
 	} 
 	
 	if (!RequestService::getPostStatic('branch_id')) 
 	{
-		UiMessageService::displayError(_("This customer has no branch defined."));
+		UiMessageService::displayError(_(UI_TEXT_CUSTOMER_NO_BRANCH));
 		set_focus('branch_id');
 		return false;
 	} 
 	
 	if (!DateService::isDate($_POST['OrderDate'])) {
-		UiMessageService::displayError(_("The entered date is invalid."));
+		UiMessageService::displayError(_(UI_TEXT_DATE_INVALID));
 		set_focus('OrderDate');
 		return false;
 	}
 	if ($_SESSION['Items']->trans_type!=ST_SALESORDER && $_SESSION['Items']->trans_type!=ST_SALESQUOTE && !DateService::isDateInFiscalYear($_POST['OrderDate'])) {
-		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_(UI_TEXT_DATE_OUT_OF_FISCAL_YEAR));
 		set_focus('OrderDate');
 		return false;
 	}
 	if (count($_SESSION['Items']->line_items) == 0)	{
-		UiMessageService::displayError(_("You must enter at least one non empty item line."));
+		UiMessageService::displayError(_(UI_TEXT_MUST_ENTER_ITEM_LINE));
 		set_focus('AddItem');
 		return false;
 	}
 	if (!$SysPrefs->allow_negative_stock() && ($low_stock = $_SESSION['Items']->check_qoh()))
 	{
-		UiMessageService::displayError(_("This document cannot be processed because there is insufficient quantity for items marked."));
+		UiMessageService::displayError(_(UI_TEXT_INSUFFICIENT_QUANTITY));
 		return false;
 	}
 	if ($_SESSION['Items']->payment_terms['cash_sale'] == 0) {
 		if (!$_SESSION['Items']->is_started() && ($_SESSION['Items']->payment_terms['days_before_due'] == -1) && ((RequestService::inputNumStatic('prep_amount')<=0) ||
 			RequestService::inputNumStatic('prep_amount')>$_SESSION['Items']->get_trans_total())) {
-			UiMessageService::displayError(_("Pre-payment required have to be positive and less than total amount."));
+			UiMessageService::displayError(_(UI_TEXT_PREPAYMENT_POSITIVE_LESS_TOTAL));
 			set_focus('prep_amount');
 			return false;
 		}
 		if (strlen($_POST['deliver_to']) <= 1) {
-			UiMessageService::displayError(_("You must enter the person or company to whom delivery should be made to."));
+			UiMessageService::displayError(_(UI_TEXT_MUST_ENTER_DELIVERY_PERSON));
 			set_focus('deliver_to');
 			return false;
 		}
 
 		if ($_SESSION['Items']->trans_type != ST_SALESQUOTE && strlen($_POST['delivery_address']) <= 1) {
-			UiMessageService::displayError( _("You should enter the street address in the box provided. Orders cannot be accepted without a valid street address."));
+			UiMessageService::displayError( _(UI_TEXT_STREET_ADDRESS_REQUIRED));
 			set_focus('delivery_address');
 			return false;
 		}
@@ -431,23 +432,23 @@ function can_process() {
 			$_POST['freight_cost'] = FormatService::priceFormat(0);
 
 		if (!check_num('freight_cost',0)) {
-			UiMessageService::displayError(_("The shipping cost entered is expected to be numeric."));
+			UiMessageService::displayError(_(UI_TEXT_SHIPPING_COST_NUMERIC));
 			set_focus('freight_cost');
 			return false;
 		}
 		if (!is_date($_POST['delivery_date'])) {
 			if ($_SESSION['Items']->trans_type==ST_SALESQUOTE)
-				UiMessageService::displayError(_("The Valid date is invalid."));
+				UiMessageService::displayError(_(UI_TEXT_VALID_DATE_INVALID));
 			else	
-				UiMessageService::displayError(_("The delivery date is invalid."));
+				UiMessageService::displayError(_(UI_TEXT_DELIVERY_DATE_INVALID));
 			set_focus('delivery_date');
 			return false;
 		}
 		if (DateService::date1GreaterDate2Static($_POST['OrderDate'], $_POST['delivery_date'])) {
 			if ($_SESSION['Items']->trans_type==ST_SALESQUOTE)
-				UiMessageService::displayError(_("The requested valid date is before the date of the quotation."));
+				UiMessageService::displayError(_(UI_TEXT_VALID_DATE_BEFORE_QUOTATION));
 			else	
-				UiMessageService::displayError(_("The requested delivery date is before the date of the order."));
+				UiMessageService::displayError(_(UI_TEXT_DELIVERY_DATE_BEFORE_ORDER));
 			set_focus('delivery_date');
 			return false;
 		}
@@ -456,12 +457,12 @@ function can_process() {
 	{
 		if (!db_has_cash_accounts())
 		{
-			UiMessageService::displayError(_("You need to define a cash account for your Sales Point."));
+			UiMessageService::displayError(_(UI_TEXT_DEFINE_CASH_ACCOUNT));
 			return false;
 		}	
 	}	
 	if (!$Refs->is_valid($_POST['ref'], $_SESSION['Items']->trans_type)) {
-		UiMessageService::displayError(_("You must enter a reference."));
+		UiMessageService::displayError(_(UI_TEXT_MUST_ENTER_REFERENCE));
 		set_focus('ref');
 		return false;
 	}
@@ -494,12 +495,12 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
 	$ret = $_SESSION['Items']->write(1);
 	if ($ret == -1)
 	{
-		UiMessageService::displayError(_("The entered reference is already in use."));
+		UiMessageService::displayError(_(UI_TEXT_REFERENCE_ALREADY_IN_USE));
 		$ref = $Refs->get_next($_SESSION['Items']->trans_type, null, array('date' => DateService::todayStatic()));
 		if ($ref != $_SESSION['Items']->reference)
 		{
 			unset($_POST['ref']); // force refresh reference
-			UiMessageService::displayError(_("The reference number field has been increased. Please save the document again."));
+			UiMessageService::displayError(_(UI_TEXT_REFERENCE_FIELD_INCREASED));
 		}
 		set_focus('ref');
 	}
@@ -538,23 +539,23 @@ function check_item_data()
 	
 	$is_inventory_item = InventoryService::isInventoryItem(RequestService::getPostStatic('stock_id'));
 	if(!RequestService::getPostStatic('stock_id_text', true)) {
-		UiMessageService::displayError( _("Item description cannot be empty."));
+		UiMessageService::displayError( _(UI_TEXT_ITEM_DESCRIPTION_EMPTY));
 		set_focus('stock_id_edit');
 		return false;
 	}
 	elseif (!check_num('qty', 0) || !check_num('Disc', 0, 100)) {
-		UiMessageService::displayError( _("The item could not be updated because you are attempting to set the quantity ordered to less than 0, or the discount percent to more than 100."));
+		UiMessageService::displayError( _(UI_TEXT_QUANTITY_DISCOUNT_INVALID));
 		set_focus('qty');
 		return false;
 	} elseif (!check_num('price', 0) && (!$SysPrefs->allow_negative_prices() || $is_inventory_item)) {
-		UiMessageService::displayError( _("Price for inventory item must be entered and can not be less than 0"));
+		UiMessageService::displayError( _(UI_TEXT_PRICE_MUST_BE_ENTERED));
 		set_focus('price');
 		return false;
 	} elseif (isset($_POST['LineNo']) && isset($_SESSION['Items']->line_items[$_POST['LineNo']])
 	    && !check_num('qty', $_SESSION['Items']->line_items[$_POST['LineNo']]->qty_done)) {
 
 		set_focus('qty');
-		UiMessageService::displayError(_("You attempting to make the quantity ordered a quantity less than has already been delivered. The quantity delivered cannot be modified retrospectively."));
+		UiMessageService::displayError(_(UI_TEXT_QUANTITY_LESS_THAN_DELIVERED));
 		return false;
 	}
 
