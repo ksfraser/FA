@@ -12,7 +12,6 @@
 $path_to_root = "..";
 include($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/types.inc"); // For tag constants
-include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/admin/db/tags_db.inc");
 include($path_to_root . "/includes/ui.inc");
 
@@ -31,18 +30,18 @@ if (!isset($_POST['type'])) {
 	elseif ($_GET['type'] == "dimension")
 		$_POST['type'] = TAG_DIMENSION;
 	else
-		die(_(UI_TEXT_UNSPECIFIED_TAG_TYPE));
+		die(_("Unspecified tag type"));
 }
 
 // Set up page based on what type of tags we're working with
 switch ($_POST['type']) {
 	case TAG_ACCOUNT:
 		// Account tags
-		$_SESSION['page_title'] = _($help_context = UI_TEXT_ACCOUNT_TAGS_TITLE);
+		$_SESSION['page_title'] = _($help_context = "Account Tags");
 		break;
 	case TAG_DIMENSION:
 		// Dimension tags
-		$_SESSION['page_title'] = _($help_context = UI_TEXT_DIMENSION_TAGS_TITLE);
+		$_SESSION['page_title'] = _($help_context = "Dimension Tags");
 }
 
 page($_SESSION['page_title']);
@@ -55,7 +54,7 @@ function can_process()
 {
 	if (strlen($_POST['name']) == 0) 
 	{
-		UiMessageService::displayError(_(UI_TEXT_TAG_NAME_EMPTY_ERROR));
+		UiMessageService::displayError( _("The tag name cannot be empty."));
 		set_focus('name');
 		return false;
 	}
@@ -92,7 +91,7 @@ function can_delete($selected_id)
 	
 	if (db_num_rows($result) > 0)	
 	{
-		UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_TAG_ERROR));
+		UiMessageService::displayError(_("Cannot delete this tag because records have been created referring to it."));
 		return false;
 	}
 
@@ -126,7 +125,7 @@ $result = get_tags($_POST['type'], RequestService::checkValueStatic('show_inacti
 
 start_form();
 start_table(TABLESTYLE);
-$th = array(_(UI_TEXT_TAG_NAME), _(UI_TEXT_TAG_DESCRIPTION), "", "");
+$th = array(_("Tag Name"), _("Tag Description"), "", "");
 inactive_control_column($th);
 table_header($th);
 
@@ -138,8 +137,8 @@ while ($myrow = db_fetch($result))
 	label_cell($myrow['name']);
 	label_cell($myrow['description']);
 	inactive_control_cell($myrow["id"], $myrow["inactive"], 'tags', 'id');
-	edit_button_cell("Edit".$myrow["id"], _(UI_TEXT_EDIT));
-	delete_button_cell("Delete".$myrow["id"], _(UI_TEXT_DELETE));
+	edit_button_cell("Edit".$myrow["id"], _("Edit"));
+	delete_button_cell("Delete".$myrow["id"], _("Delete"));
 	end_row();
 }
 
@@ -163,8 +162,8 @@ if ($selected_id != -1) // We've selected a tag
 	hidden('selected_id', $selected_id);
 }
 	
-text_row_ex(_(UI_TEXT_TAG_NAME_LABEL), 'name', 15, 30);
-text_row_ex(_(UI_TEXT_TAG_DESCRIPTION_LABEL), 'description', 40, 60);
+text_row_ex(_("Tag Name:"), 'name', 15, 30);
+text_row_ex(_("Tag Description:"), 'description', 40, 60);
 hidden('type');
 
 end_table(1);
