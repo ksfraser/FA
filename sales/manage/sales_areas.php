@@ -16,6 +16,7 @@ include($path_to_root . "/includes/session.inc");
 page(_($help_context = "Sales Areas"));
 
 include($path_to_root . "/includes/ui.inc");
+include($path_to_root . "/includes/ui_strings.php");
 
 simple_page_mode(true);
 
@@ -27,7 +28,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if (strlen($_POST['description']) == 0) 
 	{
 		$input_error = 1;
-		UiMessageService::displayError(_("The area description cannot be empty."));
+		UiMessageService::displayError(_(UI_TEXT_THE_AREA_DESCRIPTION_CANNOT_BE_EMPTY));
 		set_focus('description');
 	}
 
@@ -59,7 +60,7 @@ if ($Mode == 'Delete')
 	if (key_in_foreign_table($selected_id, 'cust_branch', 'area'))
 	{
 		$cancel_delete = 1;
-		UiMessageService::displayError(_("Cannot delete this area because customer branches have been created using this area."));
+		UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_THIS_AREA_BECAUSE_CUSTOMER_BRANCHES_HAVE_BEEN_CREATED_USING_THIS_AREA));
 	} 
 	if ($cancel_delete == 0) 
 	{
@@ -85,7 +86,7 @@ $result = get_sales_areas(RequestService::checkValueStatic('show_inactive'));
 start_form();
 start_table(TABLESTYLE, "width='30%'");
 
-$th = array(_("Area Name"), "", "");
+$th = array(_(UI_TEXT_AREA_NAME), "", "");
 inactive_control_column($th);
 
 table_header($th);
@@ -100,8 +101,8 @@ while ($myrow = db_fetch($result))
 	
 	inactive_control_cell($myrow["area_code"], $myrow["inactive"], 'areas', 'area_code');
 
- 	edit_button_cell("Edit".$myrow["area_code"], _("Edit"));
- 	delete_button_cell("Delete".$myrow["area_code"], _("Delete"));
+ 	edit_button_cell("Edit".$myrow["area_code"], _(UI_TEXT_EDIT));
+ 	delete_button_cell("Delete".$myrow["area_code"], _(UI_TEXT_DELETE));
 	end_row();
 }
 	
@@ -124,7 +125,7 @@ if ($selected_id != -1)
 	hidden("selected_id", $selected_id);
 } 
 
-text_row_ex(_("Area Name:"), 'description', 30); 
+text_row_ex(_(UI_TEXT_AREA_NAME_LABEL), 'description', 30); 
 
 end_table(1);
 

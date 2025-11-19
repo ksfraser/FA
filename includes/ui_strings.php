@@ -1099,4 +1099,8 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_BEGIN_LABEL', 'Begin:');
     define('UI_TEXT_END_LABEL', 'End:');
     define('UI_TEXT_LAST_CREATED_LABEL', 'Last Created');
+    define('UI_TEXT_THE_AREA_DESCRIPTION_CANNOT_BE_EMPTY', 'The area description cannot be empty.');
+    define('UI_TEXT_CANNOT_DELETE_THIS_AREA_BECAUSE_CUSTOMER_BRANCHES_HAVE_BEEN_CREATED_USING_THIS_AREA', 'Cannot delete this area because customer branches have been created using this area.');
+    define('UI_TEXT_AREA_NAME', 'Area Name');
+    define('UI_TEXT_AREA_NAME_LABEL', 'Area Name:');
 };
