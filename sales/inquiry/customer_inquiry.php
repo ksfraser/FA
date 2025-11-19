@@ -17,6 +17,7 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/sales/includes/sales_ui.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 
 $js = "";
 if ($SysPrefs->use_popup_windows)
@@ -75,7 +76,7 @@ function credit_link($row)
 			return pager_link(_('Invoice'), "/sales/customer_invoice.php?DeliveryNumber=" 
 				.$row['trans_no'], ICON_DOC);
 		else if ($row['type'] == ST_SALESINVOICE)
-			return pager_link(_("Credit This") ,
+			return pager_link(_(UI_TEXT_CREDIT_THIS) ,
 			"/sales/customer_credit_invoice.php?InvoiceNumber=". $row['trans_no'], ICON_CREDIT);
 	}	
 }
@@ -98,21 +99,21 @@ function copy_link($row)
     if ($page_nested)
         return '';
     if ($row['type'] == ST_CUSTDELIVERY)
-        return pager_link(_("Copy Delivery"), "/sales/sales_order_entry.php?NewDelivery=" 
+        return pager_link(_(UI_TEXT_COPY_DELIVERY), "/sales/sales_order_entry.php?NewDelivery=" 
             .$row['order_'], ICON_DOC);
     elseif ($row['type'] == ST_SALESINVOICE)
-        return pager_link(_("Copy Invoice"),    "/sales/sales_order_entry.php?NewInvoice="
+        return pager_link(_(UI_TEXT_COPY_INVOICE),    "/sales/sales_order_entry.php?NewInvoice="
             . $row['order_'], ICON_DOC);
 }
 
 function prt_link($row)
 {
   	if ($row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_BANKDEPOSIT) 
-		return print_document_link($row['trans_no']."-".$row['type'], _("Print Receipt"), true, ST_CUSTPAYMENT, ICON_PRINT);
+		return print_document_link($row['trans_no']."-".$row['type'], _(UI_TEXT_PRINT_RECEIPT), true, ST_CUSTPAYMENT, ICON_PRINT);
   	elseif ($row['type'] == ST_BANKPAYMENT) // bank payment printout not defined yet.
 		return '';
  	else
- 		return print_document_link($row['trans_no']."-".$row['type'], _("Print"), true, $row['type'], ICON_PRINT);
+ 		return print_document_link($row['trans_no']."-".$row['type'], _(UI_TEXT_PRINT), true, $row['type'], ICON_PRINT);
 }
 
 function check_overdue($row)
@@ -128,7 +129,7 @@ function display_customer_summary($customer_record)
 	$past2 = 2 * $past1;
     if ($customer_record && $customer_record["dissallow_invoices"] != 0)
     {
-    	echo "<center><font color=red size=4><b>" . _("CUSTOMER ACCOUNT IS ON HOLD") . "</font></b></center>";
+    	echo "<center><font color=red size=4><b>" . _(UI_TEXT_CUSTOMER_ACCOUNT_IS_ON_HOLD) . "</font></b></center>";
     }
 
 	$nowdue = "1-" . $past1 . " " . _('Days');
@@ -136,8 +137,8 @@ function display_customer_summary($customer_record)
 	$pastdue2 = _('Over') . " " . $past2 . " " . _('Days');
 
     start_table(TABLESTYLE, "width='80%'");
-    $th = array(_("Currency"), _("Terms"), _("Current"), $nowdue,
-    	$pastdue1, $pastdue2, _("Total Balance"));
+    $th = array(_(UI_TEXT_CURRENCY), _(UI_TEXT_TERMS), _(UI_TEXT_CURRENT), $nowdue,
+    	$pastdue1, $pastdue2, _(UI_TEXT_TOTAL_BALANCE));
     table_header($th);
     if ($customer_record != false)
     {
@@ -170,21 +171,21 @@ if (!isset($_POST['customer_id']))
 start_table(TABLESTYLE_NOBORDER);
 start_row();
 
-ref_cells(_("Reference:"), 'Ref', '', NULL, _('Enter reference fragment or leave empty'));
+ref_cells(_(UI_TEXT_REFERENCE_LABEL), 'Ref', '', NULL, _(UI_TEXT_ENTER_REFERENCE_FRAGMENT));
 
 if (!$page_nested)
-	customer_list_cells(_("Select a customer: "), 'customer_id', null, true, true, false, true);
+	customer_list_cells(_(UI_TEXT_SELECT_A_CUSTOMER_LABEL), 'customer_id', null, true, true, false, true);
 
 cust_allocations_list_cells(null, 'filterType', null, true, true);
 
 if ($_POST['filterType'] != '2')
 {
-	date_cells(_("From:"), 'TransAfterDate', '', null, -user_transaction_days());
-	date_cells(_("To:"), 'TransToDate', '', null);
+	date_cells(_(UI_TEXT_FROM_LABEL), 'TransAfterDate', '', null, -user_transaction_days());
+	date_cells(_(UI_TEXT_TO_LABEL), 'TransToDate', '', null);
 }
-check_cells(_("Zero values"), 'show_voided');
+check_cells(_(UI_TEXT_ZERO_VALUES), 'show_voided');
 
-submit_cells('RefreshInquiry', _("Search"),'',_('Refresh Inquiry'), 'default');
+submit_cells('RefreshInquiry', _(UI_TEXT_SEARCH),'',_(UI_TEXT_REFRESH_INQUIRY), 'default');
 end_row();
 end_table();
 
@@ -213,17 +214,17 @@ $sql = get_sql_for_customer_inquiry(RequestService::getPostStatic('TransAfterDat
 //db_query("set @bal:=0");
 
 $cols = array(
-	_("Type") => array('fun'=>'systype_name', 'ord'=>''),
-	_("#") => array('fun'=>'trans_view', 'ord'=>'', 'align'=>'right'),
-	_("Order") => array('fun'=>'order_view', 'align'=>'right'), 
-	_("Reference"), 
-	_("Date") => array('name'=>'tran_date', 'type'=>'date', 'ord'=>'desc'),
-	_("Due Date") => array('type'=>'date', 'fun'=>'due_date'),
-	_("Customer") => array('ord'=>''), 
-	_("Branch") => array('ord'=>''), 
-	_("Currency") => array('align'=>'center'),
-	_("Amount") => array('align'=>'right', 'fun'=>'fmt_amount'), 
-	_("Balance") => array('align'=>'right', 'type'=>'amount'),
+	_(UI_TEXT_TYPE) => array('fun'=>'systype_name', 'ord'=>''),
+	_(UI_TEXT_NUMBER) => array('fun'=>'trans_view', 'ord'=>'', 'align'=>'right'),
+	_(UI_TEXT_ORDER) => array('fun'=>'order_view', 'align'=>'right'), 
+	_(UI_TEXT_REFERENCE), 
+	_(UI_TEXT_DATE) => array('name'=>'tran_date', 'type'=>'date', 'ord'=>'desc'),
+	_(UI_TEXT_DUE_DATE) => array('type'=>'date', 'fun'=>'due_date'),
+	_(UI_TEXT_CUSTOMER) => array('ord'=>''), 
+	_(UI_TEXT_BRANCH) => array('ord'=>''), 
+	_(UI_TEXT_CURRENCY) => array('align'=>'center'),
+	_(UI_TEXT_AMOUNT) => array('align'=>'right', 'fun'=>'fmt_amount'), 
+	_(UI_TEXT_BALANCE) => array('align'=>'right', 'type'=>'amount'),
 		array('insert'=>true, 'fun'=>'gl_view'),
 		array('insert'=>true, 'fun'=>'edit_link'),
 		array('insert'=>true, 'fun'=>'copy_link'),
@@ -233,14 +234,14 @@ $cols = array(
 
 
 if ($_POST['customer_id'] != ALL_TEXT) {
-	$cols[_("Customer")] = 'skip';
-	$cols[_("Currency")] = 'skip';
+	$cols[_(UI_TEXT_CUSTOMER)] = 'skip';
+	$cols[_(UI_TEXT_CURRENCY)] = 'skip';
 }
 if ($_POST['filterType'] != '2')
-	$cols[_("Balance")] = 'skip';
+	$cols[_(UI_TEXT_BALANCE)] = 'skip';
 
 $table =& new_db_pager('trans_tbl', $sql, $cols);
-$table->set_marker('check_overdue', _("Marked items are overdue."));
+$table->set_marker('check_overdue', _(UI_TEXT_MARKED_ITEMS_ARE_OVERDUE));
 
 $table->width = "85%";
 

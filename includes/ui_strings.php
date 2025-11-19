@@ -911,4 +911,17 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_REF', 'Ref');
     define('UI_TEXT_CONTACT', 'Contact');
     define('UI_TEXT_PHONE', 'Phone');
+    define('UI_TEXT_CREDIT_THIS', 'Credit This');
+    define('UI_TEXT_COPY_DELIVERY', 'Copy Delivery');
+    define('UI_TEXT_COPY_INVOICE', 'Copy Invoice');
+    define('UI_TEXT_PRINT_RECEIPT', 'Print Receipt');
+    define('UI_TEXT_PRINT', 'Print');
+    define('UI_TEXT_CUSTOMER_ACCOUNT_IS_ON_HOLD', 'CUSTOMER ACCOUNT IS ON HOLD');
+    define('UI_TEXT_TERMS', 'Terms');
+    define('UI_TEXT_CURRENT', 'Current');
+    define('UI_TEXT_TOTAL_BALANCE', 'Total Balance');
+    define('UI_TEXT_REFERENCE_LABEL', 'Reference:');
+    define('UI_TEXT_ENTER_REFERENCE_FRAGMENT', 'Enter reference fragment or leave empty');
+    define('UI_TEXT_ZERO_VALUES', 'Zero values');
+    define('UI_TEXT_AMOUNT', 'Amount');
 };
