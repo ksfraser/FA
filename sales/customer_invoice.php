@@ -28,6 +28,7 @@ include_once($path_to_root . "/includes/CompanyPrefsService.php");
 
 // Modern OOP Services
 require_once($path_to_root . "/includes/DateService.php");
+include_once($path_to_root . "/includes/ui_strings.php");
 use FA\Services\DateService;
 
 $js = "";
@@ -39,7 +40,7 @@ if (user_use_date_picker()) {
 }
 
 if (isset($_GET['ModifyInvoice'])) {
-	$_SESSION['page_title'] = sprintf(_("Modifying Sales Invoice # %d.") ,$_GET['ModifyInvoice']);
+	$_SESSION['page_title'] = sprintf(_(UI_TEXT_MODIFYING_SALES_INVOICE) ,$_GET['ModifyInvoice']);
 	$help_context = "Modifying Sales Invoice";
 } elseif (isset($_GET['DeliveryNumber'])) {
 	$_SESSION['page_title'] = _($help_context = "Issue an Invoice for Delivery Note");
@@ -59,22 +60,22 @@ if (isset($_GET['AddedID'])) {
 	$invoice_no = $_GET['AddedID'];
 	$trans_type = ST_SALESINVOICE;
 
-	display_notification(_("Selected deliveries has been processed"), true);
+	display_notification(_(UI_TEXT_SELECTED_DELIVERIES_PROCESSED), true);
 
-	display_note(get_customer_trans_view_str($trans_type, $invoice_no, _("&View This Invoice")), 0, 1);
+	display_note(get_customer_trans_view_str($trans_type, $invoice_no, _(UI_TEXT_VIEW_THIS_INVOICE)), 0, 1);
 
-	display_note(print_document_link($invoice_no."-".$trans_type, _("&Print This Invoice"), true, ST_SALESINVOICE));
-	display_note(print_document_link($invoice_no."-".$trans_type, _("&Email This Invoice"), true, ST_SALESINVOICE, false, "printlink", "", 1),1);
+	display_note(print_document_link($invoice_no."-".$trans_type, _(UI_TEXT_PRINT_SALES_INVOICE), true, ST_SALESINVOICE));
+	display_note(print_document_link($invoice_no."-".$trans_type, _(UI_TEXT_EMAIL_SALES_INVOICE), true, ST_SALESINVOICE, false, "printlink", "", 1),1);
 
-	display_note(get_gl_view_str($trans_type, $invoice_no, _("View the GL &Journal Entries for this Invoice")),1);
+	display_note(get_gl_view_str($trans_type, $invoice_no, _(UI_TEXT_VIEW_GL_JOURNAL_INVOICE)),1);
 
-	hyperlink_params("$path_to_root/sales/inquiry/sales_deliveries_view.php", _("Select Another &Delivery For Invoicing"), "OutstandingOnly=1");
+	hyperlink_params("$path_to_root/sales/inquiry/sales_deliveries_view.php", _(UI_TEXT_SELECT_ANOTHER_DELIVERY_FOR_INVOICING), "OutstandingOnly=1");
 
 	if (!db_num_rows(get_allocatable_from_cust_transactions(null, $invoice_no, $trans_type)))
-		hyperlink_params("$path_to_root/sales/customer_payments.php", _("Entry &customer payment for this invoice"),
+		hyperlink_params("$path_to_root/sales/customer_payments.php", _(UI_TEXT_ENTRY_CUSTOMER_PAYMENT_INVOICE),
 		"SInvoice=".$invoice_no);
 
-	hyperlink_params("$path_to_root/admin/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
+	hyperlink_params("$path_to_root/admin/attachments.php", _(UI_TEXT_ADD_ATTACHMENT), "filterType=$trans_type&trans_no=$invoice_no");
 
 	display_footer_exit();
 
@@ -85,12 +86,12 @@ if (isset($_GET['AddedID'])) {
 
 	display_notification_centered(sprintf(_('Sales Invoice # %d has been updated.'),$invoice_no));
 
-	display_note(get_trans_view_str(ST_SALESINVOICE, $invoice_no, _("&View This Invoice")));
+	display_note(get_trans_view_str(ST_SALESINVOICE, $invoice_no, _(UI_TEXT_VIEW_THIS_INVOICE)));
 	echo '<br>';
-	display_note(print_document_link($invoice_no."-".$trans_type, _("&Print This Invoice"), true, ST_SALESINVOICE));
-	display_note(print_document_link($invoice_no."-".$trans_type, _("&Email This Invoice"), true, ST_SALESINVOICE, false, "printlink", "", 1),1);
+	display_note(print_document_link($invoice_no."-".$trans_type, _(UI_TEXT_PRINT_SALES_INVOICE), true, ST_SALESINVOICE));
+	display_note(print_document_link($invoice_no."-".$trans_type, _(UI_TEXT_EMAIL_SALES_INVOICE), true, ST_SALESINVOICE, false, "printlink", "", 1),1);
 
-	hyperlink_no_params($path_to_root . "/sales/inquiry/customer_inquiry.php", _("Select Another &Invoice to Modify"));
+	hyperlink_no_params($path_to_root . "/sales/inquiry/customer_inquiry.php", _(UI_TEXT_SELECT_ANOTHER_INVOICE_TO_MODIFY));
 
 	display_footer_exit();
 
@@ -129,8 +130,8 @@ if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
 
 	if ($dn->count_items() == 0) {
 		hyperlink_params($path_to_root . "/sales/inquiry/sales_deliveries_view.php",
-			_("Select a different delivery to invoice"), "OutstandingOnly=1");
-		die ("<br><b>" . _("There are no delivered items with a quantity left to invoice. There is nothing left to invoice.") . "</b>");
+			_(UI_TEXT_SELECT_DIFFERENT_DELIVERY_TO_INVOICE), "OutstandingOnly=1");
+		die ("<br><b>" . _(UI_TEXT_NO_DELIVERED_ITEMS_LEFT_TO_INVOICE) . "</b>");
 	}
 
 	$_SESSION['Items'] = $dn;
@@ -144,13 +145,13 @@ if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
 	$_SESSION['Items'] = new Cart(ST_SALESINVOICE, $_GET['ModifyInvoice']);
 
 	if ($_SESSION['Items']->count_items() == 0) {
-		echo"<center><br><b>" . _("All quantities on this invoice has been credited. There is nothing to modify on this invoice") . "</b></center>";
+		echo"<center><br><b>" . _(UI_TEXT_ALL_QUANTITIES_CREDITED) . "</b></center>";
 		display_footer_exit();
 	}
 	copy_from_cart();
 } elseif (isset($_GET['AllocationNumber']) || isset($_GET['InvoicePrepayments'])) {
 
-	check_deferred_income_act(_("You have to set Deferred Income Account in GL Setup to entry prepayment invoices."));
+	check_deferred_income_act(_(UI_TEXT_SET_DEFERRED_INCOME_ACCOUNT));
 
 	if (isset($_GET['AllocationNumber']))
 	{
@@ -158,7 +159,7 @@ if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
 
 		if (!$payments || ($payments[0]['trans_type_to'] != ST_SALESORDER))
 		{
-			UiMessageService::displayError(_("Please select correct Sales Order Prepayment to be invoiced and try again."));
+			UiMessageService::displayError(_(UI_TEXT_SELECT_CORRECT_PREPAYMENT));
 			display_footer_exit();
 		}
 		$order_no = $payments[0]['trans_no_to'];
@@ -180,14 +181,14 @@ if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
 }
 elseif (!processing_active()) {
 	/* This page can only be called with a delivery for invoicing or invoice no for edit */
-	UiMessageService::displayError(_("This page can only be opened after delivery selection. Please select delivery to invoicing first."));
+	UiMessageService::displayError(_(UI_TEXT_PAGE_OPEN_AFTER_DELIVERY_SELECTION));
 
-	hyperlink_no_params("$path_to_root/sales/inquiry/sales_deliveries_view.php", _("Select Delivery to Invoice"));
+	hyperlink_no_params("$path_to_root/sales/inquiry/sales_deliveries_view.php", _(UI_TEXT_SELECT_DELIVERY_TO_INVOICE));
 
 	end_page();
 	exit;
 } elseif (!isset($_POST['process_invoice']) && (!$_SESSION['Items']->is_prepaid() && !check_quantities())) {
-	UiMessageService::displayError(_("Selected quantity cannot be less than quantity credited nor more than quantity not invoiced yet."));
+	UiMessageService::displayError(_(UI_TEXT_SELECTED_QUANTITY_INVALID));
 }
 
 if (isset($_POST['Update'])) {
@@ -300,27 +301,27 @@ function check_data()
 	$dateService = new DateService();
 
 	if (!isset($_POST['InvoiceDate']) || !$dateService->isDate($_POST['InvoiceDate'])) {
-		UiMessageService::displayError(_("The entered invoice date is invalid."));
+		UiMessageService::displayError(_(UI_TEXT_ENTERED_INVOICE_DATE_INVALID));
 		set_focus('InvoiceDate');
 		return false;
 	}
 
 	if (!DateService::isDateInFiscalYear($_POST['InvoiceDate'])) {
-		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_(UI_TEXT_ENTERED_DATE_OUT_OF_FISCAL_YEAR));
 		set_focus('InvoiceDate');
 		return false;
 	}
 
 
 	if (!$prepaid &&(!isset($_POST['due_date']) || !$dateService->isDate($_POST['due_date'])))	{
-		UiMessageService::displayError(_("The entered invoice due date is invalid."));
+		UiMessageService::displayError(_(UI_TEXT_ENTERED_INVOICE_DUE_DATE_INVALID));
 		set_focus('due_date');
 		return false;
 	}
 
 	if ($_SESSION['Items']->trans_no == 0) {
 		if (!$Refs->is_valid($_POST['ref'], ST_SALESINVOICE)) {
-			UiMessageService::displayError(_("You must enter a reference."));
+			UiMessageService::displayError(_(UI_TEXT_MUST_ENTER_REFERENCE));
 			set_focus('ref');
 			return false;
 		}
@@ -333,23 +334,23 @@ function check_data()
 		}
 
 		if (!check_num('ChargeFreightCost', 0)) {
-			UiMessageService::displayError(_("The entered shipping value is not numeric."));
+			UiMessageService::displayError(_(UI_TEXT_ENTERED_SHIPPING_VALUE_NOT_NUMERIC));
 			set_focus('ChargeFreightCost');
 			return false;
 		}
 
 		if ($_SESSION['Items']->has_items_dispatch() == 0 && RequestService::inputNumStatic('ChargeFreightCost') == 0) {
-			UiMessageService::displayError(_("There are no item quantities on this invoice."));
+			UiMessageService::displayError(_(UI_TEXT_NO_ITEM_QUANTITIES_ON_INVOICE));
 			return false;
 		}
 
 		if (!check_quantities()) {
-			UiMessageService::displayError(_("Selected quantity cannot be less than quantity credited nor more than quantity not invoiced yet."));
+			UiMessageService::displayError(_(UI_TEXT_SELECTED_QUANTITY_INVALID));
 			return false;
 		}
 	} else {
 		if (($_SESSION['Items']->payment_terms['days_before_due'] == -1) && !count($_SESSION['Items']->prepayments)) {
-			UiMessageService::displayError(_("There is no non-invoiced payments for this order. If you want to issue final invoice, select delayed or cash payment terms."));
+			UiMessageService::displayError(_(UI_TEXT_NO_NON_INVOICED_PAYMENTS));
 			return false;
 		}
 	}
@@ -368,7 +369,7 @@ if (isset($_POST['process_invoice']) && check_data()) {
 	$invoice_no = $_SESSION['Items']->write();
 	if ($invoice_no == -1)
 	{
-		UiMessageService::displayError(_("The entered reference is already in use."));
+		UiMessageService::displayError(_(UI_TEXT_ENTERED_REFERENCE_ALREADY_IN_USE));
 		set_focus('ref');
 	}
 	else
@@ -435,12 +436,12 @@ $colspan = 1;
 $dim = \FA\Services\CompanyPrefsService::getUseDimensions();
 if ($dim > 0) 
 	$colspan = 3;
-label_cells(_("Customer"), $_SESSION['Items']->customer_name, "class='tableheader2'");
-label_cells(_("Branch"), get_branch_name($_SESSION['Items']->Branch), "class='tableheader2'");
+label_cells(_(UI_TEXT_CUSTOMER), $_SESSION['Items']->customer_name, "class='tableheader2'");
+label_cells(_(UI_TEXT_BRANCH), get_branch_name($_SESSION['Items']->Branch), "class='tableheader2'");
 if (($_SESSION['Items']->pos['credit_sale'] || $_SESSION['Items']->pos['cash_sale'])) {
 	$paymcat = !$_SESSION['Items']->pos['cash_sale'] ? PM_CREDIT :
 		(!$_SESSION['Items']->pos['credit_sale'] ? PM_CASH : PM_ANY);
-	label_cells(_("Payment terms:"), sale_payment_list('payment', $paymcat),
+	label_cells(_(UI_TEXT_PAYMENT_TERMS), sale_payment_list('payment', $paymcat),
 		"class='tableheader2'", "colspan=$colspan");
 } else
 	label_cells(_('Payment:'), $_SESSION['Items']->payment_terms['terms'], "class='tableheader2'", "colspan=$colspan");
@@ -449,19 +450,19 @@ end_row();
 start_row();
 
 if ($_SESSION['Items']->trans_no == 0) {
-	ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'", false, ST_SALESINVOICE,
+	ref_cells(_(UI_TEXT_REFERENCE), 'ref', '', null, "class='tableheader2'", false, ST_SALESINVOICE,
 		array('customer' => $_SESSION['Items']->customer_id,
 			'branch' => $_SESSION['Items']->Branch,
 			'date' => RequestService::getPostStatic('InvoiceDate')));
 } else {
-	label_cells(_("Reference"), $_SESSION['Items']->reference, "class='tableheader2'");
+	label_cells(_(UI_TEXT_REFERENCE), $_SESSION['Items']->reference, "class='tableheader2'");
 }
 
-label_cells(_("Sales Type"), $_SESSION['Items']->sales_type_name, "class='tableheader2'");
+label_cells(_(UI_TEXT_SALES_TYPE), $_SESSION['Items']->sales_type_name, "class='tableheader2'");
 
-label_cells(_("Currency"), $_SESSION['Items']->customer_currency, "class='tableheader2'");
+label_cells(_(UI_TEXT_CURRENCY), $_SESSION['Items']->customer_currency, "class='tableheader2'");
 if ($dim > 0) {
-	label_cell(_("Dimension").":", "class='tableheader2'");
+	label_cell(_(UI_TEXT_DIMENSION).":", "class='tableheader2'");
 	$_POST['dimension_id'] = $_SESSION['Items']->dimension_id;
 	dimensions_list_cells(null, 'dimension_id', null, true, ' ', false, 1, false);
 }		
@@ -474,7 +475,7 @@ start_row();
 if (!isset($_POST['ship_via'])) {
 	$_POST['ship_via'] = $_SESSION['Items']->ship_via;
 }
-label_cell(_("Shipping Company"), "class='tableheader2'");
+label_cell(_(UI_TEXT_SHIPPING_COMPANY), "class='tableheader2'");
 if ($prepaid)
 {
 	$shipper = get_shipper($_SESSION['Items']->ship_via);
@@ -490,16 +491,16 @@ if (!isset($_POST['InvoiceDate']) || !$dateService->isDate($_POST['InvoiceDate']
 	}
 }
 
-date_cells(_("Date"), 'InvoiceDate', '', $_SESSION['Items']->trans_no == 0, 
+date_cells(_(UI_TEXT_DATE), 'InvoiceDate', '', $_SESSION['Items']->trans_no == 0, 
 	0, 0, 0, "class='tableheader2'", true);
 
 if (!isset($_POST['due_date']) || !$dateService->isDate($_POST['due_date'])) {
 	$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->payment, $_POST['InvoiceDate']);
 }
 
-date_cells(_("Due Date"), 'due_date', '', null, 0, 0, 0, "class='tableheader2'");
+date_cells(_(UI_TEXT_DUE_DATE), 'due_date', '', null, 0, 0, 0, "class='tableheader2'");
 if ($dim > 1) {
-	label_cell(_("Dimension")." 2:", "class='tableheader2'");
+	label_cell(_(UI_TEXT_DIMENSION)." 2:", "class='tableheader2'");
 	$_POST['dimension2_id'] = $_SESSION['Items']->dimension2_id;
 	dimensions_list_cells(null, 'dimension2_id', null, true, ' ', false, 2, false);
 }		
@@ -511,31 +512,31 @@ end_table();
 $row = get_customer_to_order($_SESSION['Items']->customer_id);
 if ($row['dissallow_invoices'] == 1)
 {
-	UiMessageService::displayError(_("The selected customer account is currently on hold. Please contact the credit control personnel to discuss."));
+	UiMessageService::displayError(_(UI_TEXT_SELECTED_CUSTOMER_ACCOUNT_ON_HOLD));
 	end_form();
 	end_page();
 	exit();
 }	
 
-display_heading($prepaid ? _("Sales Order Items") : _("Invoice Items"));
+display_heading($prepaid ? _(UI_TEXT_SALES_ORDER_ITEMS) : _(UI_TEXT_INVOICE_ITEMS));
 
 div_start('Items');
 
 start_table(TABLESTYLE, "width='80%'");
 if ($prepaid)
-	$th = array(_("Item Code"), _("Item Description"), _("Units"), _("Quantity"),
-		_("Price"), _("Tax Type"), _("Discount"), _("Total"));
+	$th = array(_(UI_TEXT_ITEM_CODE), _(UI_TEXT_ITEM_DESCRIPTION), _(UI_TEXT_UNITS), _(UI_TEXT_QUANTITY),
+		_(UI_TEXT_PRICE), _(UI_TEXT_TAX_TYPE), _(UI_TEXT_DISCOUNT), _(UI_TEXT_TOTAL));
 else
-	$th = array(_("Item Code"), _("Item Description"), _("Delivered"), _("Units"), _("Invoiced"),
-		_("This Invoice"), _("Price"), _("Tax Type"), _("Discount"), _("Total"));
+	$th = array(_(UI_TEXT_ITEM_CODE), _(UI_TEXT_ITEM_DESCRIPTION), _(UI_TEXT_DELIVERED), _(UI_TEXT_UNITS), _(UI_TEXT_INVOICED),
+		_(UI_TEXT_THIS_INVOICE), _(UI_TEXT_PRICE), _(UI_TEXT_TAX_TYPE), _(UI_TEXT_DISCOUNT), _(UI_TEXT_TOTAL));
 
 if ($is_batch_invoice) {
-    $th[] = _("DN");
+    $th[] = _(UI_TEXT_DN);
     $th[] = "";
 }
 
 if ($is_edition) {
-    $th[4] = _("Credited");
+    $th[4] = _(UI_TEXT_CREDITED);
 }
 
 table_header($th);
@@ -586,7 +587,7 @@ foreach ($_SESSION['Items']->line_items as $line=>$ln_itm) {
 			$dspans = array_slice($dspans, 1);
 			label_cell($ln_itm->src_no, "rowspan=$dn_line_cnt class='oddrow'");
 			label_cell("<a href='" . $_SERVER['PHP_SELF'] . "?RemoveDN=".
-				$ln_itm->src_no."'>" . _("Remove") . "</a>", "rowspan=$dn_line_cnt class='oddrow'");
+				$ln_itm->src_no."'>" . _(UI_TEXT_REMOVE) . "</a>", "rowspan=$dn_line_cnt class='oddrow'");
 		}
 		$dn_line_cnt--;
 	}
@@ -616,7 +617,7 @@ if ($is_batch_invoice && $accumulate_shipping)
 
 $colspan = $prepaid ? 7:9;
 start_row();
-label_cell(_("Shipping Cost"), "colspan=$colspan align=right");
+label_cell(_(UI_TEXT_SHIPPING_COST), "colspan=$colspan align=right");
 if ($prepaid)
 	label_cell($_POST['ChargeFreightCost'], 'align=right');
 else
@@ -630,14 +631,14 @@ $inv_items_total = $_SESSION['Items']->get_items_total_dispatch();
 
 $display_sub_total = FormatService::priceFormat($inv_items_total + RequestService::inputNumStatic('ChargeFreightCost'));
 
-label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right","align=right", $is_batch_invoice ? 2 : 0);
+label_row(_(UI_TEXT_SUB_TOTAL), $display_sub_total, "colspan=$colspan align=right","align=right", $is_batch_invoice ? 2 : 0);
 
 $taxes = $_SESSION['Items']->get_taxes(RequestService::inputNumStatic('ChargeFreightCost'));
 $tax_total = display_edit_tax_items($taxes, $colspan, $_SESSION['Items']->tax_included, $is_batch_invoice ? 2 : 0);
 
 $display_total = FormatService::priceFormat(($inv_items_total + RequestService::inputNumStatic('ChargeFreightCost') + $tax_total));
 
-label_row(_("Invoice Total"), $display_total, "colspan=$colspan align=right","align=right", $is_batch_invoice ? 2 : 0);
+label_row(_(UI_TEXT_INVOICE_TOTAL), $display_total, "colspan=$colspan align=right","align=right", $is_batch_invoice ? 2 : 0);
 
 end_table(1);
 div_end();
@@ -646,7 +647,7 @@ start_table(TABLESTYLE2);
 if ($prepaid)
 {
 
-	label_row(_("Sales order:"), get_trans_view_str(ST_SALESORDER, $_SESSION['Items']->order_no, get_reference(ST_SALESORDER, $_SESSION['Items']->order_no)));
+	label_row(_(UI_TEXT_SALES_ORDER), get_trans_view_str(ST_SALESORDER, $_SESSION['Items']->order_no, get_reference(ST_SALESORDER, $_SESSION['Items']->order_no)));
 
 	$list = array(); $allocs = 0;
 	if (count($_SESSION['Items']->prepayments))
@@ -657,19 +658,19 @@ if ($prepaid)
 			$allocs += $pmt['amt'];
 		}
 	}
-	label_row(_("Payments received:"), implode(',', $list));
-	label_row(_("Invoiced here:"), FormatService::priceFormat($_SESSION['Items']->prep_amount), 'class=label');
-	label_row($_SESSION['Items']->payment_terms['days_before_due'] == -1 ? _("Left to be invoiced:") : _("Invoiced so far:"),
+	label_row(_(UI_TEXT_PAYMENTS_RECEIVED), implode(',', $list));
+	label_row(_(UI_TEXT_INVOICED_HERE), FormatService::priceFormat($_SESSION['Items']->prep_amount), 'class=label');
+	label_row($_SESSION['Items']->payment_terms['days_before_due'] == -1 ? _(UI_TEXT_LEFT_TO_BE_INVOICED) : _(UI_TEXT_INVOICED_SO_FAR),
 		FormatService::priceFormat($_SESSION['Items']->get_trans_total()-max($_SESSION['Items']->prep_amount, $allocs)), 'class=label');
 }
 
-textarea_row(_("Memo:"), 'Comments', null, 50, 4);
+textarea_row(_(UI_TEXT_MEMO), 'Comments', null, 50, 4);
 
 end_table(1);
 div_end();
-submit_center_first('Update', _("Update"),
+submit_center_first('Update', _(UI_TEXT_UPDATE_BUTTON),
   _('Refresh document page'), true);
-submit_center_last('process_invoice', _("Process Invoice"),
+submit_center_last('process_invoice', _(UI_TEXT_PROCESS_INVOICE),
   _('Check entered data and save document'), 'default');
 
 end_form();
