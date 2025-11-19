@@ -16,6 +16,7 @@ include($path_to_root . "/includes/session.inc");
 
 include($path_to_root . "/sales/includes/sales_ui.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 
 $js = "";
 if ($SysPrefs->use_popup_windows)
@@ -99,22 +100,22 @@ start_form(false, false, $_SERVER['PHP_SELF'] ."?OutstandingOnly=".$_POST['Outst
 
 start_table(TABLESTYLE_NOBORDER);
 start_row();
-ref_cells(_("#:"), 'DeliveryNumber', '',null, '', true);
-date_cells(_("from:"), 'DeliveryAfterDate', '', null, -user_transaction_days());
-date_cells(_("to:"), 'DeliveryToDate', '', null, 1);
+ref_cells(_(UI_TEXT_DELIVERY_NUMBER_LABEL), 'DeliveryNumber', '',null, '', true);
+date_cells(_(UI_TEXT_FROM_LABEL), 'DeliveryAfterDate', '', null, -user_transaction_days());
+date_cells(_(UI_TEXT_TO_LABEL), 'DeliveryToDate', '', null, 1);
 
-locations_list_cells(_("Location:"), 'StockLocation', null, true);
+locations_list_cells(_(UI_TEXT_LOCATION_LABEL), 'StockLocation', null, true);
 end_row();
 
 end_table();
 start_table(TABLESTYLE_NOBORDER);
 start_row();
 
-stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true);
+stock_items_list_cells(_(UI_TEXT_ITEM_LABEL), 'SelectStockFromList', null, true);
 
-customer_list_cells(_("Select a customer: "), 'customer_id', null, true, true);
+customer_list_cells(_(UI_TEXT_SELECT_A_CUSTOMER_LABEL), 'customer_id', null, true, true);
 
-submit_cells('SearchOrders', _("Search"),'',_('Select documents'), 'default');
+submit_cells('SearchOrders', _(UI_TEXT_SEARCH),'',_(UI_TEXT_SELECT_DOCUMENTS), 'default');
 
 hidden('OutstandingOnly', $_POST['OutstandingOnly']);
 
@@ -146,7 +147,7 @@ function edit_link($row)
 
 function prt_link($row)
 {
-	return print_document_link($row['trans_no'], _("Print"), true, ST_CUSTDELIVERY, ICON_PRINT);
+	return print_document_link($row['trans_no'], _(UI_TEXT_PRINT), true, ST_CUSTDELIVERY, ICON_PRINT);
 }
 
 function invoice_link($row)
@@ -166,18 +167,18 @@ $sql = get_sql_for_sales_deliveries_view(RequestService::getPostStatic('Delivery
 	RequestService::getPostStatic('SelectStockFromList'), RequestService::getPostStatic('StockLocation'), RequestService::getPostStatic('DeliveryNumber'), RequestService::getPostStatic('OutstandingOnly'));
 
 $cols = array(
-		_("Delivery #") => array('fun'=>'trans_view', 'align'=>'right'), 
-		_("Customer"), 
+		_(UI_TEXT_DELIVERY_NUMBER) => array('fun'=>'trans_view', 'align'=>'right'), 
+		_(UI_TEXT_CUSTOMER), 
 		'branch_code' => 'skip',
-		_("Branch") => array('ord'=>''), 
-		_("Contact"),
-		_("Reference"), 
-		_("Cust Ref"), 
-		_("Delivery Date") => array('type'=>'date', 'ord'=>''),
-		_("Due By") => 'date', 
-		_("Delivery Total") => array('type'=>'amount', 'ord'=>''),
-		_("Currency") => array('align'=>'center'),
-		submit('BatchInvoice',_("Batch"), false, _("Batch Invoicing")) 
+		_(UI_TEXT_BRANCH) => array('ord'=>''), 
+		_(UI_TEXT_CONTACT),
+		_(UI_TEXT_REFERENCE), 
+		_(UI_TEXT_CUST_REF), 
+		_(UI_TEXT_DELIVERY_DATE) => array('type'=>'date', 'ord'=>''),
+		_(UI_TEXT_DUE_BY) => 'date', 
+		_(UI_TEXT_DELIVERY_TOTAL) => array('type'=>'amount', 'ord'=>''),
+		_(UI_TEXT_CURRENCY) => array('align'=>'center'),
+		submit('BatchInvoice',_(UI_TEXT_BATCH), false, _(UI_TEXT_BATCH_INVOICING)) 
 			=> array('insert'=>true, 'fun'=>'batch_checkbox', 'align'=>'center'),
 		array('insert'=>true, 'fun'=>'edit_link'),
 		array('insert'=>true, 'fun'=>'invoice_link'),
@@ -193,9 +194,7 @@ if (isset($_SESSION['Batch']))
 }
 
 $table =& new_db_pager('deliveries_tbl', $sql, $cols);
-$table->set_marker('check_overdue', _("Marked items are overdue."));
-
-//$table->width = "92%";
+	$table->set_marker('check_overdue', _(UI_TEXT_MARKED_ITEMS_ARE_OVERDUE));//$table->width = "92%";
 
 display_db_pager($table);
 

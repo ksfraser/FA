@@ -924,4 +924,16 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_ENTER_REFERENCE_FRAGMENT', 'Enter reference fragment or leave empty');
     define('UI_TEXT_ZERO_VALUES', 'Zero values');
     define('UI_TEXT_AMOUNT', 'Amount');
+    define('UI_TEXT_DELIVERY_NUMBER_LABEL', '#:');
+    define('UI_TEXT_LOCATION_LABEL', 'Location:');
+    define('UI_TEXT_ITEM_LABEL', 'Item:');
+    define('UI_TEXT_SELECT_DOCUMENTS', 'Select documents');
+    define('UI_TEXT_DELIVERY_NUMBER', 'Delivery #');
+    define('UI_TEXT_CUST_REF', 'Cust Ref');
+    define('UI_TEXT_DELIVERY_DATE', 'Delivery Date');
+    define('UI_TEXT_DUE_BY', 'Due By');
+    define('UI_TEXT_DELIVERY_TOTAL', 'Delivery Total');
+    define('UI_TEXT_BATCH', 'Batch');
+    define('UI_TEXT_BATCH_INVOICING', 'Batch Invoicing');
+    define('UI_TEXT_MARKED_ITEMS_ARE_OVERDUE', 'Marked items are overdue.');
 };
