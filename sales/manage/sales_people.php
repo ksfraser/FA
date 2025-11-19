@@ -16,6 +16,7 @@ include($path_to_root . "/includes/session.inc");
 page(_($help_context = "Sales Persons"));
 
 include($path_to_root . "/includes/ui.inc");
+include($path_to_root . "/includes/ui_strings.php");
 
 simple_page_mode(true);
 //------------------------------------------------------------------------------------------------
@@ -29,18 +30,18 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if (strlen($_POST['salesman_name']) == 0)
 	{
 		$input_error = 1;
-		UiMessageService::displayError(_("The sales person name cannot be empty."));
+		UiMessageService::displayError(_(UI_TEXT_THE_SALES_PERSON_NAME_CANNOT_BE_EMPTY));
 		set_focus('salesman_name');
 	}
 	$pr1 = check_num('provision', 0,100);
 	if (!$pr1 || !check_num('provision2', 0, 100)) {
 		$input_error = 1;
-		UiMessageService::displayError( _("Salesman provision cannot be less than 0 or more than 100%."));
+		UiMessageService::displayError( _(UI_TEXT_SALESMAN_PROVISION_CANNOT_BE_LESS_THAN_0_OR_MORE_THAN_100_PERCENT));
 		set_focus(!$pr1 ? 'provision' : 'provision2');
 	}
 	if (!check_num('break_pt', 0)) {
 		$input_error = 1;
-		UiMessageService::displayError( _("Salesman provision breakpoint must be numeric and not less than 0."));
+		UiMessageService::displayError( _(UI_TEXT_SALESMAN_PROVISION_BREAKPOINT_MUST_BE_NUMERIC_AND_NOT_LESS_THAN_0));
 		set_focus('break_pt');
 	}
 	if ($input_error != 1)
@@ -73,7 +74,7 @@ if ($Mode == 'Delete')
 
 	if (key_in_foreign_table($selected_id, 'cust_branch', 'salesman'))
 	{
-		UiMessageService::displayError(_("Cannot delete this sales-person because branches are set up referring to this sales-person - first alter the branches concerned."));
+		UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_THIS_SALES_PERSON_BECAUSE_BRANCHES_ARE_SET_UP_REFERRING_TO_THIS_SALES_PERSON_FIRST_ALTER_THE_BRANCHES_CONCERNED));
 	}
 	else
 	{
@@ -96,7 +97,7 @@ $result = get_salesmen(RequestService::checkValueStatic('show_inactive'));
 
 start_form();
 start_table(TABLESTYLE, "width='60%'");
-$th = array(_("Name"), _("Phone"), _("Fax"), _("Email"), _("Provision"), _("Break Pt."), _("Provision")." 2", "", "");
+$th = array(_(UI_TEXT_NAME), _(UI_TEXT_PHONE), _(UI_TEXT_FAX), _(UI_TEXT_EMAIL), _(UI_TEXT_PROVISION), _(UI_TEXT_BREAK_PT), _(UI_TEXT_PROVISION)." 2", "", "");
 inactive_control_column($th);
 table_header($th);
 
@@ -116,8 +117,8 @@ while ($myrow = db_fetch($result))
 	label_cell(percent_format($myrow["provision2"])." %", "nowrap align=right");
 	inactive_control_cell($myrow["salesman_code"], $myrow["inactive"],
 		'salesman', 'salesman_code');
- 	edit_button_cell("Edit".$myrow["salesman_code"], _("Edit"));
- 	delete_button_cell("Delete".$myrow["salesman_code"], _("Delete"));
+ 	edit_button_cell("Edit".$myrow["salesman_code"], _(UI_TEXT_EDIT));
+ 	delete_button_cell("Delete".$myrow["salesman_code"], _(UI_TEXT_DELETE));
   	end_row();
 
 } //END WHILE LIST LOOP
@@ -152,13 +153,13 @@ if ($selected_id != -1)
 
 start_table(TABLESTYLE2);
 
-text_row_ex(_("Sales person name:"), 'salesman_name', 30);
-text_row_ex(_("Telephone number:"), 'salesman_phone', 20);
-text_row_ex(_("Fax number:"), 'salesman_fax', 20);
-email_row_ex(_("E-mail:"), 'salesman_email', 40);
-percent_row(_("Provision").':', 'provision');
-amount_row(_("Turnover Break Pt Level:"), 'break_pt');
-percent_row(_("Provision")." 2:", 'provision2');
+text_row_ex(_(UI_TEXT_SALES_PERSON_NAME_LABEL), 'salesman_name', 30);
+text_row_ex(_(UI_TEXT_TELEPHONE_NUMBER_LABEL), 'salesman_phone', 20);
+text_row_ex(_(UI_TEXT_FAX_NUMBER_LABEL), 'salesman_fax', 20);
+email_row_ex(_(UI_TEXT_E_MAIL_LABEL), 'salesman_email', 40);
+percent_row(_(UI_TEXT_PROVISION).':', 'provision');
+amount_row(_(UI_TEXT_TURNOVER_BREAK_PT_LEVEL_LABEL), 'break_pt');
+percent_row(_(UI_TEXT_PROVISION)." 2:", 'provision2');
 end_table(1);
 
 submit_add_or_update_center($selected_id == -1, '', 'both');
