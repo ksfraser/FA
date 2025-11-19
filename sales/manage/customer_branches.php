@@ -27,15 +27,15 @@ include($path_to_root . "/includes/ui/contacts_view.inc");
 
 //-----------------------------------------------------------------------------------------------
 
-check_db_has_customers(_("There are no customers defined in the system. Please define a customer to add customer branches."));
+check_db_has_customers(_(UI_TEXT_THERE_ARE_NO_CUSTOMERS_DEFINED_IN_THE_SYSTEM_PLEASE_DEFINE_A_CUSTOMER_TO_ADD_CUSTOMER_BRANCHES));
 
-check_db_has_sales_people(_("There are no sales people defined in the system. At least one sales person is required before proceeding."));
+check_db_has_sales_people(_(UI_TEXT_THERE_ARE_NO_SALES_PEOPLE_DEFINED_IN_THE_SYSTEM_AT_LEAST_ONE_SALES_PERSON_IS_REQUIRED_BEFORE_PROCEEDING));
 
-check_db_has_sales_areas(_("There are no sales areas defined in the system. At least one sales area is required before proceeding."));
+check_db_has_sales_areas(_(UI_TEXT_THERE_ARE_NO_SALES_AREAS_DEFINED_IN_THE_SYSTEM_AT_LEAST_ONE_SALES_AREA_IS_REQUIRED_BEFORE_PROCEEDING));
 
-check_db_has_shippers(_("There are no shipping companies defined in the system. At least one shipping company is required before proceeding."));
+check_db_has_shippers(_(UI_TEXT_THERE_ARE_NO_SHIPPING_COMPANIES_DEFINED_IN_THE_SYSTEM_AT_LEAST_ONE_SHIPPING_COMPANY_IS_REQUIRED_BEFORE_PROCEEDING));
 
-check_db_has_tax_groups(_("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
+check_db_has_tax_groups(_(UI_TEXT_THERE_ARE_NO_TAX_GROUPS_DEFINED_IN_THE_SYSTEM_AT_LEAST_ONE_TAX_GROUP_IS_REQUIRED_BEFORE_PROCEEDING));
 
 simple_page_mode(true);
 //-----------------------------------------------------------------------------------------------
@@ -65,14 +65,14 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if (strlen($_POST['br_name']) == 0)
 	{
 		$input_error = 1;
-		UiMessageService::displayError(_("The Branch name cannot be empty."));
+		UiMessageService::displayError(_(UI_TEXT_THE_BRANCH_NAME_CANNOT_BE_EMPTY));
 		set_focus('br_name');
 	}
 
 	if (strlen($_POST['br_ref']) == 0)
 	{
 		$input_error = 1;
-		UiMessageService::displayError(_("The Branch short name cannot be empty."));
+		UiMessageService::displayError(_(UI_TEXT_THE_BRANCH_SHORT_NAME_CANNOT_BE_EMPTY));
 		set_focus('br_ref');
 	}
 
@@ -122,14 +122,14 @@ elseif ($Mode == 'Delete')
 
 	if (branch_in_foreign_table($_POST['customer_id'], $_POST['branch_code'], 'debtor_trans'))
 	{
-		UiMessageService::displayError(_("Cannot delete this branch because customer transactions have been created to this branch."));
+		UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_THIS_BRANCH_BECAUSE_CUSTOMER_TRANSACTIONS_HAVE_BEEN_CREATED_TO_THIS_BRANCH));
 
 	}
 	else
 	{
 		if (branch_in_foreign_table($_POST['customer_id'], $_POST['branch_code'], 'sales_orders'))
 		{
-			UiMessageService::displayError(_("Cannot delete this branch because sales orders exist for it. Purge old sales orders first."));
+			UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_THIS_BRANCH_BECAUSE_SALES_ORDERS_EXIST_FOR_IT_PURGE_OLD_SALES_ORDERS_FIRST));
 		}
 		else
 		{
@@ -156,11 +156,11 @@ function branch_email($row) {
 }
 
 function edit_link($row) {
-	return button("Edit".$row["branch_code"],_("Edit"), '', ICON_EDIT);
+	return button("Edit".$row["branch_code"],_(UI_TEXT_EDIT), '', ICON_EDIT);
 }
 
 function del_link($row) {
-	return button("Delete".$row["branch_code"],_("Delete"), '', ICON_DELETE);
+	return button("Delete".$row["branch_code"],_(UI_TEXT_DELETE), '', ICON_DELETE);
 }
 
 function select_link($row) {
@@ -226,41 +226,41 @@ function branch_settings($selected_id, $num_branches) {
 	}
 	hidden('popup', @$_REQUEST['popup']);
 
-	table_section_title(_("Name and Contact"));
-	text_row(_("Branch Name:"), 'br_name', null, 50, 60);
-	text_row(_("Branch Short Name:"), 'br_ref', null, 30, 30);
+	table_section_title(_(UI_TEXT_NAME_AND_CONTACT));
+	text_row(_(UI_TEXT_BRANCH_NAME_LABEL), 'br_name', null, 50, 60);
+	text_row(_(UI_TEXT_BRANCH_SHORT_NAME_LABEL), 'br_ref', null, 30, 30);
 
-	table_section_title(_("Sales"));
-	sales_persons_list_row( _("Sales Person:"), 'salesman', null);
-	sales_areas_list_row( _("Sales Area:"), 'area', null);
-	sales_groups_list_row(_("Sales Group:"), 'group_no', null, true);
-	locations_list_row(_("Default Inventory Location:"), 'default_location', null);
-	shippers_list_row(_("Default Shipping Company:"), 'default_ship_via', null);
-	tax_groups_list_row(_("Tax Group:"), 'tax_group_id', null);
+	table_section_title(_(UI_TEXT_SALES));
+	sales_persons_list_row( _(UI_TEXT_SALES_PERSON_LABEL), 'salesman', null);
+	sales_areas_list_row( _(UI_TEXT_SALES_AREA_LABEL), 'area', null);
+	sales_groups_list_row(_(UI_TEXT_SALES_GROUP_LABEL), 'group_no', null, true);
+	locations_list_row(_(UI_TEXT_DEFAULT_INVENTORY_LOCATION_LABEL), 'default_location', null);
+	shippers_list_row(_(UI_TEXT_DEFAULT_SHIPPING_COMPANY_LABEL), 'default_ship_via', null);
+	tax_groups_list_row(_(UI_TEXT_TAX_GROUP_LABEL), 'tax_group_id', null);
 
-	table_section_title(_("GL Accounts"));
+	table_section_title(_(UI_TEXT_GL_ACCOUNTS));
 
-	gl_all_accounts_list_row(_("Sales Account:"), 'sales_account', null, false, false, true);
-	gl_all_accounts_list_row(_("Sales Discount Account:"), 'sales_discount_account');
-	gl_all_accounts_list_row(_("Accounts Receivable Account:"), 'receivables_account', null, true);
-	gl_all_accounts_list_row(_("Prompt Payment Discount Account:"), 'payment_discount_account');
-	text_row(_("Bank Account Number:"), 'bank_account', null, 30, 60);
+	gl_all_accounts_list_row(_(UI_TEXT_SALES_ACCOUNT_LABEL), 'sales_account', null, false, false, true);
+	gl_all_accounts_list_row(_(UI_TEXT_SALES_DISCOUNT_ACCOUNT_LABEL), 'sales_discount_account');
+	gl_all_accounts_list_row(_(UI_TEXT_ACCOUNTS_RECEIVABLE_ACCOUNT_LABEL), 'receivables_account', null, true);
+	gl_all_accounts_list_row(_(UI_TEXT_PROMPT_PAYMENT_DISCOUNT_ACCOUNT_LABEL), 'payment_discount_account');
+	text_row(_(UI_TEXT_BANK_ACCOUNT_NUMBER_LABEL), 'bank_account', null, 30, 60);
 
 	table_section(2);
 
 	if($selected_id==-1) {
-		table_section_title(_("General contact data"));
-		text_row(_("Contact Person:"), 'contact_name', null, 35, 40);
-		text_row(_("Phone Number:"), 'phone', null, 32, 30);
-		text_row(_("Secondary Phone Number:"), 'phone2', null, 32, 30);
-		text_row(_("Fax Number:"), 'fax', null, 32, 30);
-		email_row(_("E-mail:"), 'email', null, 35, 55);
-		languages_list_row( _("Document Language:"), 'rep_lang', null, _("Customer default"));
+		table_section_title(_(UI_TEXT_GENERAL_CONTACT_DATA));
+		text_row(_(UI_TEXT_CONTACT_PERSON_LABEL), 'contact_name', null, 35, 40);
+		text_row(_(UI_TEXT_PHONE_NUMBER_LABEL), 'phone', null, 32, 30);
+		text_row(_(UI_TEXT_SECONDARY_PHONE_NUMBER_LABEL), 'phone2', null, 32, 30);
+		text_row(_(UI_TEXT_FAX_NUMBER_LABEL), 'fax', null, 32, 30);
+		email_row(_(UI_TEXT_EMAIL_LABEL), 'email', null, 35, 55);
+		languages_list_row( _(UI_TEXT_DOCUMENT_LANGUAGE_LABEL), 'rep_lang', null, _(UI_TEXT_CUSTOMER_DEFAULT));
 	}
-	table_section_title(_("Addresses"));
-	textarea_row(_("Mailing Address:"), 'br_post_address', null, 35, 4);
-	textarea_row(_("Billing Address:"), 'br_address', null, 35, 4);
-	textarea_row(_("General Notes:"), 'notes', null, 35, 4);
+	table_section_title(_(UI_TEXT_ADDRESSES));
+	textarea_row(_(UI_TEXT_MAILING_ADDRESS_LABEL), 'br_post_address', null, 35, 4);
+	textarea_row(_(UI_TEXT_BILLING_ADDRESS_LABEL), 'br_address', null, 35, 4);
+	textarea_row(_(UI_TEXT_GENERAL_NOTES_LABEL), 'notes', null, 35, 4);
 
 	end_outer_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
@@ -268,7 +268,7 @@ function branch_settings($selected_id, $num_branches) {
 
 start_form();
 
-echo "<center>" . _("Select a customer: ") . "&nbsp;&nbsp;";
+echo "<center>" . _(UI_TEXT_SELECT_A_CUSTOMER_LABEL) . "&nbsp;&nbsp;";
 echo customer_list('customer_id', null, false, true);
 echo "</center><br>";
 
@@ -281,16 +281,16 @@ if ($num_branches)
 {
 $cols = array(
 	'branch_code' => 'skip',
-	_("Short Name"),
-	_("Name"),
-	_("Contact"),
-	_("Sales Person"),
-	_("Area"),
-	_("Phone No"),
-	_("Fax No"),
-	_("E-mail") => 'email',
-	_("Tax Group"),
-	_("Inactive") => 'inactive',
+	_(UI_TEXT_SHORT_NAME),
+	_(UI_TEXT_NAME),
+	_(UI_TEXT_CONTACT),
+	_(UI_TEXT_SALES_PERSON),
+	_(UI_TEXT_AREA),
+	_(UI_TEXT_PHONE_NO),
+	_(UI_TEXT_FAX_NO),
+	_(UI_TEXT_EMAIL) => 'email',
+	_(UI_TEXT_TAX_GROUP),
+	_(UI_TEXT_INACTIVE) => 'inactive',
 		' '=> array('insert'=>true, 'fun'=>'select_link'),
 		array('insert'=>true, 'fun'=>'edit_link'),
 		array('insert'=>true, 'fun'=>'del_link')
@@ -305,11 +305,11 @@ $table->set_inactive_ctrl('cust_branch', 'branch_code');
 display_db_pager($table);
 }
 else
-	display_note(_("The selected customer does not have any branches. Please create at least one branch."));
+	display_note(_(UI_TEXT_THE_SELECTED_CUSTOMER_DOES_NOT_HAVE_ANY_BRANCHES_PLEASE_CREATE_AT_LEAST_ONE_BRANCH));
 
 tabbed_content_start('tabs', array(
-		'settings' => array(_('&General settings'), $selected_id!=-1),
-		'contacts' => array(_('&Contacts'), $selected_id!=-1),
+		_(UI_TEXT_GENERAL_SETTINGS) => array(_(UI_TEXT_GENERAL_SETTINGS), $selected_id!=-1),
+		_(UI_TEXT_CONTACTS) => array(_(UI_TEXT_CONTACTS), $selected_id!=-1),
 //		'orders' => array('S&ales orders', $selected_id!=-1) // not implemented
 	));
 	
