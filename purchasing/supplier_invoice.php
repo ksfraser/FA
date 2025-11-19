@@ -19,6 +19,8 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/banking.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 
+include_once($path_to_root . "/includes/ui_strings.php");
+
 include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 
 // Modern OOP Services
@@ -40,12 +42,12 @@ if (isset($_GET['New']))
 		unset ($_SESSION['supp_trans']);
 	}
 	$help_context = "Enter Supplier Invoice";
-	$_SESSION['page_title'] = _("Enter Supplier Invoice");
+	$_SESSION['page_title'] = _(UI_TEXT_ENTER_SUPPLIER_INVOICE);
 
 	$_SESSION['supp_trans'] = new supp_trans(ST_SUPPINVOICE);
 } else if(isset($_GET['ModifyInvoice'])) {
 	$help_context = 'Modifying Purchase Invoice';
-	$_SESSION['page_title'] = sprintf( _("Modifying Purchase Invoice # %d"), $_GET['ModifyInvoice']);
+	$_SESSION['page_title'] = sprintf( _(UI_TEXT_MODIFYING_PURCHASE_INVOICE), $_GET['ModifyInvoice']);
 	$_SESSION['supp_trans'] = new supp_trans(ST_SUPPINVOICE, $_GET['ModifyInvoice']);
 }
 
@@ -54,7 +56,7 @@ page($_SESSION['page_title'], false, false, "", $js);
 if (isset($_GET['ModifyInvoice']))
 	check_is_editable(ST_SUPPINVOICE, $_GET['ModifyInvoice']);
 
-check_db_has_suppliers(_("There are no suppliers defined in the system."));
+check_db_has_suppliers(_(UI_TEXT_NO_SUPPLIERS_DEFINED));
 
 //---------------------------------------------------------------------------------------------------------------
 
@@ -65,17 +67,17 @@ if (isset($_GET['AddedID']))
 
 
     echo "<center>";
-    display_notification_centered(_("Supplier invoice has been processed."));
-    display_note(get_trans_view_str($trans_type, $invoice_no, _("View this Invoice")));
+    display_notification_centered(_(UI_TEXT_SUPPLIER_INVOICE_PROCESSED));
+    display_note(get_trans_view_str($trans_type, $invoice_no, _(UI_TEXT_VIEW_THIS_INVOICE)));
 
-	display_note(get_gl_view_str($trans_type, $invoice_no, _("View the GL Journal Entries for this Invoice")), 1);
+	display_note(get_gl_view_str($trans_type, $invoice_no, _(UI_TEXT_VIEW_GL_JOURNAL_ENTRIES_FOR_THIS_INVOICE)), 1);
 
-	hyperlink_params("$path_to_root/purchasing/supplier_payment.php", _("Entry supplier &payment for this invoice"),
+	hyperlink_params("$path_to_root/purchasing/supplier_payment.php", _(UI_TEXT_ENTRY_SUPPLIER_PAYMENT_FOR_THIS_INVOICE),
 		"PInvoice=".$invoice_no."&trans_type=".$trans_type);
 
-	hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Invoice"), "New=1");
+	hyperlink_params($_SERVER['PHP_SELF'], _(UI_TEXT_ENTER_ANOTHER_INVOICE), "New=1");
 
-	hyperlink_params("$path_to_root/admin/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
+	hyperlink_params("$path_to_root/admin/attachments.php", _(UI_TEXT_ADD_AN_ATTACHMENT), "filterType=$trans_type&trans_no=$invoice_no");
 	
 	display_footer_exit();
 }
@@ -136,7 +138,7 @@ if (isset($_POST['AddGLCodeToTrans'])){
 	$result = get_gl_account_info($_POST['gl_code']);
 	if (db_num_rows($result) == 0)
 	{
-		UiMessageService::displayError(_("The account code entered is not a valid code, this line cannot be added to the transaction."));
+		UiMessageService::displayError(_(UI_TEXT_INVALID_ACCOUNT_CODE_FOR_TRANSACTION));
 		set_focus('gl_code');
 		$input_error = true;
 	}
@@ -146,14 +148,14 @@ if (isset($_POST['AddGLCodeToTrans'])){
 		$gl_act_name = $myrow[1];
 		if (!check_num('amount'))
 		{
-			UiMessageService::displayError(_("The amount entered is not numeric. This line cannot be added to the transaction."));
+			UiMessageService::displayError(_(UI_TEXT_NON_NUMERIC_AMOUNT_FOR_TRANSACTION));
 			set_focus('amount');
 			$input_error = true;
 		}
 	}
 
 	if (!is_tax_gl_unique(RequestService::getPostStatic('gl_code'))) {
-   		UiMessageService::displayError(_("Cannot post to GL account used by more than one tax type."));
+   		UiMessageService::displayError(_(UI_TEXT_CANNOT_POST_TO_GL_ACCOUNT_USED_BY_MULTIPLE_TAX_TYPES));
 		set_focus('gl_code');
    		$input_error = true;
 	}
@@ -176,14 +178,14 @@ function check_data()
 
 	if (!RequestService::getPostStatic('supplier_id')) 
 	{
-		UiMessageService::displayError(_("There is no supplier selected."));
+		UiMessageService::displayError(_(UI_TEXT_NO_SUPPLIER_SELECTED));
 		set_focus('supplier_id');
 		return false;
 	} 
 
 	if (!$_SESSION['supp_trans']->is_valid_trans_to_post())
 	{
-		UiMessageService::displayError(_("The invoice cannot be processed because the there are no items or values on the invoice.  Invoices are expected to have a charge."));
+		UiMessageService::displayError(_(UI_TEXT_INVOICE_NO_ITEMS_OR_VALUES));
 		return false;
 	}
 
@@ -196,33 +198,33 @@ function check_data()
 
 	if (!$dateService->isDate( $_SESSION['supp_trans']->tran_date))
 	{
-		UiMessageService::displayError(_("The invoice as entered cannot be processed because the invoice date is in an incorrect format."));
+		UiMessageService::displayError(_(UI_TEXT_INVALID_INVOICE_DATE_FORMAT));
 		set_focus('trans_date');
 		return false;
 	} 
 	elseif (!DateService::isDateInFiscalYear($_SESSION['supp_trans']->tran_date)) 
 	{
-		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_(UI_TEXT_DATE_OUT_OF_FISCAL_YEAR_OR_CLOSED));
 		set_focus('trans_date');
 		return false;
 	}
 	if (!$dateService->isDate( $_SESSION['supp_trans']->due_date))
 	{
-		UiMessageService::displayError(_("The invoice as entered cannot be processed because the due date is in an incorrect format."));
+		UiMessageService::displayError(_(UI_TEXT_INVALID_DUE_DATE_FORMAT_FOR_INVOICE));
 		set_focus('due_date');
 		return false;
 	}
 
 	if (trim(RequestService::getPostStatic('supp_reference')) == false)
 	{
-		UiMessageService::displayError(_("You must enter a supplier's invoice reference."));
+		UiMessageService::displayError(_(UI_TEXT_MUST_ENTER_SUPPLIER_INVOICE_REFERENCE));
 		set_focus('supp_reference');
 		return false;
 	}
 
 	if (is_reference_already_there($_SESSION['supp_trans']->supplier_id, $_POST['supp_reference'], $_SESSION['supp_trans']->trans_no))
 	{ 	/*Transaction reference already entered */
-		UiMessageService::displayError(_("This invoice number has already been entered. It cannot be entered again.") . " (" . $_POST['supp_reference'] . ")");
+		UiMessageService::displayError(_(UI_TEXT_INVOICE_NUMBER_ALREADY_ENTERED) . " (" . $_POST['supp_reference'] . ")");
 		set_focus('supp_reference');
 		return false;
 	}
@@ -260,14 +262,14 @@ function check_item_data($n)
 
 	if (!check_num('this_quantity_inv'.$n, 0) || RequestService::inputNumStatic('this_quantity_inv'.$n)==0)
 	{
-		UiMessageService::displayError( _("The quantity to invoice must be numeric and greater than zero."));
+		UiMessageService::displayError( _(UI_TEXT_QUANTITY_TO_INVOICE_MUST_BE_NUMERIC_AND_GREATER_THAN_ZERO));
 		set_focus('this_quantity_inv'.$n);
 		return false;
 	}
 
 	if (!check_num('ChgPrice'.$n))
 	{
-		UiMessageService::displayError( _("The price is not numeric."));
+		UiMessageService::displayError( _(UI_TEXT_PRICE_NOT_NUMERIC));
 		set_focus('ChgPrice'.$n);
 		return false;
 	}
@@ -280,8 +282,8 @@ function check_item_data($n)
 				RequestService::inputNumStatic('ChgPrice'.$n)/$_POST['order_price'.$n] >
 			    (1 + ($margin/ 100)))
 		    {
-			UiMessageService::displayError(_("The price being invoiced is more than the purchase order price by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") .
-			_("The over-charge percentage allowance is :") . $margin . "%");
+			UiMessageService::displayError(_(UI_TEXT_PRICE_BEING_INVOICED_MORE_THAN_PURCHASE_ORDER_PRICE) .
+			_(UI_TEXT_OVER_CHARGE_PERCENTAGE_ALLOWANCE_IS) . $margin . "%");
 			set_focus('ChgPrice'.$n);
 			return false;
 		    }
@@ -294,8 +296,8 @@ function check_item_data($n)
 		if (RequestService::inputNumStatic('this_quantity_inv'.$n) / ($_POST['qty_recd'.$n] - $_POST['prev_quantity_inv'.$n]) >
 			(1+ ($margin / 100)))
 		{
-			UiMessageService::displayError( _("The quantity being invoiced is more than the outstanding quantity by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.")
-			. _("The over-charge percentage allowance is :") . $margin . "%");
+			UiMessageService::displayError( _(UI_TEXT_QUANTITY_BEING_INVOICED_MORE_THAN_OUTSTANDING_QUANTITY)
+			. _(UI_TEXT_OVER_CHARGE_PERCENTAGE_ALLOWANCE_IS) . $margin . "%");
 			set_focus('this_quantity_inv'.$n);
 			return false;
 		}
@@ -394,7 +396,7 @@ start_form();
 invoice_header($_SESSION['supp_trans']);
 
 if ($_POST['supplier_id']=='') 
-		UiMessageService::displayError(_("There is no supplier selected."));
+		UiMessageService::displayError(_(UI_TEXT_NO_SUPPLIER_SELECTED));
 else {
 	display_grn_items($_SESSION['supp_trans'], 1);
 
@@ -418,7 +420,7 @@ if (RequestService::getPostStatic('AddGLCodeToTrans') || RequestService::getPost
 	$Ajax->activate('inv_tot');
 
 br();
-submit_center('PostInvoice', _("Enter Invoice"), true, '', 'default');
+submit_center('PostInvoice', _(UI_TEXT_ENTER_INVOICE), true, '', 'default');
 br();
 
 end_form();
