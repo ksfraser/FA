@@ -18,6 +18,7 @@ $page_security = "SA_SALESORDER";
 $path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/sales/includes/db/customers_db.inc");
 
 $mode = get_company_pref('no_customer_list');
@@ -38,8 +39,8 @@ start_table(TABLESTYLE_NOBORDER);
 
 start_row();
 
-text_cells(_("Customer"), "customer");
-submit_cells("search", _("Search"), "", _("Search customers"), "default");
+text_cells(_(UI_TEXT_CUSTOMER), "customer");
+submit_cells("search", _(UI_TEXT_SEARCH), "", _(UI_TEXT_SEARCH_CUSTOMERS), "default");
 
 end_row();
 
@@ -51,7 +52,7 @@ div_start("customer_tbl");
 
 start_table(TABLESTYLE);
 
-$th = array("", _("Customer"), _("Short Name"), _("Address"), _("Tax ID"));
+$th = array("", _(UI_TEXT_CUSTOMER), _(UI_TEXT_SHORT_NAME), _(UI_TEXT_ADDRESS), _(UI_TEXT_TAX_ID));
 
 table_header($th);
 
@@ -63,10 +64,10 @@ while ($myrow = db_fetch_assoc($result)) {
 	$value = $myrow['debtor_no'];
 	if ($mode != 0) {
 		$text = $myrow['name'];
-  		ahref_cell(_("Select"), 'javascript:void(0)', '', 'setComboItem(window.opener.document, "'.$name.'",  "'.$value.'", "'.$text.'")');
+  		ahref_cell(_(UI_TEXT_SELECT), 'javascript:void(0)', '', 'setComboItem(window.opener.document, "'.$name.'",  "'.$value.'", "'.$text.'")');
 	}
 	else {
-  		ahref_cell(_("Select"), 'javascript:void(0)', '', 'selectComboItem(window.opener.document, "'.$name.'", "'.$value.'")');
+  		ahref_cell(_(UI_TEXT_SELECT), 'javascript:void(0)', '', 'selectComboItem(window.opener.document, "'.$name.'", "'.$value.'")');
 	}
   	label_cell($myrow["name"]);
   	label_cell($myrow["debtor_ref"]);

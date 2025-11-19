@@ -891,4 +891,8 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_NUMBER', '#');
     define('UI_TEXT_LEFT_TO_ALLOCATE', 'Left to Allocate');
     define('UI_TEXT_MARKED_ITEMS_ARE_SETTLED', 'Marked items are settled.');
+    define('UI_TEXT_SEARCH_CUSTOMERS', 'Search customers');
+    define('UI_TEXT_SHORT_NAME', 'Short Name');
+    define('UI_TEXT_ADDRESS', 'Address');
+    define('UI_TEXT_TAX_ID', 'Tax ID');
 };
