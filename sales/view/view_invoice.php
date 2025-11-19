@@ -96,7 +96,7 @@ if (!empty($SysPrefs->prefs['company_logo_on_views']))
 	company_logo_on_view();
 
 display_heading(sprintf($myrow['prep_amount'] > 0 ? (
-	$paym['days_before_due']>=0 ? _("FINAL INVOICE #%d") : _("PREPAYMENT INVOICE #%d")) : _("SALES INVOICE #%d"),$trans_id));
+	$paym['days_before_due']>=0 ? _(UI_TEXT_FINAL_INVOICE_FORMAT) : _(UI_TEXT_PREPAYMENT_INVOICE_FORMAT)) : _(UI_TEXT_SALES_INVOICE_FORMAT),$trans_id));
 
 echo "<br>";
 start_table(TABLESTYLE2, "width='95%'");
@@ -104,7 +104,7 @@ echo "<tr valign=top><td>"; // outer table
 
 /*Now the customer charged to details in a sub table*/
 start_table(TABLESTYLE, "width='100%'");
-$th = array(_("Charge To"));
+$th = array(_(UI_TEXT_CHARGE_TO));
 table_header($th);
 
 label_row(null, $myrow["DebtorName"] . "<br>" . nl2br($myrow["address"]), "nowrap");
@@ -118,7 +118,7 @@ echo "</td><td>"; // outer table
 /*end of the main table showing the company name and charge to details */
 
 start_table(TABLESTYLE, "width='100%'");
-$th = array(_("Charge Branch"));
+$th = array(_(UI_TEXT_CHARGE_BRANCH));
 table_header($th);
 
 label_row(null, $branch["br_name"] . "<br>" . nl2br($branch["br_address"]), "nowrap");
@@ -127,7 +127,7 @@ end_table();
 echo "</td><td>"; // outer table
 
 start_table(TABLESTYLE, "width='100%'");
-$th = array(_("Payment Terms"));
+$th = array(_(UI_TEXT_PAYMENT_TERMS_HEADER));
 table_header($th); 
 label_row(null, $paym["terms"], "nowrap");
 end_table();
@@ -136,22 +136,22 @@ echo "</td><td>"; // outer table
 
 start_table(TABLESTYLE, "width='100%'");
 start_row();
-label_cells(_("Reference"), $myrow["reference"], "class='tableheader2'");
-label_cells(_("Currency"), $sales_order["curr_code"], "class='tableheader2'");
-label_cells(_("Our Order No"),
+label_cells(_(UI_TEXT_REFERENCE), $myrow["reference"], "class='tableheader2'");
+label_cells(_(UI_TEXT_CURRENCY), $sales_order["curr_code"], "class='tableheader2'");
+label_cells(_(UI_TEXT_OUR_ORDER_NO),
 	get_customer_trans_view_str(ST_SALESORDER,$sales_order["order_no"]), "class='tableheader2'");
 end_row();
 start_row();
-label_cells(_("Customer Order Ref."), $sales_order["customer_ref"], "class='tableheader2'");
-label_cells(_("Shipping Company"), $myrow["shipper_name"], "class='tableheader2'");
-label_cells(_("Sales Type"), $myrow["sales_type"], "class='tableheader2'");
+label_cells(_(UI_TEXT_CUSTOMER_ORDER_REF), $sales_order["customer_ref"], "class='tableheader2'");
+label_cells(_(UI_TEXT_SHIPPING_COMPANY), $myrow["shipper_name"], "class='tableheader2'");
+label_cells(_(UI_TEXT_SALES_TYPE), $myrow["sales_type"], "class='tableheader2'");
 end_row();
 start_row();
-label_cells(_("Due Date"), DateService::sql2dateStatic($myrow["due_date"]), "class='tableheader2'", "nowrap");
+label_cells(_(UI_TEXT_DUE_DATE), DateService::sql2dateStatic($myrow["due_date"]), "class='tableheader2'", "nowrap");
 if ($myrow['prep_amount']==0)
-	label_cells(_("Deliveries"), get_customer_trans_view_str(ST_CUSTDELIVERY, 
+	label_cells(_(UI_TEXT_DELIVERIES), get_customer_trans_view_str(ST_CUSTDELIVERY, 
 		get_sales_parent_numbers(ST_SALESINVOICE, $trans_id)), "class='tableheader2'");
-label_cells(_("Invoice Date"), DateService::sql2dateStatic($myrow["tran_date"]), "class='tableheader2'", "nowrap");
+label_cells(_(UI_TEXT_INVOICE_DATE), DateService::sql2dateStatic($myrow["tran_date"]), "class='tableheader2'", "nowrap");
 end_row();
 comments_display_row(ST_SALESINVOICE, $trans_id);
 end_table();
@@ -166,8 +166,8 @@ start_table(TABLESTYLE, "width='95%'");
 
 if (db_num_rows($result) > 0)
 {
-	$th = array(_("Item Code"), _("Item Description"), _("Quantity"),
-		_("Unit"), _("Price"), _("Discount %"), _("Total"));
+	$th = array(_(UI_TEXT_ITEM_CODE), _(UI_TEXT_ITEM_DESCRIPTION), _(UI_TEXT_QUANTITY),
+		_(UI_TEXT_UNIT), _(UI_TEXT_PRICE), _(UI_TEXT_DISCOUNT_PERCENT), _(UI_TEXT_TOTAL));
 	table_header($th);
 
 	$k = 0;	//row colour counter
@@ -201,17 +201,17 @@ if (db_num_rows($result) > 0)
 	} //end while there are line items to print out
 
 	$display_sub_tot = FormatService::priceFormat($sub_total);
-	label_row(_("Sub-total"), $display_sub_tot, "colspan=6 align=right",
+	label_row(_(UI_TEXT_SUB_TOTAL), $display_sub_tot, "colspan=6 align=right",
 		"nowrap align=right width='15%'");
 }
 else
-	display_note(_("There are no line items on this invoice."), 1, 2);
+	display_note(_(UI_TEXT_THERE_ARE_NO_LINE_ITEMS_ON_THIS_INVOICE), 1, 2);
 
 /*Print out the invoice text entered */
 if ($myrow['ov_freight'] != 0.0)
 {
 	$display_freight = FormatService::priceFormat($myrow["ov_freight"]);
-	label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
+	label_row(_(UI_TEXT_SHIPPING), $display_freight, "colspan=6 align=right", "nowrap align=right");
 }
 
 $tax_items = get_trans_tax_details(ST_SALESINVOICE, $trans_id);
@@ -219,14 +219,14 @@ display_customer_trans_tax_details($tax_items, 6);
 
 $display_total = FormatService::priceFormat($myrow["ov_freight"]+$myrow["ov_gst"]+$myrow["ov_amount"]+$myrow["ov_freight_tax"]);
 
-label_row(_("TOTAL INVOICE"), $display_total, "colspan=6 align=right",
+label_row(_(UI_TEXT_TOTAL_INVOICE), $display_total, "colspan=6 align=right",
 	"nowrap align=right");
 if ($myrow['prep_amount'])
-	label_row(_("PREPAYMENT AMOUNT INVOICED"), '<b>'.FormatService::priceFormat($myrow['prep_amount']).'</b>', "colspan=6 align=right",
+	label_row(_(UI_TEXT_PREPAYMENT_AMOUNT_INVOICED), '<b>'.FormatService::priceFormat($myrow['prep_amount']).'</b>', "colspan=6 align=right",
 		"nowrap align=right");
 end_table(1);
 
-$voided = is_voided_display(ST_SALESINVOICE, $trans_id, _("This invoice has been voided."));
+$voided = is_voided_display(ST_SALESINVOICE, $trans_id, _(UI_TEXT_THIS_INVOICE_HAS_BEEN_VOIDED));
 
 if (!$voided)
 {
