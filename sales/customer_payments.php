@@ -18,6 +18,7 @@ include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/banking.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/includes/CompanyPrefsService.php");
+include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 
@@ -38,9 +39,9 @@ page(_($help_context = "Customer Payment Entry"), false, false, "", $js);
 
 //----------------------------------------------------------------------------------------------
 
-check_db_has_customers(_("There are no customers defined in the system."));
+check_db_has_customers(_(UI_TEXT_NO_CUSTOMERS_DEFINED));
 
-check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
+check_db_has_bank_accounts(_(UI_TEXT_NO_BANK_ACCOUNTS_DEFINED));
 
 //----------------------------------------------------------------------------------------
 if (isset($_GET['customer_id']))
@@ -76,7 +77,7 @@ if (!isset($_POST['bank_account'])) { // first page call
 			}
 			unset($inv);
 		} else
-			UiMessageService::displayError(_("Invalid sales invoice number."));
+			UiMessageService::displayError(_(UI_TEXT_INVALID_SALES_INVOICE_NUMBER));
 	}
 }
 
@@ -106,37 +107,37 @@ if (!isset($_POST['DateBanked'])) {
 if (isset($_GET['AddedID'])) {
 	$payment_no = $_GET['AddedID'];
 
-	display_notification_centered(_("The customer payment has been successfully entered."));
+	display_notification_centered(_(UI_TEXT_CUSTOMER_PAYMENT_ENTERED));
 
-	submenu_print(_("&Print This Receipt"), ST_CUSTPAYMENT, $payment_no."-".ST_CUSTPAYMENT, 'prtopt');
-	submenu_print(_("&Email This Receipt"), ST_CUSTPAYMENT, $payment_no."-".ST_CUSTPAYMENT, null, 1);
+	submenu_print(_(UI_TEXT_PRINT_THIS_RECEIPT), ST_CUSTPAYMENT, $payment_no."-".ST_CUSTPAYMENT, 'prtopt');
+	submenu_print(_(UI_TEXT_EMAIL_THIS_RECEIPT), ST_CUSTPAYMENT, $payment_no."-".ST_CUSTPAYMENT, null, 1);
 
-	submenu_view(_("&View this Customer Payment"), ST_CUSTPAYMENT, $payment_no);
-	display_note(get_gl_view_str(ST_CUSTPAYMENT, $payment_no, _("&View the GL Journal Entries for this Customer Payment")), 0, 1);
+	submenu_view(_(UI_TEXT_VIEW_THIS_CUSTOMER_PAYMENT), ST_CUSTPAYMENT, $payment_no);
+	display_note(get_gl_view_str(ST_CUSTPAYMENT, $payment_no, _(UI_TEXT_VIEW_GL_JOURNAL_CUSTOMER_PAYMENT)), 0, 1);
 
-	submenu_option(_("Enter Another &Customer Payment"), "/sales/customer_payments.php");
-	submenu_option(_("Enter Other &Deposit"), "/gl/gl_bank.php?NewDeposit=Yes");
-	submenu_option(_("Enter Payment to &Supplier"), "/purchasing/supplier_payment.php");
-	submenu_option(_("Enter Other &Payment"), "/gl/gl_bank.php?NewPayment=Yes");
-	submenu_option(_("Bank Account &Transfer"), "/gl/bank_transfer.php");
-	submenu_option(_("Add an Attachment"), "/admin/attachments.php?filterType=".ST_CUSTPAYMENT."&trans_no=$payment_no");
+	submenu_option(_(UI_TEXT_ENTER_ANOTHER_CUSTOMER_PAYMENT), "/sales/customer_payments.php");
+	submenu_option(_(UI_TEXT_ENTER_OTHER_DEPOSIT), "/gl/gl_bank.php?NewDeposit=Yes");
+	submenu_option(_(UI_TEXT_ENTER_PAYMENT_TO_SUPPLIER), "/purchasing/supplier_payment.php");
+	submenu_option(_(UI_TEXT_ENTER_OTHER_PAYMENT), "/gl/gl_bank.php?NewPayment=Yes");
+	submenu_option(_(UI_TEXT_BANK_ACCOUNT_TRANSFER), "/gl/bank_transfer.php");
+	submenu_option(_(UI_TEXT_ADD_ATTACHMENT), "/admin/attachments.php?filterType=".ST_CUSTPAYMENT."&trans_no=$payment_no");
 
 	display_footer_exit();
 }
 elseif (isset($_GET['UpdatedID'])) {
 	$payment_no = $_GET['UpdatedID'];
 
-	display_notification_centered(_("The customer payment has been successfully updated."));
+	display_notification_centered(_(UI_TEXT_CUSTOMER_PAYMENT_UPDATED));
 
-	submenu_print(_("&Print This Receipt"), ST_CUSTPAYMENT, $payment_no."-".ST_CUSTPAYMENT, 'prtopt');
+	submenu_print(_(UI_TEXT_PRINT_THIS_RECEIPT), ST_CUSTPAYMENT, $payment_no."-".ST_CUSTPAYMENT, 'prtopt');
 
-	display_note(get_gl_view_str(ST_CUSTPAYMENT, $payment_no, _("&View the GL Journal Entries for this Customer Payment")));
+	display_note(get_gl_view_str(ST_CUSTPAYMENT, $payment_no, _(UI_TEXT_VIEW_GL_JOURNAL_CUSTOMER_PAYMENT)));
 
 //	hyperlink_params($path_to_root . "/sales/allocations/customer_allocate.php", _("&Allocate this Customer Payment"), "trans_no=$payment_no&trans_type=12");
 
-	hyperlink_no_params($path_to_root . "/sales/inquiry/customer_inquiry.php?", _("Select Another Customer Payment for &Edition"));
+	hyperlink_no_params($path_to_root . "/sales/inquiry/customer_inquiry.php?", _(UI_TEXT_SELECT_ANOTHER_CUSTOMER_PAYMENT_EDITION));
 
-	hyperlink_no_params($path_to_root . "/sales/customer_payments.php", _("Enter Another &Customer Payment"));
+	hyperlink_no_params($path_to_root . "/sales/customer_payments.php", _(UI_TEXT_ENTER_ANOTHER_CUSTOMER_PAYMENT));
 
 	display_footer_exit();
 }
@@ -149,14 +150,14 @@ function can_process()
 
 	if (!RequestService::getPostStatic('customer_id'))
 	{
-		UiMessageService::displayError(_("There is no customer selected."));
+		UiMessageService::displayError(_(UI_TEXT_NO_CUSTOMER_SELECTED));
 		set_focus('customer_id');
 		return false;
 	} 
 	
 	if (!RequestService::getPostStatic('BranchID'))
 	{
-		UiMessageService::displayError(_("This customer has no branch defined."));
+		UiMessageService::displayError(_(UI_TEXT_CUSTOMER_NO_BRANCH));
 		set_focus('BranchID');
 		return false;
 	} 
