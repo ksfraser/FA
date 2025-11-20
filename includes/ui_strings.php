@@ -1434,4 +1434,7 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_CURRENCY', 'Currency');
     define('UI_TEXT_TOTAL_CREDIT_NOTE', 'TOTAL CREDIT NOTE');
     define('UI_TEXT_THIS_CREDIT_NOTE_HAS_BEEN_VOIDED', 'This credit note has been voided.');
+    define('UI_TEXT_SUPPLIER_INVOICE', 'SUPPLIER INVOICE');
+    define('UI_TEXT_TOTAL_INVOICE', 'TOTAL INVOICE');
+    define('UI_TEXT_THIS_INVOICE_HAS_BEEN_VOIDED', 'This invoice has been voided.');
 };
