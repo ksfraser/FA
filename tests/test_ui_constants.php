@@ -1692,6 +1692,7 @@ $constants = [
     'UI_TEXT_CUSTOMER_TRANSACTIONS',
     'UI_TEXT_DAYS',
     'UI_TEXT_OVER',
+    'UI_TEXT_CUSTOMER_BRANCHES',
 ];
 
 $failed = [];

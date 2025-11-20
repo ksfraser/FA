@@ -23,7 +23,7 @@ include_once($path_to_root . "/sales/includes/db/branches_db.inc");
 
 $js = get_js_select_combo_item();
 
-page(_($help_context = "Customer Branches"), true, false, "", $js);
+page(_($help_context = UI_TEXT_CUSTOMER_BRANCHES), true, false, "", $js);
 
 if(RequestService::getPostStatic("search")) {
   $Ajax->activate("customer_branch_tbl");
