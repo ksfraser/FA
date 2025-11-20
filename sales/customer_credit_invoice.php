@@ -379,7 +379,7 @@ display_credit_items();
 display_credit_options();
 
 echo "<br><center>";
-submit('Update', _(UI_TEXT_UPDATE_BUTTON), true, _('Update credit value for quantities entered'), true);
+submit('Update', _(UI_TEXT_UPDATE_BUTTON), true, _(UI_TEXT_UPDATE_CREDIT_VALUE_FOR_QUANTITIES_ENTERED), true);
 echo "&nbsp";
 submit('ProcessCredit', _(UI_TEXT_PROCESS_CREDIT_NOTE), true, '', 'default');
 echo "</center>";
