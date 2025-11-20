@@ -16,6 +16,7 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/db_pager.inc");
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/includes/data_checks.inc");
 
 include_once($path_to_root . "/gl/includes/gl_db.inc");
@@ -26,9 +27,9 @@ if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(800, 500);
 if (user_use_date_picker())
 	$js .= get_js_date_picker();
-page(_($help_context = "Bank Account Inquiry"), isset($_GET['bank_account']) && !isset($_GET['TransAfterDate']), false, "", $js, false, "", true);
+page(_($help_context = UI_TEXT_BANK_ACCOUNT_INQUIRY_TITLE), isset($_GET['bank_account']) && !isset($_GET['TransAfterDate']), false, "", $js, false, "", true);
 
-check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
+check_db_has_bank_accounts(_(UI_TEXT_NO_BANK_ACCOUNTS_ERROR));
 
 //-----------------------------------------------------------------------------------
 // Ajax updates
@@ -46,12 +47,12 @@ start_form();
 start_table(TABLESTYLE_NOBORDER);
 start_row();
 if (!$page_nested)
-	bank_accounts_list_cells(_("Account:"), 'bank_account', null);
+	bank_accounts_list_cells(_(UI_TEXT_ACCOUNT_LABEL), 'bank_account', null);
 
-date_cells(_("From:"), 'TransAfterDate', '', null, -user_transaction_days());
-date_cells(_("To:"), 'TransToDate');
+date_cells(_(UI_TEXT_FROM_LABEL), 'TransAfterDate', '', null, -user_transaction_days());
+date_cells(_(UI_TEXT_TO_LABEL), 'TransToDate');
 
-submit_cells('Show',_("Show"),'', '', 'default');
+submit_cells('Show',_(UI_TEXT_SHOW_BUTTON),'', '', 'default');
 end_row();
 end_table();
 end_form();
@@ -72,15 +73,15 @@ if (!$page_nested)
 
 start_table(TABLESTYLE);
 
-$th = array(_("Type"), _("#"), _("Reference"), _("Date"),
-	_("Debit"), _("Credit"), _("Balance"), _("Person/Item"), _("Memo"), "", "");
+$th = array(_(UI_TEXT_TYPE_LABEL), _(UI_TEXT_NUMBER_SIGN), _(UI_TEXT_REFERENCE_LABEL), _(UI_TEXT_DATE_LABEL),
+	_(UI_TEXT_DEBIT_LABEL), _(UI_TEXT_CREDIT_LABEL), _(UI_TEXT_BALANCE_LABEL), _(UI_TEXT_PERSON_ITEM_LABEL), _(UI_TEXT_MEMO_LABEL), "", "");
 table_header($th);
 
 $bfw = get_balance_before_for_bank_account($_POST['bank_account'], $_POST['TransAfterDate']);
 
 $credit = $debit = 0;
 start_row("class='inquirybg' style='font-weight:bold'");
-label_cell(_("Opening Balance")." - ".$_POST['TransAfterDate'], "colspan=4");
+label_cell(_(UI_TEXT_OPENING_BALANCE_LABEL)." - ".$_POST['TransAfterDate'], "colspan=4");
 display_debit_or_credit_cells($bfw);
 label_cell("");
 label_cell("", "colspan=4");
@@ -131,7 +132,7 @@ while ($myrow = db_fetch($result))
 //end of while loop
 
 start_row("class='inquirybg' style='font-weight:bold'");
-label_cell(_("Ending Balance")." - ". $_POST['TransToDate'], "colspan=4");
+label_cell(_(UI_TEXT_ENDING_BALANCE_LABEL)." - ". $_POST['TransToDate'], "colspan=4");
 amount_cell($debit);
 amount_cell(-$credit);
 //display_debit_or_credit_cells($running_total);
