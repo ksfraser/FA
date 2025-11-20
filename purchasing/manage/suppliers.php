@@ -13,6 +13,7 @@ $page_security = 'SA_SUPPLIER';
 $path_to_root = "../..";
 include($path_to_root . "/includes/db_pager.inc");
 include_once($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 
 $js = "";
 if ($SysPrefs->use_popup_windows)
@@ -27,7 +28,7 @@ include_once($path_to_root . "/includes/ui/contacts_view.inc");
 include_once($path_to_root . "/includes/ui/attachment.inc");
 include_once($path_to_root . "/includes/CompanyPrefsService.php");
 
-check_db_has_tax_groups(_("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
+check_db_has_tax_groups(_(UI_TEXT_THERE_ARE_NO_TAX_GROUPS_DEFINED_IN_THE_SYSTEM_AT_LEAST_ONE_TAX_GROUP_IS_REQUIRED_BEFORE_PROCEEDING));
 
 if (isset($_GET['supplier_id'])) 
 {
@@ -45,14 +46,14 @@ function can_process()
 
 	if (strlen($_POST['supp_name']) == 0 || $_POST['supp_name'] == "") 
 	{
-		UiMessageService::displayError(_("The supplier name must be entered."));
+		UiMessageService::displayError(_(UI_TEXT_THE_SUPPLIER_NAME_MUST_BE_ENTERED));
 		set_focus('supp_name');
 		return false;
 	}
 
 	if (strlen($_POST['supp_ref']) == 0 || $_POST['supp_ref'] == "") 
 	{
-		UiMessageService::displayError(_("The supplier short name must be entered."));
+		UiMessageService::displayError(_(UI_TEXT_THE_SUPPLIER_SHORT_NAME_MUST_BE_ENTERED));
 		set_focus('supp_ref');
 		return false;
 	}
@@ -78,7 +79,7 @@ function handle_submit(&$supplier_id)
 			'suppliers', 'supplier_id');
 
 		$Ajax->activate('supplier_id'); // in case of status change
-		display_notification(_("Supplier has been updated."));
+		display_notification(_(UI_TEXT_SUPPLIER_HAS_BEEN_UPDATED));
 	} 
 	else 
 	{
@@ -96,7 +97,7 @@ function handle_submit(&$supplier_id)
 
 		add_crm_contact('supplier', 'general', $supplier_id, db_insert_id());
 
-		display_notification(_("A new supplier has been added."));
+		display_notification(_(UI_TEXT_A_NEW_SUPPLIER_HAS_BEEN_ADDED));
 		$Ajax->activate('_page_body');
 	}
 	commit_transaction();
@@ -118,7 +119,7 @@ if (isset($_POST['delete']) && $_POST['delete'] != "")
 	if (key_in_foreign_table($_POST['supplier_id'], 'supp_trans', 'supplier_id'))
 	{
 		$cancel_delete = 1;
-		UiMessageService::displayError(_("Cannot delete this supplier because there are transactions that refer to this supplier."));
+		UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_THIS_SUPPLIER_BECAUSE_THERE_ARE_TRANSACTIONS_THAT_REFER_TO_THIS_SUPPLIER));
 
 	} 
 	else 
@@ -126,7 +127,7 @@ if (isset($_POST['delete']) && $_POST['delete'] != "")
 		if (key_in_foreign_table($_POST['supplier_id'], 'purch_orders', 'supplier_id'))
 		{
 			$cancel_delete = 1;
-			UiMessageService::displayError(_("Cannot delete the supplier record because purchase orders have been created against this supplier."));
+			UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_THE_SUPPLIER_RECORD_BECAUSE_PURCHASE_ORDERS_HAVE_BEEN_CREATED_AGAINST_THIS_SUPPLIER));
 		}
 
 	}
@@ -137,7 +138,7 @@ if (isset($_POST['delete']) && $_POST['delete'] != "")
 		unset($_SESSION['supplier_id']);
 		$supplier_id = '';
 		$Ajax->activate('_page_body');
-		display_notification("#" . $_POST['supplier_id'] . " " . _("Supplier has been deleted."));
+		display_notification("#" . $_POST['supplier_id'] . " " . _(UI_TEXT_SUPPLIER_HAS_BEEN_DELETED));
 	} //end if Delete supplier
 }
 
@@ -198,30 +199,30 @@ function supplier_settings(&$supplier_id)
 		}
 	}
 
-	table_section_title(_("Basic Data"));
+	table_section_title(_(UI_TEXT_BASIC_DATA));
 
-	text_row(_("Supplier Name:"), 'supp_name', null, 42, 60);
-	text_row(_("Supplier Short Name:"), 'supp_ref', null, 30, 30);
+	text_row(_(UI_TEXT_SUPPLIER_NAME_LABEL), 'supp_name', null, 42, 60);
+	text_row(_(UI_TEXT_SUPPLIER_SHORT_NAME_LABEL), 'supp_ref', null, 30, 30);
 
-	text_row(_("GSTNo:"), 'gst_no', null, 42, 40);
-	link_row(_("Website:"), 'website', null, 35, 55);
+	text_row(_(UI_TEXT_GSTNO_LABEL), 'gst_no', null, 42, 40);
+	link_row(_(UI_TEXT_WEBSITE_LABEL), 'website', null, 35, 55);
 	if ($supplier_id && !is_new_supplier($supplier_id) && (key_in_foreign_table($_POST['supplier_id'], 'supp_trans', 'supplier_id') ||
 		key_in_foreign_table($_POST['supplier_id'], 'purch_orders', 'supplier_id'))) 
 	{
-		label_row(_("Supplier's Currency:"), $_POST['curr_code']);
+		label_row(_(UI_TEXT_SUPPLIERS_CURRENCY_LABEL), $_POST['curr_code']);
 		hidden('curr_code', $_POST['curr_code']);
 	} 
 	else 
 	{
-		currencies_list_row(_("Supplier's Currency:"), 'curr_code', null);
+		currencies_list_row(_(UI_TEXT_SUPPLIERS_CURRENCY_LABEL), 'curr_code', null);
 	}
-	tax_groups_list_row(_("Tax Group:"), 'tax_group_id', null);
-	text_row(_("Our Customer No:"), 'supp_account_no', null, 42, 40);
+	tax_groups_list_row(_(UI_TEXT_TAX_GROUP_LABEL), 'tax_group_id', null);
+	text_row(_(UI_TEXT_OUR_CUSTOMER_NO_LABEL), 'supp_account_no', null, 42, 40);
 
-	table_section_title(_("Purchasing"));
-	text_row(_("Bank Name/Account:"), 'bank_account', null, 42, 40);
-	amount_row(_("Credit Limit:"), 'credit_limit', null);
-	payment_terms_list_row(_("Payment Terms:"), 'payment_terms', null);
+	table_section_title(_(UI_TEXT_PURCHASING));
+	text_row(_(UI_TEXT_BANK_NAME_ACCOUNT_LABEL), 'bank_account', null, 42, 40);
+	amount_row(_(UI_TEXT_CREDIT_LIMIT_LABEL), 'credit_limit', null);
+	payment_terms_list_row(_(UI_TEXT_PAYMENT_TERMS_LABEL), 'payment_terms', null);
 	//
 	// tax_included option from supplier record is used directly in update_average_cost() function,
 	// therefore we can't edit the option after any transaction was done for the supplier.
