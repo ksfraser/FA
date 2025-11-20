@@ -1427,4 +1427,11 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_SUPPLIERS_CURRENCY', 'Supplier\'s Currency');
     define('UI_TEXT_THIS_PAYMENT_HAS_BEEN_VOIDED', 'This payment has been voided.');
     define('UI_TEXT_PAYMENT_TYPE', 'Payment Type');
+    define('UI_TEXT_SUPPLIER_CREDIT_NOTE', 'SUPPLIER CREDIT NOTE');
+    define('UI_TEXT_SUPPLIERS_REFERENCE', 'Supplier\'s Reference');
+    define('UI_TEXT_INVOICE_DATE', 'Invoice Date');
+    define('UI_TEXT_DUE_DATE', 'Due Date');
+    define('UI_TEXT_CURRENCY', 'Currency');
+    define('UI_TEXT_TOTAL_CREDIT_NOTE', 'TOTAL CREDIT NOTE');
+    define('UI_TEXT_THIS_CREDIT_NOTE_HAS_BEEN_VOIDED', 'This credit note has been voided.');
 };

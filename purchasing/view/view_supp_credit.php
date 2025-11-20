@@ -14,6 +14,7 @@ $path_to_root = "../..";
 
 include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
 include_once($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 
 include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 
@@ -35,18 +36,18 @@ $supp_trans = new supp_trans(ST_SUPPCREDIT);
 
 read_supp_invoice($trans_no, ST_SUPPCREDIT, $supp_trans);
 
-display_heading("<font color=red>" . _("SUPPLIER CREDIT NOTE") . " # " . $trans_no . "</font>");
+display_heading("<font color=red>" . _(UI_TEXT_SUPPLIER_CREDIT_NOTE) . " # " . $trans_no . "</font>");
 echo "<br>";
 start_table(TABLESTYLE, "width='95%'");
 start_row();
-label_cells(_("Supplier"), $supp_trans->supplier_name, "class='tableheader2'");
-label_cells(_("Reference"), $supp_trans->reference, "class='tableheader2'");
-label_cells(_("Supplier's Reference"), $supp_trans->supp_reference, "class='tableheader2'");
+label_cells(_(UI_TEXT_SUPPLIER), $supp_trans->supplier_name, "class='tableheader2'");
+label_cells(_(UI_TEXT_REFERENCE), $supp_trans->reference, "class='tableheader2'");
+label_cells(_(UI_TEXT_SUPPLIERS_REFERENCE), $supp_trans->supp_reference, "class='tableheader2'");
 end_row();
 start_row();
-label_cells(_("Invoice Date"), $supp_trans->tran_date, "class='tableheader2'");
-label_cells(_("Due Date"), $supp_trans->due_date, "class='tableheader2'");
-label_cells(_("Currency"), get_supplier_currency($supp_trans->supplier_id), "class='tableheader2'");
+label_cells(_(UI_TEXT_INVOICE_DATE), $supp_trans->tran_date, "class='tableheader2'");
+label_cells(_(UI_TEXT_DUE_DATE), $supp_trans->due_date, "class='tableheader2'");
+label_cells(_(UI_TEXT_CURRENCY), get_supplier_currency($supp_trans->supplier_id), "class='tableheader2'");
 end_row();
 comments_display_row(ST_SUPPCREDIT, $trans_no);
 end_table(1);
@@ -57,18 +58,18 @@ $total_grn = display_grn_items($supp_trans, 2);
 $display_sub_tot = FormatService::numberFormat2($total_gl+$total_grn,\FA\UserPrefsCache::getPriceDecimals());
 
 start_table(TABLESTYLE, "width='95%'");
-label_row(_("Sub Total"), $display_sub_tot, "align=right", "nowrap align=right width='17%'");
+label_row(_(UI_TEXT_SUB_TOTAL), $display_sub_tot, "align=right", "nowrap align=right width='17%'");
 
 $tax_items = get_trans_tax_details(ST_SUPPCREDIT, $trans_no);
 display_supp_trans_tax_details($tax_items, 1);
 
 $display_total = FormatService::numberFormat2(-($supp_trans->ov_amount + $supp_trans->ov_gst),\FA\UserPrefsCache::getPriceDecimals());
-label_row("<font color=red>" . _("TOTAL CREDIT NOTE") . "</font", "<font color=red>$display_total</font>", 
+label_row("<font color=red>" . _(UI_TEXT_TOTAL_CREDIT_NOTE) . "</font", "<font color=red>$display_total</font>", 
 	"colspan=1 align=right", "nowrap align=right");
 
 end_table(1);
 
-$voided = is_voided_display(ST_SUPPCREDIT, $trans_no, _("This credit note has been voided."));
+$voided = is_voided_display(ST_SUPPCREDIT, $trans_no, _(UI_TEXT_THIS_CREDIT_NOTE_HAS_BEEN_VOIDED));
 
 if (!$voided)
 {
