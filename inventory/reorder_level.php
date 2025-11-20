@@ -20,6 +20,7 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 
 $js = "";
@@ -27,7 +28,7 @@ if ($SysPrefs->use_popup_windows && $SysPrefs->use_popup_search)
 	$js .= get_js_open_window(900, 500);
 page(_($help_context = "Reorder Levels"), false, false, "", $js);
 
-check_db_has_costable_items(_("There are no inventory items defined in the system (Purchased or manufactured items)."));
+check_db_has_costable_items(_(UI_TEXT_THERE_ARE_NO_INVENTORY_ITEMS_DEFINED_IN_THE_SYSTEM_PURCHASED_OR_MANUFACTURED_ITEMS));
 
 //------------------------------------------------------------------------------------
 
@@ -51,7 +52,7 @@ if (!isset($_POST['stock_id']))
 
 if (!$page_nested)
 {
-	echo "<center>" . _("Item:"). "&nbsp;";
+	echo "<center>" . _(UI_TEXT_ITEM_COLON). "&nbsp;";
 	echo stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
 
 	echo "<hr></center>";
@@ -68,7 +69,7 @@ set_global_stock_item($_POST['stock_id']);
 div_start('reorders');
 start_table(TABLESTYLE, "width='30%'");
 
-$th = array(_("Location"), _("Quantity On Hand"), _("Re-Order Level"));
+$th = array(_(UI_TEXT_LOCATION), _(UI_TEXT_QUANTITY_ON_HAND), _(UI_TEXT_RE_ORDER_LEVEL));
 table_header($th);
 
 $j = 1;
@@ -86,7 +87,7 @@ while ($myrow = db_fetch($result))
 
 		$myrow["reorder_level"] = RequestService::inputNumStatic($myrow["loc_code"]);
 		set_reorder_level($_POST['stock_id'], $myrow["loc_code"], RequestService::inputNumStatic($myrow["loc_code"]));
-		display_notification(_("Reorder levels has been updated."));
+		display_notification(_(UI_TEXT_REORDER_LEVELS_HAS_BEEN_UPDATED));
 	}
 
 	$qoh = get_qoh_on_date($_POST['stock_id'], $myrow["loc_code"]);
@@ -108,7 +109,7 @@ while ($myrow = db_fetch($result))
 
 end_table(1);
 div_end();
-submit_center('UpdateData', _("Update"), true, false, 'default');
+submit_center('UpdateData', _(UI_TEXT_UPDATE), true, false, 'default');
 
 end_form();
 end_page();

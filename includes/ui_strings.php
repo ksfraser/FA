@@ -1498,4 +1498,8 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_CONVERSION_FACTOR', 'Conversion Factor');
     define('UI_TEXT_SUPPLIERS_DESCRIPTION', 'Supplier\'s Description');
     define('UI_TEXT_SUPPLIER_COLON', 'Supplier:');
+    define('UI_TEXT_THERE_ARE_NO_INVENTORY_ITEMS_DEFINED_IN_THE_SYSTEM_PURCHASED_OR_MANUFACTURED_ITEMS', 'There are no inventory items defined in the system (Purchased or manufactured items).');
+    define('UI_TEXT_RE_ORDER_LEVEL', 'Re-Order Level');
+    define('UI_TEXT_REORDER_LEVELS_HAS_BEEN_UPDATED', 'Reorder levels has been updated.');
+    define('UI_TEXT_LOCATION', 'Location');
 };
