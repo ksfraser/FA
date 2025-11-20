@@ -1516,4 +1516,14 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_PROCESS_TRANSFER', 'Process Transfer');
     define('UI_TEXT_SEARCH_ITEMS', 'Search items');
     define('UI_TEXT_CATEGORY', 'Category');
+    define('UI_TEXT_THERE_ARE_NO_FIXED_ASSET_DEFINED_IN_THE_SYSTEM', 'There are no fixed asset defined in the system.');
+    define('UI_TEXT_THERE_ARE_NO_ITEMS_DEFINED_IN_THE_SYSTEM', 'There are no items defined in the system.');
+    define('UI_TEXT_FROM_LOCATION_LABEL', 'From Location:');
+    define('UI_TEXT_SHOW_MOVEMENTS', 'Show Movements');
+    define('UI_TEXT_NUMBER_SIGN', '#');
+    define('UI_TEXT_DETAIL', 'Detail');
+    define('UI_TEXT_QUANTITY_IN', 'Quantity In');
+    define('UI_TEXT_QUANTITY_OUT', 'Quantity Out');
+    define('UI_TEXT_QUANTITY_ON_HAND_BEFORE', 'Quantity on hand before');
+    define('UI_TEXT_QUANTITY_ON_HAND_AFTER', 'Quantity on hand after');
 };

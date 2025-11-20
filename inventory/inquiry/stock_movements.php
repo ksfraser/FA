@@ -18,6 +18,7 @@ include_once($path_to_root . "/includes/banking.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 $js = "";
 if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(800, 500);
@@ -36,9 +37,9 @@ page($_SESSION['page_title'], isset($_GET['stock_id']), false, "", $js);
 //------------------------------------------------------------------------------------------------
 
 if (RequestService::getPostStatic('fixed_asset') == 1)
-	check_db_has_fixed_assets(_("There are no fixed asset defined in the system."));
+	check_db_has_fixed_assets(_(UI_TEXT_THERE_ARE_NO_FIXED_ASSET_DEFINED_IN_THE_SYSTEM));
 else
-	check_db_has_stock_items(_("There are no items defined in the system."));
+	check_db_has_stock_items(_(UI_TEXT_THERE_ARE_NO_ITEMS_DEFINED_IN_THE_SYSTEM));
 
 if(RequestService::getPostStatic('ShowMoves'))
 {
@@ -62,16 +63,16 @@ start_row();
 if (!$page_nested)
 {
 	if (RequestService::getPostStatic('fixed_asset') == 1) {
-		stock_items_list_cells(_("Item:"), 'stock_id', $_POST['stock_id'],
+		stock_items_list_cells(_(UI_TEXT_ITEM_COLON), 'stock_id', $_POST['stock_id'],
 			false, false, RequestService::checkValueStatic('show_inactive'), false, array('fixed_asset' => true));
-		check_cells(_("Show inactive:"), 'show_inactive', null, true);
+		check_cells(_(UI_TEXT_SHOW_INACTIVE_LABEL), 'show_inactive', null, true);
 
 		if (RequestService::getPostStatic('_show_inactive_update')) {
 			$Ajax->activate('stock_id');
 			set_focus('stock_id');
 		}
 	} else
-		stock_costable_items_list_cells(_("Item:"), 'stock_id', $_POST['stock_id']);
+		stock_costable_items_list_cells(_(UI_TEXT_ITEM_COLON), 'stock_id', $_POST['stock_id']);
 }
 
 end_row();
@@ -80,12 +81,12 @@ end_table();
 start_table(TABLESTYLE_NOBORDER);
 start_row();
 
-locations_list_cells(_("From Location:"), 'StockLocation', null, true, false, (RequestService::getPostStatic('fixed_asset') == 1));
+locations_list_cells(_(UI_TEXT_FROM_LOCATION_LABEL), 'StockLocation', null, true, false, (RequestService::getPostStatic('fixed_asset') == 1));
 
-date_cells(_("From:"), 'AfterDate', '', null, -user_transaction_days());
-date_cells(_("To:"), 'BeforeDate');
+date_cells(_(UI_TEXT_FROM_LABEL), 'AfterDate', '', null, -user_transaction_days());
+date_cells(_(UI_TEXT_TO_LABEL), 'BeforeDate');
 
-submit_cells('ShowMoves',_("Show Movements"),'',_('Refresh Inquiry'), 'default');
+submit_cells('ShowMoves',_(UI_TEXT_SHOW_MOVEMENTS),'',_(UI_TEXT_REFRESH_INQUIRY), 'default');
 end_row();
 end_table();
 end_form();
@@ -101,12 +102,12 @@ $result = get_stock_movements($_POST['stock_id'], $_POST['StockLocation'],
 
 div_start('doc_tbl');
 start_table(TABLESTYLE);
-$th = array(_("Type"), _("#"), _("Reference"));
+$th = array(_(UI_TEXT_TYPE), _(UI_TEXT_NUMBER_SIGN), _(UI_TEXT_REFERENCE));
 
 if ($display_location)
-	array_push($th, _("Location"));
+	array_push($th, _(UI_TEXT_LOCATION));
 
-array_push($th, _("Date"), _("Detail"), _("Quantity In"), _("Quantity Out"), _("Quantity On Hand"));
+array_push($th, _(UI_TEXT_DATE), _(UI_TEXT_DETAIL), _(UI_TEXT_QUANTITY_IN), _(UI_TEXT_QUANTITY_OUT), _(UI_TEXT_QUANTITY_ON_HAND));
 
 table_header($th);
 
@@ -116,7 +117,7 @@ $after_qty = $before_qty;
 
 start_row("class='inquirybg'");
 $header_span = $display_location ? 6 : 5;
-label_cell("<b>"._("Quantity on hand before") . " " . $_POST['AfterDate']."</b>", "align=center colspan=$header_span");
+label_cell("<b>"._(UI_TEXT_QUANTITY_ON_HAND_BEFORE) . " " . $_POST['AfterDate']."</b>", "align=center colspan=$header_span");
 label_cell("&nbsp;", "colspan=2");
 $dec = get_qty_dec($_POST['stock_id']);
 qty_cell($before_qty, false, $dec);
@@ -181,7 +182,7 @@ while ($myrow = db_fetch($result))
 }
 
 start_row("class='inquirybg'");
-label_cell("<b>"._("Quantity on hand after") . " " . $_POST['BeforeDate']."</b>", "align=center colspan=$header_span");
+label_cell("<b>"._(UI_TEXT_QUANTITY_ON_HAND_AFTER) . " " . $_POST['BeforeDate']."</b>", "align=center colspan=$header_span");
 qty_cell($total_in, false, $dec);
 qty_cell($total_out, false, $dec);
 qty_cell($after_qty, false, $dec);
