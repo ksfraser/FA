@@ -18,6 +18,7 @@ include_once($path_to_root . "/includes/date_functions.inc");
 
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/banking.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 $js = "";
@@ -33,10 +34,10 @@ start_form();
     if (!isset($_POST['supplier_id']))
     	$_POST['supplier_id'] = get_global_supplier();
 
-    echo "<center>" . _("Select a Supplier: ") . "&nbsp;&nbsp;";
+    echo "<center>" . _(UI_TEXT_SELECT_A_SUPPLIER_LABEL) . "&nbsp;&nbsp;";
 	echo supplier_list('supplier_id', $_POST['supplier_id'], true, true);
     echo "<br>";
-    check(_("Show Settled Items:"), 'ShowSettled', null, true);
+    check(_(UI_TEXT_SHOW_SETTLED_ITEMS), 'ShowSettled', null, true);
 	echo "</center><br><br>";
 	set_global_supplier($_POST['supplier_id']);
 
@@ -67,7 +68,7 @@ function trans_view($trans)
 
 function alloc_link($row)
 {
-	return pager_link(_("Allocate"),
+	return pager_link(_(UI_TEXT_ALLOCATE),
 		"/purchasing/allocations/supplier_allocate.php?trans_no="
  			.$row["trans_no"] . "&trans_type=" . $row["type"]. "&supplier_id=" . $row["supplier_id"], ICON_ALLOC);
 }
@@ -91,20 +92,20 @@ function check_settled($row)
 $sql = get_allocatable_from_supp_sql($supplier_id, $settled);
 
 $cols = array(
-	_("Transaction Type") => array('fun'=>'systype_name'),
-	_("#") => array('fun'=>'trans_view', 'align'=>'right'),
-	_("Reference"), 
-	_("Date") => array('name'=>'tran_date', 'type'=>'date', 'ord'=>'asc'),
-	_("Supplier") => array('ord'=>''),
-	_("Currency") => array('align'=>'center'),
-	_("Total") => array('align'=>'right', 'fun'=>'amount_total'), 
-	_("Left to Allocate") => array('align'=>'right','insert'=>true, 'fun'=>'amount_left'), 
+	_(UI_TEXT_TRANSACTION_TYPE) => array('fun'=>'systype_name'),
+	_(UI_TEXT_NUMBER) => array('fun'=>'trans_view', 'align'=>'right'),
+	_(UI_TEXT_REFERENCE), 
+	_(UI_TEXT_DATE) => array('name'=>'tran_date', 'type'=>'date', 'ord'=>'asc'),
+	_(UI_TEXT_SUPPLIER) => array('ord'=>''),
+	_(UI_TEXT_CURRENCY) => array('align'=>'center'),
+	_(UI_TEXT_TOTAL) => array('align'=>'right', 'fun'=>'amount_total'), 
+	_(UI_TEXT_LEFT_TO_ALLOCATE) => array('align'=>'right','insert'=>true, 'fun'=>'amount_left'), 
 	array('insert'=>true, 'fun'=>'alloc_link')
 	);
 
 if (isset($_POST['customer_id'])) {
-	$cols[_("Supplier")] = 'skip';
-	$cols[_("Currency")] = 'skip';
+	$cols[_(UI_TEXT_SUPPLIER)] = 'skip';
+	$cols[_(UI_TEXT_CURRENCY)] = 'skip';
 }
 
 $table =& new_db_pager('alloc_tbl', $sql, $cols);

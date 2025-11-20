@@ -19,6 +19,7 @@ include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/banking.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 //include_once($path_to_root . "/purchasing/includes/ui/supp_alloc_ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 
 $js = "";
 if ($SysPrefs->use_popup_windows)
@@ -49,17 +50,17 @@ function edit_allocations_for_transaction($type, $trans_no)
 
 	$cart = $_SESSION['alloc'];
 
-    display_heading(_("Allocation of") . " " . $systypes_array[$cart->type] . " # " . $cart->trans_no);
+    display_heading(_(UI_TEXT_ALLOCATION_OF_LABEL) . " " . $systypes_array[$cart->type] . " # " . $cart->trans_no);
 
 	display_heading($cart->person_name);
 
-    display_heading2(_("Date:") . " <b>" . $cart->date_ . "</b>");
+    display_heading2(_(UI_TEXT_DATE_LABEL) . " <b>" . $cart->date_ . "</b>");
 
-   	display_heading2(_("Total:"). " <b>" . FormatService::priceFormat(-$cart->bank_amount).' '.$cart->currency."</b>");
+   	display_heading2(_(UI_TEXT_TOTAL_LABEL). " <b>" . FormatService::priceFormat(-$cart->bank_amount).' '.$cart->currency."</b>");
 
 	if (floatcmp($cart->bank_amount, $cart->amount))
 	{
-	    $total = _("Amount to be settled:") . " <b>" . FormatService::priceFormat(-$cart->amount).' '.$cart->person_curr."</b>";
+	    $total = _(UI_TEXT_AMOUNT_TO_BE_SETTLED) . " <b>" . FormatService::priceFormat(-$cart->amount).' '.$cart->person_curr."</b>";
 		if ($cart->currency != $cart->person_curr)
     		$total .= sprintf(" (%s %s/%s)",  exrate_format($cart->bank_amount/$cart->amount), $cart->currency, $cart->person_curr);
 	   	display_heading2($total);
@@ -71,16 +72,16 @@ function edit_allocations_for_transaction($type, $trans_no)
     {
 		show_allocatable(true);
 
-     	submit_center_first('UpdateDisplay', _("Refresh"), _('Start again allocation of selected amount'), true);
-       	submit('Process', _("Process"), true, _('Process allocations'), 'default');
-   		submit_center_last('Cancel', _("Back to Allocations"),
-			_('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
+     	submit_center_first('UpdateDisplay', _(UI_TEXT_REFRESH), _(UI_TEXT_START_AGAIN_ALLOCATION), true);
+       	submit('Process', _(UI_TEXT_PROCESS), true, _(UI_TEXT_PROCESS_ALLOCATIONS), 'default');
+   		submit_center_last('Cancel', _(UI_TEXT_BACK_TO_ALLOCATIONS),
+			_(UI_TEXT_ABANDON_ALLOCATIONS), 'cancel');
 	}
 	else
 	{
-    	display_note(_("There are no unsettled transactions to allocate."), 0, 1);
-   		submit_center('Cancel', _("Back to Allocations"), true,
-			_('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
+    	display_note(_(UI_TEXT_NO_UNSETTLED_TRANSACTIONS), 0, 1);
+   		submit_center('Cancel', _(UI_TEXT_BACK_TO_ALLOCATIONS), true,
+			_(UI_TEXT_ABANDON_ALLOCATIONS), 'cancel');
     }
 
 	div_end();
