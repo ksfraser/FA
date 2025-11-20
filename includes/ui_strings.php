@@ -1732,4 +1732,8 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_SELECTED_SALES_AREA_HAS_BEEN_UPDATED', 'Selected sales area has been updated');
     define('UI_TEXT_NEW_SALES_AREA_HAS_BEEN_ADDED', 'New sales area has been added');
     define('UI_TEXT_SELECTED_SALES_AREA_HAS_BEEN_DELETED', 'Selected sales area has been deleted');
+    define('UI_TEXT_SALES_GROUPS', 'Sales Groups');
+    define('UI_TEXT_SELECTED_SALES_GROUP_HAS_BEEN_UPDATED', 'Selected sales group has been updated');
+    define('UI_TEXT_NEW_SALES_GROUP_HAS_BEEN_ADDED', 'New sales group has been added');
+    define('UI_TEXT_SELECTED_SALES_GROUP_HAS_BEEN_DELETED', 'Selected sales group has been deleted');
 };

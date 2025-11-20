@@ -13,7 +13,7 @@ $page_security = 'SA_SALESGROUP';
 $path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
 
-page(_($help_context = "Sales Groups"));
+page(_($help_context = UI_TEXT_SALES_GROUPS));
 
 include($path_to_root . "/includes/ui.inc");
 include($path_to_root . "/includes/ui_strings.php");
@@ -37,12 +37,12 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     	if ($selected_id != -1) 
     	{
     		update_sales_group($selected_id, $_POST['description']);
-			$note = _('Selected sales group has been updated');
+			$note = _(UI_TEXT_SELECTED_SALES_GROUP_HAS_BEEN_UPDATED);
     	} 
     	else 
     	{
     		add_sales_group($_POST['description']);
-			$note = _('New sales group has been added');
+			$note = _(UI_TEXT_NEW_SALES_GROUP_HAS_BEEN_ADDED);
     	}
     
 		display_notification($note);    	
@@ -65,7 +65,7 @@ if ($Mode == 'Delete')
 	if ($cancel_delete == 0) 
 	{
 		delete_sales_group($selected_id);
-		display_notification(_('Selected sales group has been deleted'));
+		display_notification(_(UI_TEXT_SELECTED_SALES_GROUP_HAS_BEEN_DELETED));
 	} //end if Delete group
 	$Mode = 'RESET';
 } 
