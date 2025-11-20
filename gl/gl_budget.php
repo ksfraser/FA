@@ -12,10 +12,10 @@
 $page_security = 'SA_BUDGETENTRY';
 $path_to_root = "..";
 include_once($path_to_root . "/includes/session.inc");
-
+include_once($path_to_root . "/includes/ui_strings.php");
 add_js_file('budget.js');
 
-page(_($help_context = "Budget Entry"));
+page(_($help_context = UI_TEXT_BUDGET_ENTRY));
 
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/CompanyPrefsService.php");
@@ -24,7 +24,7 @@ include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/admin/db/fiscalyears_db.inc");
 
 
-check_db_has_gl_account_groups(_("There are no account groups defined. Please define at least one account group before entering accounts."));
+check_db_has_gl_account_groups(_(UI_TEXT_THERE_ARE_NO_ACCOUNT_GROUPS_DEFINED_PLEASE_DEFINE_AT_LEAST_ONE_ACCOUNT_GROUP_BEFORE_ENTERING_ACCOUNTS));
 
 //-------------------------------------------------------------------------------------
 
@@ -43,9 +43,9 @@ if (isset($_POST['add']) || isset($_POST['delete']))
 	commit_transaction();
 
 	if (isset($_POST['add']))
-		display_notification_centered(_("The Budget has been saved."));
+		display_notification_centered(_(UI_TEXT_THE_BUDGET_HAS_BEEN_SAVED));
 	else
-		display_notification_centered(_("The Budget has been deleted."));
+		display_notification_centered(_(UI_TEXT_THE_BUDGET_HAS_BEEN_DELETED));
 
 	$Ajax->activate('budget_tbl');
 }
@@ -60,20 +60,20 @@ if (db_has_gl_accounts())
 {
 	$dim = \FA\Services\CompanyPrefsService::getUseDimensions();
 	start_table(TABLESTYLE2);
-	fiscalyears_list_row(_("Fiscal Year:"), 'fyear', null);
-	gl_all_accounts_list_row(_("Account Code:"), 'account', null);
+	fiscalyears_list_row(_(UI_TEXT_FISCAL_YEAR_LABEL), 'fyear', null);
+	gl_all_accounts_list_row(_(UI_TEXT_ACCOUNT_CODE_LABEL), 'account', null);
 	if (!isset($_POST['dim1']))
 		$_POST['dim1'] = 0;
 	if (!isset($_POST['dim2']))
 		$_POST['dim2'] = 0;
     if ($dim == 2)
     {
-		dimensions_list_row(_("Dimension")." 1", 'dim1', $_POST['dim1'], true, null, false, 1);
-		dimensions_list_row(_("Dimension")." 2", 'dim2', $_POST['dim2'], true, null, false, 2);
+		dimensions_list_row(_(UI_TEXT_DIMENSION_1), 'dim1', $_POST['dim1'], true, null, false, 1);
+		dimensions_list_row(_(UI_TEXT_DIMENSION_2), 'dim2', $_POST['dim2'], true, null, false, 2);
 	}
 	elseif ($dim == 1)
 	{
-		dimensions_list_row(_("Dimension"), 'dim1', $_POST['dim1'], true, null, false, 1);
+		dimensions_list_row(_(UI_TEXT_DIMENSION), 'dim1', $_POST['dim1'], true, null, false, 1);
 		hidden('dim2', 0);
 	}
 	else
@@ -81,16 +81,16 @@ if (db_has_gl_accounts())
 		hidden('dim1', 0);
 		hidden('dim2', 0);
 	}
-	submit_row('submit', _("Get"), true, '', '', true);
+	submit_row('submit', _(UI_TEXT_GET), true, '', '', true);
 	end_table(1);
 	div_start('budget_tbl');
 	start_table(TABLESTYLE2);
 	$showdims = (($dim == 1 && $_POST['dim1'] == 0) ||
 		($dim == 2 && $_POST['dim1'] == 0 && $_POST['dim2'] == 0));
 	if ($showdims)
-		$th = array(_("Period"), _("Amount"), _("Dim. incl."), _("Last Year"));
+		$th = array(_(UI_TEXT_PERIOD), _(UI_TEXT_AMOUNT), _(UI_TEXT_DIM_INCL), _(UI_TEXT_LAST_YEAR));
 	else
-		$th = array(_("Period"), _("Amount"), _("Last Year"));
+		$th = array(_(UI_TEXT_PERIOD), _(UI_TEXT_AMOUNT), _(UI_TEXT_LAST_YEAR));
 	table_header($th);
 	$year = $_POST['fyear'];
 	if (RequestService::getPostStatic('update') == '') {
@@ -124,7 +124,7 @@ if (db_has_gl_accounts())
 		end_row();
 	}
 	start_row();
-	label_cell("<b>"._("Total")."</b>");
+	label_cell("<b>"._(UI_TEXT_TOTAL)."</b>");
 	label_cell(FormatService::numberFormat2($total, 0), 'align=right style="font-weight:bold"', 'Total');
 	if ($showdims)
 		label_cell("<b>".FormatService::numberFormat2($btotal, 0)."</b>", "nowrap align=right");
@@ -132,9 +132,9 @@ if (db_has_gl_accounts())
 	end_row();
 	end_table(1);
 	div_end();
-	submit_center_first('update', _("Update"), '', null);
-	submit('add', _("Save"), true, '', 'default');
-	submit_center_last('delete', _("Delete"), '', true);
+	submit_center_first('update', _(UI_TEXT_UPDATE), '', null);
+	submit('add', _(UI_TEXT_SAVE), true, '', 'default');
+	submit_center_last('delete', _(UI_TEXT_DELETE), '', true);
 }
 end_form();
 
