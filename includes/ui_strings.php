@@ -1514,4 +1514,6 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_THE_QUANTITY_ENTERED_MUST_BE_A_POSITIVE_NUMBER', 'The quantity entered must be a positive number.');
     define('UI_TEXT_ITEMS_LABEL', 'Items');
     define('UI_TEXT_PROCESS_TRANSFER', 'Process Transfer');
+    define('UI_TEXT_SEARCH_ITEMS', 'Search items');
+    define('UI_TEXT_CATEGORY', 'Category');
 };

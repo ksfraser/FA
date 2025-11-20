@@ -18,6 +18,7 @@ $page_security = "SA_ITEM";
 $path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/inventory/includes/db/items_db.inc");
 
 $mode = get_company_pref('no_item_list');
@@ -38,8 +39,8 @@ start_table(TABLESTYLE_NOBORDER);
 
 start_row();
 
-text_cells(_("Description"), "description");
-submit_cells("search", _("Search"), "", _("Search items"), "default");
+text_cells(_(UI_TEXT_DESCRIPTION), "description");
+submit_cells("search", _(UI_TEXT_SEARCH), "", _(UI_TEXT_SEARCH_ITEMS), "default");
 
 end_row();
 
@@ -50,7 +51,7 @@ end_form();
 div_start("item_tbl");
 start_table(TABLESTYLE);
 
-$th = array("", _("Item Code"), _("Description"), _("Category"));
+$th = array("", _(UI_TEXT_ITEM_CODE), _(UI_TEXT_DESCRIPTION), _(UI_TEXT_CATEGORY));
 table_header($th);
 
 $k = 0;
@@ -63,10 +64,10 @@ while ($myrow = db_fetch_assoc($result))
 	$value = $myrow['item_code'];
 	if ($mode != 0) {
 		$text = $myrow['description'];
-  		ahref_cell(_("Select"), 'javascript:void(0)', '', 'setComboItem(window.opener.document, "'.$name.'",  "'.$value.'", "'.$text.'")');
+  		ahref_cell(_(UI_TEXT_SELECT), 'javascript:void(0)', '', 'setComboItem(window.opener.document, "'.$name.'",  "'.$value.'", "'.$text.'")');
 	}
 	else {
-  		ahref_cell(_("Select"), 'javascript:void(0)', '', 'selectComboItem(window.opener.document, "'.$name.'", "'.$value.'")');
+  		ahref_cell(_(UI_TEXT_SELECT), 'javascript:void(0)', '', 'selectComboItem(window.opener.document, "'.$name.'", "'.$value.'")');
 	}
   	label_cell($myrow["item_code"]);
 	label_cell($myrow["description"]);
