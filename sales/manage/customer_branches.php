@@ -19,7 +19,7 @@ $js = "";
 if ($SysPrefs->use_popup_windows && $SysPrefs->use_popup_search)
 	$js .= get_js_open_window(900, 500);
 
-page(_($help_context = "Customer Branches"), @$_REQUEST['popup'], false, "", $js);
+page(_($help_context = UI_TEXT_CUSTOMER_BRANCHES), @$_REQUEST['popup'], false, "", $js);
 
 include($path_to_root . "/includes/ui.inc");
 include($path_to_root . "/includes/ui_strings.php");
@@ -88,7 +88,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 				$_POST['default_location'], $_POST['br_post_address'], $_POST['group_no'],
 				$_POST['default_ship_via'], $_POST['notes'], $_POST['bank_account']);
 
-			$note =_('Selected customer branch has been updated');
+			$note =_(UI_TEXT_SELECTED_CUSTOMER_BRANCH_HAS_BEEN_UPDATED);
   		}
 		else
 		{
@@ -106,7 +106,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 			add_crm_contact('cust_branch', 'general', $selected_id, db_insert_id());
 
 
-			$note = _('New customer branch has been added');
+			$note = _(UI_TEXT_NEW_CUSTOMER_BRANCH_HAS_BEEN_ADDED);
 		}
 		commit_transaction();
 		display_notification($note);
@@ -134,7 +134,7 @@ elseif ($Mode == 'Delete')
 		else
 		{
 			delete_branch($_POST['customer_id'], $_POST['branch_code']);
-			display_notification(_('Selected customer branch has been deleted'));
+			display_notification(_(UI_TEXT_SELECTED_CUSTOMER_BRANCH_HAS_BEEN_DELETED));
 		}
 	}
 	$Mode = 'RESET';
@@ -207,7 +207,7 @@ function branch_settings($selected_id, $num_branches) {
 		if($myrow && !$num_branches) {
 			$_POST['br_name'] = $myrow["name"];
 			$_POST['br_ref'] = $myrow["debtor_ref"];
-			$_POST['contact_name'] = _('Main Branch');
+			$_POST['contact_name'] = _(UI_TEXT_MAIN_BRANCH);
 			$_POST['br_address'] = $_POST['br_post_address'] = $myrow["address"];
 		}
 		$_POST['branch_code'] = "";

@@ -1719,4 +1719,9 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_NEW_CREDIT_STATUS_HAS_BEEN_ADDED', 'New credit status has been added');
     define('UI_TEXT_SELECTED_CREDIT_STATUS_HAS_BEEN_UPDATED', 'Selected credit status has been updated');
     define('UI_TEXT_SELECTED_CREDIT_STATUS_HAS_BEEN_DELETED', 'Selected credit status has been deleted');
+    define('UI_TEXT_CUSTOMER_BRANCHES', 'Customer Branches');
+    define('UI_TEXT_SELECTED_CUSTOMER_BRANCH_HAS_BEEN_UPDATED', 'Selected customer branch has been updated');
+    define('UI_TEXT_NEW_CUSTOMER_BRANCH_HAS_BEEN_ADDED', 'New customer branch has been added');
+    define('UI_TEXT_SELECTED_CUSTOMER_BRANCH_HAS_BEEN_DELETED', 'Selected customer branch has been deleted');
+    define('UI_TEXT_MAIN_BRANCH', 'Main Branch');
 };
