@@ -1714,4 +1714,5 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_DAYS', 'Days');
     define('UI_TEXT_OVER', 'Over');
     define('UI_TEXT_CUSTOMER_BRANCHES', 'Customer Branches');
+    define('UI_TEXT_CUSTOMERS', 'Customers');
 };
