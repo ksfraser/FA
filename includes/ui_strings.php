@@ -1526,4 +1526,8 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_QUANTITY_OUT', 'Quantity Out');
     define('UI_TEXT_QUANTITY_ON_HAND_BEFORE', 'Quantity on hand before');
     define('UI_TEXT_QUANTITY_ON_HAND_AFTER', 'Quantity on hand after');
+    define('UI_TEXT_THIS_IS_A_SERVICE_AND_CANNOT_HAVE_A_STOCK_HOLDING_ONLY_THE_TOTAL_QUANTITY_ON_OUTSTANDING_SALES_ORDERS_IS_SHOWN', 'This is a service and cannot have a stock holding, only the total quantity on outstanding sales orders is shown.');
+    define('UI_TEXT_DEMAND', 'Demand');
+    define('UI_TEXT_AVAILABLE', 'Available');
+    define('UI_TEXT_ON_ORDER', 'On Order');
 };

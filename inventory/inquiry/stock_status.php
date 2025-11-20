@@ -13,6 +13,7 @@ $page_security = 'SA_ITEMSTRANSVIEW';
 if (!isset($path_to_root)) $path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 require_once($path_to_root . "/includes/InventoryService.php");
+include_once($path_to_root . "/includes/ui_strings.php");
 
 $js = "";
 if ($SysPrefs->use_popup_windows && $SysPrefs->use_popup_search)
@@ -34,7 +35,7 @@ if (list_updated('stock_id'))
 	$Ajax->activate('status_tbl');
 //----------------------------------------------------------------------------------------------------
 
-check_db_has_stock_items(_("There are no items defined in the system."));
+check_db_has_stock_items(_(UI_TEXT_THERE_ARE_NO_ITEMS_DEFINED_IN_THE_SYSTEM));
 
 start_form();
 
@@ -43,7 +44,7 @@ if (!isset($_POST['stock_id']))
 
 if (!$page_nested)
 {
-	echo "<center> " . _("Item:"). " ";
+	echo "<center> " . _(UI_TEXT_ITEM_COLON). " ";
 	echo stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
 }
 echo "<br>";
@@ -58,7 +59,7 @@ $kitset_or_service = false;
 div_start('status_tbl');
 if (InventoryService::isService($mb_flag))
 {
-	display_note(_("This is a service and cannot have a stock holding, only the total quantity on outstanding sales orders is shown."), 0, 1);
+	display_note(_(UI_TEXT_THIS_IS_A_SERVICE_AND_CANNOT_HAVE_A_STOCK_HOLDING_ONLY_THE_TOTAL_QUANTITY_ON_OUTSTANDING_SALES_ORDERS_IS_SHOWN), 0, 1);
 	$kitset_or_service = true;
 }
 
@@ -68,12 +69,12 @@ start_table(TABLESTYLE);
 
 if ($kitset_or_service == true)
 {
-	$th = array(_("Location"), _("Demand"));
+	$th = array(_(UI_TEXT_LOCATION), _(UI_TEXT_DEMAND));
 }
 else
 {
-	$th = array(_("Location"), _("Quantity On Hand"), _("Re-Order Level"),
-		_("Demand"), _("Available"), _("On Order"));
+	$th = array(_(UI_TEXT_LOCATION), _(UI_TEXT_QUANTITY_ON_HAND), _(UI_TEXT_RE_ORDER_LEVEL),
+		_(UI_TEXT_DEMAND), _(UI_TEXT_AVAILABLE), _(UI_TEXT_ON_ORDER));
 }
 table_header($th);
 $dec = get_qty_dec($_POST['stock_id']);
