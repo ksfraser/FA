@@ -16,6 +16,7 @@ include($path_to_root . "/includes/session.inc");
 
 include($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 
 $js = "";
 if ($SysPrefs->use_popup_windows)
@@ -59,23 +60,23 @@ start_form();
 
 start_table(TABLESTYLE_NOBORDER);
 start_row();
-ref_cells(_("#:"), 'order_number', '',null, '', true);
+ref_cells(_(UI_TEXT_NUMBER), 'order_number', '',null, '', true);
 
-date_cells(_("from:"), 'OrdersAfterDate', '', null, -user_transaction_days());
-date_cells(_("to:"), 'OrdersToDate');
+date_cells(_(UI_TEXT_FROM_LABEL), 'OrdersAfterDate', '', null, -user_transaction_days());
+date_cells(_(UI_TEXT_TO_LABEL), 'OrdersToDate');
 
-locations_list_cells(_("Location:"), 'StockLocation', null, true);
+locations_list_cells(_(UI_TEXT_LOCATION), 'StockLocation', null, true);
 end_row();
 end_table();
 
 start_table(TABLESTYLE_NOBORDER);
 start_row();
 
-stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true);
+stock_items_list_cells(_(UI_TEXT_ITEM_LABEL), 'SelectStockFromList', null, true);
 
-supplier_list_cells(_("Select a supplier: "), 'supplier_id', null, true, true);
+supplier_list_cells(_(UI_TEXT_SELECT_A_SUPPLIER_LABEL), 'supplier_id', null, true, true);
 
-submit_cells('SearchOrders', _("Search"),'',_('Select documents'), 'default');
+submit_cells('SearchOrders', _(UI_TEXT_SEARCH),'',_(UI_TEXT_SELECT_DOCUMENTS), 'default');
 end_row();
 end_table(1);
 //---------------------------------------------------------------------------------------------
@@ -91,12 +92,12 @@ function edit_link($row)
 
 function prt_link($row)
 {
-	return print_document_link($row['order_no'], _("Print"), true, ST_PURCHORDER, ICON_PRINT);
+	return print_document_link($row['order_no'], _(UI_TEXT_PRINT), true, ST_PURCHORDER, ICON_PRINT);
 }
 
 function receive_link($row) 
 {
-  return pager_link( _("Receive"),
+  return pager_link( _(UI_TEXT_RECEIVE),
 	"/purchasing/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
 }
 
@@ -114,25 +115,25 @@ $sql = get_sql_for_po_search(RequestService::getPostStatic('OrdersAfterDate'), R
 
 /*show a table of the orders returned by the sql */
 $cols = array(
-		_("#") => array('fun'=>'trans_view', 'ord'=>''), 
-		_("Reference"), 
-		_("Supplier") => array('ord'=>''),
-		_("Location"),
-		_("Supplier's Reference"), 
-		_("Order Date") => array('name'=>'ord_date', 'type'=>'date', 'ord'=>'desc'),
-		_("Currency") => array('align'=>'center'), 
-		_("Order Total") => 'amount',
+		_(UI_TEXT_NUMBER) => array('fun'=>'trans_view', 'ord'=>''), 
+		_(UI_TEXT_REFERENCE), 
+		_(UI_TEXT_SUPPLIER) => array('ord'=>''),
+		_(UI_TEXT_LOCATION),
+		_(UI_TEXT_SUPPLIERS_REFERENCE), 
+		_(UI_TEXT_ORDER_DATE) => array('name'=>'ord_date', 'type'=>'date', 'ord'=>'desc'),
+		_(UI_TEXT_CURRENCY) => array('align'=>'center'), 
+		_(UI_TEXT_ORDER_TOTAL) => 'amount',
 		array('insert'=>true, 'fun'=>'edit_link'),
 		array('insert'=>true, 'fun'=>'receive_link'),
 		array('insert'=>true, 'fun'=>'prt_link')
 );
 
 if (RequestService::getPostStatic('StockLocation') != ALL_TEXT) {
-	$cols[_("Location")] = 'skip';
+	$cols[_(UI_TEXT_LOCATION)] = 'skip';
 }
 
 $table =& new_db_pager('orders_tbl', $sql, $cols);
-$table->set_marker('check_overdue', _("Marked orders have overdue items."));
+$table->set_marker('check_overdue', _(UI_TEXT_MARKED_ORDERS_HAVE_OVERDUE_ITEMS));
 
 $table->width = "80%";
 

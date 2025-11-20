@@ -16,6 +16,7 @@ include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 
 $js = "";
 if ($SysPrefs->use_popup_windows)
@@ -41,14 +42,14 @@ function display_supplier_summary($supplier_record)
 {
 	$past1 = get_company_pref('past_due_days');
 	$past2 = 2 * $past1;
-	$nowdue = "1-" . $past1 . " " . _('Days');
-	$pastdue1 = $past1 + 1 . "-" . $past2 . " " . _('Days');
-	$pastdue2 = _('Over') . " " . $past2 . " " . _('Days');
+	$nowdue = "1-" . $past1 . " " . _(UI_TEXT_DAYS);
+	$pastdue1 = $past1 + 1 . "-" . $past2 . " " . _(UI_TEXT_DAYS);
+	$pastdue2 = _(UI_TEXT_OVER) . " " . $past2 . " " . _(UI_TEXT_DAYS);
 	
 
     start_table(TABLESTYLE, "width='80%'");
-    $th = array(_("Currency"), _("Terms"), _("Current"), $nowdue,
-    	$pastdue1, $pastdue2, _("Total Balance"));
+    $th = array(_(UI_TEXT_CURRENCY), _(UI_TEXT_TERMS), _(UI_TEXT_CURRENT), $nowdue,
+    	$pastdue1, $pastdue2, _(UI_TEXT_TOTAL_BALANCE));
 
 	table_header($th);
 	if ($supplier_record != false)
