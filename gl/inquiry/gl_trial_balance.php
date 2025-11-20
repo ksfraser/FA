@@ -15,6 +15,7 @@ $path_to_root="../..";
 include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/admin/db/fiscalyears_db.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
@@ -26,7 +27,7 @@ $js = "";
 if (user_use_date_picker())
 	$js = get_js_date_picker();
 
-page(_($help_context = "Trial Balance"), false, false, "", $js);
+page(_($help_context = UI_TEXT_TRIAL_BALANCE_TITLE), false, false, "", $js);
 
 $k = 0;
 $pdeb = $pcre = $cdeb = $ccre = $tdeb = $tcre = $pbal = $cbal = $tbal = 0;
@@ -53,16 +54,16 @@ function gl_inquiry_controls()
 	if (!isset($_POST['TransFromDate']))
 		$_POST['TransFromDate'] = DateService::addDaysStatic(DateService::endMonthStatic($date), -user_transaction_days());
 	start_row();	
-    date_cells(_("From:"), 'TransFromDate');
-	date_cells(_("To:"), 'TransToDate');
+    date_cells(_(UI_TEXT_FROM_LABEL), 'TransFromDate');
+	date_cells(_(UI_TEXT_TO_LABEL), 'TransToDate');
 	if ($dim >= 1)
-		dimensions_list_cells(_("Dimension")." 1:", 'Dimension', null, true, " ", false, 1);
+		dimensions_list_cells(_(UI_TEXT_DIMENSION_LABEL)." 1:", 'Dimension', null, true, " ", false, 1);
 	if ($dim > 1)
-		dimensions_list_cells(_("Dimension")." 2:", 'Dimension2', null, true, " ", false, 2);
-	check_cells(_("No zero values"), 'NoZero', null);
-	check_cells(_("Only balances"), 'Balance', null);
-	check_cells(_("Group totals only"), 'GroupTotalOnly', null);
-	submit_cells('Show',_("Show"),'','', 'default');
+		dimensions_list_cells(_(UI_TEXT_DIMENSION_LABEL)." 2:", 'Dimension2', null, true, " ", false, 2);
+	check_cells(_(UI_TEXT_NO_ZERO_VALUES), 'NoZero', null);
+	check_cells(_(UI_TEXT_ONLY_BALANCES), 'Balance', null);
+	check_cells(_(UI_TEXT_GROUP_TOTALS_ONLY), 'GroupTotalOnly', null);
+	submit_cells(_(UI_TEXT_SHOW_BUTTON),_(UI_TEXT_SHOW_BUTTON),'','', 'default');
 	end_row();
     end_table();
     end_form();
@@ -105,7 +106,7 @@ function display_trial_balance($type, $typename)
 			if (!RequestService::checkValueStatic('GroupTotalOnly'))
 			{
 				start_row("class='inquirybg' style='font-weight:bold'");
-				label_cell(_("Group")." - ".$type ." - ".$typename, "colspan=8");
+				label_cell(_(UI_TEXT_GROUP_LABEL)." - ".$type ." - ".$typename, "colspan=8");
 				end_row();
 			}
 			$printtitle = 1;
@@ -175,7 +176,7 @@ function display_trial_balance($type, $typename)
 		if (!$printtitle)
 		{
 			start_row("class='inquirybg' style='font-weight:bold'");
-			label_cell(_("Group")." - ".$type ." - ".$typename, "colspan=8");
+			label_cell(_(UI_TEXT_GROUP_LABEL)." - ".$type ." - ".$typename, "colspan=8");
 			end_row();
 			$printtitle = 1;
 
@@ -185,7 +186,7 @@ function display_trial_balance($type, $typename)
 
 	start_row("class='inquirybg' style='font-weight:bold'");
 	if (!RequestService::checkValueStatic('GroupTotalOnly'))
-		label_cell(_("Total") ." - ".$typename, "colspan=2");
+		label_cell(_(UI_TEXT_TOTAL_LABEL) ." - ".$typename, "colspan=2");
 	else
 		label_cell(" - ".$typename, "colspan=2");
 
@@ -217,7 +218,7 @@ if (isset($_POST['TransFromDate']))
 	$row = DateService::getCurrentFiscalYearStatic();
 	if (DateService::date1GreaterDate2Static($_POST['TransFromDate'], DateService::sql2dateStatic($row['end'])))
 	{
-		UiMessageService::displayError(_("The from date cannot be bigger than the fiscal year end."));
+		UiMessageService::displayError(_(UI_TEXT_FROM_DATE_ERROR));
 		set_focus('TransFromDate');
 		return;
 	}
@@ -229,18 +230,18 @@ if (!isset($_POST['Dimension2']))
 	$_POST['Dimension2'] = 0;
 start_table(TABLESTYLE);
 $tableheader =  "<tr>
-	<td rowspan=2 class='tableheader'>" . _("Account") . "</td>
-	<td rowspan=2 class='tableheader'>" . _("Account Name") . "</td>
-	<td colspan=2 class='tableheader'>" . _("Brought Forward") . "</td>
-	<td colspan=2 class='tableheader'>" . _("This Period") . "</td>
-	<td colspan=2 class='tableheader'>" . _("Balance") . "</td>
+	<td rowspan=2 class='tableheader'>" . _(UI_TEXT_ACCOUNT_LABEL) . "</td>
+	<td rowspan=2 class='tableheader'>" . _(UI_TEXT_ACCOUNT_NAME_LABEL) . "</td>
+	<td colspan=2 class='tableheader'>" . _(UI_TEXT_BROUGHT_FORWARD_LABEL) . "</td>
+	<td colspan=2 class='tableheader'>" . _(UI_TEXT_THIS_PERIOD_LABEL) . "</td>
+	<td colspan=2 class='tableheader'>" . _(UI_TEXT_BALANCE_LABEL) . "</td>
 	</tr><tr>
-	<td class='tableheader'>" . _("Debit") . "</td>
-	<td class='tableheader'>" . _("Credit") . "</td>
-	<td class='tableheader'>" . _("Debit") . "</td>
-	<td class='tableheader'>" . _("Credit") . "</td>
-	<td class='tableheader'>" . _("Debit") . "</td>
-	<td class='tableheader'>" . _("Credit") . "</td>
+	<td class='tableheader'>" . _(UI_TEXT_DEBIT_LABEL) . "</td>
+	<td class='tableheader'>" . _(UI_TEXT_CREDIT_LABEL) . "</td>
+	<td class='tableheader'>" . _(UI_TEXT_DEBIT_LABEL) . "</td>
+	<td class='tableheader'>" . _(UI_TEXT_CREDIT_LABEL) . "</td>
+	<td class='tableheader'>" . _(UI_TEXT_DEBIT_LABEL) . "</td>
+	<td class='tableheader'>" . _(UI_TEXT_CREDIT_LABEL) . "</td>
 	</tr>";
 
 echo $tableheader;
@@ -251,7 +252,7 @@ $classresult = get_account_classes(false);
 while ($class = db_fetch($classresult))
 {
 	start_row("class='inquirybg' style='font-weight:bold'");
-	label_cell(_("Class")." - ".$class['cid'] ." - ".$class['class_name'], "colspan=8");
+	label_cell(_(UI_TEXT_CLASS_LABEL)." - ".$class['cid'] ." - ".$class['class_name'], "colspan=8");
 	end_row();
 
 	//Get Account groups/types under this group/type with no parents
@@ -265,7 +266,7 @@ while ($class = db_fetch($classresult))
 if (!RequestService::checkValueStatic('Balance'))
 {
 	start_row("class='inquirybg' style='font-weight:bold'");
-	label_cell(_("Total") ." - ".$_POST['TransToDate'], "colspan=2");
+	label_cell(_(UI_TEXT_TOTAL_LABEL) ." - ".$_POST['TransToDate'], "colspan=2");
 	amount_cell($pdeb);
 	amount_cell($pcre);
 	amount_cell($cdeb);
@@ -275,7 +276,7 @@ if (!RequestService::checkValueStatic('Balance'))
 	end_row();
 }
 start_row("class='inquirybg' style='font-weight:bold'");
-label_cell(_("Ending Balance") ." - ".$_POST['TransToDate'], "colspan=2");
+label_cell(_(UI_TEXT_ENDING_BALANCE_LABEL) ." - ".$_POST['TransToDate'], "colspan=2");
 display_debit_or_credit_cells($pbal);
 display_debit_or_credit_cells($cbal);
 display_debit_or_credit_cells($tbal);
@@ -283,7 +284,7 @@ end_row();
 
 end_table(1);
 if (($pbal = round2($pbal, \FA\UserPrefsCache::getPriceDecimals())) != 0 && $_POST['Dimension'] == 0 && $_POST['Dimension2'] == 0)
-	\FA\Services\UiMessageService::displayWarning(_("The Opening Balance is not in balance, probably due to a non closed Previous Fiscalyear."));
+	\FA\Services\UiMessageService::displayWarning(_(UI_TEXT_OPENING_BALANCE_WARNING));
 div_end();
 
 //----------------------------------------------------------------------------------------------------
