@@ -13,7 +13,7 @@ $page_security = 'SA_SALESMAN';
 $path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
 
-page(_($help_context = "Sales Persons"));
+page(_($help_context = UI_TEXT_SALES_PERSONS));
 
 include($path_to_root . "/includes/ui.inc");
 include($path_to_root . "/includes/ui_strings.php");
@@ -60,9 +60,9 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     	}
 
     	if ($selected_id != -1) 
-			\FA\Services\UiMessageService::displayNotification(_('Selected sales person data have been updated'));
+			\FA\Services\UiMessageService::displayNotification(_(UI_TEXT_SELECTED_SALES_PERSON_DATA_HAVE_BEEN_UPDATED));
 		else
-			\FA\Services\UiMessageService::displayNotification(_('New sales person data have been added'));
+			\FA\Services\UiMessageService::displayNotification(_(UI_TEXT_NEW_SALES_PERSON_DATA_HAVE_BEEN_ADDED));
 		$Mode = 'RESET';
 	}
 }
@@ -79,7 +79,7 @@ if ($Mode == 'Delete')
 	else
 	{
 		delete_salesman($selected_id);
-		\FA\Services\UiMessageService::displayNotification(_('Selected sales person data have been deleted'));
+		\FA\Services\UiMessageService::displayNotification(_(UI_TEXT_SELECTED_SALES_PERSON_DATA_HAVE_BEEN_DELETED));
 	}
 	$Mode = 'RESET';
 }

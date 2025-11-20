@@ -1736,4 +1736,8 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_SELECTED_SALES_GROUP_HAS_BEEN_UPDATED', 'Selected sales group has been updated');
     define('UI_TEXT_NEW_SALES_GROUP_HAS_BEEN_ADDED', 'New sales group has been added');
     define('UI_TEXT_SELECTED_SALES_GROUP_HAS_BEEN_DELETED', 'Selected sales group has been deleted');
+    define('UI_TEXT_SALES_PERSONS', 'Sales Persons');
+    define('UI_TEXT_SELECTED_SALES_PERSON_DATA_HAVE_BEEN_UPDATED', 'Selected sales person data have been updated');
+    define('UI_TEXT_NEW_SALES_PERSON_DATA_HAVE_BEEN_ADDED', 'New sales person data have been added');
+    define('UI_TEXT_SELECTED_SALES_PERSON_DATA_HAVE_BEEN_DELETED', 'Selected sales person data have been deleted');
 };
