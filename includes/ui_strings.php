@@ -1768,4 +1768,17 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_SALES_TYPE_NAME', 'Sales Type Name');
     define('UI_TEXT_CALCULATION_FACTOR', 'Calculation factor');
     define('UI_TEXT_TAX_INCLUDED', 'Tax included');
+    define('UI_TEXT_REVENUE_COST_ACCRUALS', 'Revenue / Cost Accruals');
+    define('UI_TEXT_THE_AMOUNT_CAN_NOT_BE_0', 'The amount can not be 0.');
+    define('UI_TEXT_THE_PERIODS_MUST_BE_GREATER_THAN_0', 'The periods must be greater than 0.');
+    define('UI_TEXT_SOME_OF_THE_PERIOD_DATES_ARE_OUTSIDE_THE_FISCAL_YEAR_OR_ARE_CLOSED_FOR_FURTHER_DATA_ENTRY_CREATE_A_NEW_FISCAL_YEAR_FIRST', 'Some of the period dates are outside the fiscal year or are closed for further data entry. Create a new fiscal year first!');
+    define('UI_TEXT_ACCRUALS_FOR', 'Accruals for %s');
+    define('UI_TEXT_REVENUE_COST_ACCRUALS_HAVE_BEEN_PROCESSED', 'Revenue / Cost Accruals have been processed.');
+    define('UI_TEXT_SHOWING_GL_TRANSACTIONS', 'Showing GL Transactions.');
+    define('UI_TEXT_WEEKLY', 'Weekly');
+    define('UI_TEXT_BI_WEEKLY', 'Bi-weekly');
+    define('UI_TEXT_MONTHLY', 'Monthly');
+    define('UI_TEXT_QUARTERLY', 'Quarterly');
+    define('UI_TEXT_ACCRUED_BALANCE_ACCOUNT', 'Accrued Balance Account');
+    define('UI_TEXT_REVENUE_COST_ACCOUNT', 'Revenue / Cost Account');
 };

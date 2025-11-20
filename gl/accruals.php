@@ -31,8 +31,9 @@ if (user_use_date_picker())
 
 // Begin the UI
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 
-$_SESSION['page_title'] = _($help_context = "Revenue / Cost Accruals");
+$_SESSION['page_title'] = _($help_context = UI_TEXT_REVENUE_COST_ACCRUALS);
 page($_SESSION['page_title'], false, false,'', $js);
 
 //--------------------------------------------------------------------------------------------------
@@ -57,13 +58,13 @@ if (isset($_POST['go']) || isset($_POST['show']))
 	}
 	elseif (RequestService::inputNumStatic('amount', 0) == 0.0)
 	{
-		UiMessageService::displayError(_("The amount can not be 0."));
+		UiMessageService::displayError(_(UI_TEXT_THE_AMOUNT_CAN_NOT_BE_0));
 		set_focus('amount');
 		$input_error = 1;
 	}
 	elseif (RequestService::inputNumStatic('periods', 0) < 1)
 	{
-		UiMessageService::displayError(_("The periods must be greater than 0."));
+		UiMessageService::displayError(_(UI_TEXT_THE_PERIODS_MUST_BE_GREATER_THAN_0));
 		set_focus('periods');
 		$input_error = 1;
 	}
@@ -84,7 +85,7 @@ if (isset($_POST['go']) || isset($_POST['show']))
 			DateService::endMonthStatic(DateService::addMonthsStatic($date_, 3*$per)))));
 		if (!is_date_in_fiscalyears($lastdate, false))
 		{
-			UiMessageService::displayError(_("Some of the period dates are outside the fiscal year or are closed for further data entry. Create a new fiscal year first!"));
+			UiMessageService::displayError(_(UI_TEXT_SOME_OF_THE_PERIOD_DATES_ARE_OUTSIDE_THE_FISCAL_YEAR_OR_ARE_CLOSED_FOR_FURTHER_DATA_ENTRY_CREATE_A_NEW_FISCAL_YEAR_FIRST));
 			set_focus('date_');
 			$input_error = 1;
 		}
@@ -99,7 +100,7 @@ if (isset($_POST['go']) || isset($_POST['show']))
 			if (RequestService::getPostStatic('memo_') != "")
 				$memo = $_POST['memo_'];
 			else
-				$memo = sprintf(_("Accruals for %s"), $amount);
+				$memo = sprintf(_(UI_TEXT_ACCRUALS_FOR), $amount);
 			if (isset($_POST['go']))
 				begin_transaction();
 			else
@@ -107,15 +108,15 @@ if (isset($_POST['go']) || isset($_POST['show']))
 				start_table(TABLESTYLE);
 				$dim = \FA\Services\CompanyPrefsService::getUseDimensions();
 
-				$first_cols = array(_("Date"), _("Account"));
+				$first_cols = array(_(UI_TEXT_DATE), _(UI_TEXT_ACCOUNT_COLUMN));
 				if ($dim == 2)
-					$dim_cols = array(_("Dimension"). " 1", _("Dimension"). " 2");
+					$dim_cols = array(_(UI_TEXT_DIMENSION). " 1", _(UI_TEXT_DIMENSION). " 2");
 				elseif ($dim == 1)
-					$dim_cols = array(_("Dimension"));
+					$dim_cols = array(_(UI_TEXT_DIMENSION));
 				else
 					$dim_cols = array();
 
-				$remaining_cols = array(_("Debit"), _("Credit"), _("Memo"));
+				$remaining_cols = array(_(UI_TEXT_DEBIT), _(UI_TEXT_CREDIT), _(UI_TEXT_MEMO));
 
 				$th = array_merge($first_cols, $dim_cols, $remaining_cols);
 				table_header($th);
@@ -181,13 +182,13 @@ if (isset($_POST['go']) || isset($_POST['show']))
 			if (isset($_POST['go']))
 			{
 				commit_transaction();
-				display_notification_centered(_("Revenue / Cost Accruals have been processed."));
+				display_notification_centered(_(UI_TEXT_REVENUE_COST_ACCRUALS_HAVE_BEEN_PROCESSED));
 				$_POST['date_'] = $_POST['amount'] = $_POST['periods'] = "";
 			}
 			else
 			{
 				end_table(1);
-				display_notification_centered(_("Showing GL Transactions."));
+				display_notification_centered(_(UI_TEXT_SHOWING_GL_TRANSACTIONS));
 			}
 		}
 	}
@@ -199,10 +200,10 @@ function frequency_list_row($label, $name, $selected=null)
 	label_cell($label, "class='label'");
 	echo "<td>\n";
 	$freq = array(
-		'1'=> _("Weekly"),
-		'2'=> _("Bi-weekly"),
-		'3' => _("Monthly"),
-		'4' => _("Quarterly"),
+		'1'=> _(UI_TEXT_WEEKLY),
+		'2'=> _(UI_TEXT_BI_WEEKLY),
+		'3' => _(UI_TEXT_MONTHLY),
+		'4' => _(UI_TEXT_QUARTERLY),
 	);
 	echo array_selector($name, $selected, $freq);
 	echo "</td>\n";
@@ -216,12 +217,10 @@ start_table(TABLESTYLE2);
 
 date_row(_("Date"), 'date_', _('First date of Accruals'), true, 0, 0, 0, null, true);
 start_row();
-label_cell(_("Accrued Balance Account"), "class='label'");
+	label_cell(_(UI_TEXT_ACCRUED_BALANCE_ACCOUNT), "class='label'");
 gl_all_accounts_list_cells(null, 'acc_act', null, true, false, false, true);
 end_row();
-gl_all_accounts_list_row(_("Revenue / Cost Account"), 'res_act', null, true);
-
-if ($dim >= 1)
+	gl_all_accounts_list_row(_(UI_TEXT_REVENUE_COST_ACCOUNT), 'res_act', null, true);if ($dim >= 1)
 	dimensions_list_row(_("Dimension"), 'dimension_id', null, true, " ", false, 1);
 if ($dim > 1)
 	dimensions_list_row(_("Dimension")." 2", 'dimension2_id', null, true, " ", false, 2);
