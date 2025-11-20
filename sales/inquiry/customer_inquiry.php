@@ -24,7 +24,7 @@ if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 if (user_use_date_picker())
 	$js .= get_js_date_picker();
-page(_($help_context = "Customer Transactions"), isset($_GET['customer_id']), false, "", $js);
+page(_($help_context = UI_TEXT_CUSTOMER_TRANSACTIONS), isset($_GET['customer_id']), false, "", $js);
 
 //------------------------------------------------------------------------------------------------
 
@@ -73,7 +73,7 @@ function credit_link($row)
 	if ($row["Outstanding"] > 0)
 	{
 		if ($row['type'] == ST_CUSTDELIVERY)
-			return pager_link(_('Invoice'), "/sales/customer_invoice.php?DeliveryNumber=" 
+			return pager_link(_(UI_TEXT_INVOICE), "/sales/customer_invoice.php?DeliveryNumber=" 
 				.$row['trans_no'], ICON_DOC);
 		else if ($row['type'] == ST_SALESINVOICE)
 			return pager_link(_(UI_TEXT_CREDIT_THIS) ,
@@ -132,9 +132,9 @@ function display_customer_summary($customer_record)
     	echo "<center><font color=red size=4><b>" . _(UI_TEXT_CUSTOMER_ACCOUNT_IS_ON_HOLD) . "</font></b></center>";
     }
 
-	$nowdue = "1-" . $past1 . " " . _('Days');
-	$pastdue1 = $past1 + 1 . "-" . $past2 . " " . _('Days');
-	$pastdue2 = _('Over') . " " . $past2 . " " . _('Days');
+	$nowdue = "1-" . $past1 . " " . _(UI_TEXT_DAYS);
+	$pastdue1 = $past1 + 1 . "-" . $past2 . " " . _(UI_TEXT_DAYS);
+	$pastdue2 = _(UI_TEXT_OVER) . " " . $past2 . " " . _(UI_TEXT_DAYS);
 
     start_table(TABLESTYLE, "width='80%'");
     $th = array(_(UI_TEXT_CURRENCY), _(UI_TEXT_TERMS), _(UI_TEXT_CURRENT), $nowdue,

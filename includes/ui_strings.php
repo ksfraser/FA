@@ -1710,4 +1710,7 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
 		    select at least one delivery. All items must be dispatched to
 		    the same customer branch.');
     define('UI_TEXT_INVOICE', 'Invoice');
+    define('UI_TEXT_CUSTOMER_TRANSACTIONS', 'Customer Transactions');
+    define('UI_TEXT_DAYS', 'Days');
+    define('UI_TEXT_OVER', 'Over');
 };
