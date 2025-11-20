@@ -1571,4 +1571,18 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_EAN_UPC_CODE', 'EAN/UPC Code');
     define('UI_TEXT_UPC_EAN_CODE_LABEL', 'UPC/EAN code:');
     define('UI_TEXT_QUANTITY_LABEL', 'Quantity:');
+    define('UI_TEXT_THE_UNIT_OF_MEASURE_CODE_CANNOT_BE_EMPTY', 'The unit of measure code cannot be empty.');
+    define('UI_TEXT_THE_UNIT_OF_MEASURE_CODE_IS_TOO_LONG', 'The unit of measure code is too long.');
+    define('UI_TEXT_THE_UNIT_OF_MEASURE_DESCRIPTION_CANNOT_BE_EMPTY', 'The unit of measure description cannot be empty.');
+    define('UI_TEXT_CANNOT_DELETE_THIS_UNIT_OF_MEASURE_BECAUSE_ITEMS_HAVE_BEEN_CREATED_USING_THIS_UNIT', 'Cannot delete this unit of measure because items have been created using this unit.');
+    define('UI_TEXT_USER_QUANTITY_DECIMALS', 'User Quantity Decimals');
+    define('UI_TEXT_UNIT_ABBREVIATION_LABEL', 'Unit Abbreviation:');
+    define('UI_TEXT_DESCRIPTIVE_NAME_LABEL', 'Descriptive Name:');
+    define('UI_TEXT_DECIMAL_PLACES_LABEL', 'Decimal Places:');
+    define('UI_TEXT_SELECTED_UNIT_HAS_BEEN_DELETED', 'Selected unit has been deleted');
+    define('UI_TEXT_SELECTED_UNIT_HAS_BEEN_UPDATED', 'Selected unit has been updated');
+    define('UI_TEXT_NEW_UNIT_HAS_BEEN_ADDED', 'New unit has been added');
+    define('UI_TEXT_UNIT_LABEL', 'Unit');
+    define('UI_TEXT_DESCRIPTION_LABEL', 'Description');
+    define('UI_TEXT_DECIMALS_LABEL', 'Decimals');
 };

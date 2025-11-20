@@ -16,6 +16,7 @@ include($path_to_root . "/includes/session.inc");
 page(_($help_context = "Units of Measure"));
 
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 
 include_once($path_to_root . "/inventory/includes/db/items_units_db.inc");
 
@@ -31,28 +32,28 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if (strlen($_POST['abbr']) == 0)
 	{
 		$input_error = 1;
-		UiMessageService::displayError(_("The unit of measure code cannot be empty."));
+		UiMessageService::displayError(_(UI_TEXT_THE_UNIT_OF_MEASURE_CODE_CANNOT_BE_EMPTY));
 		set_focus('abbr');
 	}
 	if (strlen(db_escape($_POST['abbr']))>(20+2))
 	{
 		$input_error = 1;
-		UiMessageService::displayError(_("The unit of measure code is too long."));
+		UiMessageService::displayError(_(UI_TEXT_THE_UNIT_OF_MEASURE_CODE_IS_TOO_LONG));
 		set_focus('abbr');
 	}
 	if (strlen($_POST['description']) == 0)
 	{
 		$input_error = 1;
-		UiMessageService::displayError(_("The unit of measure description cannot be empty."));
+		UiMessageService::displayError(_(UI_TEXT_THE_UNIT_OF_MEASURE_DESCRIPTION_CANNOT_BE_EMPTY));
 		set_focus('description');
 	}
 
 	if ($input_error !=1) {
     	write_item_unit($selected_id, $_POST['abbr'], $_POST['description'], $_POST['decimals'] );
 		if($selected_id != '')
-			display_notification(_('Selected unit has been updated'));
+			display_notification(_(UI_TEXT_SELECTED_UNIT_HAS_BEEN_UPDATED));
 		else
-			display_notification(_('New unit has been added'));
+			display_notification(_(UI_TEXT_NEW_UNIT_HAS_BEEN_ADDED));
 		$Mode = 'RESET';
 	}
 }
@@ -66,13 +67,13 @@ if ($Mode == 'Delete')
 
 	if (item_unit_used($selected_id))
 	{
-		UiMessageService::displayError(_("Cannot delete this unit of measure because items have been created using this unit."));
+		UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_THIS_UNIT_OF_MEASURE_BECAUSE_ITEMS_HAVE_BEEN_CREATED_USING_THIS_UNIT));
 
 	}
 	else
 	{
 		delete_item_unit($selected_id);
-		display_notification(_('Selected unit has been deleted'));
+		display_notification(_(UI_TEXT_SELECTED_UNIT_HAS_BEEN_DELETED));
 	}
 	$Mode = 'RESET';
 }
@@ -91,7 +92,7 @@ $result = get_all_item_units(RequestService::checkValueStatic('show_inactive'));
 
 start_form();
 start_table(TABLESTYLE, "width='40%'");
-$th = array(_('Unit'), _('Description'), _('Decimals'), "", "");
+$th = array(_(UI_TEXT_UNIT_LABEL), _(UI_TEXT_DESCRIPTION_LABEL), _(UI_TEXT_DECIMALS_LABEL), "", "");
 inactive_control_column($th);
 
 table_header($th);
@@ -104,11 +105,11 @@ while ($myrow = db_fetch($result))
 
 	label_cell($myrow["abbr"]);
 	label_cell($myrow["name"]);
-	label_cell(($myrow["decimals"]==-1?_("User Quantity Decimals"):$myrow["decimals"]));
+	label_cell(($myrow["decimals"]==-1?_(UI_TEXT_USER_QUANTITY_DECIMALS):$myrow["decimals"]));
 	$id = html_specials_encode($myrow["abbr"]);
 	inactive_control_cell($id, $myrow["inactive"], 'item_units', 'abbr');
- 	edit_button_cell("Edit".$id, _("Edit"));
- 	delete_button_cell("Delete".$id, _("Delete"));
+ 	edit_button_cell("Edit".$id, _(UI_TEXT_EDIT));
+ 	delete_button_cell("Delete".$id, _(UI_TEXT_DELETE));
 	end_row();
 }
 
@@ -133,13 +134,13 @@ if ($selected_id != '')
 	hidden('selected_id', $myrow["abbr"]);
 }
 if ($selected_id != '' && item_unit_used($selected_id)) {
-    label_row(_("Unit Abbreviation:"), $_POST['abbr']);
+    label_row(_(UI_TEXT_UNIT_ABBREVIATION_LABEL), $_POST['abbr']);
     hidden('abbr', $_POST['abbr']);
 } else
-    text_row(_("Unit Abbreviation:"), 'abbr', null, 20, 20);
-text_row(_("Descriptive Name:"), 'description', null, 40, 40);
+    text_row(_(UI_TEXT_UNIT_ABBREVIATION_LABEL), 'abbr', null, 20, 20);
+text_row(_(UI_TEXT_DESCRIPTIVE_NAME_LABEL), 'description', null, 40, 40);
 
-number_list_row(_("Decimal Places:"), 'decimals', null, 0, 6, _("User Quantity Decimals"));
+number_list_row(_(UI_TEXT_DECIMAL_PLACES_LABEL), 'decimals', null, 0, 6, _(UI_TEXT_USER_QUANTITY_DECIMALS));
 
 end_table(1);
 
