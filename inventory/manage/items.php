@@ -14,6 +14,7 @@ if (!isset($path_to_root)) $path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 require_once($path_to_root . "/includes/InventoryService.php");
 require_once($path_to_root . "/includes/CompanyPrefsService.php");
+include_once($path_to_root . "/includes/ui_strings.php");
 include($path_to_root . "/reporting/includes/tcpdf.php");
 
 $js = "";
@@ -74,7 +75,7 @@ function show_image($stock_id)
 	global $SysPrefs;
 
 	$check_remove_image = false;
-	$stock_img_link = _("No image");
+	$stock_img_link = _(UI_TEXT_NO_IMAGE);
 
 	if (@$stock_id)
 		foreach (array('jpg', 'png', 'gif') as $ext)
@@ -91,7 +92,7 @@ function show_image($stock_id)
 
 	label_row("&nbsp;", $stock_img_link);
 	if ($check_remove_image)
-		check_row(_("Delete Image:"), 'del_image');
+		check_row(_(UI_TEXT_DELETE_IMAGE_LABEL), 'del_image');
 }
 
 if (isset($_GET['stock_id']))
@@ -183,12 +184,12 @@ if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
 }
 
 if (RequestService::getPostStatic('fixed_asset')) {
-	check_db_has_fixed_asset_categories(_("There are no fixed asset categories defined in the system. At least one fixed asset category is required to add a fixed asset."));
-	check_db_has_fixed_asset_classes(_("There are no fixed asset classes defined in the system. At least one fixed asset class is required to add a fixed asset."));
+	check_db_has_fixed_asset_categories(_(UI_TEXT_THERE_ARE_NO_FIXED_ASSET_CATEGORIES_DEFINED_IN_THE_SYSTEM_AT_LEAST_ONE_FIXED_ASSET_CATEGORY_IS_REQUIRED_TO_ADD_A_FIXED_ASSET));
+	check_db_has_fixed_asset_classes(_(UI_TEXT_THERE_ARE_NO_FIXED_ASSET_CLASSES_DEFINED_IN_THE_SYSTEM_AT_LEAST_ONE_FIXED_ASSET_CLASS_IS_REQUIRED_TO_ADD_A_FIXED_ASSET));
 } else
-	check_db_has_stock_categories(_("There are no item categories defined in the system. At least one item category is required to add a item."));
+	check_db_has_stock_categories(_(UI_TEXT_THERE_ARE_NO_ITEM_CATEGORIES_DEFINED_IN_THE_SYSTEM_AT_LEAST_ONE_ITEM_CATEGORY_IS_REQUIRED_TO_ADD_A_ITEM));
 
-check_db_has_item_tax_types(_("There are no item tax types defined in the system. At least one item tax type is required to add a item."));
+check_db_has_item_tax_types(_(UI_TEXT_THERE_ARE_NO_ITEM_TAX_TYPES_DEFINED_IN_THE_SYSTEM_AT_LEAST_ONE_ITEM_TAX_TYPE_IS_REQUIRED_TO_ADD_A_ITEM));
 
 function clear_data()
 {
@@ -241,7 +242,7 @@ if (isset($_POST['addupdate']))
 	elseif ($new_item && db_num_rows(get_item_kit($_POST['NewStockID'])))
 	{
 		  	$input_error = 1;
-      		UiMessageService::displayError( _("This item code is already assigned to stock item or sale kit."));
+      		UiMessageService::displayError( _(UI_TEXT_THIS_ITEM_CODE_IS_ALREADY_ASSIGNED_TO_STOCK_ITEM_OR_SALE_KIT));
 			set_focus('NewStockID');
 	}
 	
@@ -282,7 +283,7 @@ if (isset($_POST['addupdate']))
 				'item_codes', 'item_code');
 			set_focus('stock_id');
 			$Ajax->activate('stock_id'); // in case of status change
-			display_notification(_("Item has been updated."));
+			display_notification(_(UI_TEXT_ITEM_HAS_BEEN_UPDATED));
 		} 
 		else 
 		{ //it is a NEW part
@@ -297,7 +298,7 @@ if (isset($_POST['addupdate']))
 				RequestService::getPostStatic('depreciation_method'), RequestService::inputNumStatic('depreciation_rate'), RequestService::inputNumStatic('depreciation_factor'), RequestService::getPostStatic('depreciation_start', null),
 				RequestService::getPostStatic('fa_class_id'));
 
-			display_notification(_("A new item has been added."));
+			display_notification(_(UI_TEXT_A_NEW_ITEM_HAS_BEEN_ADDED));
 			$_POST['stock_id'] = $_POST['NewStockID'] = 
 			$_POST['description'] = $_POST['long_description'] = '';
 			$_POST['no_sale'] = $_POST['editable'] = $_POST['no_purchase'] =0;
@@ -339,7 +340,7 @@ if (isset($_POST['delete']) && strlen($_POST['delete']) > 1)
 		$stock_id = $_POST['NewStockID'];
 		delete_item($stock_id);
 		del_image($stock_id);
-		display_notification(_("Selected item has been deleted."));
+		display_notification(_(UI_TEXT_SELECTED_ITEM_HAS_BEEN_DELETED));
 		$_POST['stock_id'] = '';
 		clear_data();
 		set_focus('stock_id');
@@ -356,7 +357,7 @@ function item_settings(&$stock_id, $new_item)
 
 	table_section(1);
 
-	table_section_title(_("General Settings"));
+	table_section_title(_(UI_TEXT_GENERAL_SETTINGS));
 
 	//------------------------------------------------------------------------------------
 	if ($new_item) 
@@ -365,14 +366,14 @@ function item_settings(&$stock_id, $new_item)
 		$post_label = null;
 		if (!empty($SysPrefs->prefs['barcodes_on_stock']))
 		{
-			$post_label = '<button class="ajaxsubmit" type="submit" aspect=\'default\'  name="generateBarcode"  id="generateBarcode" value="Generate Barcode EAN8"> '._("Generate EAN-8 Barcode").' </button>';
+			$post_label = '<button class="ajaxsubmit" type="submit" aspect=\'default\'  name="generateBarcode"  id="generateBarcode" value="Generate Barcode EAN8"> '._(UI_TEXT_GENERATE_EAN_8_BARCODE).' </button>';
 			if (isset($_POST['generateBarcode']))
 			{
 				$tmpCodeID=generateBarcode();
 				$_POST['NewStockID'] = $tmpCodeID;
 			}
 		}	
-		text_row(_("Item Code:"), 'NewStockID', $tmpCodeID, 21, 20, null, "", $post_label);
+		text_row(_(UI_TEXT_ITEM_CODE_LABEL), 'NewStockID', $tmpCodeID, 21, 20, null, "", $post_label);
 		$_POST['inactive'] = 0;
 	} 
 	else 
@@ -382,17 +383,17 @@ function item_settings(&$stock_id, $new_item)
 			$_POST['NewStockID'] = $_POST['stock_id'];
 			set_edit($_POST['stock_id']);
 		}
-		label_row(_("Item Code:"),$_POST['NewStockID']);
+		label_row(_(UI_TEXT_ITEM_CODE_LABEL),$_POST['NewStockID']);
 		hidden('NewStockID', $_POST['NewStockID']);
 		set_focus('description');
 	}
 	$fixed_asset = RequestService::getPostStatic('fixed_asset');
 
-	text_row(_("Name:"), 'description', null, 52, 200);
+	text_row(_(UI_TEXT_NAME_LABEL), 'description', null, 52, 200);
 
 	textarea_row(_('Description:'), 'long_description', null, 42, 3);
 
-	stock_categories_list_row(_("Category:"), 'category_id', null, false, $new_item, $fixed_asset);
+	stock_categories_list_row(_(UI_TEXT_CATEGORY_LABEL), 'category_id', null, false, $new_item, $fixed_asset);
 
 	if ($new_item && (list_updated('category_id') || !isset($_POST['sales_account']))) { // changed category for new item or first page view
 
@@ -417,18 +418,18 @@ function item_settings(&$stock_id, $new_item)
 		|| check_usage($_POST['stock_id'],false);
 
 	// show inactive item tax type in selector only if already set.
-  item_tax_types_list_row(_("Item Tax Type:"), 'tax_type_id', null, !$new_item && item_type_inactive(RequestService::getPostStatic('tax_type_id')));
+  item_tax_types_list_row(_(UI_TEXT_ITEM_TAX_TYPE_LABEL), 'tax_type_id', null, !$new_item && item_type_inactive(RequestService::getPostStatic('tax_type_id')));
 
 	if (!RequestService::getPostStatic('fixed_asset'))
-		stock_item_types_list_row(_("Item Type:"), 'mb_flag', null, $fresh_item);
+		stock_item_types_list_row(_(UI_TEXT_ITEM_TYPE_LABEL), 'mb_flag', null, $fresh_item);
 
 	stock_units_list_row(_('Units of Measure:'), 'units', null, $fresh_item);
 
 
 	if (!RequestService::getPostStatic('fixed_asset')) {
-		check_row(_("Editable description:"), 'editable');
-		check_row(_("Exclude from sales:"), 'no_sale');
-		check_row(_("Exclude from purchases:"), 'no_purchase');
+		check_row(_(UI_TEXT_EDITABLE_DESCRIPTION_LABEL), 'editable');
+		check_row(_(UI_TEXT_EXCLUDE_FROM_SALES_LABEL), 'no_sale');
+		check_row(_(UI_TEXT_EXCLUDE_FROM_PURCHASES_LABEL), 'no_purchase');
 	}
 
 	if (RequestService::getPostStatic('fixed_asset')) {
