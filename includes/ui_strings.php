@@ -1697,4 +1697,11 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_CANCELS_DOCUMENT_ENTRY_OR_REMOVES_SALES_ORDER_WHEN_EDITING_AN_OLD_DOCUMENT', 'Cancels document entry or removes sales order when editing an old document');
     define('UI_TEXT_YOU_ARE_ABOUT_TO_VOID_THIS_DOCUMENT_DO_YOU_WANT_TO_CONTINUE', 'You are about to void this Document.\nDo you want to continue?');
     define('UI_TEXT_VALIDATE_CHANGES_AND_UPDATE_DOCUMENT', 'Validate changes and update document');
+    define('UI_TEXT_SEARCH_OUTSTANDING_SALES_ORDERS', 'Search Outstanding Sales Orders');
+    define('UI_TEXT_SEARCH_TEMPLATE_FOR_INVOICING', 'Search Template for Invoicing');
+    define('UI_TEXT_SELECT_TEMPLATE_FOR_DELIVERY', 'Select Template for Delivery');
+    define('UI_TEXT_INVOICING_PREPAYMENT_ORDERS', 'Invoicing Prepayment Orders');
+    define('UI_TEXT_SEARCH_ALL_SALES_ORDERS', 'Search All Sales Orders');
+    define('UI_TEXT_SEARCH_ALL_SALES_QUOTATIONS', 'Search All Sales Quotations');
+    define('UI_TEXT_SET_THIS_ORDER_AS_A_TEMPLATE_FOR_DIRECT_DELIVERIES_INVOICES', 'Set this order as a template for direct deliveries/invoices');
 };

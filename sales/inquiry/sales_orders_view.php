@@ -42,33 +42,33 @@ if ($trans_type == ST_SALESORDER)
 	if (isset($_GET['OutstandingOnly']) && ($_GET['OutstandingOnly'] == true))
 	{
 		$_POST['order_view_mode'] = 'OutstandingOnly';
-		$_SESSION['page_title'] = _($help_context = "Search Outstanding Sales Orders");
+		$_SESSION['page_title'] = _($help_context = UI_TEXT_SEARCH_OUTSTANDING_SALES_ORDERS);
 	}
 	elseif (isset($_GET['InvoiceTemplates']) && ($_GET['InvoiceTemplates'] == true))
 	{
 		$_POST['order_view_mode'] = 'InvoiceTemplates';
-		$_SESSION['page_title'] = _($help_context = "Search Template for Invoicing");
+		$_SESSION['page_title'] = _($help_context = UI_TEXT_SEARCH_TEMPLATE_FOR_INVOICING);
 	}
 	elseif (isset($_GET['DeliveryTemplates']) && ($_GET['DeliveryTemplates'] == true))
 	{
 		$_POST['order_view_mode'] = 'DeliveryTemplates';
-		$_SESSION['page_title'] = _($help_context = "Select Template for Delivery");
+		$_SESSION['page_title'] = _($help_context = UI_TEXT_SELECT_TEMPLATE_FOR_DELIVERY);
 	}
 	elseif (isset($_GET['PrepaidOrders']) && ($_GET['PrepaidOrders'] == true))
 	{
 		$_POST['order_view_mode'] = 'PrepaidOrders';
-		$_SESSION['page_title'] = _($help_context = "Invoicing Prepayment Orders");
+		$_SESSION['page_title'] = _($help_context = UI_TEXT_INVOICING_PREPAYMENT_ORDERS);
 	}
 	elseif (!isset($_POST['order_view_mode']))
 	{
 		$_POST['order_view_mode'] = false;
-		$_SESSION['page_title'] = _($help_context = "Search All Sales Orders");
+		$_SESSION['page_title'] = _($help_context = UI_TEXT_SEARCH_ALL_SALES_ORDERS);
 	}
 }
 else
 {
 	$_POST['order_view_mode'] = "Quotations";
-	$_SESSION['page_title'] = _($help_context = "Search All Sales Quotations");
+	$_SESSION['page_title'] = _($help_context = UI_TEXT_SEARCH_ALL_SALES_QUOTATIONS);
 }
 
 $js = "";
@@ -170,7 +170,7 @@ function tmpl_checkbox($row)
 // save also in hidden field for testing during 'Update'
 
  return checkbox(null, $name, $value, true,
- 	_('Set this order as a template for direct deliveries/invoices'))
+ 	_(UI_TEXT_SET_THIS_ORDER_AS_A_TEMPLATE_FOR_DIRECT_DELIVERIES_INVOICES))
 	. hidden('last['.$row['order_no'].']', $value, false);
 }
 
