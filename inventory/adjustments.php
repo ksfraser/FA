@@ -14,6 +14,7 @@ $path_to_root = "..";
 include_once($path_to_root . "/includes/ui/items_cart.inc");
 
 include_once($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
@@ -52,20 +53,20 @@ if (isset($_GET['AddedID']))
   $row = db_fetch($result);
 
 	if (InventoryService::isFixedAsset($row['mb_flag'])) {
-		display_notification_centered(_("Fixed Assets disposal has been processed"));
-		display_note(get_trans_view_str($trans_type, $trans_no, _("&View this disposal")));    display_note(get_gl_view_str($trans_type, $trans_no, _("View the GL &Postings for this Disposal")), 1, 0);
-	  hyperlink_params($_SERVER['PHP_SELF'], _("Enter &Another Disposal"), "NewAdjustment=1&FixedAsset=1");
+		display_notification_centered(_(UI_TEXT_FIXED_ASSETS_DISPOSAL_HAS_BEEN_PROCESSED));
+		display_note(get_trans_view_str($trans_type, $trans_no, _(UI_TEXT_VIEW_THIS_DISPOSAL)));    display_note(get_gl_view_str($trans_type, $trans_no, _(UI_TEXT_VIEW_THE_GL_POSTINGS_FOR_THIS_DISPOSAL)), 1, 0);
+	  hyperlink_params($_SERVER['PHP_SELF'], _(UI_TEXT_ENTER_ANOTHER_DISPOSAL), "NewAdjustment=1&FixedAsset=1");
   }
   else {
-    display_notification_centered(_("Items adjustment has been processed"));
-    display_note(get_trans_view_str($trans_type, $trans_no, _("&View this adjustment")));
+    display_notification_centered(_(UI_TEXT_ITEMS_ADJUSTMENT_HAS_BEEN_PROCESSED));
+    display_note(get_trans_view_str($trans_type, $trans_no, _(UI_TEXT_VIEW_THIS_ADJUSTMENT)));
 
-    display_note(get_gl_view_str($trans_type, $trans_no, _("View the GL &Postings for this Adjustment")), 1, 0);
+    display_note(get_gl_view_str($trans_type, $trans_no, _(UI_TEXT_VIEW_THE_GL_POSTINGS_FOR_THIS_ADJUSTMENT)), 1, 0);
 
-	  hyperlink_params($_SERVER['PHP_SELF'], _("Enter &Another Adjustment"), "NewAdjustment=1");
+	  hyperlink_params($_SERVER['PHP_SELF'], _(UI_TEXT_ENTER_ANOTHER_ADJUSTMENT), "NewAdjustment=1");
   }
 
-	hyperlink_params("$path_to_root/admin/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$trans_no");
+	hyperlink_params("$path_to_root/admin/attachments.php", _(UI_TEXT_ADD_AN_ATTACHMENT), "filterType=$trans_type&trans_no=$trans_no");
 
 	display_footer_exit();
 }
@@ -104,7 +105,7 @@ function can_process()
 	$adj = &$_SESSION['adj_items'];
 
 	if (count($adj->line_items) == 0)	{
-		UiMessageService::displayError(_("You must enter at least one non empty item line."));
+		UiMessageService::displayError(_(UI_TEXT_YOU_MUST_ENTER_AT_LEAST_ONE_NON_EMPTY_ITEM_LINE));
 		set_focus('stock_id');
 		return false;
 	}
@@ -118,13 +119,13 @@ function can_process()
 
 	if (!$dateService->isDate($_POST['AdjDate'])) 
 	{
-		UiMessageService::displayError(_("The entered date for the adjustment is invalid."));
+		UiMessageService::displayError(_(UI_TEXT_THE_ENTERED_DATE_FOR_THE_ADJUSTMENT_IS_INVALID));
 		set_focus('AdjDate');
 		return false;
 	} 
 	elseif (!DateService::isDateInFiscalYearStatic($_POST['AdjDate'])) 
 	{
-		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_(UI_TEXT_THE_ENTERED_DATE_IS_OUT_OF_FISCAL_YEAR_OR_IS_CLOSED_FOR_FURTHER_DATA_ENTRY));
 		set_focus('AdjDate');
 		return false;
 	}
@@ -134,7 +135,7 @@ function can_process()
 
 		if ($low_stock)
 		{
-    		UiMessageService::displayError(_("The adjustment cannot be processed because it would cause negative inventory balance for marked items as of document date or later."));
+    		UiMessageService::displayError(_(UI_TEXT_THE_ADJUSTMENT_CANNOT_BE_PROCESSED_BECAUSE_IT_WOULD_CAUSE_NEGATIVE_INVENTORY_BALANCE_FOR_MARKED_ITEMS_AS_OF_DOCUMENT_DATE_OR_LATER));
 			unset($_POST['Process']);
 			return false;
 		}
@@ -167,14 +168,14 @@ function check_item_data()
 {
 	if (RequestService::inputNumStatic('qty') == 0)
 	{
-		UiMessageService::displayError(_("The quantity entered is invalid."));
+		UiMessageService::displayError(_(UI_TEXT_THE_QUANTITY_ENTERED_IS_INVALID));
 		set_focus('qty');
 		return false;
 	}
 
 	if (!check_num('std_cost', 0))
 	{
-		UiMessageService::displayError(_("The entered standard cost is negative or invalid."));
+		UiMessageService::displayError(_(UI_TEXT_THE_ENTERED_STANDARD_COST_IS_NEGATIVE_OR_INVALID));
 		set_focus('std_cost');
 		return false;
 	}
@@ -232,9 +233,9 @@ if (isset($_GET['NewAdjustment']) || !isset($_SESSION['adj_items']))
 {
 
 	if (isset($_GET['FixedAsset']))
-		check_db_has_disposable_fixed_assets(_("There are no fixed assets defined in the system."));
+		check_db_has_disposable_fixed_assets(_(UI_TEXT_THERE_ARE_NO_FIXED_ASSETS_DEFINED_IN_THE_SYSTEM));
 	else
-		check_db_has_costable_items(_("There are no inventory items defined in the system which can be adjusted (Purchased or Manufactured)."));
+		check_db_has_costable_items(_(UI_TEXT_THERE_ARE_NO_INVENTORY_ITEMS_DEFINED_IN_THE_SYSTEM_WHICH_CAN_BE_ADJUSTED_PURCHASED_OR_MANUFACTURED));
 
 	handle_new_order();
 }
@@ -243,11 +244,11 @@ if (isset($_GET['NewAdjustment']) || !isset($_SESSION['adj_items']))
 start_form();
 
 if ($_SESSION['adj_items']->fixed_asset) {
-	$items_title = _("Disposal Items");
-	$button_title = _("Process Disposal");
+	$items_title = _(UI_TEXT_DISPOSAL_ITEMS);
+	$button_title = _(UI_TEXT_PROCESS_DISPOSAL);
 } else {
-	$items_title = _("Adjustment Items");
-	$button_title = _("Process Adjustment");
+	$items_title = _(UI_TEXT_ADJUSTMENT_ITEMS);
+	$button_title = _(UI_TEXT_PROCESS_ADJUSTMENT);
 }
 
 display_order_header($_SESSION['adj_items']);
