@@ -1885,4 +1885,10 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_PROCESS_JOURNAL_ENTRY', 'Process Journal Entry');
     define('UI_TEXT_PROCESS_JOURNAL_ENTRY_ONLY_IF_DEBITS_EQUAL_TO_CREDITS', 'Process journal entry only if debits equal to credits');
     define('UI_TEXT_ENTRY_NEW_JOURNAL_ENTRY', 'Entry &New Journal Entry');
-};
+define('UI_TEXT_GL_ACCOUNTS_TITLE', 'GL Accounts');
+define('UI_TEXT_DESCRIPTION_LABEL', 'Description');
+define('UI_TEXT_SEARCH_BUTTON', 'Search');
+define('UI_TEXT_SEARCH_GL_ACCOUNTS_BUTTON', 'Search GL accounts');
+define('UI_TEXT_ACCOUNT_CODE_LABEL', 'Account Code');
+define('UI_TEXT_CATEGORY_LABEL', 'Category');
+define('UI_TEXT_SELECT_BUTTON', 'Select');

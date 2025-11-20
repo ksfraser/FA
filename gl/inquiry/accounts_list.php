@@ -18,11 +18,12 @@ $page_security = "SA_GLACCOUNT";
 $path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/gl/includes/db/gl_db_accounts.inc");
 
 $js = get_js_select_combo_item();
 
-page(_($help_context = "GL Accounts"), true, false, "", $js);
+page(_($help_context = UI_TEXT_GL_ACCOUNTS_TITLE), true, false, "", $js);
 
 if(RequestService::getPostStatic("search")) {
   	$Ajax->activate("account_tbl");
@@ -36,8 +37,8 @@ start_table(TABLESTYLE_NOBORDER);
 
 start_row();
 
-text_cells(_("Description"), "description");
-submit_cells("search", _("Search"), "", _("Search GL accounts"), "default");
+text_cells(_(UI_TEXT_DESCRIPTION_LABEL), "description");
+submit_cells("search", _(UI_TEXT_SEARCH_BUTTON), "", _(UI_TEXT_SEARCH_GL_ACCOUNTS_BUTTON), "default");
 
 end_row();
 
@@ -49,7 +50,7 @@ div_start("account_tbl");
 
 start_table(TABLESTYLE);
 
-$th = array("", _("Account Code"), _("Description"), _("Category"));
+$th = array("", _(UI_TEXT_ACCOUNT_CODE_LABEL), _(UI_TEXT_DESCRIPTION_LABEL), _(UI_TEXT_CATEGORY_LABEL));
 
 table_header($th);
 
@@ -61,7 +62,7 @@ $result = get_chart_accounts_search(RequestService::getPostStatic("description")
 while ($myrow = db_fetch_assoc($result)) {
 	alt_table_row_color($k);
 	$value = $myrow['account_code'];
-	ahref_cell(_("Select"), 'javascript:void(0)', '', 'selectComboItem(window.opener.document, "'.$name.'", "'.$value.'")');
+	ahref_cell(_(UI_TEXT_SELECT_BUTTON), 'javascript:void(0)', '', 'selectComboItem(window.opener.document, "'.$name.'", "'.$value.'")');
   	label_cell($myrow["account_code"]);
 	label_cell($myrow["account_name"]);
   	label_cell($myrow["name"]);
