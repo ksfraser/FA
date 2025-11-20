@@ -17,6 +17,7 @@ else
 	$path_to_root = "..";
 
 include_once($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
@@ -26,8 +27,8 @@ if ($SysPrefs->use_popup_windows && $SysPrefs->use_popup_search)
 	$js .= get_js_open_window(900, 500);
 page(_($help_context = "Supplier Purchasing Data"), false, false, "", $js);
 
-check_db_has_purchasable_items(_("There are no purchasable inventory items defined in the system."));
-check_db_has_suppliers(_("There are no suppliers defined in the system."));
+check_db_has_purchasable_items(_(UI_TEXT_THERE_ARE_NO_PURCHASABLE_INVENTORY_ITEMS_DEFINED_IN_THE_SYSTEM));
+check_db_has_suppliers(_(UI_TEXT_THERE_ARE_NO_SUPPLIERS_DEFINED_IN_THE_SYSTEM));
 
 //----------------------------------------------------------------------------------------
 simple_page_mode(true);
@@ -45,25 +46,25 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
    	if ($_POST['stock_id'] == "" || !isset($_POST['stock_id']))
    	{
       	$input_error = 1;
-      	UiMessageService::displayError( _("There is no item selected."));
+      	UiMessageService::displayError( _(UI_TEXT_THERE_IS_NO_ITEM_SELECTED));
 		set_focus('stock_id');
    	}
    	elseif (!check_num('price', 0))
    	{
       	$input_error = 1;
-      	UiMessageService::displayError( _("The price entered was not numeric."));
+      	UiMessageService::displayError( _(UI_TEXT_THE_PRICE_ENTERED_WAS_NOT_NUMERIC));
 	set_focus('price');
    	}
    	elseif (!check_num('conversion_factor'))
    	{
       	$input_error = 1;
-      	UiMessageService::displayError( _("The conversion factor entered was not numeric. The conversion factor is the number by which the price must be divided by to get the unit price in our unit of measure."));
+      	UiMessageService::displayError( _(UI_TEXT_THE_CONVERSION_FACTOR_ENTERED_WAS_NOT_NUMERIC_THE_CONVERSION_FACTOR_IS_THE_NUMBER_BY_WHICH_THE_PRICE_MUST_BE_DIVIDED_BY_TO_GET_THE_UNIT_PRICE_IN_OUR_UNIT_OF_MEASURE));
 		set_focus('conversion_factor');
    	}
    	elseif ($Mode == 'ADD_ITEM' && get_item_purchasing_data($_POST['supplier_id'], $_POST['stock_id']))
    	{
       	$input_error = 1;
-      	UiMessageService::displayError( _("The purchasing data for this supplier has already been added."));
+      	UiMessageService::displayError( _(UI_TEXT_THE_PURCHASING_DATA_FOR_THIS_SUPPLIER_HAS_ALREADY_BEEN_ADDED));
 		set_focus('supplier_id');
 	}
 	if ($input_error == 0)
@@ -72,13 +73,13 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
        	{
 			add_item_purchasing_data($_POST['supplier_id'], $_POST['stock_id'], RequestService::inputNumStatic('price',0),
 				$_POST['suppliers_uom'], RequestService::inputNumStatic('conversion_factor'), $_POST['supplier_description']);
-    		display_notification(_("This supplier purchasing data has been added."));
+    		display_notification(_(UI_TEXT_THIS_SUPPLIER_PURCHASING_DATA_HAS_BEEN_ADDED));
        	} 
        	else
        	{
        		update_item_purchasing_data($selected_id, $_POST['stock_id'], RequestService::inputNumStatic('price',0),
        			$_POST['suppliers_uom'], RequestService::inputNumStatic('conversion_factor'), $_POST['supplier_description']);
-    	  	display_notification(_("Supplier purchasing data has been updated."));
+    	  	display_notification(_(UI_TEXT_SUPPLIER_PURCHASING_DATA_HAS_BEEN_UPDATED));
        	}
 		$Mode = 'RESET';
 	}
@@ -89,7 +90,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 if ($Mode == 'Delete')
 {
 	delete_item_purchasing_data($selected_id, $_POST['stock_id']);
-	display_notification(_("The purchasing data item has been sucessfully deleted."));
+	display_notification(_(UI_TEXT_THE_PURCHASING_DATA_ITEM_HAS_BEEN_SUCCESSFULLY_DELETED));
 	$Mode = 'RESET';
 }
 
@@ -118,7 +119,7 @@ if (!isset($_POST['stock_id']))
 
 if (!$page_nested)
 {
-	echo "<center>" . _("Item:"). "&nbsp;";
+	echo "<center>" . _(UI_TEXT_ITEM_COLON). "&nbsp;";
 	// All items can be purchased
 	echo stock_items_list('stock_id', $_POST['stock_id'], false, true);
 	echo "<hr></center>";
@@ -132,7 +133,7 @@ $mb_flag = get_mb_flag($_POST['stock_id']);
 
 if ($mb_flag == -1)
 {
-	UiMessageService::displayError(_("Entered item is not defined. Please re-enter."));
+	UiMessageService::displayError(_(UI_TEXT_ENTERED_ITEM_IS_NOT_DEFINED_PLEASE_RE_ENTER));
   	$Ajax->activate('price_table');
 	set_focus('stock_id');
 }
@@ -142,14 +143,14 @@ else
   	div_start('price_table');
     if (db_num_rows($result) == 0)
     {
-    	display_note(_("There is no purchasing data set up for the part selected"));
+    	display_note(_(UI_TEXT_THERE_IS_NO_PURCHASING_DATA_SET_UP_FOR_THE_PART_SELECTED));
     }
     else
     {
         start_table(TABLESTYLE, "width='65%'");
 
-		$th = array(_("Supplier"), _("Price"), _("Currency"),
-			_("Supplier's Unit"), _("Conversion Factor"), _("Supplier's Description"), "", "");
+		$th = array(_(UI_TEXT_SUPPLIER), _(UI_TEXT_PRICE), _(UI_TEXT_CURRENCY),
+			_(UI_TEXT_SUPPLIERS_UNIT), _(UI_TEXT_CONVERSION_FACTOR), _(UI_TEXT_SUPPLIERS_DESCRIPTION), "", "");
 
         table_header($th);
 
@@ -165,8 +166,8 @@ else
             label_cell($myrow["suppliers_uom"]);
             qty_cell($myrow['conversion_factor'], false, 'max');
             label_cell($myrow["supplier_description"]);
-		 	edit_button_cell("Edit".$myrow['supplier_id'], _("Edit"));
-		 	delete_button_cell("Delete".$myrow['supplier_id'], _("Delete"));
+		 	edit_button_cell("Edit".$myrow['supplier_id'], _(UI_TEXT_EDIT));
+		 	delete_button_cell("Delete".$myrow['supplier_id'], _(UI_TEXT_DELETE));
             end_row();
 
             $j++;
@@ -204,7 +205,7 @@ start_table(TABLESTYLE2);
 if ($Mode == 'Edit')
 {
 	hidden('supplier_id');
-	label_row(_("Supplier:"), $supp_name);
+	label_row(_(UI_TEXT_SUPPLIER_COLON), $supp_name);
 }
 else
 {
