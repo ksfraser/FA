@@ -1640,4 +1640,9 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_CREATE_RECURRENT_INVOICES', 'Create recurrent invoices');
     define('UI_TEXT_RETURN_TO_RECURRENT_INVOICES', 'Return to recurrent invoices');
     define('UI_TEXT_UPDATE_CREDIT_VALUE_FOR_QUANTITIES_ENTERED', 'Update credit value for quantities entered');
+    define('UI_TEXT_DELIVERY_NOTE_HAS_BEEN_UPDATED', 'Delivery Note # %d has been updated.');
+    define('UI_TEXT_REFRESH_DOCUMENT_PAGE', 'Refresh document page');
+    define('UI_TEXT_RESET_QUANTITY', 'Reset quantity');
+    define('UI_TEXT_CLEAR_QUANTITY', 'Clear quantity');
+    define('UI_TEXT_CHECK_ENTERED_DATA_AND_SAVE_DOCUMENT', 'Check entered data and save document');
 };

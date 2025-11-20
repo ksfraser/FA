@@ -76,7 +76,7 @@ if (isset($_GET['AddedID'])) {
 
 	$delivery_no = $_GET['UpdatedID'];
 
-	display_notification_centered(sprintf(_('Delivery Note # %d has been updated.'),$delivery_no));
+	display_notification_centered(sprintf(_(UI_TEXT_DELIVERY_NOTE_HAS_BEEN_UPDATED),$delivery_no));
 
 	display_note(get_trans_view_str(ST_CUSTDELIVERY, $delivery_no, _(UI_TEXT_VIEW_DELIVERY)), 0, 1);
 
@@ -535,15 +535,15 @@ textarea_row(_(UI_TEXT_MEMO), 'Comments', null, 50, 4);
 end_table(1);
 div_end();
 submit_center_first('Update', _(UI_TEXT_UPDATE_BUTTON),
-	_('Refresh document page'), true);
+	_(UI_TEXT_REFRESH_DOCUMENT_PAGE), true);
 if(isset($_POST['clear_quantity'])) {
-	submit('reset_quantity', _('Reset quantity'), true, _('Refresh document page'));
+	submit('reset_quantity', _(UI_TEXT_RESET_QUANTITY), true, _(UI_TEXT_REFRESH_DOCUMENT_PAGE));
 }
 else  {
-	submit('clear_quantity', _('Clear quantity'), true, _('Refresh document page'));
+	submit('clear_quantity', _(UI_TEXT_CLEAR_QUANTITY), true, _(UI_TEXT_REFRESH_DOCUMENT_PAGE));
 }
 submit_center_last('process_delivery', _(UI_TEXT_PROCESS_DISPATCH),
-	_('Check entered data and save document'), 'default');
+	_(UI_TEXT_CHECK_ENTERED_DATA_AND_SAVE_DOCUMENT), 'default');
 
 end_form();
 
