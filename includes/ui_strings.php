@@ -1470,4 +1470,17 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_REFERENCE_LINE_COLON', 'Reference line:');
     define('UI_TEXT_MEMO', 'Memo');
     define('UI_TEXT_UPDATE', 'Update');
+    define('UI_TEXT_THERE_ARE_NO_ITEMS_DEFINED_IN_THE_SYSTEM', 'There are no items defined in the system.');
+    define('UI_TEXT_THERE_ARE_NO_SALES_TYPES_IN_THE_SYSTEM_PLEASE_SET_UP_SALES_TYPES_BEFOR_ENTERING_PRICING', 'There are no sales types in the system. Please set up sales types befor entering pricing.');
+    define('UI_TEXT_THE_PRICE_ENTERED_MUST_BE_NUMERIC', 'The price entered must be numeric.');
+    define('UI_TEXT_THE_SALES_PRICING_FOR_THIS_ITEM_SALES_TYPE_AND_CURRENCY_HAS_ALREADY_BEEN_ADDED', 'The sales pricing for this item, sales type and currency has already been added.');
+    define('UI_TEXT_THIS_PRICE_HAS_BEEN_UPDATED', 'This price has been updated.');
+    define('UI_TEXT_THE_NEW_PRICE_HAS_BEEN_ADDED', 'The new price has been added.');
+    define('UI_TEXT_THE_SELECTED_PRICE_HAS_BEEN_DELETED', 'The selected price has been deleted.');
+    define('UI_TEXT_THERE_ARE_NO_PRICES_SET_UP_FOR_THIS_PART', 'There are no prices set up for this part.');
+    define('UI_TEXT_CURRENCY_COLON', 'Currency:');
+    define('UI_TEXT_SALES_TYPE_COLON', 'Sales Type:');
+    define('UI_TEXT_PRICE_COLON', 'Price:');
+    define('UI_TEXT_PER', 'per');
+    define('UI_TEXT_THE_PRICE_IS_CALCULATED', 'The price is calculated.');
 };

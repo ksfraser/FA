@@ -17,6 +17,7 @@ else
 	$path_to_root = "..";
 
 include_once($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
 include_once($path_to_root . "/includes/ui.inc");
@@ -30,9 +31,9 @@ page(_($help_context = "Inventory Item Sales prices"), false, false, "", $js);
 
 //---------------------------------------------------------------------------------------------------
 
-check_db_has_stock_items(_("There are no items defined in the system."));
+check_db_has_stock_items(_(UI_TEXT_THERE_ARE_NO_ITEMS_DEFINED_IN_THE_SYSTEM));
 
-check_db_has_sales_types(_("There are no sales types in the system. Please set up sales types befor entering pricing."));
+check_db_has_sales_types(_(UI_TEXT_THERE_ARE_NO_SALES_TYPES_IN_THE_SYSTEM_PLEASE_SET_UP_SALES_TYPES_BEFOR_ENTERING_PRICING));
 
 simple_page_mode(true);
 //---------------------------------------------------------------------------------------------------
@@ -63,7 +64,7 @@ if (!isset($_POST['stock_id']))
 
 if (!$page_nested)
 {
-	echo "<center>" . _("Item:"). "&nbsp;";
+	echo "<center>" . _(UI_TEXT_ITEM_COLON). "&nbsp;";
 	echo sales_items_list('stock_id', $_POST['stock_id'], false, true, '', array('editable' => false));
 	echo "<hr></center>";
 }
@@ -79,13 +80,13 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if (!check_num('price', 0))
 	{
 		$input_error = 1;
-		UiMessageService::displayError( _("The price entered must be numeric."));
+		UiMessageService::displayError( _(UI_TEXT_THE_PRICE_ENTERED_MUST_BE_NUMERIC));
 		set_focus('price');
 	}
    	elseif ($Mode == 'ADD_ITEM' && get_stock_price_type_currency($_POST['stock_id'], $_POST['sales_type_id'], $_POST['curr_abrev']))
    	{
       	$input_error = 1;
-      	UiMessageService::displayError( _("The sales pricing for this item, sales type and currency has already been added."));
+      	UiMessageService::displayError( _(UI_TEXT_THE_SALES_PRICING_FOR_THIS_ITEM_SALES_TYPE_AND_CURRENCY_HAS_ALREADY_BEEN_ADDED));
 		set_focus('supplier_id');
 	}
 
@@ -98,7 +99,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 			update_item_price($selected_id, $_POST['sales_type_id'],
 			$_POST['curr_abrev'], RequestService::inputNumStatic('price'));
 
-			$msg = _("This price has been updated.");
+			$msg = _(UI_TEXT_THIS_PRICE_HAS_BEEN_UPDATED);
 		}
 		else
 		{
@@ -106,7 +107,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 			add_item_price($_POST['stock_id'], $_POST['sales_type_id'],
 			    $_POST['curr_abrev'], RequestService::inputNumStatic('price'));
 
-			$msg = _("The new price has been added.");
+			$msg = _(UI_TEXT_THE_NEW_PRICE_HAS_BEEN_ADDED);
 		}
 		display_notification($msg);
 		$Mode = 'RESET';
@@ -120,7 +121,7 @@ if ($Mode == 'Delete')
 {
 	//the link to delete a selected record was clicked
 	delete_item_price($selected_id);
-	display_notification(_("The selected price has been deleted."));
+	display_notification(_(UI_TEXT_THE_SELECTED_PRICE_HAS_BEEN_DELETED));
 	$Mode = 'RESET';
 }
 
@@ -148,7 +149,7 @@ $prices_list = get_prices($_POST['stock_id']);
 div_start('price_table');
 start_table(TABLESTYLE, "width='30%'");
 
-$th = array(_("Currency"), _("Sales Type"), _("Price"), "", "");
+$th = array(_(UI_TEXT_CURRENCY), _(UI_TEXT_SALES_TYPE), _(UI_TEXT_PRICE), "", "");
 table_header($th);
 $k = 0; //row colour counter
 $calculated = false;
@@ -160,8 +161,8 @@ while ($myrow = db_fetch($prices_list))
 	label_cell($myrow["curr_abrev"]);
     label_cell($myrow["sales_type"]);
     amount_cell($myrow["price"]);
- 	edit_button_cell("Edit".$myrow['id'], _("Edit"));
- 	delete_button_cell("Delete".$myrow['id'], _("Delete"));
+ 	edit_button_cell("Edit".$myrow['id'], _(UI_TEXT_EDIT));
+ 	delete_button_cell("Delete".$myrow['id'], _(UI_TEXT_DELETE));
     end_row();
 
 }
@@ -170,7 +171,7 @@ if (db_num_rows($prices_list) == 0)
 {
 	if (get_company_pref('add_pct') != -1)
 		$calculated = true;
-	display_note(_("There are no prices set up for this part."), 1);
+	display_note(_(UI_TEXT_THERE_ARE_NO_PRICES_SET_UP_FOR_THIS_PART), 1);
 }
 div_end();
 //------------------------------------------------------------------------------------------------
@@ -190,9 +191,9 @@ hidden('selected_id', $selected_id);
 div_start('price_details');
 start_table(TABLESTYLE2);
 
-currencies_list_row(_("Currency:"), 'curr_abrev', null, true);
+currencies_list_row(_(UI_TEXT_CURRENCY_COLON), 'curr_abrev', null, true);
 
-sales_types_list_row(_("Sales Type:"), 'sales_type_id', null, true);
+sales_types_list_row(_(UI_TEXT_SALES_TYPE_COLON), 'sales_type_id', null, true);
 
 if (!isset($_POST['price'])) {
 	$_POST['price'] = FormatService::priceFormat(get_kit_price(RequestService::getPostStatic('stock_id'), 
@@ -201,11 +202,11 @@ if (!isset($_POST['price'])) {
 
 $kit = get_item_code_dflts($_POST['stock_id']);
 $units = $kit ? $kit["units"] : '';
-small_amount_row(_("Price:"), 'price', null, '', _('per') .' '.$units);
+small_amount_row(_(UI_TEXT_PRICE_COLON), 'price', null, '', _(UI_TEXT_PER).' '.$units);
 
 end_table(1);
 if ($calculated)
-	display_note(_("The price is calculated."), 0, 1);
+	display_note(_(UI_TEXT_THE_PRICE_IS_CALCULATED), 0, 1);
 
 submit_add_or_update_center($selected_id == -1, '', 'both');
 div_end();
