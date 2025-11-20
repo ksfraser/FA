@@ -16,6 +16,7 @@ include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 
 include_once($path_to_root . "/gl/includes/gl_db.inc");
 include_once($path_to_root . "/gl/includes/gl_ui.inc");
@@ -32,14 +33,14 @@ if (user_use_date_picker())
 	$js .= get_js_date_picker();
 
 if (isset($_GET['ModifyTransfer'])) {
-	$_SESSION['page_title'] = _($help_context = "Modify Bank Account Transfer");
+	$_SESSION['page_title'] = _($help_context = UI_TEXT_MODIFY_BANK_ACCOUNT_TRANSFER);
 } else {
-	$_SESSION['page_title'] = _($help_context = "Bank Account Transfer Entry");
+	$_SESSION['page_title'] = _($help_context = UI_TEXT_BANK_ACCOUNT_TRANSFER_ENTRY);
 }
 
 page($_SESSION['page_title'], false, false, "", $js);
 
-check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
+check_db_has_bank_accounts(_(UI_TEXT_THERE_ARE_NO_BANK_ACCOUNTS_DEFINED_IN_THE_SYSTEM));
 
 //----------------------------------------------------------------------------------------
 
@@ -48,11 +49,11 @@ if (isset($_GET['AddedID']))
 	$trans_no = $_GET['AddedID'];
 	$trans_type = ST_BANKTRANSFER;
 
-   	display_notification_centered( _("Transfer has been entered"));
+   	display_notification_centered( _(UI_TEXT_TRANSFER_HAS_BEEN_ENTERED));
 
-	display_note(get_gl_view_str($trans_type, $trans_no, _("&View the GL Journal Entries for this Transfer")));
+	display_note(get_gl_view_str($trans_type, $trans_no, _(UI_TEXT_VIEW_THE_GL_JOURNAL_ENTRIES_FOR_THIS_TRANSFER)));
 
-   	hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter &Another Transfer"));
+   	hyperlink_no_params($_SERVER['PHP_SELF'], _(UI_TEXT_ENTER_ANOTHER_TRANSFER));
 
 	display_footer_exit();
 }
@@ -110,24 +111,24 @@ function gl_payment_controls($trans_no)
 
 	table_section(1);
 
-	bank_accounts_list_row(_("From Account:"), 'FromBankAccount', null, true);
+	bank_accounts_list_row(_(UI_TEXT_FROM_ACCOUNT), 'FromBankAccount', null, true);
 
 	bank_balance_row($_POST['FromBankAccount']);
 
-    bank_accounts_list_row(_("To Account:"), 'ToBankAccount', null, true);
+    bank_accounts_list_row(_(UI_TEXT_TO_ACCOUNT), 'ToBankAccount', null, true);
 
 	if (!isset($_POST['DatePaid'])) { // init page
 		$_POST['DatePaid'] = DateService::newDocDateStatic();
 		if (!DateService::isDateInFiscalYearStatic($_POST['DatePaid']))
 			$_POST['DatePaid'] = DateService::endFiscalYear();
 	}
-    date_row(_("Transfer Date:"), 'DatePaid', '', true, 0, 0, 0, null, true);
+    date_row(_(UI_TEXT_TRANSFER_DATE), 'DatePaid', '', true, 0, 0, 0, null, true);
 
-    ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_BANKTRANSFER, null, RequestService::getPostStatic('DatePaid')), false, ST_BANKTRANSFER,
+    ref_row(_(UI_TEXT_REFERENCE_LABEL), 'ref', '', $Refs->get_next(ST_BANKTRANSFER, null, RequestService::getPostStatic('DatePaid')), false, ST_BANKTRANSFER,
     	array('date' => RequestService::getPostStatic('DatePaid')));
 	$dim = \FA\Services\CompanyPrefsService::getUseDimensions();
 	if ($dim > 0)
-		dimensions_list_row(_("Dimension").":", 'dimension_id', 
+		dimensions_list_row(_(UI_TEXT_DIMENSION).":", 'dimension_id', 
 			null, true, ' ', false, 1, false);
 	else
 		hidden('dimension_id', 0);
@@ -138,31 +139,31 @@ function gl_payment_controls($trans_no)
 	$to_currency = get_bank_account_currency($_POST['ToBankAccount']);
 	if ($from_currency != "" && $to_currency != "" && $from_currency != $to_currency) 
 	{
-		amount_row(_("Amount:"), 'amount', null, null, $from_currency);
-		amount_row(_("Bank Charge:"), 'charge', null, null, $from_currency);
+		amount_row(_(UI_TEXT_AMOUNT), 'amount', null, null, $from_currency);
+		amount_row(_(UI_TEXT_BANK_CHARGE), 'charge', null, null, $from_currency);
 
-		amount_row(_("Incoming Amount:"), 'target_amount', null, '', $to_currency, 2);
+		amount_row(_(UI_TEXT_INCOMING_AMOUNT), 'target_amount', null, '', $to_currency, 2);
 	} 
 	else 
 	{
-		amount_row(_("Amount:"), 'amount');
-		amount_row(_("Bank Charge:"), 'charge');
+		amount_row(_(UI_TEXT_AMOUNT), 'amount');
+		amount_row(_(UI_TEXT_BANK_CHARGE), 'charge');
 	}
 	if ($dim > 1)
-		dimensions_list_row(_("Dimension")." 2:", 'dimension2_id', 
+		dimensions_list_row(_(UI_TEXT_DIMENSION)." 2:", 'dimension2_id', 
 			null, true, ' ', false, 2, false);
 	else
 		hidden('dimension2_id', 0);
 
-    textarea_row(_("Memo:"), 'memo_', null, 40,4);
+    textarea_row(_(UI_TEXT_MEMO_LABEL), 'memo_', null, 40,4);
 
 	end_outer_table(1); // outer table
 
 	if ($trans_no) {
 		hidden('_trans_no', $trans_no);
-		submit_center('submit', _("Modify Transfer"), true, '', 'default');
+		submit_center('submit', _(UI_TEXT_MODIFY_TRANSFER), true, '', 'default');
 	} else {
-		submit_center('submit', _("Enter Transfer"), true, '', 'default');
+		submit_center('submit', _(UI_TEXT_ENTER_TRANSFER), true, '', 'default');
 	}
 
 	end_form();

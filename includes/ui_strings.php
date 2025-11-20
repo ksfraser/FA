@@ -1795,4 +1795,16 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_DATE_OF_BANK_STATEMENT_TO_RECONCILE', 'Date of bank statement to reconcile');
     define('UI_TEXT_PERSON_ITEM', 'Person/Item');
     define('UI_TEXT_NEW', 'New');
+    define('UI_TEXT_MODIFY_BANK_ACCOUNT_TRANSFER', 'Modify Bank Account Transfer');
+    define('UI_TEXT_BANK_ACCOUNT_TRANSFER_ENTRY', 'Bank Account Transfer Entry');
+    define('UI_TEXT_TRANSFER_HAS_BEEN_ENTERED', 'Transfer has been entered');
+    define('UI_TEXT_VIEW_THE_GL_JOURNAL_ENTRIES_FOR_THIS_TRANSFER', '&View the GL Journal Entries for this Transfer');
+    define('UI_TEXT_ENTER_ANOTHER_TRANSFER', 'Enter &Another Transfer');
+    define('UI_TEXT_FROM_ACCOUNT', 'From Account:');
+    define('UI_TEXT_TO_ACCOUNT', 'To Account:');
+    define('UI_TEXT_TRANSFER_DATE', 'Transfer Date:');
+    define('UI_TEXT_BANK_CHARGE', 'Bank Charge:');
+    define('UI_TEXT_INCOMING_AMOUNT', 'Incoming Amount:');
+    define('UI_TEXT_MODIFY_TRANSFER', 'Modify Transfer');
+    define('UI_TEXT_ENTER_TRANSFER', 'Enter Transfer');
 };
