@@ -23,7 +23,7 @@ if ($SysPrefs->use_popup_windows)
 if (user_use_date_picker())
 	$js .= get_js_date_picker();
 
-page(_($help_context = "Recurrent Invoices"), false, false, "", $js);
+page(_($help_context = UI_TEXT_RECURRENT_INVOICES), false, false, "", $js);
 
 check_db_has_template_orders(_(UI_TEXT_THERE_IS_NO_TEMPLATE_ORDER_IN_DATABASE_YOU_HAVE_TO_CREATE_AT_LEAST_ONE_SALES_ORDER_MARKED_AS_TEMPLATE_TO_BE_ABLE_TO_DEFINE_RECURRENT_INVOICES));
 
@@ -87,13 +87,13 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     			RequestService::inputNumStatic('group_no'), RequestService::inputNumStatic('days', 0), RequestService::inputNumStatic('monthly', 0), $_POST['begin'], $_POST['end']);
     		if (isset($_POST['last_sent']))	
 				update_last_sent_recurrent_invoice($selected_id, $_POST['last_sent']);
-			$note = _('Selected recurrent invoice has been updated');
+			$note = _(UI_TEXT_SELECTED_RECURRENT_INVOICE_HAS_BEEN_UPDATED);
     	} 
     	else 
     	{
     		add_recurrent_invoice($_POST['description'], $_POST['order_no'], RequestService::inputNumStatic('debtor_no'), RequestService::inputNumStatic('group_no'),
     			RequestService::inputNumStatic('days', 0), RequestService::inputNumStatic('monthly', 0), $_POST['begin'], $_POST['end']);
-			$note = _('New recurrent invoice has been added');
+			$note = _(UI_TEXT_NEW_RECURRENT_INVOICE_HAS_BEEN_ADDED);
     	}
     
 		display_notification($note);
@@ -110,7 +110,7 @@ if ($Mode == 'Delete')
 	{
 		delete_recurrent_invoice($selected_id);
 
-		display_notification(_('Selected recurrent invoice has been deleted'));
+		display_notification(_(UI_TEXT_SELECTED_RECURRENT_INVOICE_HAS_BEEN_DELETED));
 	} //end if Delete area
 	$Mode = 'RESET';
 } 

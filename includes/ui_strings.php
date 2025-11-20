@@ -1724,4 +1724,8 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_NEW_CUSTOMER_BRANCH_HAS_BEEN_ADDED', 'New customer branch has been added');
     define('UI_TEXT_SELECTED_CUSTOMER_BRANCH_HAS_BEEN_DELETED', 'Selected customer branch has been deleted');
     define('UI_TEXT_MAIN_BRANCH', 'Main Branch');
+    define('UI_TEXT_RECURRENT_INVOICES', 'Recurrent Invoices');
+    define('UI_TEXT_SELECTED_RECURRENT_INVOICE_HAS_BEEN_UPDATED', 'Selected recurrent invoice has been updated');
+    define('UI_TEXT_NEW_RECURRENT_INVOICE_HAS_BEEN_ADDED', 'New recurrent invoice has been added');
+    define('UI_TEXT_SELECTED_RECURRENT_INVOICE_HAS_BEEN_DELETED', 'Selected recurrent invoice has been deleted');
 };
