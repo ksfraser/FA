@@ -164,11 +164,11 @@ function can_process()
 	
 	$dateService = new DateService();
 	if (!isset($_POST['DateBanked']) || !$dateService->isDate($_POST['DateBanked'])) {
-		UiMessageService::displayError(_("The entered date is invalid. Please enter a valid date for the payment."));
+		UiMessageService::displayError(_(UI_TEXT_THE_ENTERED_DATE_IS_INVALID_PLEASE_ENTER_A_VALID_DATE_FOR_THE_PAYMENT));
 		set_focus('DateBanked');
 		return false;
 	} elseif (!DateService::isDateInFiscalYear($_POST['DateBanked'])) {
-		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_(UI_TEXT_THE_ENTERED_DATE_IS_OUT_OF_FISCAL_YEAR_OR_IS_CLOSED_FOR_FURTHER_DATA_ENTRY));
 		set_focus('DateBanked');
 		return false;
 	}
@@ -179,20 +179,20 @@ function can_process()
 	}
 
 	if (!check_num('amount', 0)) {
-		UiMessageService::displayError(_("The entered amount is invalid or negative and cannot be processed."));
+		UiMessageService::displayError(_(UI_TEXT_THE_ENTERED_AMOUNT_IS_INVALID_OR_NEGATIVE_AND_CANNOT_BE_PROCESSED));
 		set_focus('amount');
 		return false;
 	}
 
 	if (isset($_POST['charge']) && (!check_num('charge', 0) || $_POST['charge'] == $_POST['amount'])) {
-		UiMessageService::displayError(_("The entered amount is invalid or negative and cannot be processed."));
+		UiMessageService::displayError(_(UI_TEXT_THE_ENTERED_AMOUNT_IS_INVALID_OR_NEGATIVE_AND_CANNOT_BE_PROCESSED));
 		set_focus('charge');
 		return false;
 	}
 	if (isset($_POST['charge']) && RequestService::inputNumStatic('charge') > 0) {
 		$charge_acct = get_bank_charge_account($_POST['bank_account']);
 		if (get_gl_account($charge_acct) == false) {
-			UiMessageService::displayError(_("The Bank Charge Account has not been set in System and General GL Setup."));
+			UiMessageService::displayError(_(UI_TEXT_THE_BANK_CHARGE_ACCOUNT_HAS_NOT_BEEN_SET_IN_SYSTEM_AND_GENERAL_GL_SETUP));
 			set_focus('charge');
 			return false;
 		}	
@@ -204,20 +204,20 @@ function can_process()
 	}
 
 	if (!check_num('discount')) {
-		UiMessageService::displayError(_("The entered discount is not a valid number."));
+		UiMessageService::displayError(_(UI_TEXT_THE_ENTERED_DISCOUNT_IS_NOT_A_VALID_NUMBER));
 		set_focus('discount');
 		return false;
 	}
 
 	if (RequestService::inputNumStatic('amount') <= 0) {
-		UiMessageService::displayError(_("The balance of the amount and discount is zero or negative. Please enter valid amounts."));
+		UiMessageService::displayError(_(UI_TEXT_THE_BALANCE_OF_THE_AMOUNT_AND_DISCOUNT_IS_ZERO_OR_NEGATIVE_PLEASE_ENTER_VALID_AMOUNTS));
 		set_focus('discount');
 		return false;
 	}
 
 	if (isset($_POST['bank_amount']) && RequestService::inputNumStatic('bank_amount')<=0)
 	{
-		UiMessageService::displayError(_("The entered payment amount is zero or negative."));
+		UiMessageService::displayError(_(UI_TEXT_THE_ENTERED_PAYMENT_AMOUNT_IS_ZERO_OR_NEGATIVE));
 		set_focus('bank_amount');
 		return false;
 	}
@@ -321,14 +321,14 @@ start_outer_table(TABLESTYLE2, "width='60%'", 5);
 table_section(1);
 
 if ($new)
-	customer_list_row(_("From Customer:"), 'customer_id', null, false, true);
+	customer_list_row(_(UI_TEXT_FROM_CUSTOMER_LABEL), 'customer_id', null, false, true);
 else {
-	label_cells(_("From Customer:"), $_SESSION['alloc']->person_name, "class='label'");
+	label_cells(_(UI_TEXT_FROM_CUSTOMER_LABEL), $_SESSION['alloc']->person_name, "class='label'");
 	hidden('customer_id', $_POST['customer_id']);
 }
 
 if (db_customer_has_branches($_POST['customer_id'])) {
-	customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);
+	customer_branches_list_row(_(UI_TEXT_BRANCH_LABEL), $_POST['customer_id'], 'BranchID', null, false, true, true);
 } else {
 	hidden('BranchID', ANY_NUMERIC);
 }
@@ -344,20 +344,20 @@ if (list_updated('customer_id') || ($new && list_updated('bank_account'))) {
 	$Ajax->activate('_page_body');
 }
 
-bank_accounts_list_row(_("Into Bank Account:"), 'bank_account', null, true);
+bank_accounts_list_row(_(UI_TEXT_INTO_BANK_ACCOUNT_LABEL), 'bank_account', null, true);
 
 read_customer_data();
 
 set_global_customer($_POST['customer_id']);
 if (isset($_POST['HoldAccount']) && $_POST['HoldAccount'] != 0)	
-	\FA\Services\UiMessageService::displayWarning(_("This customer account is on hold."));
+	\FA\Services\UiMessageService::displayWarning(_(UI_TEXT_THIS_CUSTOMER_ACCOUNT_IS_ON_HOLD));
 $display_discount_percent = \FA\Services\FormatService::percentFormat($_POST['pymt_discount']*100) . "%";
 
 table_section(2);
 
-date_row(_("Date of Deposit:"), 'DateBanked', '', true, 0, 0, 0, null, true);
+date_row(_(UI_TEXT_DATE_OF_DEPOSIT_LABEL), 'DateBanked', '', true, 0, 0, 0, null, true);
 
-ref_row(_("Reference:"), 'ref','' , null, '', ST_CUSTPAYMENT);
+ref_row(_(UI_TEXT_REFERENCE_LABEL), 'ref','' , null, '', ST_CUSTPAYMENT);
 
 table_section(3);
 
@@ -369,22 +369,22 @@ $_SESSION['alloc']->currency = $bank_currency = get_bank_account_currency($_POST
 
 if ($cust_currency != $bank_currency)
 {
-	amount_row(_("Payment Amount:"), 'bank_amount', null, '', $bank_currency);
+	amount_row(_(UI_TEXT_PAYMENT_AMOUNT_LABEL), 'bank_amount', null, '', $bank_currency);
 }
 
-amount_row(_("Bank Charge:"), 'charge', null, '', $bank_currency);
+amount_row(_(UI_TEXT_BANK_CHARGE_LABEL), 'charge', null, '', $bank_currency);
 
 $row = get_customer($_POST['customer_id']);
 $_POST['dimension_id'] = !$row ? 0 : $row['dimension_id'];
 $_POST['dimension2_id'] = !$row ? 0 : $row['dimension2_id'];
 $dim = \FA\Services\CompanyPrefsService::getUseDimensions();
 if ($dim > 0)
-    dimensions_list_row(_("Dimension").":", 'dimension_id',
+    dimensions_list_row(_(UI_TEXT_DIMENSION_LABEL).":", 'dimension_id',
         null, true, ' ', false, 1, false);
 else
     hidden('dimension_id', 0);
 if ($dim > 1)
-    dimensions_list_row(_("Dimension")." 2:", 'dimension2_id',
+    dimensions_list_row(_(UI_TEXT_DIMENSION_2_LABEL), 'dimension2_id',
         null, true, ' ', false, 2, false);
 else
     hidden('dimension2_id', 0);
@@ -397,19 +397,19 @@ div_end();
 
 start_table(TABLESTYLE, "width='60%'");
 
-label_row(_("Customer prompt payment discount :"), $display_discount_percent);
+label_row(_(UI_TEXT_CUSTOMER_PROMPT_PAYMENT_DISCOUNT_LABEL), $display_discount_percent);
 
-amount_row(_("Amount of Discount:"), 'discount', null, '', $cust_currency);
+amount_row(_(UI_TEXT_AMOUNT_OF_DISCOUNT_LABEL), 'discount', null, '', $cust_currency);
 
-amount_row(_("Amount:"), 'amount', null, '', $cust_currency);
+amount_row(_(UI_TEXT_AMOUNT_LABEL), 'amount', null, '', $cust_currency);
 
-textarea_row(_("Memo:"), 'memo_', null, 22, 4);
+textarea_row(_(UI_TEXT_MEMO_LABEL), 'memo_', null, 22, 4);
 end_table(1);
 
 if ($new)
-	submit_center('AddPaymentItem', _("Add Payment"), true, '', 'default');
+	submit_center('AddPaymentItem', _(UI_TEXT_ADD_PAYMENT), true, '', 'default');
 else
-	submit_center('AddPaymentItem', _("Update Payment"), true, '', 'default');
+	submit_center('AddPaymentItem', _(UI_TEXT_UPDATE_PAYMENT), true, '', 'default');
 
 br();
 
