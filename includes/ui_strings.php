@@ -1402,4 +1402,12 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_THE_SUPPLIER_SHORT_NAME_MUST_BE_ENTERED', 'The supplier short name must be entered.');
     define('UI_TEXT_CANNOT_DELETE_THIS_SUPPLIER_BECAUSE_THERE_ARE_TRANSACTIONS_THAT_REFER_TO_THIS_SUPPLIER', 'Cannot delete this supplier because there are transactions that refer to this supplier.');
     define('UI_TEXT_CANNOT_DELETE_THE_SUPPLIER_RECORD_BECAUSE_PURCHASE_ORDERS_HAVE_BEEN_CREATED_AGAINST_THIS_SUPPLIER', 'Cannot delete the supplier record because purchase orders have been created against this supplier.');
+    define('UI_TEXT_THIS_PAGE_MUST_BE_CALLED_WITH_A_PURCHASE_ORDER_DELIVERY_NUMBER_TO_REVIEW', 'This page must be called with a Purchase Order Delivery number to review.');
+    define('UI_TEXT_PURCHASE_ORDER_DELIVERY', 'Purchase Order Delivery');
+    define('UI_TEXT_LINE_DETAILS', 'Line Details');
+    define('UI_TEXT_REQUIRED_BY', 'Required by');
+    define('UI_TEXT_QUANTITY_INVOICED', 'Quantity Invoiced');
+    define('UI_TEXT_LINE_TOTAL', 'Line Total');
+    define('UI_TEXT_SUB_TOTAL_LABEL', 'Sub Total');
+    define('UI_TEXT_AMOUNT_TOTAL_LABEL', 'Amount Total');
 };

@@ -14,6 +14,7 @@ $path_to_root = "../..";
 include($path_to_root . "/purchasing/includes/po_class.inc");
 
 include($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 
 $js = "";
 if ($SysPrefs->use_popup_windows)
@@ -24,7 +25,7 @@ include($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 
 if (!isset($_GET['trans_no']))
 {
-	die ("<BR>" . _("This page must be called with a Purchase Order Delivery number to review."));
+	die ("<BR>" . _(UI_TEXT_THIS_PAGE_MUST_BE_CALLED_WITH_A_PURCHASE_ORDER_DELIVERY_NUMBER_TO_REVIEW));
 }
 
 $purchase_order = new purch_order;
@@ -34,11 +35,11 @@ display_heading(_("Purchase Order Delivery") . " #" . $_GET['trans_no']);
 echo "<BR>";
 display_grn_summary($purchase_order);
 
-display_heading2(_("Line Details"));
+display_heading2(_(UI_TEXT_LINE_DETAILS));
 
 start_table(TABLESTYLE, "width='90%'");
-$th = array(_("Item Code"), _("Item Description"), _("Required by"), _("Quantity"),
-	_("Unit"), _("Price"), _("Line Total"), _("Quantity Invoiced"));
+$th = array(_(UI_TEXT_ITEM_CODE), _(UI_TEXT_DESCRIPTION), _(UI_TEXT_REQUIRED_BY), _(UI_TEXT_QUANTITY),
+	_(UI_TEXT_UNIT), _(UI_TEXT_PRICE), _(UI_TEXT_LINE_TOTAL), _(UI_TEXT_QUANTITY_INVOICED));
 
 table_header($th);
 
@@ -77,7 +78,7 @@ foreach ($purchase_order->line_items as $stock_item)
 }
 
 $display_sub_tot = FormatService::numberFormat2($total,\FA\UserPrefsCache::getPriceDecimals());
-label_row(_("Sub Total"), $display_sub_tot,
+label_row(_(UI_TEXT_SUB_TOTAL_LABEL), $display_sub_tot,
 	"align=right colspan=6", "nowrap align=right", 1);
 
 $taxes = $purchase_order->get_taxes();
@@ -86,7 +87,7 @@ $tax_total = display_edit_tax_items($taxes, 6, $purchase_order->tax_included, 1)
 $display_total = FormatService::priceFormat(($total + $tax_total));
 
 start_row();
-label_cells(_("Amount Total"), $display_total, "colspan=6 align='right'","align='right'");
+label_cells(_(UI_TEXT_AMOUNT_TOTAL_LABEL), $display_total, "colspan=6 align='right'","align='right'");
 label_cell('');
 end_row();
 
