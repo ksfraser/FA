@@ -13,7 +13,7 @@ $page_security = 'SA_CRSTATUS';
 $path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
 
-page(_($help_context = "Credit Status")); 
+page(_($help_context = UI_TEXT_CREDIT_STATUS)); 
 
 include($path_to_root . "/sales/includes/db/credit_status_db.inc");
 
@@ -42,7 +42,7 @@ if ($Mode=='ADD_ITEM' && can_process())
 {
 
 	add_credit_status($_POST['reason_description'], $_POST['DisallowInvoices']);
-	display_notification(_('New credit status has been added'));
+	display_notification(_(UI_TEXT_NEW_CREDIT_STATUS_HAS_BEEN_ADDED));
 	$Mode = 'RESET';
 } 
 
@@ -50,7 +50,7 @@ if ($Mode=='ADD_ITEM' && can_process())
 
 if ($Mode=='UPDATE_ITEM' && can_process()) 
 {
-	display_notification(_('Selected credit status has been updated'));
+	display_notification(_(UI_TEXT_SELECTED_CREDIT_STATUS_HAS_BEEN_UPDATED));
 	update_credit_status($selected_id, $_POST['reason_description'], $_POST['DisallowInvoices']);
 	$Mode = 'RESET';
 }
@@ -77,7 +77,7 @@ if ($Mode == 'Delete')
 	if (can_delete($selected_id))
 	{
 		delete_credit_status($selected_id);
-		display_notification(_('Selected credit status has been deleted'));
+		display_notification(_(UI_TEXT_SELECTED_CREDIT_STATUS_HAS_BEEN_DELETED));
 	}
 	$Mode = 'RESET';
 }

@@ -1715,4 +1715,8 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_OVER', 'Over');
     define('UI_TEXT_CUSTOMER_BRANCHES', 'Customer Branches');
     define('UI_TEXT_CUSTOMERS', 'Customers');
+    define('UI_TEXT_CREDIT_STATUS', 'Credit Status');
+    define('UI_TEXT_NEW_CREDIT_STATUS_HAS_BEEN_ADDED', 'New credit status has been added');
+    define('UI_TEXT_SELECTED_CREDIT_STATUS_HAS_BEEN_UPDATED', 'Selected credit status has been updated');
+    define('UI_TEXT_SELECTED_CREDIT_STATUS_HAS_BEEN_DELETED', 'Selected credit status has been deleted');
 };
