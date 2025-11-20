@@ -84,7 +84,7 @@ if (isset($_GET['AddedID'])) {
 	$invoice_no = $_GET['UpdatedID'];
 	$trans_type = ST_SALESINVOICE;
 
-	display_notification_centered(sprintf(_('Sales Invoice # %d has been updated.'),$invoice_no));
+	display_notification_centered(sprintf(_(UI_TEXT_SALES_INVOICE_HAS_BEEN_UPDATED),$invoice_no));
 
 	display_note(get_trans_view_str(ST_SALESINVOICE, $invoice_no, _(UI_TEXT_VIEW_THIS_INVOICE)));
 	echo '<br>';
@@ -444,7 +444,7 @@ if (($_SESSION['Items']->pos['credit_sale'] || $_SESSION['Items']->pos['cash_sal
 	label_cells(_(UI_TEXT_PAYMENT_TERMS), sale_payment_list('payment', $paymcat),
 		"class='tableheader2'", "colspan=$colspan");
 } else
-	label_cells(_('Payment:'), $_SESSION['Items']->payment_terms['terms'], "class='tableheader2'", "colspan=$colspan");
+	label_cells(_(UI_TEXT_PAYMENT_LABEL), $_SESSION['Items']->payment_terms['terms'], "class='tableheader2'", "colspan=$colspan");
 
 end_row();
 start_row();
@@ -669,9 +669,9 @@ textarea_row(_(UI_TEXT_MEMO), 'Comments', null, 50, 4);
 end_table(1);
 div_end();
 submit_center_first('Update', _(UI_TEXT_UPDATE_BUTTON),
-  _('Refresh document page'), true);
+  _(UI_TEXT_REFRESH_DOCUMENT_PAGE), true);
 submit_center_last('process_invoice', _(UI_TEXT_PROCESS_INVOICE),
-  _('Check entered data and save document'), 'default');
+  _(UI_TEXT_CHECK_ENTERED_DATA_AND_SAVE_DOCUMENT), 'default');
 
 end_form();
 

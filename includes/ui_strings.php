@@ -1645,4 +1645,6 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_RESET_QUANTITY', 'Reset quantity');
     define('UI_TEXT_CLEAR_QUANTITY', 'Clear quantity');
     define('UI_TEXT_CHECK_ENTERED_DATA_AND_SAVE_DOCUMENT', 'Check entered data and save document');
+    define('UI_TEXT_SALES_INVOICE_HAS_BEEN_UPDATED', 'Sales Invoice # %d has been updated.');
+    define('UI_TEXT_PAYMENT_LABEL', 'Payment:');
 };
