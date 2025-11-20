@@ -13,7 +13,7 @@ $page_security = 'SA_SALESAREA';
 $path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
 
-page(_($help_context = "Sales Areas"));
+page(_($help_context = UI_TEXT_SALES_AREAS));
 
 include($path_to_root . "/includes/ui.inc");
 include($path_to_root . "/includes/ui_strings.php");
@@ -37,12 +37,12 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     	if ($selected_id != -1) 
     	{
     		update_sales_area($selected_id, $_POST['description']);
-			$note = _('Selected sales area has been updated');
+			$note = _(UI_TEXT_SELECTED_SALES_AREA_HAS_BEEN_UPDATED);
     	} 
     	else 
     	{
     		add_sales_area($_POST['description']);
-			$note = _('New sales area has been added');
+			$note = _(UI_TEXT_NEW_SALES_AREA_HAS_BEEN_ADDED);
     	}
     
 		display_notification($note);    	
@@ -66,7 +66,7 @@ if ($Mode == 'Delete')
 	{
 		delete_sales_area($selected_id);
 
-		display_notification(_('Selected sales area has been deleted'));
+		display_notification(_(UI_TEXT_SELECTED_SALES_AREA_HAS_BEEN_DELETED));
 	} //end if Delete area
 	$Mode = 'RESET';
 } 
