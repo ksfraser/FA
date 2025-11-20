@@ -12,6 +12,7 @@
 $path_to_root = "..";
 include_once($path_to_root . "/includes/ui/items_cart.inc");
 include_once($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 $page_security = isset($_GET['NewPayment']) || 
 	@($_SESSION['pay_items']->trans_type==ST_BANKPAYMENT)
  ? 'SA_PAYMENT' : 'SA_DEPOSIT';
@@ -35,22 +36,22 @@ if (user_use_date_picker())
 	$js .= get_js_date_picker();
 
 if (isset($_GET['NewPayment'])) {
-	$_SESSION['page_title'] = _($help_context = "Bank Account Payment Entry");
+	$_SESSION['page_title'] = _($help_context = UI_TEXT_BANK_ACCOUNT_PAYMENT_ENTRY);
 	create_cart(ST_BANKPAYMENT, 0);
 } else if(isset($_GET['NewDeposit'])) {
-	$_SESSION['page_title'] = _($help_context = "Bank Account Deposit Entry");
+	$_SESSION['page_title'] = _($help_context = UI_TEXT_BANK_ACCOUNT_DEPOSIT_ENTRY);
 	create_cart(ST_BANKDEPOSIT, 0);
 } else if(isset($_GET['ModifyPayment'])) {
-	$_SESSION['page_title'] = _($help_context = "Modify Bank Account Entry")." #".$_GET['trans_no'];
+	$_SESSION['page_title'] = _($help_context = UI_TEXT_MODIFY_BANK_ACCOUNT_ENTRY)." #".$_GET['trans_no'];
 	create_cart(ST_BANKPAYMENT, $_GET['trans_no']);
 } else if(isset($_GET['ModifyDeposit'])) {
-	$_SESSION['page_title'] = _($help_context = "Modify Bank Deposit Entry")." #".$_GET['trans_no'];
+	$_SESSION['page_title'] = _($help_context = UI_TEXT_MODIFY_BANK_DEPOSIT_ENTRY)." #".$_GET['trans_no'];
 	create_cart(ST_BANKDEPOSIT, $_GET['trans_no']);
 }
 page($_SESSION['page_title'], false, false, '', $js);
 
 //-----------------------------------------------------------------------------------------------
-check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
+check_db_has_bank_accounts(_(UI_TEXT_THERE_ARE_NO_BANK_ACCOUNTS_DEFINED_IN_THE_SYSTEM));
 
 if (isset($_GET['ModifyDeposit']) || isset($_GET['ModifyPayment']))
 	check_is_editable($_SESSION['pay_items']->trans_type, $_SESSION['pay_items']->order_id);
@@ -82,15 +83,15 @@ if (isset($_GET['AddedID']))
 	$trans_no = $_GET['AddedID'];
 	$trans_type = ST_BANKPAYMENT;
 
-   	display_notification_centered(sprintf(_("Payment %d has been entered"), $trans_no));
+   	display_notification_centered(sprintf(_(UI_TEXT_PAYMENT_HAS_BEEN_ENTERED), $trans_no));
 
-	display_note(get_gl_view_str($trans_type, $trans_no, _("&View the GL Postings for this Payment")));
+	display_note(get_gl_view_str($trans_type, $trans_no, _(UI_TEXT_VIEW_THE_GL_POSTINGS_FOR_THIS_PAYMENT)));
 
-	hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another &Payment"), "NewPayment=yes");
+	hyperlink_params($_SERVER['PHP_SELF'], _(UI_TEXT_ENTER_ANOTHER_PAYMENT), "NewPayment=yes");
 
-	hyperlink_params($_SERVER['PHP_SELF'], _("Enter A &Deposit"), "NewDeposit=yes");
+	hyperlink_params($_SERVER['PHP_SELF'], _(UI_TEXT_ENTER_A_DEPOSIT), "NewDeposit=yes");
 
-	hyperlink_params("$path_to_root/admin/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$trans_no");
+	hyperlink_params("$path_to_root/admin/attachments.php", _(UI_TEXT_ADD_AN_ATTACHMENT), "filterType=$trans_type&trans_no=$trans_no");
 
 	display_footer_exit();
 }
@@ -100,13 +101,13 @@ if (isset($_GET['UpdatedID']))
 	$trans_no = $_GET['UpdatedID'];
 	$trans_type = ST_BANKPAYMENT;
 
-   	display_notification_centered(sprintf(_("Payment %d has been modified"), $trans_no));
+   	display_notification_centered(sprintf(_(UI_TEXT_PAYMENT_HAS_BEEN_MODIFIED), $trans_no));
 
-	display_note(get_gl_view_str($trans_type, $trans_no, _("&View the GL Postings for this Payment")));
+	display_note(get_gl_view_str($trans_type, $trans_no, _(UI_TEXT_VIEW_THE_GL_POSTINGS_FOR_THIS_PAYMENT)));
 
-	hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another &Payment"), "NewPayment=yes");
+	hyperlink_params($_SERVER['PHP_SELF'], _(UI_TEXT_ENTER_ANOTHER_PAYMENT), "NewPayment=yes");
 
-	hyperlink_params($_SERVER['PHP_SELF'], _("Enter A &Deposit"), "NewDeposit=yes");
+	hyperlink_params($_SERVER['PHP_SELF'], _(UI_TEXT_ENTER_A_DEPOSIT), "NewDeposit=yes");
 
 	display_footer_exit();
 }
@@ -116,13 +117,13 @@ if (isset($_GET['AddedDep']))
 	$trans_no = $_GET['AddedDep'];
 	$trans_type = ST_BANKDEPOSIT;
 
-   	display_notification_centered(sprintf(_("Deposit %d has been entered"), $trans_no));
+   	display_notification_centered(sprintf(_(UI_TEXT_DEPOSIT_HAS_BEEN_ENTERED), $trans_no));
 
-	display_note(get_gl_view_str($trans_type, $trans_no, _("View the GL Postings for this Deposit")));
+	display_note(get_gl_view_str($trans_type, $trans_no, _(UI_TEXT_VIEW_THE_GL_POSTINGS_FOR_THIS_DEPOSIT)));
 
-	hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Deposit"), "NewDeposit=yes");
+	hyperlink_params($_SERVER['PHP_SELF'], _(UI_TEXT_ENTER_ANOTHER_DEPOSIT), "NewDeposit=yes");
 
-	hyperlink_params($_SERVER['PHP_SELF'], _("Enter A Payment"), "NewPayment=yes");
+	hyperlink_params($_SERVER['PHP_SELF'], _(UI_TEXT_ENTER_A_PAYMENT), "NewPayment=yes");
 
 	display_footer_exit();
 }
@@ -131,13 +132,13 @@ if (isset($_GET['UpdatedDep']))
 	$trans_no = $_GET['UpdatedDep'];
 	$trans_type = ST_BANKDEPOSIT;
 
-   	display_notification_centered(sprintf(_("Deposit %d has been modified"), $trans_no));
+   	display_notification_centered(sprintf(_(UI_TEXT_DEPOSIT_HAS_BEEN_MODIFIED), $trans_no));
 
-	display_note(get_gl_view_str($trans_type, $trans_no, _("&View the GL Postings for this Deposit")));
+	display_note(get_gl_view_str($trans_type, $trans_no, _(UI_TEXT_VIEW_THE_GL_POSTINGS_FOR_THIS_DEPOSIT)));
 
-	hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another &Deposit"), "NewDeposit=yes");
+	hyperlink_params($_SERVER['PHP_SELF'], _(UI_TEXT_ENTER_ANOTHER_DEPOSIT), "NewDeposit=yes");
 
-	hyperlink_params($_SERVER['PHP_SELF'], _("Enter A &Payment"), "NewPayment=yes");
+	hyperlink_params($_SERVER['PHP_SELF'], _(UI_TEXT_ENTER_A_PAYMENT), "NewPayment=yes");
 
 	display_footer_exit();
 }
@@ -225,13 +226,13 @@ function check_trans()
 	$input_error = 0;
 
 	if ($_SESSION['pay_items']->count_gl_items() < 1) {
-		UiMessageService::displayError(_("You must enter at least one payment line."));
+		UiMessageService::displayError(_(UI_TEXT_YOU_MUST_ENTER_AT_LEAST_ONE_PAYMENT_LINE));
 		set_focus('code_id');
 		$input_error = 1;
 	}
 
 	if ($_SESSION['pay_items']->gl_items_total() == 0.0) {
-		UiMessageService::displayError(_("The total bank amount cannot be 0."));
+		UiMessageService::displayError(_(UI_TEXT_THE_TOTAL_BANK_AMOUNT_CANNOT_BE_0));
 		set_focus('code_id');
 		$input_error = 1;
 	}
@@ -242,14 +243,14 @@ function check_trans()
 
 	if ($limit !== null && floatcmp($limit, -$amnt_chg) < 0)
 	{
-		UiMessageService::displayError(sprintf(_("The total bank amount exceeds allowed limit (%s)."), FormatService::priceFormat($limit-$_SESSION['pay_items']->original_amount)));
+		UiMessageService::displayError(sprintf(_(UI_TEXT_THE_TOTAL_BANK_AMOUNT_EXCEEDS_ALLOWED_LIMIT), FormatService::priceFormat($limit-$_SESSION['pay_items']->original_amount)));
 		set_focus('code_id');
 		$input_error = 1;
 	}
 	if ($trans = check_bank_account_history($amnt_chg, $_POST['bank_account'], $_POST['date_'])) {
 
 		if (isset($trans['trans_no'])) {
-			UiMessageService::displayError(sprintf(_("The bank transaction would result in exceed of authorized overdraft limit for transaction: %s #%s on %s."),
+			UiMessageService::displayError(sprintf(_(UI_TEXT_THE_BANK_TRANSACTION_WOULD_RESULT_IN_EXCEED_OF_AUTHORIZED_OVERDRAFT_LIMIT_FOR_TRANSACTION),
 				$systypes_array[$trans['type']], $trans['trans_no'], DateService::sql2dateStatic($trans['trans_date'])));
 			set_focus('amount');
 			$input_error = 1;
@@ -263,23 +264,23 @@ function check_trans()
 	$dateService = new DateService();
 	if (!$dateService->isDate($_POST['date_']))
 	{
-		UiMessageService::displayError(_("The entered date for the payment is invalid."));
+		UiMessageService::displayError(_(UI_TEXT_THE_ENTERED_DATE_FOR_THE_PAYMENT_IS_INVALID));
 		set_focus('date_');
 		$input_error = 1;
 	}
 	elseif (!DateService::isDateInFiscalYearStatic($_POST['date_']))
 	{
-		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_(UI_TEXT_THE_ENTERED_DATE_IS_OUT_OF_FISCAL_YEAR_OR_IS_CLOSED_FOR_FURTHER_DATA_ENTRY));
 		set_focus('date_');
 		$input_error = 1;
 	} 
 
 	if (RequestService::getPostStatic('PayType')==PT_CUSTOMER && (!RequestService::getPostStatic('person_id') || !RequestService::getPostStatic('PersonDetailID'))) {
-		UiMessageService::displayError(_("You have to select customer and customer branch."));
+		UiMessageService::displayError(_(UI_TEXT_YOU_HAVE_TO_SELECT_CUSTOMER_AND_CUSTOMER_BRANCH));
 		set_focus('person_id');
 		$input_error = 1;
 	} elseif (RequestService::getPostStatic('PayType')==PT_SUPPLIER && (!RequestService::getPostStatic('person_id'))) {
-		UiMessageService::displayError(_("You have to select supplier."));
+		UiMessageService::displayError(_(UI_TEXT_YOU_HAVE_TO_SELECT_SUPPLIER));
 		set_focus('person_id');
 		$input_error = 1;
 	}
@@ -287,7 +288,7 @@ function check_trans()
 		$input_error = 1;
 
 	if (isset($_POST['settled_amount']) && in_array(RequestService::getPostStatic('PayType'), array(PT_SUPPLIER, PT_CUSTOMER)) && (RequestService::inputNumStatic('settled_amount') <= 0)) {
-		UiMessageService::displayError(_("Settled amount have to be positive number."));
+		UiMessageService::displayError(_(UI_TEXT_SETTLED_AMOUNT_HAVE_TO_BE_POSITIVE_NUMBER));
 		set_focus('person_id');
 		$input_error = 1;
 	}
@@ -333,13 +334,13 @@ function check_item_data()
 {
 	if (!check_num('amount', 0))
 	{
-		UiMessageService::displayError( _("The amount entered is not a valid number or is less than zero."));
+		UiMessageService::displayError( _(UI_TEXT_THE_AMOUNT_ENTERED_IS_NOT_A_VALID_NUMBER_OR_IS_LESS_THAN_ZERO));
 		set_focus('amount');
 		return false;
 	}
 	if (isset($_POST['_ex_rate']) && RequestService::inputNumStatic('_ex_rate') <= 0)
 	{
-		UiMessageService::displayError( _("The exchange rate cannot be zero or a negative number."));
+		UiMessageService::displayError( _(UI_TEXT_THE_EXCHANGE_RATE_CANNOT_BE_ZERO_OR_A_NEGATIVE_NUMBER));
 		set_focus('_ex_rate');
 		return false;
 	}
@@ -411,15 +412,15 @@ start_table(TABLESTYLE2, "width='90%'", 10);
 start_row();
 echo "<td>";
 display_gl_items($_SESSION['pay_items']->trans_type==ST_BANKPAYMENT ?
-	_("Payment Items"):_("Deposit Items"), $_SESSION['pay_items']);
+	_(UI_TEXT_PAYMENT_ITEMS):_(UI_TEXT_DEPOSIT_ITEMS), $_SESSION['pay_items']);
 gl_options_controls($_SESSION['pay_items']);
 echo "</td>";
 end_row();
 end_table(1);
 
-submit_center_first('Update', _("Update"), '', null);
+submit_center_first('Update', _(UI_TEXT_UPDATE), '', null);
 submit_center_last('Process', $_SESSION['pay_items']->trans_type==ST_BANKPAYMENT ?
-	_("Process Payment"):_("Process Deposit"), '', 'default');
+	_(UI_TEXT_PROCESS_PAYMENT):_(UI_TEXT_PROCESS_DEPOSIT), '', 'default');
 
 end_form();
 
