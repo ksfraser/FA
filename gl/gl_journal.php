@@ -14,7 +14,7 @@ $path_to_root = "..";
 include_once($path_to_root . "/includes/ui/items_cart.inc");
 
 include_once($path_to_root . "/includes/session.inc");
-
+include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 
@@ -34,11 +34,11 @@ if (user_use_date_picker())
 	$js .= get_js_date_picker();
 
 if (isset($_GET['ModifyGL'])) {
-	$_SESSION['page_title'] = sprintf(_("Modifying Journal Transaction # %d."), 
+	$_SESSION['page_title'] = sprintf(_(UI_TEXT_MODIFYING_JOURNAL_TRANSACTION), 
 		$_GET['trans_no']);
 	$help_context = "Modifying Journal Entry";
 } else
-	$_SESSION['page_title'] = _($help_context = "Journal Entry");
+	$_SESSION['page_title'] = _($help_context = UI_TEXT_JOURNAL_ENTRY);
 
 page($_SESSION['page_title'], false, false,'', $js);
 //--------------------------------------------------------------------------------------------------
@@ -59,14 +59,14 @@ if (isset($_GET['AddedID']))
 	$trans_no = $_GET['AddedID'];
 	$trans_type = ST_JOURNAL;
 
-   	display_notification_centered( _("Journal entry has been entered") . " #$trans_no");
+   	display_notification_centered( _(UI_TEXT_JOURNAL_ENTRY_HAS_BEEN_ENTERED) . " #$trans_no");
 
-    display_note(get_gl_view_str($trans_type, $trans_no, _("&View this Journal Entry")));
+    display_note(get_gl_view_str($trans_type, $trans_no, _(UI_TEXT_VIEW_THIS_JOURNAL_ENTRY)));
 
 	reset_focus();
-	hyperlink_params($_SERVER['PHP_SELF'], _("Enter &New Journal Entry"), "NewJournal=Yes");
+	hyperlink_params($_SERVER['PHP_SELF'], _(UI_TEXT_ENTER_NEW_JOURNAL_ENTRY), "NewJournal=Yes");
 
-	hyperlink_params("$path_to_root/admin/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$trans_no");
+	hyperlink_params("$path_to_root/admin/attachments.php", _(UI_TEXT_ADD_AN_ATTACHMENT), "filterType=$trans_type&trans_no=$trans_no");
 
 	display_footer_exit();
 } elseif (isset($_GET['UpdatedID'])) 
@@ -74,11 +74,11 @@ if (isset($_GET['AddedID']))
 	$trans_no = $_GET['UpdatedID'];
 	$trans_type = ST_JOURNAL;
 
-   	display_notification_centered( _("Journal entry has been updated") . " #$trans_no");
+   	display_notification_centered( _(UI_TEXT_JOURNAL_ENTRY_HAS_BEEN_UPDATED) . " #$trans_no");
 
-    display_note(get_gl_view_str($trans_type, $trans_no, _("&View this Journal Entry")));
+    display_note(get_gl_view_str($trans_type, $trans_no, _(UI_TEXT_VIEW_THIS_JOURNAL_ENTRY)));
 
-   	hyperlink_no_params($path_to_root."/gl/inquiry/journal_inquiry.php", _("Return to Journal &Inquiry"));
+   	hyperlink_no_params($path_to_root."/gl/inquiry/journal_inquiry.php", _(UI_TEXT_RETURN_TO_JOURNAL_INQUIRY));
 
 	display_footer_exit();
 }
@@ -93,8 +93,8 @@ elseif (isset($_GET['ModifyGL']))
 	check_is_editable($_GET['trans_type'], $_GET['trans_no']);
 
 	if (!isset($_GET['trans_type']) || $_GET['trans_type']!= 0) {
-		UiMessageService::displayError(_("You can edit directly only journal entries created via Journal Entry page."));
-		hyperlink_params("$path_to_root/gl/gl_journal.php", _("Entry &New Journal Entry"), "NewJournal=Yes");
+		UiMessageService::displayError(_(UI_TEXT_YOU_CAN_EDIT_DIRECTLY_ONLY_JOURNAL_ENTRIES_CREATED_VIA_JOURNAL_ENTRY_PAGE));
+		hyperlink_params("$path_to_root/gl/gl_journal.php", _(UI_TEXT_ENTRY_NEW_JOURNAL_ENTRY), "NewJournal=Yes");
 		display_footer_exit();
 	}
 	create_cart($_GET['trans_type'], $_GET['trans_no']);
@@ -205,13 +205,13 @@ if (isset($_POST['Process']))
 	$input_error = 0;
 
 	if ($_SESSION['journal_items']->count_gl_items() < 1) {
-		UiMessageService::displayError(_("You must enter at least one journal line."));
+		UiMessageService::displayError(_(UI_TEXT_YOU_MUST_ENTER_AT_LEAST_ONE_JOURNAL_LINE));
 		set_focus('code_id');
 		$input_error = 1;
 	}
 	if (abs($_SESSION['journal_items']->gl_items_total()) > 0.001)
 	{
-		UiMessageService::displayError(_("The journal must balance (debits equal to credits) before it can be processed."));
+		UiMessageService::displayError(_(UI_TEXT_THE_JOURNAL_MUST_BALANCE_DEBITS_EQUAL_TO_CREDITS_BEFORE_IT_CAN_BE_PROCESSED));
 		set_focus('code_id');
 		$input_error = 1;
 	}
@@ -219,25 +219,25 @@ if (isset($_POST['Process']))
 
 	if (!$dateService->isDate($_POST['date_'])) 
 	{
-		UiMessageService::displayError(_("The entered date is invalid."));
+		UiMessageService::displayError(_(UI_TEXT_THE_ENTERED_DATE_IS_INVALID));
 		set_focus('date_');
 		$input_error = 1;
 	} 
 	elseif (!DateService::isDateInFiscalYearStatic($_POST['date_'])) 
 	{
-		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_(UI_TEXT_THE_ENTERED_DATE_IS_OUT_OF_FISCAL_YEAR_OR_IS_CLOSED_FOR_FURTHER_DATA_ENTRY));
 		set_focus('date_');
 		$input_error = 1;
 	} 
 	if (!$dateService->isDate($_POST['event_date'])) 
 	{
-		UiMessageService::displayError(_("The entered date is invalid."));
+		UiMessageService::displayError(_(UI_TEXT_THE_ENTERED_DATE_IS_INVALID));
 		set_focus('event_date');
 		$input_error = 1;
 	}
 	if (!$dateService->isDate($_POST['doc_date'])) 
 	{
-		UiMessageService::displayError(_("The entered date is invalid."));
+		UiMessageService::displayError(_(UI_TEXT_THE_ENTERED_DATE_IS_INVALID));
 		set_focus('doc_date');
 		$input_error = 1;
 	}
@@ -249,7 +249,7 @@ if (isset($_POST['Process']))
 	if (RequestService::getPostStatic('currency') != \FA\Services\CompanyPrefsService::getDefaultCurrency())
 		if (isset($_POST['_ex_rate']) && !check_num('_ex_rate', 0.000001))
 		{
-			UiMessageService::displayError(_("The exchange rate must be numeric and greater than zero."));
+			UiMessageService::displayError(_(UI_TEXT_THE_EXCHANGE_RATE_MUST_BE_NUMERIC_AND_GREATER_THAN_ZERO));
 			set_focus('_ex_rate');
     		$input_error = 1;
 		}
@@ -275,7 +275,7 @@ if (isset($_POST['Process']))
 	{
 	 	if (!tab_visible('tabs', 'tax'))
 	 	{
-			display_warning(_("Check tax register records before processing transaction or switch off 'Include in tax register' option."));
+			display_warning(_(UI_TEXT_CHECK_TAX_REGISTER_RECORDS_BEFORE_PROCESSING_TRANSACTION_OR_SWITCH_OFF_INCLUDE_IN_TAX_REGISTER_OPTION));
 			$_POST['tabs_tax'] = true; // force tax tab select
    			$input_error = 1;
 		} else {
@@ -289,7 +289,7 @@ if (isset($_POST['Process']))
 			// in case no tax account used we have to guss tax register on customer/supplier used.
 			if ($net_amount && !$_SESSION['journal_items']->has_taxes() && !$_SESSION['journal_items']->has_sub_accounts())
 			{
-				UiMessageService::displayError(_("Cannot determine tax register to be used. You have to make at least one posting either to tax or customer/supplier account to use tax register."));
+				UiMessageService::displayError(_(UI_TEXT_CANNOT_DETERMINE_TAX_REGISTER_TO_BE_USED_YOU_HAVE_TO_MAKE_AT_LEAST_ONE_POSTING_EITHER_TO_TAX_OR_CUSTOMER_SUPPLIER_ACCOUNT_TO_USE_TAX_REGISTER));
 				$_POST['tabs_gl'] = true; // force gl tab select
    				$input_error = 1;
 			}
@@ -358,13 +358,13 @@ function check_item_data()
 	global $Ajax;
 
 	if (!RequestService::getPostStatic('code_id')) {
-   		UiMessageService::displayError(_("You must select GL account."));
+   		UiMessageService::displayError(_(UI_TEXT_YOU_MUST_SELECT_GL_ACCOUNT));
 		set_focus('code_id');
    		return false;
 	}
 	if (is_subledger_account(RequestService::getPostStatic('code_id'))) {
 		if(!RequestService::getPostStatic('person_id')) {
-	   		UiMessageService::displayError(_("You must select subledger account."));
+	   		UiMessageService::displayError(_(UI_TEXT_YOU_MUST_SELECT_SUBLEDGER_ACCOUNT));
    			$Ajax->activate('items_table');
 			set_focus('person_id');
 	   		return false;
@@ -372,46 +372,46 @@ function check_item_data()
 	}
 	if (isset($_POST['dimension_id']) && $_POST['dimension_id'] != 0 && dimension_is_closed($_POST['dimension_id'])) 
 	{
-		UiMessageService::displayError(_("Dimension is closed."));
+		UiMessageService::displayError(_(UI_TEXT_DIMENSION_IS_CLOSED));
 		set_focus('dimension_id');
 		return false;
 	}
 
 	if (isset($_POST['dimension2_id']) && $_POST['dimension2_id'] != 0 && dimension_is_closed($_POST['dimension2_id'])) 
 	{
-		UiMessageService::displayError(_("Dimension is closed."));
+		UiMessageService::displayError(_(UI_TEXT_DIMENSION_IS_CLOSED));
 		set_focus('dimension2_id');
 		return false;
 	}
 
 	if (!(RequestService::inputNumStatic('AmountDebit')!=0 ^ RequestService::inputNumStatic('AmountCredit')!=0) )
 	{
-		UiMessageService::displayError(_("You must enter either a debit amount or a credit amount."));
+		UiMessageService::displayError(_(UI_TEXT_YOU_MUST_ENTER_EITHER_A_DEBIT_AMOUNT_OR_A_CREDIT_AMOUNT));
 		set_focus('AmountDebit');
     		return false;
   	}
 
 	if (strlen($_POST['AmountDebit']) && !check_num('AmountDebit', 0)) 
 	{
-    		UiMessageService::displayError(_("The debit amount entered is not a valid number or is less than zero."));
+    		UiMessageService::displayError(_(UI_TEXT_THE_DEBIT_AMOUNT_ENTERED_IS_NOT_A_VALID_NUMBER_OR_IS_LESS_THAN_ZERO));
 		set_focus('AmountDebit');
     		return false;
   	} elseif (strlen($_POST['AmountCredit']) && !check_num('AmountCredit', 0))
 	{
-    		UiMessageService::displayError(_("The credit amount entered is not a valid number or is less than zero."));
+    		UiMessageService::displayError(_(UI_TEXT_THE_CREDIT_AMOUNT_ENTERED_IS_NOT_A_VALID_NUMBER_OR_IS_LESS_THAN_ZERO));
 		set_focus('AmountCredit');
     		return false;
   	}
 	
 	if (!is_tax_gl_unique(RequestService::getPostStatic('code_id'))) {
-   		UiMessageService::displayError(_("Cannot post to GL account used by more than one tax type."));
+   		UiMessageService::displayError(_(UI_TEXT_CANNOT_POST_TO_GL_ACCOUNT_USED_BY_MORE_THAN_ONE_TAX_TYPE));
 		set_focus('code_id');
    		return false;
 	}
 
 	if (!$_SESSION["wa_current_user"]->can_access('SA_BANKJOURNAL') && is_bank_account($_POST['code_id'])) 
 	{
-		UiMessageService::displayError(_("You cannot make a journal entry for a bank account. Please use one of the banking functions for bank transactions."));
+		UiMessageService::displayError(_(UI_TEXT_YOU_CANNOT_MAKE_A_JOURNAL_ENTRY_FOR_A_BANK_ACCOUNT_PLEASE_USE_ONE_OF_THE_BANKING_FUNCTIONS_FOR_BANK_TRANSACTIONS));
 		set_focus('code_id');
 		return false;
 	}
@@ -531,8 +531,8 @@ start_form();
 display_order_header($_SESSION['journal_items']);
 
 tabbed_content_start('tabs', array(
-		'gl' => array(_('&GL postings'), true),
-		'tax' => array(_('&Tax register'), RequestService::checkValueStatic('taxable_trans')),
+		'gl' => array(_(UI_TEXT_GL_POSTINGS), true),
+		'tax' => array(_(UI_TEXT_TAX_REGISTER), RequestService::checkValueStatic('taxable_trans')),
 	));
 	
 	switch (RequestService::getPostStatic('_tabs_sel')) {
@@ -541,7 +541,7 @@ tabbed_content_start('tabs', array(
 			start_table(TABLESTYLE2, "width='90%'", 10);
 			start_row();
 			echo "<td>";
-			display_gl_items(_("Rows"), $_SESSION['journal_items']);
+			display_gl_items(_(UI_TEXT_ROWS), $_SESSION['journal_items']);
 			gl_options_controls();
 			echo "</td>";
 			end_row();
@@ -551,15 +551,15 @@ tabbed_content_start('tabs', array(
 		case 'tax':
 			update_tax_info();
 			br();
-			display_heading(_("Tax register record"));
+			display_heading(_(UI_TEXT_TAX_REGISTER_RECORD));
 			br();
 			start_table(TABLESTYLE2, "width=40%");
-			date_row(_("VAT date:"), 'tax_date', '', "colspan='3'");
+			date_row(_(UI_TEXT_VAT_DATE_LABEL), 'tax_date', '', "colspan='3'");
 			//tax_groups_list_row(_("Tax group:"), 'tax_group');
 			end_table(1);
 
 			start_table(TABLESTYLE2, "width=60%");
-			table_header(array(_('Name'), _('Input Tax'), _('Output Tax'), _('Net amount')));
+			table_header(array(_(UI_TEXT_NAME), _(UI_TEXT_INPUT_TAX), _(UI_TEXT_OUTPUT_TAX), _(UI_TEXT_NET_AMOUNT)));
 			$taxes = get_all_tax_types();
 			while ($tax = db_fetch($taxes))
 			{
@@ -574,8 +574,8 @@ tabbed_content_start('tabs', array(
 			end_table(1);
 			break;
 	};
-	submit_center('Process', _("Process Journal Entry"), true , 
-		_('Process journal entry only if debits equal to credits'), 'default');
+	submit_center('Process', _(UI_TEXT_PROCESS_JOURNAL_ENTRY), true , 
+		_(UI_TEXT_PROCESS_JOURNAL_ENTRY_ONLY_IF_DEBITS_EQUAL_TO_CREDITS), 'default');
 br();
 tabbed_content_end();
 
