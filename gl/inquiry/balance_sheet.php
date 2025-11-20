@@ -16,6 +16,7 @@ include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/includes/CompanyPrefsService.php");
 
@@ -25,7 +26,7 @@ $js = "";
 if (user_use_date_picker())
 	$js = get_js_date_picker();
 
-page(_($help_context = "Balance Sheet Drilldown"), false, false, "", $js);
+page(_($help_context = UI_TEXT_BALANCE_SHEET_DRILLDOWN_TITLE), false, false, "", $js);
 
 //----------------------------------------------------------------------------------------------------
 // Ajax updates
@@ -96,7 +97,7 @@ function display_type ($type, $typename, $from, $to, $convert, $dimension, $dime
 		if ($drilldown && $type == $_POST["AccGrp"])
 		{		
 			start_row("class='inquirybg' style='font-weight:bold'");
-			label_cell(_('Total') . " " . $typename);
+			label_cell(_(UI_TEXT_TOTAL_LABEL) . " " . $typename);
 			amount_cell(($acctstotal + $typestotal) * $convert);
 			end_row();
 		}
@@ -123,12 +124,12 @@ function inquiry_controls()
 {
 	$dim = \FA\Services\CompanyPrefsService::getUseDimensions();
     start_table(TABLESTYLE_NOBORDER);
-	date_cells(_("As at:"), 'TransToDate');
+	date_cells(_(UI_TEXT_AS_AT_LABEL), 'TransToDate');
 	if ($dim >= 1)
-		dimensions_list_cells(_("Dimension")." 1:", 'Dimension', null, true, " ", false, 1);
+		dimensions_list_cells(_(UI_TEXT_DIMENSION_LABEL) . _(UI_TEXT_1_LABEL), 'Dimension', null, true, " ", false, 1);
 	if ($dim > 1)
-		dimensions_list_cells(_("Dimension")." 2:", 'Dimension2', null, true, " ", false, 2);
-	submit_cells('Show',_("Show"),'','', 'default');
+		dimensions_list_cells(_(UI_TEXT_DIMENSION_LABEL) . _(UI_TEXT_2_LABEL), 'Dimension2', null, true, " ", false, 2);
+	submit_cells('Show',_(UI_TEXT_SHOW_BUTTON),'','', 'default');
     end_table();
 
 	hidden('TransFromDate');
@@ -200,7 +201,7 @@ function display_balance_sheet()
 
 			//Print Class Summary
 			start_row("class='inquirybg' style='font-weight:bold'");
-			label_cell(_('Total') . " " . $class["class_name"]);
+			label_cell(_(UI_TEXT_TOTAL_LABEL) . " " . $class["class_name"]);
 			amount_cell($classclose * $convert);
 			end_row();		
 			
@@ -223,7 +224,7 @@ function display_balance_sheet()
 		//Final Report Summary
 		$url = "<a href='$path_to_root/gl/inquiry/profit_loss.php?TransFromDate=" 
 				. $from."&TransToDate=".$to . "&Dimension=" . $dimension . "&Dimension2=" . $dimension2
-			."&Compare=0'>"._('Calculated Return')."</a>";		
+			."&Compare=0'>"._(UI_TEXT_CALCULATED_RETURN)."</a>";		
 		
 		start_row("class='inquirybg' style='font-weight:bold'");
 		label_cell($url);
@@ -231,7 +232,7 @@ function display_balance_sheet()
 		end_row();		
 		
 		start_row("class='inquirybg' style='font-weight:bold'");
-		label_cell(_('Total') . " " . _('Liabilities') . _(' and ') . _('Equities'));
+		label_cell(_(UI_TEXT_TOTAL_LABEL) . " " . _(UI_TEXT_LIABILITIES) . _(UI_TEXT_AND) . _(UI_TEXT_EQUITIES));
 		amount_cell($lclose * $lconvert + $equityclose * $econvert + $calculateclose);
 		end_row();
 	}
@@ -254,7 +255,7 @@ function display_balance_sheet()
 	}
 	
 	end_table(); // outer table
-	hyperlink_params($_SERVER['PHP_SELF'], _("Back"), "TransFromDate=". $from . "&TransToDate=" . $to . "&Dimension=" . $dimension . "&Dimension2=" . $dimension2);
+	hyperlink_params($_SERVER['PHP_SELF'], _(UI_TEXT_BACK_BUTTON), "TransFromDate=". $from . "&TransToDate=" . $to . "&Dimension=" . $dimension . "&Dimension2=" . $dimension2);
 	div_end();
 }
 
