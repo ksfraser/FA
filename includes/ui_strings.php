@@ -1781,4 +1781,18 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_QUARTERLY', 'Quarterly');
     define('UI_TEXT_ACCRUED_BALANCE_ACCOUNT', 'Accrued Balance Account');
     define('UI_TEXT_REVENUE_COST_ACCOUNT', 'Revenue / Cost Account');
+    define('UI_TEXT_RECONCILE_BANK_ACCOUNT', 'Reconcile Bank Account');
+    define('UI_TEXT_THERE_ARE_NO_BANK_ACCOUNTS_DEFINED_IN_THE_SYSTEM', 'There are no bank accounts defined in the system.');
+    define('UI_TEXT_INVALID_RECONCILE_DATE_FORMAT', 'Invalid reconcile date format');
+    define('UI_TEXT_RECONCILE_THIS_TRANSACTION', 'Reconcile this transaction');
+    define('UI_TEXT_BANK_STATEMENT', 'Bank Statement:');
+    define('UI_TEXT_RECONCILE_DATE', 'Reconcile Date');
+    define('UI_TEXT_BEGINNING_BALANCE', 'Beginning<br>Balance');
+    define('UI_TEXT_ENDING_BALANCE', 'Ending<br>Balance');
+    define('UI_TEXT_ACCOUNT_TOTAL', 'Account<br>Total');
+    define('UI_TEXT_RECONCILED_AMOUNT', 'Reconciled<br>Amount');
+    define('UI_TEXT_DIFFERENCE', 'Difference');
+    define('UI_TEXT_DATE_OF_BANK_STATEMENT_TO_RECONCILE', 'Date of bank statement to reconcile');
+    define('UI_TEXT_PERSON_ITEM', 'Person/Item');
+    define('UI_TEXT_NEW', 'New');
 };

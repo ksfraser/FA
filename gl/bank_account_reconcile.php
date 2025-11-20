@@ -16,6 +16,7 @@ include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/includes/data_checks.inc");
 
 include_once($path_to_root . "/gl/includes/gl_db.inc");
@@ -33,14 +34,14 @@ if (user_use_date_picker())
 
 add_js_file('reconcile.js');
 
-page(_($help_context = "Reconcile Bank Account"), false, false, "", $js);
+page(_($help_context = UI_TEXT_RECONCILE_BANK_ACCOUNT), false, false, "", $js);
 
-check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
+check_db_has_bank_accounts(_(UI_TEXT_THERE_ARE_NO_BANK_ACCOUNTS_DEFINED_IN_THE_SYSTEM));
 
 function check_date() {
 	$dateService = new DateService();
 	if (!$dateService->isDate(RequestService::getPostStatic('reconcile_date'))) {
-		UiMessageService::displayError(_("Invalid reconcile date format"));
+		UiMessageService::displayError(_(UI_TEXT_INVALID_RECONCILE_DATE_FORMAT));
 		set_focus('reconcile_date');
 		return false;
 	}
@@ -57,7 +58,7 @@ function rec_checkbox($row)
 	$value = $row['reconciled'] != '';
 
 // save also in hidden field for testing during 'Reconcile'
-	return is_closed_trans($row['type'], $row['trans_no']) ? "--" : checkbox(null, $name, $value, true, _('Reconcile this transaction'))
+	return is_closed_trans($row['type'], $row['trans_no']) ? "--" : checkbox(null, $name, $value, true, _(UI_TEXT_RECONCILE_THIS_TRANSACTION))
  		. hidden($hidden, $value, false);
 }
 
@@ -201,10 +202,10 @@ if (isset($_POST['last']) && isset($_POST['ReconcileAll'])) {
 start_form();
 start_table(TABLESTYLE_NOBORDER);
 start_row();
-bank_accounts_list_cells(_("Account:"), 'bank_account', null, true);
+bank_accounts_list_cells(_(UI_TEXT_ACCOUNT_LABEL), 'bank_account', null, true);
 
-bank_reconciliation_list_cells(_("Bank Statement:"), RequestService::getPostStatic('bank_account'),
-	'bank_date', null, true, _("New"));
+bank_reconciliation_list_cells(_(UI_TEXT_BANK_STATEMENT), RequestService::getPostStatic('bank_account'),
+	'bank_date', null, true, _(UI_TEXT_NEW));
 end_row();
 end_table();
 
@@ -233,12 +234,12 @@ echo "<hr>";
 div_start('summary');
 
 start_table(TABLESTYLE);
-$th = array(_("Reconcile Date"), _("Beginning<br>Balance"), 
-	_("Ending<br>Balance"), _("Account<br>Total"),_("Reconciled<br>Amount"), _("Difference"));
+$th = array(_(UI_TEXT_RECONCILE_DATE), _(UI_TEXT_BEGINNING_BALANCE), 
+	_(UI_TEXT_ENDING_BALANCE), _(UI_TEXT_ACCOUNT_TOTAL),_(UI_TEXT_RECONCILED_AMOUNT), _("Difference"));
 table_header($th);
 start_row();
 
-date_cells("", "reconcile_date", _('Date of bank statement to reconcile'), 
+date_cells("", "reconcile_date", _(UI_TEXT_DATE_OF_BANK_STATEMENT_TO_RECONCILE), 
 	RequestService::getPostStatic('bank_date')=='', 0, 0, 0, null, true);
 
 amount_cells_ex("", "beg_balance", 15);
@@ -268,13 +269,13 @@ display_heading($act['bank_account_name']." - ".$act['bank_curr_code']);
 
 	$cols =
 	array(
-		_("Type") => array('fun'=>'systype_name', 'ord'=>''),
-		_("#") => array('fun'=>'trans_view', 'ord'=>''),
-		_("Reference"), 
-		_("Date") => 'date',
-		_("Debit") => array('align'=>'right', 'fun'=>'fmt_debit'), 
-		_("Credit") => array('align'=>'right','insert'=>true, 'fun'=>'fmt_credit'), 
-	    _("Person/Item") => array('fun'=>'fmt_person'), 
+		_(UI_TEXT_TYPE) => array('fun'=>'systype_name', 'ord'=>''),
+		_(UI_TEXT_NUMBER_SIGN) => array('fun'=>'trans_view', 'ord'=>''),
+		_(UI_TEXT_REFERENCE) => array('fun'=>'fmt_person'), 
+		_(UI_TEXT_DATE) => 'date',
+		_(UI_TEXT_DEBIT) => array('align'=>'right', 'fun'=>'fmt_debit'), 
+		_(UI_TEXT_CREDIT) => array('align'=>'right','insert'=>true, 'fun'=>'fmt_credit'), 
+	    _(UI_TEXT_PERSON_ITEM) => array('fun'=>'fmt_person'), 
 		_("Memo") => array('fun'=>'fmt_memo'),
 		array('insert'=>true, 'fun'=>'gl_view'),
 		"X"=>array('insert'=>true, 'fun'=>'rec_checkbox')
