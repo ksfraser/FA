@@ -20,6 +20,7 @@ include_once($path_to_root . "/includes/data_checks.inc");
 
 include_once($path_to_root . "/inventory/includes/stock_transfers_ui.inc");
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 
 // Modern OOP Services
 require_once($path_to_root . "/includes/DateService.php");
@@ -43,7 +44,7 @@ page($_SESSION['page_title'], false, false, "", $js);
 
 //-----------------------------------------------------------------------------------------------
 
-check_db_has_costable_items(_("There are no inventory items defined in the system (Purchased or manufactured items)."));
+check_db_has_costable_items(_(UI_TEXT_THERE_ARE_NO_INVENTORY_ITEMS_DEFINED_IN_THE_SYSTEM_PURCHASED_OR_MANUFACTURED_ITEMS));
 
 //-----------------------------------------------------------------------------------------------
 
@@ -52,15 +53,15 @@ if (isset($_GET['AddedID']))
 	$trans_no = $_GET['AddedID'];
 	$trans_type = ST_LOCTRANSFER;
 
-	display_notification_centered(_("Inventory transfer has been processed"));
-	display_note(get_trans_view_str($trans_type, $trans_no, _("&View this transfer")));
+	display_notification_centered(_(UI_TEXT_INVENTORY_TRANSFER_HAS_BEEN_PROCESSED));
+	display_note(get_trans_view_str($trans_type, $trans_no, _(UI_TEXT_VIEW_THIS_TRANSFER)));
 
 	$itm = db_fetch(get_stock_transfer_items($_GET['AddedID']));
 
 	if (InventoryService::isFixedAsset($itm['mb_flag']))
-		hyperlink_params($_SERVER['PHP_SELF'], _("Enter &Another Fixed Assets Transfer"), "NewTransfer=1&FixedAsset=1");
+		hyperlink_params($_SERVER['PHP_SELF'], _(UI_TEXT_ENTER_ANOTHER_FIXED_ASSETS_TRANSFER), "NewTransfer=1&FixedAsset=1");
   else
-	  hyperlink_params($_SERVER['PHP_SELF'], _("Enter &Another Inventory Transfer"), "NewTransfer=1");
+	  hyperlink_params($_SERVER['PHP_SELF'], _(UI_TEXT_ENTER_ANOTHER_INVENTORY_TRANSFER), "NewTransfer=1");
 
 	display_footer_exit();
 }
@@ -99,7 +100,7 @@ if (isset($_POST['Process']))
 	$input_error = 0;
 
 	if (count($tr->line_items) == 0)	{
-		UiMessageService::displayError(_("You must enter at least one non empty item line."));
+		UiMessageService::displayError(_(UI_TEXT_YOU_MUST_ENTER_AT_LEAST_ONE_NON_EMPTY_ITEM_LINE));
 		set_focus('stock_id');
 		$input_error = 1;
 	}
@@ -109,21 +110,21 @@ if (isset($_POST['Process']))
 		$input_error = 1;
 	} 
 	$dateService = new DateService();
-	elseif (!$dateService->isDate($_POST['AdjDate'])) 
+	if (!$dateService->isDate($_POST['AdjDate'])) 
 	{
-		UiMessageService::displayError(_("The entered transfer date is invalid."));
+		UiMessageService::displayError(_(UI_TEXT_THE_ENTERED_TRANSFER_DATE_IS_INVALID));
 		set_focus('AdjDate');
 		$input_error = 1;
 	} 
 	elseif (!DateService::isDateInFiscalYear($_POST['AdjDate'])) 
 	{
-		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_(UI_TEXT_THE_ENTERED_DATE_IS_OUT_OF_FISCAL_YEAR_OR_IS_CLOSED_FOR_FURTHER_DATA_ENTRY));
 		set_focus('AdjDate');
 		$input_error = 1;
 	} 
 	elseif ($_POST['FromStockLocation'] == $_POST['ToStockLocation'])
 	{
-		UiMessageService::displayError(_("The locations to transfer from and to must be different."));
+		UiMessageService::displayError(_(UI_TEXT_THE_LOCATIONS_TO_TRANSFER_FROM_AND_TO_MUST_BE_DIFFERENT));
 		set_focus('FromStockLocation');
 		$input_error = 1;
 	}
@@ -133,7 +134,7 @@ if (isset($_POST['Process']))
 
 		if ($low_stock)
 		{
-    		UiMessageService::displayError(_("The transfer cannot be processed because it would cause negative inventory balance in source location for marked items as of document date or later."));
+    		UiMessageService::displayError(_(UI_TEXT_THE_TRANSFER_CANNOT_BE_PROCESSED_BECAUSE_IT_WOULD_CAUSE_NEGATIVE_INVENTORY_BALANCE_IN_SOURCE_LOCATION_FOR_MARKED_ITEMS_AS_OF_DOCUMENT_DATE_OR_LATER));
 			$input_error = 1;
 		}
 	}
@@ -163,7 +164,7 @@ function check_item_data()
 {
 	if (!check_num('qty', 0) || RequestService::inputNumStatic('qty') == 0)
 	{
-		UiMessageService::displayError(_("The quantity entered must be a positive number."));
+		UiMessageService::displayError(_(UI_TEXT_THE_QUANTITY_ENTERED_MUST_BE_A_POSITIVE_NUMBER));
 		set_focus('qty');
 		return false;
 	}
@@ -219,9 +220,9 @@ if (isset($_POST['CancelItemChanges'])) {
 if (isset($_GET['NewTransfer']) || !isset($_SESSION['transfer_items']))
 {
 	if (isset($_GET['fixed_asset']))
-		check_db_has_disposable_fixed_assets(_("There are no fixed assets defined in the system."));
+		check_db_has_disposable_fixed_assets(_(UI_TEXT_THERE_ARE_NO_FIXED_ASSETS_DEFINED_IN_THE_SYSTEM));
 	else
-		check_db_has_costable_items(_("There are no inventory items defined in the system (Purchased or manufactured items)."));
+		check_db_has_costable_items(_(UI_TEXT_THERE_ARE_NO_INVENTORY_ITEMS_DEFINED_IN_THE_SYSTEM_PURCHASED_OR_MANUFACTURED_ITEMS));
 
 	handle_new_order();
 }
@@ -234,14 +235,14 @@ display_order_header($_SESSION['transfer_items']);
 start_table(TABLESTYLE, "width='70%'", 10);
 start_row();
 echo "<td>";
-display_transfer_items(_("Items"), $_SESSION['transfer_items']);
+display_transfer_items(_(UI_TEXT_ITEMS_LABEL), $_SESSION['transfer_items']);
 transfer_options_controls();
 echo "</td>";
 end_row();
 end_table(1);
 
-submit_center_first('Update', _("Update"), '', null);
-submit_center_last('Process', _("Process Transfer"), '',  'default');
+submit_center_first('Update', _(UI_TEXT_UPDATE), '', null);
+submit_center_last('Process', _(UI_TEXT_PROCESS_TRANSFER), '',  'default');
 
 end_form();
 end_page();

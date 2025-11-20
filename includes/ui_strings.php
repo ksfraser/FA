@@ -1502,4 +1502,16 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_RE_ORDER_LEVEL', 'Re-Order Level');
     define('UI_TEXT_REORDER_LEVELS_HAS_BEEN_UPDATED', 'Reorder levels has been updated.');
     define('UI_TEXT_LOCATION', 'Location');
+    define('UI_TEXT_INVENTORY_TRANSFER_HAS_BEEN_PROCESSED', 'Inventory transfer has been processed');
+    define('UI_TEXT_VIEW_THIS_TRANSFER', '&View this transfer');
+    define('UI_TEXT_ENTER_ANOTHER_FIXED_ASSETS_TRANSFER', 'Enter &Another Fixed Assets Transfer');
+    define('UI_TEXT_ENTER_ANOTHER_INVENTORY_TRANSFER', 'Enter &Another Inventory Transfer');
+    define('UI_TEXT_YOU_MUST_ENTER_AT_LEAST_ONE_NON_EMPTY_ITEM_LINE', 'You must enter at least one non empty item line.');
+    define('UI_TEXT_THE_ENTERED_TRANSFER_DATE_IS_INVALID', 'The entered transfer date is invalid.');
+    define('UI_TEXT_THE_ENTERED_DATE_IS_OUT_OF_FISCAL_YEAR_OR_IS_CLOSED_FOR_FURTHER_DATA_ENTRY', 'The entered date is out of fiscal year or is closed for further data entry.');
+    define('UI_TEXT_THE_LOCATIONS_TO_TRANSFER_FROM_AND_TO_MUST_BE_DIFFERENT', 'The locations to transfer from and to must be different.');
+    define('UI_TEXT_THE_TRANSFER_CANNOT_BE_PROCESSED_BECAUSE_IT_WOULD_CAUSE_NEGATIVE_INVENTORY_BALANCE_IN_SOURCE_LOCATION_FOR_MARKED_ITEMS_AS_OF_DOCUMENT_DATE_OR_LATER', 'The transfer cannot be processed because it would cause negative inventory balance in source location for marked items as of document date or later.');
+    define('UI_TEXT_THE_QUANTITY_ENTERED_MUST_BE_A_POSITIVE_NUMBER', 'The quantity entered must be a positive number.');
+    define('UI_TEXT_ITEMS_LABEL', 'Items');
+    define('UI_TEXT_PROCESS_TRANSFER', 'Process Transfer');
 };
