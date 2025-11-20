@@ -1740,4 +1740,16 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_SELECTED_SALES_PERSON_DATA_HAVE_BEEN_UPDATED', 'Selected sales person data have been updated');
     define('UI_TEXT_NEW_SALES_PERSON_DATA_HAVE_BEEN_ADDED', 'New sales person data have been added');
     define('UI_TEXT_SELECTED_SALES_PERSON_DATA_HAVE_BEEN_DELETED', 'Selected sales person data have been deleted');
+    define('UI_TEXT_POS_SETTINGS', 'POS settings');
+    define('UI_TEXT_NEW_POINT_OF_SALE_HAS_BEEN_ADDED', 'New point of sale has been added');
+    define('UI_TEXT_SELECTED_POINT_OF_SALE_HAS_BEEN_UPDATED', 'Selected point of sale has been updated');
+    define('UI_TEXT_SELECTED_POINT_OF_SALE_HAS_BEEN_DELETED', 'Selected point of sale has been deleted');
+    define('UI_TEXT_POS_NAME', 'POS Name');
+    define('UI_TEXT_CREDIT_SALE', 'Credit sale');
+    define('UI_TEXT_CASH_SALE', 'Cash sale');
+    define('UI_TEXT_DEFAULT_ACCOUNT', 'Default account');
+    define('UI_TEXT_YES', 'Yes');
+    define('UI_TEXT_NO', 'No');
+    define('UI_TEXT_ALLOWED_CREDIT_SALE_TERMS_SELECTION', 'Allowed credit sale terms selection:');
+    define('UI_TEXT_ALLOWED_CASH_SALE_TERMS_SELECTION', 'Allowed cash sale terms selection:');
 };

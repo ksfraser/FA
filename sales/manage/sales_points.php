@@ -13,7 +13,7 @@ $page_security = 'SA_POSSETUP';
 $path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_($help_context = "POS settings"));
+page(_($help_context = UI_TEXT_POS_SETTINGS));
 
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/ui_strings.php");
@@ -39,7 +39,7 @@ if ($Mode=='ADD_ITEM' && can_process())
 {
 	add_sales_point($_POST['name'], $_POST['location'], $_POST['account'],
 		RequestService::checkValueStatic('cash'), RequestService::checkValueStatic('credit'));
-	display_notification(_('New point of sale has been added'));
+	display_notification(_(UI_TEXT_NEW_POINT_OF_SALE_HAS_BEEN_ADDED));
 	$Mode = 'RESET';
 }
 
@@ -50,7 +50,7 @@ if ($Mode=='UPDATE_ITEM' && can_process())
 
 	update_sales_point($selected_id, $_POST['name'], $_POST['location'],
 		$_POST['account'], RequestService::checkValueStatic('cash'), RequestService::checkValueStatic('credit'));
-	display_notification(_('Selected point of sale has been updated'));
+	display_notification(_(UI_TEXT_SELECTED_POINT_OF_SALE_HAS_BEEN_UPDATED));
 	$Mode = 'RESET';
 }
 
@@ -63,7 +63,7 @@ if ($Mode == 'Delete')
 		UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_THIS_POS_BECAUSE_IT_IS_USED_IN_USERS_SETUP));
 	} else {
 		delete_sales_point($selected_id);
-		display_notification(_('Selected point of sale has been deleted'));
+		display_notification(_(UI_TEXT_SELECTED_POINT_OF_SALE_HAS_BEEN_DELETED));
 		$Mode = 'RESET';
 	}
 }
@@ -82,7 +82,7 @@ $result = get_all_sales_points(RequestService::checkValueStatic('show_inactive')
 start_form();
 start_table(TABLESTYLE);
 
-$th = array (_('POS Name'), _('Credit sale'), _('Cash sale'), _('Location'), _('Default account'), 
+$th = array (_(UI_TEXT_POS_NAME), _(UI_TEXT_CREDIT_SALE), _(UI_TEXT_CASH_SALE), _(UI_TEXT_LOCATION), _(UI_TEXT_DEFAULT_ACCOUNT), 
 	 '','');
 inactive_control_column($th);
 table_header($th);
@@ -92,8 +92,8 @@ while ($myrow = db_fetch($result))
 {
     alt_table_row_color($k);
 	label_cell($myrow["pos_name"], "nowrap");
-	label_cell($myrow['credit_sale'] ? _('Yes') : _('No'));
-	label_cell($myrow['cash_sale'] ? _('Yes') : _('No'));
+	label_cell($myrow['credit_sale'] ? _(UI_TEXT_YES) : _(UI_TEXT_NO));
+	label_cell($myrow['cash_sale'] ? _(UI_TEXT_YES) : _(UI_TEXT_NO));
 	label_cell($myrow["location_name"], "");
 	label_cell($myrow["bank_account_name"], "");
 	inactive_control_cell($myrow["id"], $myrow["inactive"], "sales_pos", 'id');
@@ -129,8 +129,8 @@ if ($selected_id != -1)
 
 text_row_ex(_(UI_TEXT_POINT_OF_SALE_NAME).':', 'name', 20, 30);
 if($cash) {
-	check_row(_('Allowed credit sale terms selection:'), 'credit', RequestService::checkValueStatic('credit_sale'));
-	check_row(_('Allowed cash sale terms selection:'), 'cash',  RequestService::checkValueStatic('cash_sale'));
+	check_row(_(UI_TEXT_ALLOWED_CREDIT_SALE_TERMS_SELECTION), 'credit', RequestService::checkValueStatic('credit_sale'));
+	check_row(_(UI_TEXT_ALLOWED_CASH_SALE_TERMS_SELECTION), 'cash',  RequestService::checkValueStatic('cash_sale'));
 	cash_accounts_list_row(_(UI_TEXT_DEFAULT_CASH_ACCOUNT_LABEL), 'account');
 } else {
 	hidden('credit', 1);
