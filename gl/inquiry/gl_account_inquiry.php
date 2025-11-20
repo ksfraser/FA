@@ -220,7 +220,7 @@ function show_results()
 
 	if ($show_balances) {
     	start_row("class='inquirybg'");
-    	label_cell("<b>" . _("Ending Balance") ." - ".$_POST['TransToDate']. "</b>", "colspan=$colspan");
+    	label_cell("<b>" . _(UI_TEXT_ENDING_BALANCE_LABEL) ." - ".$_POST['TransToDate']. "</b>", "colspan=$colspan");
     	display_debit_or_credit_cells($running_total, true);
     	label_cell("");
     	label_cell("");
@@ -229,7 +229,7 @@ function show_results()
 
 	end_table(2);
 	if (db_num_rows($result) == 0)
-		display_note(_("No general ledger transactions have been created for the specified criteria."), 0, 1);
+		display_note(_(UI_TEXT_NO_GL_TRANSACTIONS_FOUND), 0, 1);
 
 }
 

@@ -1909,4 +1909,4 @@ define('UI_TEXT_NO_BANK_ACCOUNTS_ERROR', 'There are no bank accounts defined in 
 define('UI_TEXT_TYPE_LABEL', 'Type');
 define('UI_TEXT_OPENING_BALANCE_LABEL', 'Opening Balance');
 define('UI_TEXT_ENDING_BALANCE_LABEL', 'Ending Balance');
-};
+define('UI_TEXT_NO_GL_TRANSACTIONS_FOUND', 'No general ledger transactions have been created for the specified criteria.');
