@@ -1563,4 +1563,12 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_CATEGORY_NAME_LABEL', 'Category Name:');
     define('UI_TEXT_SELECTED_ITEM_CATEGORY_HAS_BEEN_DELETED', 'Selected item category has been deleted');
     define('UI_TEXT_SELECTED_ITEM_CATEGORY_HAS_BEEN_UPDATED', 'Selected item category has been updated');
+    define('UI_TEXT_THE_QUANTITY_ENTERED_WAS_NOT_POSITIVE_NUMBER', 'The quantity entered was not positive number.');
+    define('UI_TEXT_ITEM_CODE_DESCRIPTION_CANNOT_BE_EMPTY', 'Item code description cannot be empty.');
+    define('UI_TEXT_NEW_ITEM_CODE_HAS_BEEN_ADDED', 'New item code has been added.');
+    define('UI_TEXT_ITEM_CODE_HAS_BEEN_UPDATED', 'Item code has been updated.');
+    define('UI_TEXT_ITEM_CODE_HAS_BEEN_SUCCESSFULLY_DELETED', 'Item code has been sucessfully deleted.');
+    define('UI_TEXT_EAN_UPC_CODE', 'EAN/UPC Code');
+    define('UI_TEXT_UPC_EAN_CODE_LABEL', 'UPC/EAN code:');
+    define('UI_TEXT_QUANTITY_LABEL', 'Quantity:');
 };
