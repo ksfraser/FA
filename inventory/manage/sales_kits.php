@@ -21,9 +21,10 @@ page(_($help_context = "Sales Kits & Alias Codes"), false, false, "", $js);
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/includes/data_checks.inc");
 
-check_db_has_stock_items(_("There are no items defined in the system."));
+check_db_has_stock_items(_(UI_TEXT_THERE_ARE_NO_ITEMS_DEFINED_IN_THE_SYSTEM));
 
 simple_page_mode(true);
 
@@ -33,7 +34,7 @@ function display_kit_items($selected_kit)
 	$result = get_item_kit($selected_kit);
 	div_start('bom');
 	start_table(TABLESTYLE, "width='60%'");
-	$th = array(_("Stock Item"), _("Description"), _("Quantity"), _("Units"),
+	$th = array(_(UI_TEXT_STOCK_ITEM_LABEL), _(UI_TEXT_DESCRIPTION_LABEL), _(UI_TEXT_QUANTITY_LABEL), _(UI_TEXT_UNITS_LABEL),
 		'','');
 	table_header($th);
 
@@ -47,9 +48,9 @@ function display_kit_items($selected_kit)
 		label_cell($myrow["comp_name"]);
         qty_cell($myrow["quantity"], false, 
 			$myrow["units"] == '' ? 0 : get_qty_dec($myrow["stock_id"]));
-        label_cell($myrow["units"] == '' ? _('kit') : $myrow["units"]);
- 		edit_button_cell("Edit".$myrow['id'], _("Edit"));
- 		delete_button_cell("Delete".$myrow['id'], _("Delete"));
+        label_cell($myrow["units"] == '' ? _(UI_TEXT_KIT_LABEL) : $myrow["units"]);
+ 		edit_button_cell("Edit".$myrow['id'], _(UI_TEXT_EDIT));
+ 		delete_button_cell("Delete".$myrow['id'], _(UI_TEXT_DELETE));
         end_row();
 
 	} //END WHILE LIST LOOP
@@ -65,13 +66,13 @@ function update_kit($selected_kit, $component_id)
 
 	if (!check_num('quantity', 0))
 	{
-		UiMessageService::displayError(_("The quantity entered must be numeric and greater than zero."));
+		UiMessageService::displayError(_(UI_TEXT_THE_QUANTITY_ENTERED_MUST_BE_NUMERIC_AND_GREATER_THAN_ZERO));
 		set_focus('quantity');
 		return 0;
 	}
    	elseif (RequestService::getPostStatic('description') == '')
    	{
-      	UiMessageService::displayError( _("Item code description cannot be empty."));
+      	UiMessageService::displayError( _(UI_TEXT_ITEM_CODE_DESCRIPTION_CANNOT_BE_EMPTY));
 		set_focus('description');
 		return 0;
    	}
@@ -79,14 +80,14 @@ function update_kit($selected_kit, $component_id)
 	{
 		if ($selected_kit == '') { // New kit/alias definition
 			if (RequestService::getPostStatic('kit_code') == '') {
-	    	  	UiMessageService::displayError( _("Kit/alias code cannot be empty."));
+	    	  	UiMessageService::displayError( _(UI_TEXT_KIT_ALIAS_CODE_CANNOT_BE_EMPTY));
 				set_focus('kit_code');
 				return 0;
 			}
 			$kit = get_item_kit(RequestService::getPostStatic('kit_code'));
     		if (db_num_rows($kit)) {
 			  	$input_error = 1;
-    	  		UiMessageService::displayError( _("This item code is already assigned to stock item or sale kit."));
+    	  		UiMessageService::displayError( _(UI_TEXT_THIS_ITEM_CODE_IS_ALREADY_ASSIGNED_TO_STOCK_ITEM_OR_SALE_KIT));
 				set_focus('kit_code');
 				return 0;
 			}
@@ -94,24 +95,24 @@ function update_kit($selected_kit, $component_id)
    	}
 
 	if (check_item_in_kit($component_id, $selected_kit, RequestService::getPostStatic('component'), true)) {
-		UiMessageService::displayError(_("The selected component contains directly or on any lower level the kit under edition. Recursive kits are not allowed."));
+		UiMessageService::displayError(_(UI_TEXT_THE_SELECTED_COMPONENT_CONTAINS_DIRECTLY_OR_ON_ANY_LOWER_LEVEL_THE_KIT_UNDER_EDITION_RECURSIVE_KITS_ARE_NOT_ALLOWED));
 		set_focus('component');
 		return 0;
 	}
 
 		/*Now check to see that the component is not already in the kit */
 	if (check_item_in_kit($component_id, $selected_kit, RequestService::getPostStatic('component'))) {
-		UiMessageService::displayError(_("The selected component is already in this kit. You can modify it's quantity but it cannot appear more than once in the same kit."));
+		UiMessageService::displayError(_(UI_TEXT_THE_SELECTED_COMPONENT_IS_ALREADY_IN_THIS_KIT_YOU_CAN_MODIFY_ITS_QUANTITY_BUT_IT_CANNOT_APPEAR_MORE_THAN_ONCE_IN_THE_SAME_KIT));
 		set_focus('component');
 		return 0;
 	}
 	if ($component_id == -1) { // new component in alias/kit 
 		if ($selected_kit == '') {
 			$selected_kit = RequestService::getPostStatic('kit_code');
-			$msg = _("New alias code has been created.");
+			$msg = _(UI_TEXT_NEW_ALIAS_CODE_HAS_BEEN_CREATED);
 		}
 		 else
-			$msg =_("New component has been added to selected kit.");
+			$msg =_(UI_TEXT_NEW_COMPONENT_HAS_BEEN_ADDED_TO_SELECTED_KIT);
 
 		add_item_code($selected_kit, RequestService::getPostStatic('component'), RequestService::getPostStatic('description'),
 			 RequestService::getPostStatic('category'), RequestService::inputNumStatic('quantity'), 0);
@@ -121,7 +122,7 @@ function update_kit($selected_kit, $component_id)
 		$props = get_kit_props($selected_kit);
 		update_item_code($component_id, $selected_kit, RequestService::getPostStatic('component'),
 			$props['description'], $props['category_id'], RequestService::inputNumStatic('quantity'), 0);
-		display_notification(_("Component of selected kit has been updated."));
+		display_notification(_(UI_TEXT_COMPONENT_OF_SELECTED_KIT_HAS_BEEN_UPDATED));
 	}
 	$Mode = 'RESET';
 	$Ajax->activate('_page_body');
@@ -133,7 +134,7 @@ function update_kit($selected_kit, $component_id)
 
 if (RequestService::getPostStatic('update_name')) {
 	update_kit_props(RequestService::getPostStatic('item_code'), RequestService::getPostStatic('description'), RequestService::getPostStatic('category'));
-	display_notification(_('Kit common properties has been updated'));
+	display_notification(_(UI_TEXT_KIT_COMMON_PROPERTIES_HAS_BEEN_UPDATED));
 	$Ajax->activate('_page_body');
 }
 
@@ -154,7 +155,7 @@ if ($Mode == 'Delete')
 	$kit = get_item_kit($_POST['item_code']);
 	if ((db_num_rows($kit) == 1) && $num_kits) {
 
-		$msg = _("This item cannot be deleted because it is the last item in the kit used by following kits")
+		$msg = _(UI_TEXT_THIS_ITEM_CANNOT_BE_DELETED_BECAUSE_IT_IS_THE_LAST_ITEM_IN_THE_KIT_USED_BY_FOLLOWING_KITS)
 			.':<br>';
 
 		while($num_kits--) {
@@ -165,7 +166,7 @@ if ($Mode == 'Delete')
 		UiMessageService::displayError($msg);
 	} else {
 		delete_item_code($selected_id);
-		display_notification(_("The component item has been deleted from this bom"));
+		display_notification(_(UI_TEXT_THE_COMPONENT_ITEM_HAS_BEEN_DELETED_FROM_THIS_BOM));
 		$Mode = 'RESET';
 	}
 }
@@ -180,8 +181,8 @@ if ($Mode == 'RESET')
 
 start_form();
 
-echo "<center>" . _("Select a sale kit:") . "&nbsp;";
-echo sales_kits_list('item_code', null, _('New kit'), true);
+echo "<center>" . _(UI_TEXT_SELECT_A_SALE_KIT_LABEL) . "&nbsp;";
+echo sales_kits_list('item_code', null, _(UI_TEXT_NEW_KIT_LABEL), true);
 echo "</center><br>";
 $props = get_kit_props($_POST['item_code']);
 
@@ -196,16 +197,16 @@ $selected_kit = $_POST['item_code'];
 if (RequestService::getPostStatic('item_code') == '') {
 // New sales kit entry
 	start_table(TABLESTYLE2);
-	text_row(_("Alias/kit code:"), 'kit_code', null, 20, 20);
+	text_row(_(UI_TEXT_ALIAS_KIT_CODE_LABEL), 'kit_code', null, 20, 20);
 } else
 {
 	 // Kit selected so display bom or edit component
 	$_POST['description'] = $props['description'];
 	$_POST['category'] = $props['category_id'];
 	start_table(TABLESTYLE2);
-	text_row(_("Description:"), 'description', null, 50, 200);
-	stock_categories_list_row(_("Category:"), 'category', null);
-	submit_row('update_name', _("Update"), false, 'align=center colspan=2', _('Update kit/alias name'), true);
+	text_row(_(UI_TEXT_DESCRIPTION_LABEL_WITH_COLON), 'description', null, 50, 200);
+	stock_categories_list_row(_(UI_TEXT_CATEGORY_LABEL), 'category', null);
+	submit_row('update_name', _(UI_TEXT_UPDATE), false, 'align=center colspan=2', _(UI_TEXT_UPDATE_KIT_ALIAS_NAME), true);
 	end_row();
 	end_table(1);
 	display_kit_items($selected_kit);
@@ -220,19 +221,19 @@ if (RequestService::getPostStatic('item_code') == '') {
 	}
 	hidden("selected_id", $selected_id);
 	
-	sales_local_items_list_row(_("Component:"),'component', null, false, true);
+	sales_local_items_list_row(_(UI_TEXT_COMPONENT_LABEL),'component', null, false, true);
 
 	if (RequestService::getPostStatic('item_code') == '') { // new kit/alias
 		if ($Mode!='ADD_ITEM' && $Mode!='UPDATE_ITEM') {
 			$_POST['description'] = is_array($props) ? $props['description'] : '';
 			$_POST['category'] = is_array($props) ? $props['category_id'] : '';
 		}
-		text_row(_("Description:"), 'description', null, 50, 200);
-		stock_categories_list_row(_("Category:"), 'category', null);
+		text_row(_(UI_TEXT_DESCRIPTION_LABEL_WITH_COLON), 'description', null, 50, 200);
+		stock_categories_list_row(_(UI_TEXT_CATEGORY_LABEL), 'category', null);
 	}
 	$res = get_item_edit_info(RequestService::getPostStatic('component'));
 	$dec =  $res["decimals"] == '' ? 0 : $res["decimals"];
-	$units = $res["units"] == '' ? _('kits') : $res["units"];
+	$units = $res["units"] == '' ? _(UI_TEXT_KITS_LABEL) : $res["units"];
 	if (list_updated('component')) 
 	{
 		$_POST['quantity'] = FormatService::numberFormat2(1, $dec);
@@ -240,7 +241,7 @@ if (RequestService::getPostStatic('item_code') == '') {
 		$Ajax->activate('category');
 	}
 	
-	qty_row(_("Quantity:"), 'quantity', FormatService::numberFormat2(1, $dec), '', $units, $dec);
+	qty_row(_(UI_TEXT_QUANTITY_LABEL_WITH_COLON), 'quantity', FormatService::numberFormat2(1, $dec), '', $units, $dec);
 
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
