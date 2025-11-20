@@ -27,12 +27,12 @@ if (user_use_date_picker())
 if (isset($_GET['OutstandingOnly']) && ($_GET['OutstandingOnly'] == true))
 {
 	$_POST['OutstandingOnly'] = true;
-	page(_($help_context = "Search Not Invoiced Deliveries"), false, false, "", $js);
+	page(_($help_context = UI_TEXT_SEARCH_NOT_INVOICED_DELIVERIES), false, false, "", $js);
 }
 else
 {
 	$_POST['OutstandingOnly'] = false;
-	page(_($help_context = "Search All Deliveries"), false, false, "", $js);
+	page(_($help_context = UI_TEXT_SEARCH_ALL_DELIVERIES), false, false, "", $js);
 }
 
 if (isset($_GET['selected_customer']))
@@ -67,9 +67,7 @@ if (isset($_POST['BatchInvoice']))
 		}
 	}
     if (!$del_count) {
-		UiMessageService::displayError(_('For batch invoicing you should
-		    select at least one delivery. All items must be dispatched to
-		    the same customer branch.'));
+		UiMessageService::displayError(_(UI_TEXT_FOR_BATCH_INVOICING_YOU_SHOULD_SELECT_AT_LEAST_ONE_DELIVERY_ALL_ITEMS_MUST_BE_DISPATCHED_TO_THE_SAME_CUSTOMER_BRANCH));
     } else {
 		$_SESSION['DeliveryBatch'] = $selected;
 		meta_forward($path_to_root . '/sales/customer_invoice.php','BatchInvoice=Yes');
@@ -153,7 +151,7 @@ function prt_link($row)
 function invoice_link($row)
 {
 	return $row["Outstanding"]==0 ? '' :
-		pager_link(_('Invoice'), "/sales/customer_invoice.php?DeliveryNumber=" 
+		pager_link(_(UI_TEXT_INVOICE), "/sales/customer_invoice.php?DeliveryNumber=" 
 			.$row['trans_no'], ICON_DOC);
 }
 

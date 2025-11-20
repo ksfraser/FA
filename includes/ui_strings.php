@@ -1704,4 +1704,10 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_SEARCH_ALL_SALES_ORDERS', 'Search All Sales Orders');
     define('UI_TEXT_SEARCH_ALL_SALES_QUOTATIONS', 'Search All Sales Quotations');
     define('UI_TEXT_SET_THIS_ORDER_AS_A_TEMPLATE_FOR_DIRECT_DELIVERIES_INVOICES', 'Set this order as a template for direct deliveries/invoices');
+    define('UI_TEXT_SEARCH_NOT_INVOICED_DELIVERIES', 'Search Not Invoiced Deliveries');
+    define('UI_TEXT_SEARCH_ALL_DELIVERIES', 'Search All Deliveries');
+    define('UI_TEXT_FOR_BATCH_INVOICING_YOU_SHOULD_SELECT_AT_LEAST_ONE_DELIVERY_ALL_ITEMS_MUST_BE_DISPATCHED_TO_THE_SAME_CUSTOMER_BRANCH', 'For batch invoicing you should
+		    select at least one delivery. All items must be dispatched to
+		    the same customer branch.');
+    define('UI_TEXT_INVOICE', 'Invoice');
 };
