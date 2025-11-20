@@ -1550,4 +1550,17 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_EDITABLE_DESCRIPTION_LABEL', 'Editable description:');
     define('UI_TEXT_EXCLUDE_FROM_SALES_LABEL', 'Exclude from sales:');
     define('UI_TEXT_EXCLUDE_FROM_PURCHASES_LABEL', 'Exclude from purchases:');
+    define('UI_TEXT_CANNOT_DELETE_THIS_ITEM_CATEGORY_BECAUSE_ITEMS_HAVE_BEEN_CREATED_USING_THIS_ITEM_CATEGORY', 'Cannot delete this item category because items have been created using this item category.');
+    define('UI_TEXT_TAX_TYPE', 'Tax type');
+    define('UI_TEXT_SALES_ACT', 'Sales Act');
+    define('UI_TEXT_ASSET_ACCOUNT', 'Asset Account');
+    define('UI_TEXT_DEPRECATION_COST_ACCOUNT', 'Deprecation Cost Account');
+    define('UI_TEXT_DEPRECIATION_DISPOSAL_ACCOUNT', 'Depreciation/Disposal Account');
+    define('UI_TEXT_INVENTORY_ACCOUNT', 'Inventory Account');
+    define('UI_TEXT_COGS_ACCOUNT', 'COGS Account');
+    define('UI_TEXT_ADJUSTMENT_ACCOUNT', 'Adjustment Account');
+    define('UI_TEXT_ASSEMBLY_ACCOUNT', 'Assembly Account');
+    define('UI_TEXT_CATEGORY_NAME_LABEL', 'Category Name:');
+    define('UI_TEXT_SELECTED_ITEM_CATEGORY_HAS_BEEN_DELETED', 'Selected item category has been deleted');
+    define('UI_TEXT_SELECTED_ITEM_CATEGORY_HAS_BEEN_UPDATED', 'Selected item category has been updated');
 };

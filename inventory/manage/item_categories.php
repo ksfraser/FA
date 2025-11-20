@@ -14,6 +14,7 @@ if (!isset($path_to_root)) $path_to_root = "../..";
 require_once($path_to_root . "/includes/session.inc");
 require_once($path_to_root . "/includes/InventoryService.php");
 require_once($path_to_root . "/includes/CompanyPrefsService.php");
+include_once($path_to_root . "/includes/ui_strings.php");
 
 if (isset($_GET['FixedAsset'])) {
   $page_security = 'SA_ASSETCATEGORY';
@@ -46,7 +47,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if (strlen($_POST['description']) == 0) 
 	{
 		$input_error = 1;
-		UiMessageService::displayError(_("The item category description cannot be empty."));
+		UiMessageService::displayError(_(UI_TEXT_CATEGORY_DESCRIPTION_CANNOT_BE_EMPTY));
 		set_focus('description');
 	}
 
@@ -60,7 +61,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 				$_POST['adjustment_account'], $_POST['wip_account'],
 				$_POST['units'], $_POST['mb_flag'],	$_POST['dim1'],	$_POST['dim2'],
 				RequestService::checkValueStatic('no_sale'), RequestService::checkValueStatic('no_purchase'));
-			display_notification(_('Selected item category has been updated'));
+			display_notification(_(UI_TEXT_SELECTED_ITEM_CATEGORY_HAS_BEEN_UPDATED));
     	} 
     	else 
     	{
@@ -84,12 +85,12 @@ if ($Mode == 'Delete')
 	// PREVENT DELETES IF DEPENDENT RECORDS IN 'stock_master'
 	if (key_in_foreign_table($selected_id, 'stock_master', 'category_id'))
 	{
-		UiMessageService::displayError(_("Cannot delete this item category because items have been created using this item category."));
+		UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_THIS_ITEM_CATEGORY_BECAUSE_ITEMS_HAVE_BEEN_CREATED_USING_THIS_ITEM_CATEGORY));
 	} 
 	else 
 	{
 		delete_item_category($selected_id);
-		display_notification(_('Selected item category has been deleted'));
+		display_notification(_(UI_TEXT_SELECTED_ITEM_CATEGORY_HAS_BEEN_DELETED));
 	}
 	$Mode = 'RESET';
 }
@@ -116,13 +117,13 @@ $result = get_item_categories(RequestService::checkValueStatic('show_inactive'),
 start_form();
 start_table(TABLESTYLE, "width='80%'");
 if ($fixed_asset) {
-	$th = array(_("Name"), _("Tax type"), _("Units"), _("Sales Act"),
-		_("Asset Account"), _("Deprecation Cost Account"),
-		_("Depreciation/Disposal Account"), "", "");
+	$th = array(_(UI_TEXT_NAME), _(UI_TEXT_TAX_TYPE), _(UI_TEXT_UNITS), _(UI_TEXT_SALES_ACT),
+		_(UI_TEXT_ASSET_ACCOUNT), _(UI_TEXT_DEPRECATION_COST_ACCOUNT),
+		_(UI_TEXT_DEPRECIATION_DISPOSAL_ACCOUNT), "", "");
 } else {
-	$th = array(_("Name"), _("Tax type"), _("Units"), _("Type"), _("Sales Act"),
-		_("Inventory Account"), _("COGS Account"), _("Adjustment Account"),
-		_("Assembly Account"), "", "");
+	$th = array(_(UI_TEXT_NAME), _(UI_TEXT_TAX_TYPE), _(UI_TEXT_UNITS), _(UI_TEXT_TYPE), _(UI_TEXT_SALES_ACT),
+		_(UI_TEXT_INVENTORY_ACCOUNT), _(UI_TEXT_COGS_ACCOUNT), _(UI_TEXT_ADJUSTMENT_ACCOUNT),
+		_(UI_TEXT_ASSEMBLY_ACCOUNT), "", "");
 }
 inactive_control_column($th);
 
@@ -146,8 +147,8 @@ while ($myrow = db_fetch($result))
 	if (!$fixed_asset)
 		label_cell($myrow["dflt_wip_act"], "align=center");
 	inactive_control_cell($myrow["category_id"], $myrow["inactive"], 'stock_category', 'category_id');
- 	edit_button_cell("Edit".$myrow["category_id"], _("Edit"));
- 	delete_button_cell("Delete".$myrow["category_id"], _("Delete"));
+ 	edit_button_cell("Edit".$myrow["category_id"], _(UI_TEXT_EDIT));
+ 	delete_button_cell("Delete".$myrow["category_id"], _(UI_TEXT_DELETE));
 	end_row();
 }
 
@@ -207,7 +208,7 @@ if ($selected_id != -1)
 
 }
 
-text_row(_("Category Name:"), 'description', null, 30, 30);  
+text_row(_(UI_TEXT_CATEGORY_NAME_LABEL), 'description', null, 30, 30);  
 
 table_section_title(_("Default values for new items"));
 
