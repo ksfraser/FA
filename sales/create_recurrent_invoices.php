@@ -182,10 +182,10 @@ if ($id != -1)
 		$_POST['trans_date'] = $to;
 		start_form();
 		start_table(TABLESTYLE, "width=50%");
-		label_row(_('Description:'), $myrow["description"]);
-		label_row(_('Template:'), get_customer_trans_view_str(ST_SALESORDER, $myrow["order_no"]));
-		label_row(_('Number of invoices:'), $count);
-		date_row(_('Invoice date:'), 'trans_date');
+		label_row(_(UI_TEXT_DESCRIPTION_LABEL_WITH_COLON), $myrow["description"]);
+		label_row(_(UI_TEXT_TEMPLATE_LABEL), get_customer_trans_view_str(ST_SALESORDER, $myrow["order_no"]));
+		label_row(_(UI_TEXT_NUMBER_OF_INVOICES_LABEL), $count);
+		date_row(_(UI_TEXT_INVOICE_DATE_LABEL), 'trans_date');
 		$newto = DateService::addMonthsStatic($to, $myrow['monthly']);
 		$newto = DateService::addDaysStatic($newto, $myrow['days']);
 		text_row(_(UI_TEXT_INVOICE_NOTICE_LABEL), 'memo', sprintf(_(UI_TEXT_RECURRENT_INVOICE_COVERS_PERIOD), $to,	DateService::addDaysStatic($newto, -1)), 100, 100);
@@ -194,8 +194,8 @@ if ($id != -1)
 		hidden('from', $from, true);
 		hidden('to', $to, true);
 		br();
-		submit_center_first('confirmed'.$id, _('Create'), _('Create recurrent invoices'), false, ICON_OK);
-		submit_center_last('cancel', _('Cancel'), _('Return to recurrent invoices'), false, ICON_ESCAPE);
+		submit_center_first('confirmed'.$id, _(UI_TEXT_CREATE), _(UI_TEXT_CREATE_RECURRENT_INVOICES), false, ICON_OK);
+		submit_center_last('cancel', _(UI_TEXT_CANCEL), _(UI_TEXT_RETURN_TO_RECURRENT_INVOICES), false, ICON_ESCAPE);
 		submit_js_confirm("do_create".$id, sprintf(_(UI_TEXT_CONFIRM_ISSUE_INVOICES), $count));
 		end_form();
 

@@ -1633,4 +1633,10 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_CATEGORY_LABEL', 'Category:');
     define('UI_TEXT_COMPONENT_LABEL', 'Component:');
     define('UI_TEXT_QUANTITY_LABEL_WITH_COLON', 'Quantity:');
+    define('UI_TEXT_TEMPLATE_LABEL', 'Template:');
+    define('UI_TEXT_NUMBER_OF_INVOICES_LABEL', 'Number of invoices:');
+    define('UI_TEXT_INVOICE_DATE_LABEL', 'Invoice date:');
+    define('UI_TEXT_CREATE', 'Create');
+    define('UI_TEXT_CREATE_RECURRENT_INVOICES', 'Create recurrent invoices');
+    define('UI_TEXT_RETURN_TO_RECURRENT_INVOICES', 'Return to recurrent invoices');
 };
