@@ -1418,4 +1418,13 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_DELIVERIES', 'Deliveries');
     define('UI_TEXT_DELIVERED_ON', 'Delivered On');
     define('UI_TEXT_INVOICES_CREDITS', 'Invoices/Credits');
+    define('UI_TEXT_PAYMENT_TO_SUPPLIER', 'Payment to Supplier');
+    define('UI_TEXT_TO_SUPPLIER', 'To Supplier');
+    define('UI_TEXT_FROM_BANK_ACCOUNT', 'From Bank Account');
+    define('UI_TEXT_DATE_PAID', 'Date Paid');
+    define('UI_TEXT_PAYMENT_CURRENCY', 'Payment Currency');
+    define('UI_TEXT_DISCOUNT', 'Discount');
+    define('UI_TEXT_SUPPLIERS_CURRENCY', 'Supplier\'s Currency');
+    define('UI_TEXT_THIS_PAYMENT_HAS_BEEN_VOIDED', 'This payment has been voided.');
+    define('UI_TEXT_PAYMENT_TYPE', 'Payment Type');
 };

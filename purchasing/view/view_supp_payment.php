@@ -15,6 +15,7 @@ $path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
 $js = "";
 if ($SysPrefs->use_popup_windows)
@@ -47,45 +48,45 @@ if (!empty($SysPrefs->prefs['company_logo_on_views']))
 
 echo "<center>";
 
-display_heading(_("Payment to Supplier") . " #$trans_no");
+display_heading(_(UI_TEXT_PAYMENT_TO_SUPPLIER) . " #$trans_no");
 
 echo "<br>";
 start_table(TABLESTYLE2, "width='80%'");
 
 start_row();
-label_cells(_("To Supplier"), $receipt['supplier_name'], "class='tableheader2'");
-label_cells(_("From Bank Account"), $receipt['bank_account_name'], "class='tableheader2'");
-label_cells(_("Date Paid"), DateService::sql2dateStatic($receipt['tran_date']), "class='tableheader2'");
+label_cells(_(UI_TEXT_TO_SUPPLIER), $receipt['supplier_name'], "class='tableheader2'");
+label_cells(_(UI_TEXT_FROM_BANK_ACCOUNT), $receipt['bank_account_name'], "class='tableheader2'");
+label_cells(_(UI_TEXT_DATE_PAID), DateService::sql2dateStatic($receipt['tran_date']), "class='tableheader2'");
 end_row();
 start_row();
 if ($show_currencies)
-	label_cells(_("Payment Currency"), $receipt['bank_curr_code'], "class='tableheader2'");
-label_cells(_("Amount"), FormatService::numberFormat2(-$receipt['bank_amount'], \FA\UserPrefsCache::getPriceDecimals()), "class='tableheader2'");
+	label_cells(_(UI_TEXT_PAYMENT_CURRENCY), $receipt['bank_curr_code'], "class='tableheader2'");
+label_cells(_(UI_TEXT_AMOUNT), FormatService::numberFormat2(-$receipt['bank_amount'], \FA\UserPrefsCache::getPriceDecimals()), "class='tableheader2'");
 if ($receipt['ov_discount'] != 0)
-	label_cells(_("Discount"), FormatService::numberFormat2(-$receipt['ov_discount']*$receipt['rate'], \FA\UserPrefsCache::getPriceDecimals()), "class='tableheader2'");
+	label_cells(_(UI_TEXT_DISCOUNT), FormatService::numberFormat2(-$receipt['ov_discount']*$receipt['rate'], \FA\UserPrefsCache::getPriceDecimals()), "class='tableheader2'");
 else
-	label_cells(_("Payment Type"), $bank_transfer_types[$receipt['BankTransType']], "class='tableheader2'");
+	label_cells(_(UI_TEXT_PAYMENT_TYPE), $bank_transfer_types[$receipt['BankTransType']], "class='tableheader2'");
 end_row();
 start_row();
 if ($show_currencies) 
 {
-	label_cells(_("Supplier's Currency"), $receipt['curr_code'], "class='tableheader2'");
+	label_cells(_(UI_TEXT_SUPPLIERS_CURRENCY), $receipt['curr_code'], "class='tableheader2'");
 }
 if ($show_both_amounts)
-	label_cells(_("Amount"), FormatService::numberFormat2(-$receipt['Total'], \FA\UserPrefsCache::getPriceDecimals()), "class='tableheader2'");
-label_cells(_("Reference"), $receipt['ref'], "class='tableheader2'");
+	label_cells(_(UI_TEXT_AMOUNT), FormatService::numberFormat2(-$receipt['Total'], \FA\UserPrefsCache::getPriceDecimals()), "class='tableheader2'");
+label_cells(_(UI_TEXT_REFERENCE), $receipt['ref'], "class='tableheader2'");
 end_row();
 if ($receipt['ov_discount'] != 0)
 {
 	start_row();
-	label_cells(_("Payment Type"), $bank_transfer_types[$receipt['BankTransType']], "class='tableheader2'");
+	label_cells(_(UI_TEXT_PAYMENT_TYPE), $bank_transfer_types[$receipt['BankTransType']], "class='tableheader2'");
 	end_row();
 }
 comments_display_row(ST_SUPPAYMENT, $trans_no);
 
 end_table(1);
 
-$voided = is_voided_display(ST_SUPPAYMENT, $trans_no, _("This payment has been voided."));
+$voided = is_voided_display(ST_SUPPAYMENT, $trans_no, _(UI_TEXT_THIS_PAYMENT_HAS_BEEN_VOIDED));
 
 // now display the allocations for this payment
 if (!$voided) 
