@@ -14,6 +14,7 @@ $path_to_root = "../..";
 include($path_to_root . "/purchasing/includes/po_class.inc");
 
 include($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 include($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 
 $js = "";
@@ -24,13 +25,13 @@ page(_($help_context = "View Purchase Order"), true, false, "", $js);
 
 if (!isset($_GET['trans_no']))
 {
-	die ("<br>" . _("This page must be called with a purchase order number to review."));
+	die ("<br>" . _(UI_TEXT_THIS_PAGE_MUST_BE_CALLED_WITH_A_PURCHASE_ORDER_NUMBER_TO_REVIEW));
 }
 
 if (!empty($SysPrefs->prefs['company_logo_on_views']))
 	company_logo_on_view();
 
-display_heading(_("Purchase Order") . " #" . $_GET['trans_no']);
+display_heading(_(UI_TEXT_PURCHASE_ORDER) . " #" . $_GET['trans_no']);
 
 $purchase_order = new purch_order;
 
@@ -41,12 +42,12 @@ display_po_summary($purchase_order, true);
 start_table(TABLESTYLE, "width='90%'", 6);
 echo "<tr><td valign=top>"; // outer table
 
-display_heading2(_("Line Details"));
+display_heading2(_(UI_TEXT_LINE_DETAILS));
 
 start_table(TABLESTYLE, "width='100%'");
 
-$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"),
-	_("Requested By"), _("Line Total"), _("Quantity Received"), _("Quantity Invoiced"));
+$th = array(_(UI_TEXT_ITEM_CODE), _(UI_TEXT_DESCRIPTION), _(UI_TEXT_QUANTITY), _(UI_TEXT_UNIT), _(UI_TEXT_PRICE),
+	_(UI_TEXT_REQUESTED_BY), _(UI_TEXT_LINE_TOTAL), _(UI_TEXT_QUANTITY_RECEIVED), _(UI_TEXT_QUANTITY_INVOICED));
 table_header($th);
 $total = $k = 0;
 $overdue_items = false;
@@ -83,7 +84,7 @@ foreach ($purchase_order->line_items as $stock_item)
 }
 
 $display_sub_tot = FormatService::numberFormat2($total,\FA\UserPrefsCache::getPriceDecimals());
-label_row(_("Sub Total"), $display_sub_tot,
+label_row(_(UI_TEXT_SUB_TOTAL_LABEL), $display_sub_tot,
 	"align=right colspan=6", "nowrap align=right",2);
 
 $taxes = $purchase_order->get_taxes();
@@ -92,14 +93,14 @@ $tax_total = display_edit_tax_items($taxes, 6, $purchase_order->tax_included,2);
 $display_total = FormatService::priceFormat(($total + $tax_total));
 
 start_row();
-label_cells(_("Amount Total"), $display_total, "colspan=6 align='right'","align='right'");
+label_cells(_(UI_TEXT_AMOUNT_TOTAL_LABEL), $display_total, "colspan=6 align='right'","align='right'");
 label_cell('', "colspan=2");
 end_row();
 
 end_table();
 
 if ($overdue_items)
-	display_note(_("Marked items are overdue."), 0, 0, "class='overduefg'");
+	display_note(_(UI_TEXT_MARKED_ITEMS_ARE_OVERDUE), 0, 0, "class='overduefg'");
 
 //----------------------------------------------------------------------------------------------------
 
@@ -112,9 +113,9 @@ if (db_num_rows($grns_result) > 0)
 
     echo "</td><td valign=top>"; // outer table
 
-    display_heading2(_("Deliveries"));
+    display_heading2(_(UI_TEXT_DELIVERIES));
     start_table(TABLESTYLE);
-    $th = array(_("#"), _("Reference"), _("Delivered On"));
+    $th = array(_("#"), _(UI_TEXT_REFERENCE), _(UI_TEXT_DELIVERED_ON));
     table_header($th);
     while ($myrow = db_fetch($grns_result))
     {
@@ -139,9 +140,9 @@ if (db_num_rows($invoice_result) > 0)
 
     echo "</td><td valign=top>"; // outer table
 
-    display_heading2(_("Invoices/Credits"));
+    display_heading2(_(UI_TEXT_INVOICES_CREDITS));
     start_table(TABLESTYLE);
-    $th = array(_("#"), _("Date"), _("Total"));
+    $th = array(_("#"), _(UI_TEXT_DATE), _(UI_TEXT_TOTAL));
     table_header($th);
     while ($myrow = db_fetch($invoice_result))
     {

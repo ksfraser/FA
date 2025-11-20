@@ -1410,4 +1410,12 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_LINE_TOTAL', 'Line Total');
     define('UI_TEXT_SUB_TOTAL_LABEL', 'Sub Total');
     define('UI_TEXT_AMOUNT_TOTAL_LABEL', 'Amount Total');
+    define('UI_TEXT_PURCHASE_ORDER', 'Purchase Order');
+    define('UI_TEXT_THIS_PAGE_MUST_BE_CALLED_WITH_A_PURCHASE_ORDER_NUMBER_TO_REVIEW', 'This page must be called with a purchase order number to review.');
+    define('UI_TEXT_REQUESTED_BY', 'Requested By');
+    define('UI_TEXT_QUANTITY_RECEIVED', 'Quantity Received');
+    define('UI_TEXT_MARKED_ITEMS_ARE_OVERDUE', 'Marked items are overdue.');
+    define('UI_TEXT_DELIVERIES', 'Deliveries');
+    define('UI_TEXT_DELIVERED_ON', 'Delivered On');
+    define('UI_TEXT_INVOICES_CREDITS', 'Invoices/Credits');
 };
