@@ -1458,4 +1458,16 @@ if (!defined('UI_TEXT_GL_INQUIRY_TITLE')) {
     define('UI_TEXT_PROCESS_DISPOSAL', 'Process Disposal');
     define('UI_TEXT_ADJUSTMENT_ITEMS', 'Adjustment Items');
     define('UI_TEXT_PROCESS_ADJUSTMENT', 'Process Adjustment');
+    define('UI_TEXT_THERE_ARE_NO_COSTABLE_INVENTORY_ITEMS_DEFINED_IN_THE_SYSTEM_PURCHASED_OR_MANUFACTURED_ITEMS', 'There are no costable inventory items defined in the system (Purchased or manufactured items).');
+    define('UI_TEXT_THE_ENTERED_COST_IS_NOT_NUMERIC', 'The entered cost is not numeric.');
+    define('UI_TEXT_THE_NEW_COST_IS_THE_SAME_AS_THE_OLD_COST_COST_WAS_NOT_UPDATED', 'The new cost is the same as the old cost. Cost was not updated.');
+    define('UI_TEXT_COST_HAS_BEEN_UPDATED', 'Cost has been updated.');
+    define('UI_TEXT_VIEW_THE_GL_JOURNAL_ENTRIES_FOR_THIS_COST_UPDATE', 'View the GL Journal Entries for this Cost Update');
+    define('UI_TEXT_ITEM_COLON', 'Item:');
+    define('UI_TEXT_UNIT_COST', 'Unit cost');
+    define('UI_TEXT_STANDARD_LABOUR_COST_PER_UNIT', 'Standard Labour Cost Per Unit');
+    define('UI_TEXT_STANDARD_OVERHEAD_COST_PER_UNIT', 'Standard Overhead Cost Per Unit');
+    define('UI_TEXT_REFERENCE_LINE_COLON', 'Reference line:');
+    define('UI_TEXT_MEMO', 'Memo');
+    define('UI_TEXT_UPDATE', 'Update');
 };

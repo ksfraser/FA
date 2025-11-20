@@ -17,6 +17,7 @@ else
 	$path_to_root = "..";
 
 include_once($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/banking.inc");
@@ -41,7 +42,7 @@ page($_SESSION['page_title'], false, false, "", $js);
 if (RequestService::getPostStatic('fixed_asset') == 1)
 	check_db_has_disposable_fixed_assets(_("There are no fixed assets defined in the system."));
 else
-	check_db_has_costable_items(_("There are no costable inventory items defined in the system (Purchased or manufactured items)."));
+	check_db_has_costable_items(_(UI_TEXT_THERE_ARE_NO_COSTABLE_INVENTORY_ITEMS_DEFINED_IN_THE_SYSTEM_PURCHASED_OR_MANUFACTURED_ITEMS));
 
 if (isset($_GET['stock_id']))
 {
@@ -62,13 +63,13 @@ if (isset($_POST['UpdateData']))
 	if (!check_num('material_cost') || !check_num('labour_cost') ||
 		!check_num('overhead_cost'))
 	{
-		UiMessageService::displayError( _("The entered cost is not numeric."));
+		UiMessageService::displayError( _(UI_TEXT_THE_ENTERED_COST_IS_NOT_NUMERIC));
 		set_focus('material_cost');
    	 	$should_update = false;
 	}
 	elseif ($old_cost == $new_cost)
 	{
-   	 	UiMessageService::displayError( _("The new cost is the same as the old cost. Cost was not updated."));
+   	 	UiMessageService::displayError( _(UI_TEXT_THE_NEW_COST_IS_THE_SAME_AS_THE_OLD_COST_COST_WAS_NOT_UPDATED));
    	 	$should_update = false;
 	}
 
@@ -79,11 +80,11 @@ if (isset($_POST['UpdateData']))
 		    RequestService::inputNumStatic('overhead_cost'),	$old_cost, 
         $_POST['refline'], $_POST['memo_']);
 
-        display_notification(_("Cost has been updated."));
+        display_notification(_(UI_TEXT_COST_HAS_BEEN_UPDATED));
 
         if ($update_no > 0)
         {
-    		display_notification(get_gl_view_str(ST_COSTUPDATE, $update_no, _("View the GL Journal Entries for this Cost Update")));
+    		display_notification(get_gl_view_str(ST_COSTUPDATE, $update_no, _(UI_TEXT_VIEW_THE_GL_JOURNAL_ENTRIES_FOR_THIS_COST_UPDATE)));
         }
 
    	}
@@ -107,7 +108,7 @@ if (!isset($_POST['stock_id']))
 
 if (!$page_nested)
 {
-	echo "<center>" . _("Item:"). "&nbsp;";
+	echo "<center>" . _(UI_TEXT_ITEM_COLON). "&nbsp;";
 	if (RequestService::getPostStatic('fixed_asset') == 1)
 		echo stock_disposable_fa_list('stock_id', $_POST['stock_id'], false, true);
 	else
@@ -132,24 +133,24 @@ if ($myrow) {
 	$_POST['overhead_cost'] = price_decimal_format($myrow["overhead_cost"], $dec3);
 }
 
-amount_row(_("Unit cost"), "material_cost", null, "class='tableheader2'", null, $dec1);
+amount_row(_(UI_TEXT_UNIT_COST), "material_cost", null, "class='tableheader2'", null, $dec1);
 
 if ($myrow && $myrow["mb_flag"]=='M')
 {
-	amount_row(_("Standard Labour Cost Per Unit"), "labour_cost", null, "class='tableheader2'", null, $dec2);
-	amount_row(_("Standard Overhead Cost Per Unit"), "overhead_cost", null, "class='tableheader2'", null, $dec3);
+	amount_row(_(UI_TEXT_STANDARD_LABOUR_COST_PER_UNIT), "labour_cost", null, "class='tableheader2'", null, $dec2);
+	amount_row(_(UI_TEXT_STANDARD_OVERHEAD_COST_PER_UNIT), "overhead_cost", null, "class='tableheader2'", null, $dec3);
 }
 else
 {
 	hidden("labour_cost", 0);
 	hidden("overhead_cost", 0);
 }
-refline_list_row(_("Reference line:"), 'refline', ST_COSTUPDATE, null, false, RequestService::getPostStatic('fixed_asset'));
-textarea_row(_("Memo"), 'memo_', null, 40, 4);
+refline_list_row(_(UI_TEXT_REFERENCE_LINE_COLON), 'refline', ST_COSTUPDATE, null, false, RequestService::getPostStatic('fixed_asset'));
+textarea_row(_(UI_TEXT_MEMO), 'memo_', null, 40, 4);
 
 end_table(1);
 div_end();
-submit_center('UpdateData', _("Update"), true, false, 'default');
+submit_center('UpdateData', _(UI_TEXT_UPDATE), true, false, 'default');
 
 end_form();
 end_page();
