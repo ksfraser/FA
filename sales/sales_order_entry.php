@@ -574,7 +574,7 @@ function check_item_data()
 			$price = $curr . " " . $price;
 			$std_cost = $curr . " " . FormatService::numberFormat2($cost, $dec);
 		}
-		\FA\Services\UiMessageService::displayWarning(sprintf(_("Price %s is below Standard Cost %s"), $price, $std_cost));
+		\FA\Services\UiMessageService::displayWarning(sprintf(_(UI_TEXT_PRICE_S_IS_BELOW_STANDARD_COST_S), $price, $std_cost));
 	}	
 	return true;
 }
@@ -599,7 +599,7 @@ function handle_delete_item($line_no)
     if ($_SESSION['Items']->some_already_delivered($line_no) == 0) {
 	    $_SESSION['Items']->remove_from_cart($line_no);
     } else {
-		UiMessageService::displayError(_("This item cannot be deleted because some of it has already been delivered."));
+		UiMessageService::displayError(_(UI_TEXT_THIS_ITEM_CANNOT_BE_DELETED_BECAUSE_SOME_OF_IT_HAS_ALREADY_BEEN_DELIVERED));
     }
     line_start_focus();
 }
@@ -628,30 +628,30 @@ function  handle_cancel_order()
 
 
 	if ($_SESSION['Items']->trans_type == ST_CUSTDELIVERY) {
-		\FA\Services\UiMessageService::displayNotification(_("Direct delivery entry has been cancelled as requested."), 1);
-		submenu_option(_("Enter a New Sales Delivery"),	"/sales/sales_order_entry.php?NewDelivery=1");
+		\FA\Services\UiMessageService::displayNotification(_(UI_TEXT_DIRECT_DELIVERY_ENTRY_HAS_BEEN_CANCELLED_AS_REQUESTED), 1);
+		submenu_option(_(UI_TEXT_ENTER_A_NEW_SALES_DELIVERY),	"/sales/sales_order_entry.php?NewDelivery=1");
 	} elseif ($_SESSION['Items']->trans_type == ST_SALESINVOICE) {
-		\FA\Services\UiMessageService::displayNotification(_("Direct invoice entry has been cancelled as requested."), 1);
-		submenu_option(_("Enter a New Sales Invoice"),	"/sales/sales_order_entry.php?NewInvoice=1");
+		\FA\Services\UiMessageService::displayNotification(_(UI_TEXT_DIRECT_INVOICE_ENTRY_HAS_BEEN_CANCELLED_AS_REQUESTED), 1);
+		submenu_option(_(UI_TEXT_ENTER_A_NEW_SALES_INVOICE),	"/sales/sales_order_entry.php?NewInvoice=1");
 	} elseif ($_SESSION['Items']->trans_type == ST_SALESQUOTE)
 	{
 		if ($_SESSION['Items']->trans_no != 0) 
 			delete_sales_order(key($_SESSION['Items']->trans_no), $_SESSION['Items']->trans_type);
-		\FA\Services\UiMessageService::displayNotification(_("This sales quotation has been cancelled as requested."), 1);
-		submenu_option(_("Enter a New Sales Quotation"), "/sales/sales_order_entry.php?NewQuotation=Yes");
+		\FA\Services\UiMessageService::displayNotification(_(UI_TEXT_THIS_SALES_QUOTATION_HAS_BEEN_CANCELLED_AS_REQUESTED), 1);
+		submenu_option(_(UI_TEXT_ENTER_A_NEW_SALES_QUOTATION), "/sales/sales_order_entry.php?NewQuotation=Yes");
 	} else { // sales order
 		if ($_SESSION['Items']->trans_no != 0) {
 			$order_no = key($_SESSION['Items']->trans_no);
 			if (sales_order_has_deliveries($order_no))
 			{
 				close_sales_order($order_no);
-				\FA\Services\UiMessageService::displayNotification(_("Undelivered part of order has been cancelled as requested."), 1);
-				submenu_option(_("Select Another Sales Order for Edition"), "/sales/inquiry/sales_orders_view.php?type=".ST_SALESORDER);
+				\FA\Services\UiMessageService::displayNotification(_(UI_TEXT_UNDELIVERED_PART_OF_ORDER_HAS_BEEN_CANCELLED_AS_REQUESTED), 1);
+				submenu_option(_(UI_TEXT_SELECT_ANOTHER_SALES_ORDER_FOR_EDITION), "/sales/inquiry/sales_orders_view.php?type=".ST_SALESORDER);
 			} else {
 				delete_sales_order(key($_SESSION['Items']->trans_no), $_SESSION['Items']->trans_type);
 
-				\FA\Services\UiMessageService::displayNotification(_("This sales order has been cancelled as requested."), 1);
-				submenu_option(_("Enter a New Sales Order"), "/sales/sales_order_entry.php?NewOrder=Yes");
+				\FA\Services\UiMessageService::displayNotification(_(UI_TEXT_THIS_SALES_ORDER_HAS_BEEN_CANCELLED_AS_REQUESTED), 1);
+				submenu_option(_(UI_TEXT_ENTER_A_NEW_SALES_ORDER), "/sales/sales_order_entry.php?NewOrder=Yes");
 			}
 		} else {
 			processing_end();
@@ -677,7 +677,7 @@ function create_cart($type, $trans_no)
 	{
 		$trans_no = $_GET['NewQuoteToSalesOrder'];
 		$doc = new Cart(ST_SALESQUOTE, $trans_no, true);
-		$doc->Comments = _("Sales Quotation") . " # " . $trans_no;
+		$doc->Comments = _(UI_TEXT_SALES_QUOTATION) . " # " . $trans_no;
 		$_SESSION['Items'] = $doc;
 	}	
 	elseif($type != ST_SALESORDER && $type != ST_SALESQUOTE && $trans_no != 0) { // this is template
@@ -727,14 +727,14 @@ if ($_SESSION['Items']->fixed_asset)
 else
 	check_db_has_stock_items(_("There are no inventory items defined in the system."));
 
-check_db_has_customer_branches(_("There are no customers, or there are no customers with branches. Please define customers and customer branches."));
+check_db_has_customer_branches(_(UI_TEXT_THERE_ARE_NO_CUSTOMERS_OR_THERE_ARE_NO_CUSTOMERS_WITH_BRANCHES_PLEASE_DEFINE_CUSTOMERS_AND_CUSTOMER_BRANCHES));
 
 if ($_SESSION['Items']->trans_type == ST_SALESINVOICE) {
-	$idate = _("Invoice Date:");
-	$orderitems = _("Sales Invoice Items");
-	$deliverydetails = _("Enter Delivery Details and Confirm Invoice");
-	$cancelorder = _("Cancel Invoice");
-	$porder = _("Place Invoice");
+	$idate = _(UI_TEXT_INVOICE_DATE_LABEL);
+	$orderitems = _(UI_TEXT_SALES_INVOICE_ITEMS);
+	$deliverydetails = _(UI_TEXT_ENTER_DELIVERY_DETAILS_AND_CONFIRM_INVOICE);
+	$cancelorder = _(UI_TEXT_CANCEL_INVOICE);
+	$porder = _(UI_TEXT_PLACE_INVOICE);
 } elseif ($_SESSION['Items']->trans_type == ST_CUSTDELIVERY) {
 	$idate = _("Delivery Date:");
 	$orderitems = _("Delivery Note Items");
@@ -774,19 +774,19 @@ if ($customer_error == "") {
 	if ($_SESSION['Items']->trans_no == 0) {
 
 		submit_center_first('ProcessOrder', $porder,
-		    _('Check entered data and save document'), 'default');
+		    _(UI_TEXT_CHECK_ENTERED_DATA_AND_SAVE_DOCUMENT), 'default');
 		submit_center_last('CancelOrder', $cancelorder,
-	   		_('Cancels document entry or removes sales order when editing an old document'));
-		submit_js_confirm('CancelOrder', _('You are about to void this Document.\nDo you want to continue?'));
+	   		_(UI_TEXT_CANCELS_DOCUMENT_ENTRY_OR_REMOVES_SALES_ORDER_WHEN_EDITING_AN_OLD_DOCUMENT));
+		submit_js_confirm('CancelOrder', _(UI_TEXT_YOU_ARE_ABOUT_TO_VOID_THIS_DOCUMENT_DO_YOU_WANT_TO_CONTINUE));
 	} else {
 		submit_center_first('ProcessOrder', $corder,
-		    _('Validate changes and update document'), 'default');
+		    _(UI_TEXT_VALIDATE_CHANGES_AND_UPDATE_DOCUMENT), 'default');
 		submit_center_last('CancelOrder', $cancelorder,
-	   		_('Cancels document entry or removes sales order when editing an old document'));
+	   		_(UI_TEXT_CANCELS_DOCUMENT_ENTRY_OR_REMOVES_SALES_ORDER_WHEN_EDITING_AN_OLD_DOCUMENT));
 		if ($_SESSION['Items']->trans_type==ST_SALESORDER)
-			submit_js_confirm('CancelOrder', _('You are about to cancel undelivered part of this order.\nDo you want to continue?'));
+			submit_js_confirm('CancelOrder', _(UI_TEXT_YOU_ARE_ABOUT_TO_CANCEL_UNDELIVERED_PART_OF_THIS_ORDER_DO_YOU_WANT_TO_CONTINUE));
 		else
-			submit_js_confirm('CancelOrder', _('You are about to void this Document.\nDo you want to continue?'));
+			submit_js_confirm('CancelOrder', _(UI_TEXT_YOU_ARE_ABOUT_TO_VOID_THIS_DOCUMENT_DO_YOU_WANT_TO_CONTINUE));
 	}
 
 } else {
