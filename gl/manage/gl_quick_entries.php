@@ -13,11 +13,12 @@ $page_security = 'SA_QUICKENTRY';
 $path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
 
-page(_($help_context = "Quick Entries"));
+page(_($help_context = UI_TEXT_GL_QUICK_ENTRIES_TITLE));
 
 include($path_to_root . "/gl/includes/gl_db.inc");
 
 include($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 include($path_to_root . "/includes/CompanyPrefsService.php");
 
 simple_page_mode(true);
@@ -56,10 +57,10 @@ function submit_add_or_update_center2($add=true, $title=false, $async=false)
 {
 	echo "<center>";
 	if ($add)
-		submit('ADD_ITEM2', _("Add new"), true, $title, $async);
+		submit('ADD_ITEM2', _(UI_TEXT_ADD_NEW), true, $title, $async);
 	else {
-		submit('UPDATE_ITEM2', _("Update"), true, $title, $async);
-		submit('RESET2', _("Cancel"), true, $title, $async);
+		submit('UPDATE_ITEM2', _(UI_TEXT_UPDATE), true, $title, $async);
+		submit('RESET2', _(UI_TEXT_CANCEL), true, $title, $async);
 	}
 	echo "</center>";
 }
@@ -71,20 +72,20 @@ function can_process()
 
 	if (strlen($_POST['description']) == 0) 
 	{
-		UiMessageService::displayError( _("The Quick Entry description cannot be empty."));
+		UiMessageService::displayError( _(UI_TEXT_QUICK_ENTRY_DESCRIPTION_CANNOT_BE_EMPTY));
 		set_focus('description');
 		return false;
 	}
 	$bal_type = RequestService::getPostStatic('bal_type');
 	if ($bal_type == 1 && $_POST['type'] != QE_JOURNAL)
 	{
-		UiMessageService::displayError( _("You can only use Balance Based together with Journal Entries."));
+		UiMessageService::displayError( _(UI_TEXT_BALANCE_BASED_ONLY_WITH_JOURNAL_ENTRIES));
 		set_focus('base_desc');
 		return false;
 	}
 	if (!$bal_type && strlen($_POST['base_desc']) == 0) 
 	{
-		UiMessageService::displayError( _("The base amount description cannot be empty."));
+		UiMessageService::displayError( _(UI_TEXT_BASE_AMOUNT_DESCRIPTION_CANNOT_BE_EMPTY));
 		set_focus('base_desc');
 		return false;
 	}
@@ -104,13 +105,13 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		{
 			update_quick_entry($selected_id, $_POST['description'], $_POST['type'],
 				 RequestService::inputNumStatic('base_amount'), $_POST['base_desc'], RequestService::getPostStatic('bal_type', 0), $_POST['usage']);
-			display_notification(_('Selected quick entry has been updated'));
+			display_notification(_(UI_TEXT_SELECTED_QUICK_ENTRY_UPDATED));
 		} 
 		else 
 		{
 			add_quick_entry($_POST['description'], $_POST['type'], 
 				RequestService::inputNumStatic('base_amount'), $_POST['base_desc'], RequestService::getPostStatic('bal_type', 0), $_POST['usage']);
-			display_notification(_('New quick entry has been added'));
+			display_notification(_(UI_TEXT_NEW_QUICK_ENTRY_ADDED));
 		}
 		$Mode = 'RESET';
 	}
@@ -119,20 +120,20 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 if ($Mode2=='ADD_ITEM2' || $Mode2=='UPDATE_ITEM2') 
 {
 	if (!RequestService::getPostStatic('dest_id')) {
-   		UiMessageService::displayError(_("You must select GL account."));
+   		UiMessageService::displayError(_(UI_TEXT_MUST_SELECT_GL_ACCOUNT));
 		set_focus('dest_id');
 	}
 	elseif ($selected_id2 != -1) 
 	{
 		update_quick_entry_line($selected_id2, $selected_id, $_POST['actn'], $_POST['dest_id'], RequestService::inputNumStatic('amount', 0), 
 			$_POST['dimension_id'], $_POST['dimension2_id'], RequestService::getPostStatic('memo'));
-		display_notification(_('Selected quick entry line has been updated'));
+		display_notification(_(UI_TEXT_SELECTED_QUICK_ENTRY_LINE_UPDATED));
 	} 
 	else 
 	{
 		add_quick_entry_line($selected_id, $_POST['actn'], $_POST['dest_id'], RequestService::inputNumStatic('amount', 0), 
 			$_POST['dimension_id'], $_POST['dimension2_id'], RequestService::getPostStatic('memo'));
-		display_notification(_('New quick entry line has been added'));
+		display_notification(_(UI_TEXT_NEW_QUICK_ENTRY_LINE_ADDED));
 	}
 	$Mode2 = 'RESET2';
 }
@@ -149,7 +150,7 @@ if ($Mode == 'Delete')
 	}
 	else
 	{
-		UiMessageService::displayError( _("The Quick Entry has Quick Entry Lines. Cannot be deleted."));
+		UiMessageService::displayError( _(UI_TEXT_QUICK_ENTRY_HAS_LINES_CANNOT_DELETE));
 		set_focus('description');
 	}
 }
@@ -188,7 +189,7 @@ if ($Mode2 == 'RESET2')
 $result = get_quick_entries();
 start_form();
 start_table(TABLESTYLE);
-$th = array(_("Description"), _("Type"), _("Usage"),  "", "");
+$th = array(_(UI_TEXT_DESCRIPTION_HEADER), _(UI_TEXT_TYPE_HEADER), _(UI_TEXT_USAGE_HEADER),  "", "");
 table_header($th);
 
 $k = 0;
@@ -199,8 +200,8 @@ while ($myrow = db_fetch($result))
 	label_cell($myrow['description']);
 	label_cell($type_text);
 	label_cell($myrow['usage']);
-	edit_button_cell("Edit".$myrow["id"], _("Edit"));
-	delete_button_cell("Delete".$myrow["id"], _("Delete"));
+	edit_button_cell("Edit".$myrow["id"], _(UI_TEXT_EDIT));
+	delete_button_cell("Delete".$myrow["id"], _(UI_TEXT_DELETE));
 	end_row();
 }
 
@@ -228,14 +229,14 @@ if ($selected_id != -1)
 	hidden('selected_id', $selected_id);
 } 
 
-text_row_ex(_("Description").':', 'description', 50, 60);
-text_row_ex(_("Usage").':', 'usage', 80, 120);
+text_row_ex(_(UI_TEXT_DESCRIPTION_LABEL), 'description', 50, 60);
+text_row_ex(_(UI_TEXT_USAGE_LABEL), 'usage', 80, 120);
 
-quick_entry_types_list_row(_("Entry Type").':', 'type', null, true);
+quick_entry_types_list_row(_(UI_TEXT_ENTRY_TYPE_LABEL), 'type', null, true);
 
 if (RequestService::getPostStatic('type') == QE_JOURNAL)
 {
-	yesno_list_row(_("Balance Based"), 'bal_type', null, _("Yes"), _("No"), true);
+	yesno_list_row(_(UI_TEXT_BALANCE_BASED), 'bal_type', null, _(UI_TEXT_YES), _(UI_TEXT_NO), true);
 }	
 
 if (list_updated('bal_type') || list_updated('type'))
@@ -245,7 +246,7 @@ if (list_updated('bal_type') || list_updated('type'))
 
 if (RequestService::getPostStatic('type') == QE_JOURNAL && RequestService::getPostStatic('bal_type') == 1)
 {
-	yesno_list_row(_("Period"), 'base_amount', null, _("Monthly"), _("Yearly"));
+	yesno_list_row(_(UI_TEXT_PERIOD), 'base_amount', null, _(UI_TEXT_MONTHLY), _(UI_TEXT_YEARLY));
 	gl_all_accounts_list_row(_("Account"), 'base_desc', null, true);
 }
 else
