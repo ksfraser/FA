@@ -11,11 +11,14 @@
 ***********************************************************************/
 namespace FA;
 
+use FA\Interfaces\DatabaseRepositoryInterface;
+use FA\Interfaces\DisplayServiceInterface;
+
 /**
  * Data Checks Service
  *
  * Handles data validation checks for the application.
- * Refactored to OOP with SOLID principles.
+ * Refactored to OOP with SOLID principles and dependency injection.
  *
  * SOLID Principles:
  * - Single Responsibility: Manages data checks only
@@ -31,7 +34,8 @@ namespace FA;
  * +---------------------+
  * | DataChecksService  |
  * +---------------------+
- * |                     |
+ * | - databaseRepo     |
+ * | - displayService   |
  * +---------------------+
  * | + dbHasCustomers() |
  * | + checkDbHasCustomers() |
@@ -43,13 +47,30 @@ namespace FA;
  */
 class DataChecksService {
 
+    private DatabaseRepositoryInterface $databaseRepo;
+    private DisplayServiceInterface $displayService;
+
+    /**
+     * Constructor with dependency injection
+     *
+     * @param DatabaseRepositoryInterface $databaseRepo Database repository
+     * @param DisplayServiceInterface $displayService Display service
+     */
+    public function __construct(
+        DatabaseRepositoryInterface $databaseRepo,
+        DisplayServiceInterface $displayService
+    ) {
+        $this->databaseRepo = $databaseRepo;
+        $this->displayService = $displayService;
+    }
+
     /**
      * Check if database has customers
      *
      * @return bool True if has customers
      */
     public function dbHasCustomers(): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM " . \TB_PREF . "debtors_master");
+        return $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM " . $this->databaseRepo->getTablePrefix() . "debtors_master");
     }
 
     /**
@@ -59,8 +80,8 @@ class DataChecksService {
      */
     public function checkDbHasCustomers(string $msg): void {
         if (!$this->dbHasCustomers()) {
-            UiMessageService::displayError($msg, true);
-            end_page();
+            $this->displayService->displayError($msg, true);
+            $this->displayService->endPage();
             exit;
         }
     }
