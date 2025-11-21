@@ -92,7 +92,7 @@ class DataChecksService {
      * @return bool True if has currencies
      */
     public function dbHasCurrencies(): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM " . \TB_PREF . "currencies");
+        return $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM " . $this->databaseRepo->getTablePrefix() . "currencies");
     }
 
     /**
@@ -102,8 +102,8 @@ class DataChecksService {
      */
     public function checkDbHasCurrencies(string $msg): void {
         if (!$this->dbHasCurrencies()) {
-            UiMessageService::displayError($msg, true);
-            end_page();
+            $this->displayService->displayError($msg, true);
+            $this->displayService->endPage();
             exit;
         }
     }
