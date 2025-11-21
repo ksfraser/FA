@@ -1952,4 +1952,17 @@ define('UI_TEXT_GROUP_ACCOUNT_NAME_LABEL', 'Group/Account Name');
 define('UI_TEXT_PERIOD_LABEL', 'Period');
 define('UI_TEXT_ACHIEVED_PERCENT_LABEL', 'Achieved %');
 define('UI_TEXT_BACK_BUTTON', 'Back');
+define('UI_TEXT_TAX_INQUIRY_TITLE', 'Tax Inquiry');
+define('UI_TEXT_FROM_LOWER_LABEL', 'from:');
+define('UI_TEXT_TO_LOWER_LABEL', 'to:');
+define('UI_TEXT_TYPE_HEADER', 'Type');
+define('UI_TEXT_DESCRIPTION_HEADER', 'Description');
+define('UI_TEXT_OUTPUTS_LABEL', 'Outputs');
+define('UI_TEXT_INPUTS_LABEL', 'Inputs');
+define('UI_TEXT_CHARGED_ON_SALES', 'Charged on sales');
+define('UI_TEXT_OUTPUT_TAX', 'Output Tax');
+define('UI_TEXT_PAID_ON_PURCHASES', 'Paid on purchases');
+define('UI_TEXT_INPUT_TAX', 'Input Tax');
+define('UI_TEXT_NET_PAYABLE_OR_COLLECTIBLE', 'Net payable or collectible');
+define('UI_TEXT_TOTAL_PAYABLE_OR_REFUND', 'Total payable or refund');
 }

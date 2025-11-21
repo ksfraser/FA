@@ -16,6 +16,7 @@ include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/includes/data_checks.inc");
 
 include_once($path_to_root . "/gl/includes/gl_db.inc");
@@ -27,7 +28,7 @@ if ($SysPrefs->use_popup_windows)
 if (user_use_date_picker())
 	$js .= get_js_date_picker();
 
-page(_($help_context = "Tax Inquiry"), false, false, '', $js);
+page(_($help_context = UI_TEXT_TAX_INQUIRY_TITLE), false, false, '', $js);
 
 //----------------------------------------------------------------------------------------------------
 // Ajax updates
@@ -58,9 +59,9 @@ function tax_inquiry_controls()
     start_table(TABLESTYLE_NOBORDER);
 	start_row();
 
-	date_cells(_("from:"), 'TransFromDate', '', null, -user_transaction_days());
-	date_cells(_("to:"), 'TransToDate');
-	submit_cells('Show',_("Show"),'','', 'default');
+	date_cells(_(UI_TEXT_FROM_LOWER_LABEL), 'TransFromDate', '', null, -user_transaction_days());
+	date_cells(_(UI_TEXT_TO_LOWER_LABEL), 'TransToDate');
+	submit_cells('Show',_(UI_TEXT_SHOW_BUTTON),'','', 'default');
 
     end_row();
 
@@ -77,7 +78,7 @@ function show_results()
 	div_start('trans_tbl');
 	start_table(TABLESTYLE);
 
-	$th = array(_("Type"), _("Description"), _("Amount"), _("Outputs")."/"._("Inputs"));
+	$th = array(_(UI_TEXT_TYPE_HEADER), _(UI_TEXT_DESCRIPTION_HEADER), _(UI_TEXT_AMOUNT), _(UI_TEXT_OUTPUTS_LABEL)."/"._(UI_TEXT_INPUTS_LABEL));
 	table_header($th);
 	$k = 0;
 	$total = 0;
@@ -93,26 +94,26 @@ function show_results()
 		$total += $net;
 		alt_table_row_color($k);
 		label_cell($tx['name'] . " " . $tx['rate'] . "%");
-		label_cell(_("Charged on sales") . " (" . _("Output Tax")."):");
+		label_cell(_(UI_TEXT_CHARGED_ON_SALES) . " (" . _(UI_TEXT_OUTPUT_TAX)."):");
 		amount_cell($payable);
 		amount_cell($tx['net_output']);
 		end_row();
 		alt_table_row_color($k);
 		label_cell($tx['name'] . " " . $tx['rate'] . "%");
-		label_cell(_("Paid on purchases") . " (" . _("Input Tax")."):");
+		label_cell(_(UI_TEXT_PAID_ON_PURCHASES) . " (" . _(UI_TEXT_INPUT_TAX)."):");
 		amount_cell($collectible);
 		amount_cell(-$tx['net_input']);
 		end_row();
 		alt_table_row_color($k);
 		label_cell("<b>".$tx['name'] . " " . $tx['rate'] . "%</b>");
-		label_cell("<b>"._("Net payable or collectible") . ":</b>");
+		label_cell("<b>"._(UI_TEXT_NET_PAYABLE_OR_COLLECTIBLE) . ":</b>");
 		amount_cell($net, true);
 		label_cell("");
 		end_row();
 	}	
 	alt_table_row_color($k);
 	label_cell("");
-	label_cell("<b>"._("Total payable or refund") . ":</b>");
+	label_cell("<b>"._(UI_TEXT_TOTAL_PAYABLE_OR_REFUND) . ":</b>");
 	amount_cell($total, true);
 	label_cell("");
 	end_row();
