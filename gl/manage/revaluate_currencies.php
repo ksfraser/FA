@@ -17,11 +17,12 @@ require_once($path_to_root . "/includes/DateService.php");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/banking.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 
 $js = "";
 if (user_use_date_picker())
 	$js .= get_js_date_picker();
-page(_($help_context = "Revaluation of Currency Accounts"), false, false, "", $js);
+page(_($help_context = UI_TEXT_REVALUATION_OF_CURRENCY_ACCOUNTS), false, false, "", $js);
 
 if (isset($_GET['BA'])) 
 {
@@ -30,11 +31,11 @@ if (isset($_GET['BA']))
 
 	if ($BA != 0 || $JE !=0)
 	{
-		display_notification_centered(sprintf(_("%d Journal Entries for Bank Accounts have been added"), $BA));
-		display_notification_centered(sprintf(_("%d Journal Entries for AR/AP accounts have been added"), $JE));
+		display_notification_centered(sprintf(_(UI_TEXT_JOURNAL_ENTRIES_FOR_BANK_ACCOUNTS_ADDED), $BA));
+		display_notification_centered(sprintf(_(UI_TEXT_JOURNAL_ENTRIES_FOR_AR_AP_ACCOUNTS_ADDED), $JE));
 	}
 	else
-   		display_notification_centered( _("No revaluation was needed."));
+   		display_notification_centered( _(UI_TEXT_NO_REVALUATION_WAS_NEEDED));
 }
 
 
@@ -43,13 +44,13 @@ function check_data()
 {
 	if (!DateService::isDate($_POST['date']))
 	{
-		UiMessageService::displayError( _("The entered date is invalid."));
+		UiMessageService::displayError( _(UI_TEXT_THE_ENTERED_DATE_IS_INVALID));
 		set_focus('date');
 		return false;
 	}
 	if (!DateService::isDateInFiscalYearStatic($_POST['date']))
 	{
-		UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
+		UiMessageService::displayError(_(UI_TEXT_THE_ENTERED_DATE_IS_OUT_OF_FISCAL_YEAR_OR_IS_CLOSED_FOR_FURTHER_DATA_ENTRY));
 		set_focus('date');
 		return false;
 	}
@@ -80,11 +81,11 @@ function display_reval()
 
 	if (!isset($_POST['date']))
 		$_POST['date'] = DateService::todayStatic();
-    date_row(_("Date for Revaluation:"), 'date', '', null, 0, 0, 0, null, true);
-    textarea_row(_("Memo:"), 'memo_', null, 40,4);
+    date_row(_(UI_TEXT_DATE_FOR_REVALUATION), 'date', '', null, 0, 0, 0, null, true);
+    textarea_row(_(UI_TEXT_MEMO_LABEL), 'memo_', null, 40,4);
 	end_table(1);
 
-	submit_center('submit', _("Revaluate Currencies"), true, false);
+	submit_center('submit', _(UI_TEXT_REVALUATE_CURRENCIES), true, false);
 	end_form();
 }
 
