@@ -46,16 +46,30 @@ function db_fetch_row($result) {
 
 use PHPUnit\Framework\TestCase;
 use FA\DataChecksService;
+use FA\Interfaces\DatabaseRepositoryInterface;
+use FA\Interfaces\DisplayServiceInterface;
 
 class DataChecksServiceTest extends TestCase {
 
     private DataChecksService $service;
+    private $databaseRepoMock;
+    private $displayServiceMock;
 
     protected function setUp(): void {
         if (!defined('TB_PREF')) {
             define('TB_PREF', '0_');
         }
-        $this->service = new DataChecksService();
+        
+        // Create mocks
+        $this->databaseRepoMock = $this->createMock(DatabaseRepositoryInterface::class);
+        $this->displayServiceMock = $this->createMock(DisplayServiceInterface::class);
+        
+        // Setup mock behaviors
+        $this->databaseRepoMock->method('checkEmptyResult')->willReturn(true);
+        $this->databaseRepoMock->method('getTablePrefix')->willReturn('0_');
+        $this->databaseRepoMock->method('escape')->willReturnArgument(0);
+        
+        $this->service = new DataChecksService($this->databaseRepoMock, $this->displayServiceMock);
     }
 
     public function testDbHasCustomers(): void {

@@ -258,13 +258,13 @@ if (isset($_POST['Process']))
 	{
 		if (!$dateService->isDate($_POST['tax_date']))
 		{
-			UiMessageService::displayError(_("The entered date is invalid."));
+			UiMessageService::displayError(_(UI_TEXT_THE_ENTERED_DATE_IS_INVALID));
 			set_focus('tax_date');
 			$input_error = 1;
 		} 
 		elseif (!DateService::isDateInFiscalYearStatic($_POST['tax_date']))
 		{
-			UiMessageService::displayError(_("The entered date is out of fiscal year or is closed for further data entry."));
+			UiMessageService::displayError(_(UI_TEXT_THE_ENTERED_DATE_IS_OUT_OF_FISCAL_YEAR_OR_IS_CLOSED_FOR_FURTHER_DATA_ENTRY));
 			set_focus('tax_date');
 			$input_error = 1;
 		}

@@ -14,10 +14,11 @@ $path_to_root="../..";
 
 include($path_to_root . "/includes/session.inc");
 
-page(_($help_context = "View Bank Transfer"), true);
+page(_($help_context = UI_TEXT_VIEW_BANK_TRANSFER), true);
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 if (isset($_GET["trans_no"])){
@@ -67,31 +68,31 @@ echo "<br>";
 start_table(TABLESTYLE, "width='80%'");
 
 start_row();
-label_cells(_("From Bank Account"), $from_trans['bank_account_name'], "class='tableheader2'");
+label_cells(_(UI_TEXT_FROM_BANK_ACCOUNT), $from_trans['bank_account_name'], "class='tableheader2'");
 if ($show_currencies)
-	label_cells(_("Currency"), $from_trans['bank_curr_code'], "class='tableheader2'");
-label_cells(_("Amount"), FormatService::numberFormat2(-$from_trans['amount'], \FA\UserPrefsCache::getPriceDecimals()), "class='tableheader2'", "align=right");
+	label_cells(_(UI_TEXT_CURRENCY), $from_trans['bank_curr_code'], "class='tableheader2'");
+label_cells(_(UI_TEXT_AMOUNT), FormatService::numberFormat2(-$from_trans['amount'], \FA\UserPrefsCache::getPriceDecimals()), "class='tableheader2'", "align=right");
 if ($show_currencies)
 {
 	end_row();
 	start_row();
 }	
-label_cells(_("To Bank Account"), $to_trans['bank_account_name'], "class='tableheader2'");
+label_cells(_(UI_TEXT_TO_BANK_ACCOUNT), $to_trans['bank_account_name'], "class='tableheader2'");
 if ($show_currencies)
-	label_cells(_("Currency"), $to_trans['bank_curr_code'], "class='tableheader2'");
+	label_cells(_(UI_TEXT_CURRENCY), $to_trans['bank_curr_code'], "class='tableheader2'");
 if ($show_both_amounts)
-	label_cells(_("Amount"), FormatService::numberFormat2($to_trans['amount'], \FA\UserPrefsCache::getPriceDecimals()), "class='tableheader2'", "align=right");
+	label_cells(_(UI_TEXT_AMOUNT), FormatService::numberFormat2($to_trans['amount'], \FA\UserPrefsCache::getPriceDecimals()), "class='tableheader2'", "align=right");
 end_row();
 start_row();
-label_cells(_("Date"), DateService::sql2dateStatic($from_trans['trans_date']), "class='tableheader2'");
-label_cells(_("Transfer Type"), $bank_transfer_types[$from_trans['account_type']],
+label_cells(_(UI_TEXT_DATE), DateService::sql2dateStatic($from_trans['trans_date']), "class='tableheader2'");
+label_cells(_(UI_TEXT_TRANSFER_TYPE), $bank_transfer_types[$from_trans['account_type']],
 	 "class='tableheader2'");
-label_cells(_("Reference"), $from_trans['ref'], "class='tableheader2'");
+label_cells(_(UI_TEXT_REFERENCE), $from_trans['ref'], "class='tableheader2'");
 end_row();
 comments_display_row(ST_BANKTRANSFER, $trans_no);
 
 end_table(1);
 
-is_voided_display(ST_BANKTRANSFER, $trans_no, _("This transfer has been voided."));
+is_voided_display(ST_BANKTRANSFER, $trans_no, _(UI_TEXT_THIS_TRANSFER_HAS_BEEN_VOIDED));
 
 end_page(true, false, false, ST_BANKTRANSFER, $trans_no);

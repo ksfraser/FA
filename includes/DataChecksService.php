@@ -122,9 +122,9 @@ class DataChecksService {
         if (BankingService::isCompanyCurrencyStatic($currency)) {
             return 1;
         }
-        $ret = check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "exchange_rates WHERE curr_code = '$currency' && date_ <= '$dateSql'");
+        $ret = $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM " . $this->databaseRepo->getTablePrefix() . "exchange_rates WHERE curr_code = '$currency' && date_ <= '$dateSql'");
         if ($ret == 0 && $msg) {
-            UiMessageService::displayError(sprintf(_("Cannot retrieve exchange rate for currency %s as of %s. Please add exchange rate manually on Exchange Rates page."),
+            $this->displayService->displayError(sprintf(_("Cannot retrieve exchange rate for currency %s as of %s. Please add exchange rate manually on Exchange Rates page."),
                 $currency, $date), true);
         }
         return $ret;
@@ -136,7 +136,7 @@ class DataChecksService {
      * @return bool True if has tax types
      */
     public function dbHasTaxTypes(): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM " . \TB_PREF . "tax_types");
+        return $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM " . $this->databaseRepo->getTablePrefix() . "tax_types");
     }
 
     /**
@@ -146,8 +146,8 @@ class DataChecksService {
      */
     public function checkDbHasTaxTypes(string $msg): void {
         if (!$this->dbHasTaxTypes()) {
-            \UiMessageService::displayError($msg, true);
-            \end_page();
+            $this->displayService->displayError($msg, true);
+            $this->displayService->endPage();
             exit;
         }
     }
@@ -158,7 +158,7 @@ class DataChecksService {
      * @return bool True if has tax groups
      */
     public function dbHasTaxGroups(): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM " . \TB_PREF . "tax_groups");
+        return $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM " . $this->databaseRepo->getTablePrefix() . "tax_groups");
     }
 
     /**
@@ -168,8 +168,8 @@ class DataChecksService {
      */
     public function checkDbHasTaxGroups(string $msg): void {
         if (!$this->dbHasTaxGroups()) {
-            \UiMessageService::displayError($msg, true);
-            \end_page();
+            $this->displayService->displayError($msg, true);
+            $this->displayService->endPage();
             exit;
         }
     }
@@ -180,7 +180,7 @@ class DataChecksService {
      * @return bool True if has sales types
      */
     public function dbHasSalesTypes(): bool {
-        return check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "sales_types");
+        return $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM " . $this->databaseRepo->getTablePrefix() . "sales_types");
     }
 
     /**
@@ -190,8 +190,8 @@ class DataChecksService {
      */
     public function checkDbHasSalesTypes(string $msg): void {
         if (!$this->dbHasSalesTypes()) {
-            UiMessageService::displayError($msg, true);
-            end_page();
+            $this->displayService->displayError($msg, true);
+            $this->displayService->endPage();
             exit;
         }
     }
@@ -203,8 +203,8 @@ class DataChecksService {
      * @return bool True if customer has branches
      */
     public function dbCustomerHasBranches(string $customerId): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM " . \TB_PREF . "cust_branch "
-            . "WHERE debtor_no=" . \db_escape($customerId));
+        return $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM " . $this->databaseRepo->getTablePrefix() . "cust_branch "
+            . "WHERE debtor_no=" . $this->databaseRepo->escape($customerId));
     }
 
     /**
@@ -213,8 +213,8 @@ class DataChecksService {
      * @return bool True if has customer branches
      */
     public function dbHasCustomerBranches(): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM "
-            . \TB_PREF . "cust_branch WHERE !inactive");
+        return $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM "
+            . $this->databaseRepo->getTablePrefix() . "cust_branch WHERE !inactive");
     }
 
     /**
@@ -224,8 +224,8 @@ class DataChecksService {
      */
     public function checkDbHasCustomerBranches(string $msg): void {
         if (!$this->dbHasCustomerBranches()) {
-            \UiMessageService::displayError($msg, true);
-            \end_page();
+            $this->displayService->displayError($msg, true);
+            $this->displayService->endPage();
             exit;
         }
     }
@@ -236,7 +236,7 @@ class DataChecksService {
      * @return bool True if has sales people
      */
     public function dbHasSalesPeople(): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM " . \TB_PREF . "salesman");
+        return $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM " . $this->databaseRepo->getTablePrefix() . "salesman");
     }
 
     /**
@@ -246,8 +246,8 @@ class DataChecksService {
      */
     public function checkDbHasSalesPeople(string $msg): void {
         if (!$this->dbHasSalesPeople()) {
-            \UiMessageService::displayError($msg, true);
-            \end_page();
+            $this->displayService->displayError($msg, true);
+            $this->displayService->endPage();
             exit;
         }
     }
@@ -258,7 +258,7 @@ class DataChecksService {
      * @return bool True if has sales areas
      */
     public function dbHasSalesAreas(): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM " . \TB_PREF . "areas");
+        return $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM " . $this->databaseRepo->getTablePrefix() . "areas");
     }
 
     /**
@@ -268,8 +268,8 @@ class DataChecksService {
      */
     public function checkDbHasSalesAreas(string $msg): void {
         if (!$this->dbHasSalesAreas()) {
-            \UiMessageService::displayError($msg, true);
-            \end_page();
+            $this->displayService->displayError($msg, true);
+            $this->displayService->endPage();
             exit;
         }
     }
@@ -280,7 +280,7 @@ class DataChecksService {
      * @return bool True if has shippers
      */
     public function dbHasShippers(): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM " . \TB_PREF . "shippers");
+        return $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM " . $this->databaseRepo->getTablePrefix() . "shippers");
     }
 
     /**
@@ -290,8 +290,8 @@ class DataChecksService {
      */
     public function checkDbHasShippers(string $msg): void {
         if (!$this->dbHasShippers()) {
-            \UiMessageService::displayError($msg, true);
-            \end_page();
+            $this->displayService->displayError($msg, true);
+            $this->displayService->endPage();
             exit;
         }
     }
@@ -305,7 +305,7 @@ class DataChecksService {
      * @return bool True if has item tax types
      */
     public function dbHasItemTaxTypes(): bool {
-        return check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "item_tax_types");
+        return $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM " . $this->databaseRepo->getTablePrefix() . "item_tax_types");
     }
 
     /**
@@ -315,8 +315,8 @@ class DataChecksService {
      */
     public function checkDbHasItemTaxTypes(string $msg): void {
         if (!$this->dbHasItemTaxTypes()) {
-            UiMessageService::displayError($msg, true);
-            end_page();
+            $this->displayService->displayError($msg, true);
+            $this->displayService->endPage();
             exit;
         }
     }
@@ -327,7 +327,7 @@ class DataChecksService {
      * @return bool True if has open workorders
      */
     public function dbHasOpenWorkorders(): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM ".\TB_PREF."workorders WHERE closed=0");
+        return $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM ".$this->databaseRepo->getTablePrefix()."workorders WHERE closed=0");
     }
 
     /**
@@ -336,7 +336,7 @@ class DataChecksService {
      * @return bool True if has workorders
      */
     public function dbHasWorkorders(): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM ".\TB_PREF."workorders");
+        return $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM ".$this->databaseRepo->getTablePrefix()."workorders");
     }
 
     /**
@@ -346,8 +346,8 @@ class DataChecksService {
      */
     public function checkDbHasWorkorders(string $msg): void {
         if (!$this->dbHasWorkorders()) {
-            \UiMessageService::displayError($msg, true);
-            \end_page();
+            $this->displayService->displayError($msg, true);
+            $this->displayService->endPage();
             exit;
         }
     }
@@ -358,7 +358,7 @@ class DataChecksService {
      * @return bool True if has open dimensions
      */
     public function dbHasOpenDimensions(): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM ".\TB_PREF."dimensions WHERE closed=0");
+        return $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM ".$this->databaseRepo->getTablePrefix()."dimensions WHERE closed=0");
     }
 
     /**
@@ -367,7 +367,7 @@ class DataChecksService {
      * @return bool True if has dimensions
      */
     public function dbHasDimensions(): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM ".\TB_PREF."dimensions");
+        return $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM ".$this->databaseRepo->getTablePrefix()."dimensions");
     }
 
     /**
@@ -377,8 +377,8 @@ class DataChecksService {
      */
     public function checkDbHasDimensions(string $msg): void {
         if (!$this->dbHasDimensions()) {
-            \UiMessageService::displayError($msg, true);
-            \end_page();
+            $this->displayService->displayError($msg, true);
+            $this->displayService->endPage();
             exit;
         }
     }
@@ -389,7 +389,7 @@ class DataChecksService {
      * @return bool True if has suppliers
      */
     public function dbHasSuppliers(): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM ".\TB_PREF."suppliers");
+        return $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM ".$this->databaseRepo->getTablePrefix()."suppliers");
     }
 
     /**
@@ -399,8 +399,8 @@ class DataChecksService {
      */
     public function checkDbHasSuppliers(string $msg): void {
         if (!$this->dbHasSuppliers()) {
-            \UiMessageService::displayError($msg, true);
-            \end_page();
+            $this->displayService->displayError($msg, true);
+            $this->displayService->endPage();
             exit;
         }
     }
@@ -411,7 +411,7 @@ class DataChecksService {
      * @return bool True if has stock items
      */
     public function dbHasStockItems(): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM ".\TB_PREF."stock_master WHERE mb_flag!='F'");
+        return $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM ".$this->databaseRepo->getTablePrefix()."stock_master WHERE mb_flag!='F'");
     }
 
     /**
@@ -421,8 +421,8 @@ class DataChecksService {
      */
     public function checkDbHasStockItems(string $msg): void {
         if (!$this->dbHasStockItems()) {
-            \UiMessageService::displayError($msg, true);
-            \end_page();
+            $this->displayService->displayError($msg, true);
+            $this->displayService->endPage();
             exit;
         }
     }
@@ -433,7 +433,7 @@ class DataChecksService {
      * @return bool True if has bom stock items
      */
     public function dbHasBomStockItems(): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM ".\TB_PREF."stock_master WHERE mb_flag='M'");
+        return $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM ".$this->databaseRepo->getTablePrefix()."stock_master WHERE mb_flag='M'");
     }
 
     /**
@@ -443,8 +443,8 @@ class DataChecksService {
      */
     public function checkDbHasBomStockItems(string $msg): void {
         if (!$this->dbHasBomStockItems()) {
-            \UiMessageService::displayError($msg, true);
-            \end_page();
+            $this->displayService->displayError($msg, true);
+            $this->displayService->endPage();
             exit;
         }
     }
@@ -455,7 +455,7 @@ class DataChecksService {
      * @return bool True if has manufacturable items
      */
     public function dbHasManufacturableItems(): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM ".\TB_PREF."stock_master WHERE (mb_flag='M')");
+        return $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM ".$this->databaseRepo->getTablePrefix()."stock_master WHERE (mb_flag='M')");
     }
 
     /**
@@ -465,8 +465,8 @@ class DataChecksService {
      */
     public function checkDbHasManufacturableItems(string $msg): void {
         if (!$this->dbHasManufacturableItems()) {
-            \UiMessageService::displayError($msg, true);
-            \end_page();
+            $this->displayService->displayError($msg, true);
+            $this->displayService->endPage();
             exit;
         }
     }
@@ -477,7 +477,7 @@ class DataChecksService {
      * @return bool True if has purchasable items
      */
     public function dbHasPurchasableItems(): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM ".\TB_PREF."stock_master WHERE mb_flag!='M'");
+        return $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM ".$this->databaseRepo->getTablePrefix()."stock_master WHERE mb_flag!='M'");
     }
 
     /**
@@ -487,8 +487,8 @@ class DataChecksService {
      */
     public function checkDbHasPurchasableItems(string $msg): void {
         if (!$this->dbHasPurchasableItems()) {
-            \UiMessageService::displayError($msg, true);
-            \end_page();
+            $this->displayService->displayError($msg, true);
+            $this->displayService->endPage();
             exit;
         }
     }
@@ -499,7 +499,7 @@ class DataChecksService {
      * @return bool True if has costable items
      */
     public function dbHasCostableItems(): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM ".\TB_PREF."stock_master WHERE mb_flag!='D'");
+        return $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM ".$this->databaseRepo->getTablePrefix()."stock_master WHERE mb_flag!='D'");
     }
 
     /**
@@ -509,8 +509,8 @@ class DataChecksService {
      */
     public function checkDbHasCostableItems(string $msg): void {
         if (!$this->dbHasCostableItems()) {
-            \UiMessageService::displayError($msg, true);
-            \end_page();
+            $this->displayService->displayError($msg, true);
+            $this->displayService->endPage();
             exit;
         }
     }
@@ -522,8 +522,8 @@ class DataChecksService {
      */
     public function checkDbHasFixedAssetClasses(string $msg): void {
         if (!$this->dbHasFixedAssetClasses()) {
-            \UiMessageService::displayError($msg, true);
-            \end_page();
+            $this->displayService->displayError($msg, true);
+            $this->displayService->endPage();
             exit;
         }
     }
@@ -534,7 +534,7 @@ class DataChecksService {
      * @return bool True if has fixed asset classes
      */
     public function dbHasFixedAssetClasses(): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM ".\TB_PREF."stock_fa_class");
+        return $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM ".$this->databaseRepo->getTablePrefix()."stock_fa_class");
     }
 
     /**
@@ -547,11 +547,11 @@ class DataChecksService {
         $begin = \DateService::date2sqlStatic(\DateService::addMonthsStatic(\DateService::sql2dateStatic($year['begin']), -1));
         $end = \DateService::date2sqlStatic(\DateService::addMonthsStatic(\DateService::sql2dateStatic($year['end']), -1));
 
-        return \check_empty_result("SELECT COUNT(*) FROM ".\TB_PREF."stock_master 
+        return $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM ".$this->databaseRepo->getTablePrefix()."stock_master 
             WHERE mb_flag='F'
                 AND material_cost > 0
-                AND stock_id IN ( SELECT stock_id FROM ".\TB_PREF."stock_moves WHERE type=".\ST_SUPPRECEIVE." AND qty!=0 )
-                AND stock_id NOT IN	( SELECT stock_id FROM ".\TB_PREF."stock_moves WHERE (type=".\ST_CUSTDELIVERY." OR type=".\ST_INVADJUST.") AND qty!=0 )
+                AND stock_id IN ( SELECT stock_id FROM ".$this->databaseRepo->getTablePrefix()."stock_moves WHERE type=".\ST_SUPPRECEIVE." AND qty!=0 )
+                AND stock_id NOT IN	( SELECT stock_id FROM ".$this->databaseRepo->getTablePrefix()."stock_moves WHERE (type=".\ST_CUSTDELIVERY." OR type=".\ST_INVADJUST.") AND qty!=0 )
                 AND depreciation_date <= '".$end."'
                 AND depreciation_date >='".$begin."'");
     }
@@ -563,8 +563,8 @@ class DataChecksService {
      */
     public function checkDbHasDepreciableFixedAssets(string $msg): void {
         if (!$this->dbHasDepreciableFixedAssets()) {
-            \UiMessageService::displayError($msg, true);
-            \end_page();
+            $this->displayService->displayError($msg, true);
+            $this->displayService->endPage();
             exit;
         }
     }
@@ -575,7 +575,7 @@ class DataChecksService {
      * @return bool True if has fixed assets
      */
     public function dbHasFixedAssets(): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM ".\TB_PREF."stock_master WHERE mb_flag='F'");
+        return $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM ".$this->databaseRepo->getTablePrefix()."stock_master WHERE mb_flag='F'");
     }
 
     /**
@@ -585,8 +585,8 @@ class DataChecksService {
      */
     public function checkDbHasFixedAssets(string $msg): void {
         if (!$this->dbHasFixedAssets()) {
-            \UiMessageService::displayError($msg, true);
-            \end_page();
+            $this->displayService->displayError($msg, true);
+            $this->displayService->endPage();
             exit;
         }
     }
@@ -597,11 +597,11 @@ class DataChecksService {
      * @return bool True if has purchasable fixed assets
      */
     public function dbHasPurchasableFixedAssets(): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM ".\TB_PREF."stock_master 
+        return $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM ".$this->databaseRepo->getTablePrefix()."stock_master 
             WHERE mb_flag='F'
                 AND !inactive
                 AND stock_id NOT IN
-                    ( SELECT stock_id FROM ".\TB_PREF."stock_moves WHERE type=".\ST_SUPPRECEIVE." AND qty!=0 )");
+                    ( SELECT stock_id FROM ".$this->databaseRepo->getTablePrefix()."stock_moves WHERE type=".\ST_SUPPRECEIVE." AND qty!=0 )");
     }
 
     /**
@@ -611,8 +611,8 @@ class DataChecksService {
      */
     public function checkDbHasPurchasableFixedAssets(string $msg): void {
         if (!$this->dbHasPurchasableFixedAssets()) {
-            \UiMessageService::displayError($msg, true);
-            \end_page();
+            $this->displayService->displayError($msg, true);
+            $this->displayService->endPage();
             exit;
         }
     }
@@ -623,13 +623,13 @@ class DataChecksService {
      * @return bool True if has disposable fixed assets
      */
     public function dbHasDisposableFixedAssets(): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM ".\TB_PREF."stock_master 
+        return $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM ".$this->databaseRepo->getTablePrefix()."stock_master 
             WHERE mb_flag='F'
                 AND !inactive
                 AND stock_id IN
-                    ( SELECT stock_id FROM ".\TB_PREF."stock_moves WHERE type=".\ST_SUPPRECEIVE." AND qty!=0 )
+                    ( SELECT stock_id FROM ".$this->databaseRepo->getTablePrefix()."stock_moves WHERE type=".\ST_SUPPRECEIVE." AND qty!=0 )
                 AND stock_id NOT IN
-                    ( SELECT stock_id FROM ".\TB_PREF."stock_moves WHERE (type=".\ST_CUSTDELIVERY." OR type=".\ST_INVADJUST.") AND qty!=0 )");
+                    ( SELECT stock_id FROM ".$this->databaseRepo->getTablePrefix()."stock_moves WHERE (type=".\ST_CUSTDELIVERY." OR type=".\ST_INVADJUST.") AND qty!=0 )");
     }
 
     /**
@@ -639,8 +639,8 @@ class DataChecksService {
      */
     public function checkDbHasDisposableFixedAssets(string $msg): void {
         if (!$this->dbHasDisposableFixedAssets()) {
-            \UiMessageService::displayError($msg, true);
-            \end_page();
+            $this->displayService->displayError($msg, true);
+            $this->displayService->endPage();
             exit;
         }
     }
@@ -651,7 +651,7 @@ class DataChecksService {
      * @return bool True if has stock categories
      */
     public function dbHasStockCategories(): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM ".\TB_PREF."stock_category WHERE dflt_mb_flag!='F'");
+        return $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM ".$this->databaseRepo->getTablePrefix()."stock_category WHERE dflt_mb_flag!='F'");
     }
 
     /**
@@ -661,8 +661,8 @@ class DataChecksService {
      */
     public function checkDbHasFixedAssetCategories(string $msg): void {
         if (!$this->dbHasFixedAssetCategories()) {
-            \UiMessageService::displayError($msg, true);
-            \end_page();
+            $this->displayService->displayError($msg, true);
+            $this->displayService->endPage();
             exit;
         }
     }
@@ -673,7 +673,7 @@ class DataChecksService {
      * @return bool True if has fixed asset categories
      */
     public function dbHasFixedAssetCategories(): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM ".\TB_PREF."stock_category WHERE dflt_mb_flag='F'");
+        return $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM ".$this->databaseRepo->getTablePrefix()."stock_category WHERE dflt_mb_flag='F'");
     }
 
     /**
@@ -683,8 +683,8 @@ class DataChecksService {
      */
     public function checkDbHasStockCategories(string $msg): void {
         if (!$this->dbHasStockCategories()) {
-            \UiMessageService::displayError($msg, true);
-            \end_page();
+            $this->displayService->displayError($msg, true);
+            $this->displayService->endPage();
             exit;
         }
     }
@@ -695,7 +695,7 @@ class DataChecksService {
      * @return bool True if has workcentres
      */
     public function dbHasWorkcentres(): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM ".\TB_PREF."workcentres");
+        return $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM ".$this->databaseRepo->getTablePrefix()."workcentres");
     }
 
     /**
@@ -705,8 +705,8 @@ class DataChecksService {
      */
     public function checkDbHasWorkcentres(string $msg): void {
         if (!$this->dbHasWorkcentres()) {
-            \UiMessageService::displayError($msg, true);
-            \end_page();
+            $this->displayService->displayError($msg, true);
+            $this->displayService->endPage();
             exit;
         }
     }
@@ -717,7 +717,7 @@ class DataChecksService {
      * @return bool True if has locations
      */
     public function dbHasLocations(): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM ".\TB_PREF."locations WHERE fixed_asset=0");
+        return $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM ".$this->databaseRepo->getTablePrefix()."locations WHERE fixed_asset=0");
     }
 
     /**
@@ -727,8 +727,8 @@ class DataChecksService {
      */
     public function checkDbHasLocations(string $msg): void {
         if (!$this->dbHasLocations()) {
-            \UiMessageService::displayError($msg, true);
-            \end_page();
+            $this->displayService->displayError($msg, true);
+            $this->displayService->endPage();
             exit;
         }
     }
@@ -739,7 +739,7 @@ class DataChecksService {
      * @return bool True if has bank accounts
      */
     public function dbHasBankAccounts(): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM ".\TB_PREF."bank_accounts");
+        return $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM ".$this->databaseRepo->getTablePrefix()."bank_accounts");
     }
 
     /**
@@ -749,8 +749,8 @@ class DataChecksService {
      */
     public function checkDbHasBankAccounts(string $msg): void {
         if (!$this->dbHasBankAccounts()) {
-            \UiMessageService::displayError($msg, true);
-            \end_page();
+            $this->displayService->displayError($msg, true);
+            $this->displayService->endPage();
             exit;
         }
     }
@@ -761,7 +761,7 @@ class DataChecksService {
      * @return bool True if has cash accounts
      */
     public function dbHasCashAccounts(): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM ".\TB_PREF."bank_accounts
+        return $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM ".$this->databaseRepo->getTablePrefix()."bank_accounts
             WHERE account_type=3");
     }
 
@@ -771,7 +771,7 @@ class DataChecksService {
      * @return bool True if has GL accounts
      */
     public function dbHasGlAccounts(): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM ".\TB_PREF."chart_master");
+        return $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM ".$this->databaseRepo->getTablePrefix()."chart_master");
     }
 
     /**
@@ -780,7 +780,7 @@ class DataChecksService {
      * @return bool True if has GL account groups
      */
     public function dbHasGlAccountGroups(): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM ".\TB_PREF."chart_types");
+        return $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM ".$this->databaseRepo->getTablePrefix()."chart_types");
     }
 
     /**
@@ -790,8 +790,8 @@ class DataChecksService {
      */
     public function checkDbHasGlAccountGroups(string $msg): void {
         if (!$this->dbHasGlAccountGroups()) {
-            \UiMessageService::displayError($msg, true);
-            \end_page();
+            $this->displayService->displayError($msg, true);
+            $this->displayService->endPage();
             exit;
         }
     }
@@ -802,7 +802,7 @@ class DataChecksService {
      * @return bool True if has quick entries
      */
     public function dbHasQuickEntries(): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM ".\TB_PREF."quick_entries");
+        return $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM ".$this->databaseRepo->getTablePrefix()."quick_entries");
     }
 
     /**
@@ -812,7 +812,7 @@ class DataChecksService {
      * @return bool True if has tags
      */
     public function dbHasTags(int $type): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM ".\TB_PREF."tags WHERE type=".\db_escape($type));
+        return $this->databaseRepo->checkEmptyResult("SELECT COUNT(*) FROM ".$this->databaseRepo->getTablePrefix()."tags WHERE type=".$this->databaseRepo->escape($type));
     }
 
     /**
@@ -823,24 +823,13 @@ class DataChecksService {
      */
     public function checkDbHasTags(int $type, string $msg): void {
         if (!$this->dbHasTags($type)) {
-            \UiMessageService::displayError($msg, true);
-            \end_page();
+            $this->displayService->displayError($msg, true);
+            $this->displayService->endPage();
             exit;
         }
     }
 
-    /**
-     * Check empty result
-     *
-     * @param string $sql SQL query
-     * @return bool True if result is not empty
-     */
-    public function checkEmptyResult(string $sql): bool {
-        $result = \db_query($sql, "could not do check empty query");
-        
-        $myrow = \db_fetch_row($result);
-        return is_array($myrow) ? $myrow[0] > 0 : false;
-    }
+
 
     /**
      * Integer input check
@@ -899,8 +888,8 @@ class DataChecksService {
         if (($typeNo > 0) && \is_closed_trans($type, $typeNo)) {
             if (!$msg)
                 $msg = sprintf(\_("%s #%s is closed for further edition."), $GLOBALS['systypes_array'][$type], $typeNo);
-            \UiMessageService::displayError($msg, true);
-            \display_footer_exit();
+            $this->displayService->displayError($msg, true);
+            $this->displayService->displayFooterExit();
         }
     }
 
@@ -911,14 +900,14 @@ class DataChecksService {
      */
     public function checkDbHasTemplateOrders(string $msg): void {
         $sql = "SELECT sorder.order_no 
-            FROM ".\TB_PREF."sales_orders as sorder,"
-                .\TB_PREF."sales_order_details as line
+            FROM ".$this->databaseRepo->getTablePrefix()."sales_orders as sorder,"
+                .$this->databaseRepo->getTablePrefix()."sales_order_details as line
             WHERE sorder.order_no = line.order_no AND sorder.type = 1
             GROUP BY line.order_no";
 
-        if (!\check_empty_result($sql)) {
-            \UiMessageService::displayError($msg, true);
-            \end_page();
+        if (!$this->databaseRepo->checkEmptyResult($sql)) {
+            $this->displayService->displayError($msg, true);
+            $this->displayService->endPage();
             exit;
         }
     }
@@ -930,8 +919,8 @@ class DataChecksService {
      */
     public function checkDeferredIncomeAct(string $msg): void {
         if (!\get_company_pref('deferred_income_act')) {
-            \UiMessageService::displayError($msg, true);
-            \display_footer_exit();
+            $this->displayService->displayError($msg, true);
+            $this->displayService->displayFooterExit();
         }
     }
 
@@ -949,8 +938,8 @@ class DataChecksService {
             if ($_SESSION['wa_current_user']->user != $audit['user']) {
                 if (!$msg)
                     $msg = '<b>'._("You have no edit access to transactions created by other users.").'</b>';
-                \display_note($msg);
-                \display_footer_exit();
+                $this->displayService->displayNote($msg);
+                $this->displayService->displayFooterExit();
             }
         }
         if (!in_array($transType, array(\ST_SALESORDER, \ST_SALESQUOTE, \ST_PURCHORDER, \ST_WORKORDER)))
@@ -969,10 +958,10 @@ class DataChecksService {
      */
     public function checkReference(string $reference, int $transType, int $transNo = 0, $context = null, $line = null): bool {
         if (!$GLOBALS['Refs']->is_valid($reference, $transType, $context, $line)) {
-            \UiMessageService::displayError(_("The entered reference is invalid."));
+            $this->displayService->displayError(_("The entered reference is invalid."));
             return false;
         } elseif (!$GLOBALS['Refs']->is_new_reference($reference, $transType, $transNo)) {
-            \UiMessageService::displayError(_("The entered reference is already in use."));
+            $this->displayService->displayError(_("The entered reference is already in use."));
             return false;
         }
         return true;
@@ -987,8 +976,8 @@ class DataChecksService {
      */
     public function checkSysPref(string $name, string $msg, string $empty = ''): void {
         if (\get_company_pref($name) === $empty) {
-            \UiMessageService::displayError(\menu_link("/admin/gl_setup.php", $msg), true);
-            \display_footer_exit();
+            $this->displayService->displayError($this->displayService->menuLink("/admin/gl_setup.php", $msg), true);
+            $this->displayService->displayFooterExit();
         }
     }
 }
