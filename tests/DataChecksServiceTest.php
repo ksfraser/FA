@@ -200,5 +200,42 @@ class DataChecksServiceTest extends TestCase {
         $this->assertTrue(is_callable([$this->service, 'checkDbHasDimensions']));
     }
 
+    // Part 4: Supplier/Stock Functions Tests
+    public function testDbHasSuppliers(): void {
+        // Test db_has_suppliers method
+        $this->assertTrue(method_exists($this->service, 'dbHasSuppliers'));
+        $this->assertTrue(is_callable([$this->service, 'dbHasSuppliers']));
+    }
+
+    public function testCheckDbHasSuppliers(): void {
+        // Test check_db_has_suppliers method
+        $this->assertTrue(method_exists($this->service, 'checkDbHasSuppliers'));
+        $this->assertTrue(is_callable([$this->service, 'checkDbHasSuppliers']));
+    }
+
+    public function testDbHasPurchasableItems(): void {
+        // Test db_has_purchasable_items method
+        $this->assertTrue(method_exists($this->service, 'dbHasPurchasableItems'));
+        $this->assertTrue(is_callable([$this->service, 'dbHasPurchasableItems']));
+    }
+
+    public function testCheckDbHasPurchasableItems(): void {
+        // Test check_db_has_purchasable_items method
+        $this->assertTrue(method_exists($this->service, 'checkDbHasPurchasableItems'));
+        $this->assertTrue(is_callable([$this->service, 'checkDbHasPurchasableItems']));
+    }
+
+    public function testDbHasStockItems(): void {
+        // Test db_has_stock_items method
+        $this->assertTrue(method_exists($this->service, 'dbHasStockItems'));
+        $this->assertTrue(is_callable([$this->service, 'dbHasStockItems']));
+    }
+
+    public function testCheckDbHasStockItems(): void {
+        // Test check_db_has_stock_items method
+        $this->assertTrue(method_exists($this->service, 'checkDbHasStockItems'));
+        $this->assertTrue(is_callable([$this->service, 'checkDbHasStockItems']));
+    }
+
     // Add more tests as needed
 }
