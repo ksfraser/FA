@@ -262,5 +262,30 @@ class DataChecksServiceTest extends TestCase {
         $this->assertTrue(is_callable([$this->service, 'checkDbHasFixedAssetClasses']));
     }
 
+    // Part 6: Category/Location Functions Tests
+    public function testDbHasStockCategories(): void {
+        // Test db_has_stock_categories method
+        $this->assertTrue(method_exists($this->service, 'dbHasStockCategories'));
+        $this->assertTrue(is_callable([$this->service, 'dbHasStockCategories']));
+    }
+
+    public function testCheckDbHasStockCategories(): void {
+        // Test check_db_has_stock_categories method
+        $this->assertTrue(method_exists($this->service, 'checkDbHasStockCategories'));
+        $this->assertTrue(is_callable([$this->service, 'checkDbHasStockCategories']));
+    }
+
+    public function testDbHasLocations(): void {
+        // Test db_has_locations method
+        $this->assertTrue(method_exists($this->service, 'dbHasLocations'));
+        $this->assertTrue(is_callable([$this->service, 'dbHasLocations']));
+    }
+
+    public function testCheckDbHasLocations(): void {
+        // Test check_db_has_locations method
+        $this->assertTrue(method_exists($this->service, 'checkDbHasLocations'));
+        $this->assertTrue(is_callable([$this->service, 'checkDbHasLocations']));
+    }
+
     // Add more tests as needed
 }
