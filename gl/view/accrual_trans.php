@@ -13,12 +13,13 @@ $page_security = 'SA_ACCRUALS';
 $path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 
-$_SESSION['page_title'] = _($help_context = _("Search General Ledger Transactions for account: ").$_GET['act']);
+$_SESSION['page_title'] = _(UI_TEXT_SEARCH_GENERAL_LEDGER_TRANSACTIONS_FOR_ACCOUNT).$_GET['act'];
 
 page($_SESSION['page_title'], true);
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/includes/CompanyPrefsService.php");
 
 include_once($path_to_root . "/gl/includes/gl_db.inc");
@@ -39,7 +40,7 @@ echo $js;
 if (!isset($_GET['act']) || !isset($_GET['date']))
 { /*Script was not passed the correct parameters */
 
-	echo "<p>" . _("The script must be called with a valid transaction type and transaction number to review the general ledger postings for.") . "</p>";
+	echo "<p>" . _(UI_TEXT_SCRIPT_MUST_BE_CALLED_WITH_VALID_TRANSACTION_TYPE_AND_NUMBER) . "</p>";
 	exit;
 }
 
@@ -50,15 +51,15 @@ br();
 start_table(TABLESTYLE);
 $dim = \FA\Services\CompanyPrefsService::getUseDimensions();
 
-$first_cols = array(_("Type"), "#", _("Date"));
+$first_cols = array(_(UI_TEXT_TYPE), "#", _(UI_TEXT_DATE));
 if ($dim == 2)
-	$dim_cols = array(_("Dimension")." 1", _("Dimension")." 2");
+	$dim_cols = array(_(UI_TEXT_DIMENSION)." 1", _(UI_TEXT_DIMENSION)." 2");
 elseif ($dim == 1)
-	$dim_cols = array(_("Dimension"));
+	$dim_cols = array(_(UI_TEXT_DIMENSION));
 else
 	$dim_cols = array();
 
-$remaining_cols = array(_("Person/Item"), _("Debit"), _("Credit"), _("Memo"));
+$remaining_cols = array(_(UI_TEXT_PERSON_ITEM), _(UI_TEXT_DEBIT), _(UI_TEXT_CREDIT), _(UI_TEXT_MEMO));
 
 $th = array_merge($first_cols, $dim_cols, $remaining_cols);
 

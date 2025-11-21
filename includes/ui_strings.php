@@ -2113,6 +2113,8 @@ define('UI_TEXT_JOURNAL_ENTRIES_FOR_AR_AP_ACCOUNTS_ADDED', '%d Journal Entries f
 define('UI_TEXT_NO_REVALUATION_WAS_NEEDED', 'No revaluation was needed.');
 define('UI_TEXT_DATE_FOR_REVALUATION', 'Date for Revaluation:');
 define('UI_TEXT_REVALUATE_CURRENCIES', 'Revaluate Currencies');
+define('UI_TEXT_SEARCH_GENERAL_LEDGER_TRANSACTIONS_FOR_ACCOUNT', 'Search General Ledger Transactions for account: ');
+define('UI_TEXT_SCRIPT_MUST_BE_CALLED_WITH_VALID_TRANSACTION_TYPE_AND_NUMBER', 'The script must be called with a valid transaction type and transaction number to review the general ledger postings for.');
 define('UI_TEXT_REVALUATION_OF_CURRENCY_ACCOUNTS', 'Revaluation of Currency Accounts');
 define('UI_TEXT_PERIOD', 'Period');
 define('UI_TEXT_SELECTED_QUICK_ENTRY_UPDATED', 'Selected quick entry has been updated');
