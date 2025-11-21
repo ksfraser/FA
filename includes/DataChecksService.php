@@ -175,42 +175,15 @@ class DataChecksService {
         }
     }
 
-    // Add more methods similarly for all functions
-    // For brevity, I'll add placeholders for the rest
-
-    /**
-     * Check if database has item tax types
-     *
-     * @return bool True if has item tax types
-     */
-    public function dbHasItemTaxTypes(): bool {
-        return check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "item_tax_types");
-    }
-
-    /**
-     * Check database has item tax types and display error if not
-     *
-     * @param string $msg Error message
-     */
-    public function checkDbHasItemTaxTypes(string $msg): void {
-        if (!$this->dbHasItemTaxTypes()) {
-            UiMessageService::displayError($msg, true);
-            end_page();
-            exit;
-        }
-    }
-
-
-
     /**
      * Check if customer has branches
      *
-     * @param int $customerId Customer ID
+     * @param string $customerId Customer ID
      * @return bool True if customer has branches
      */
-    public function dbCustomerHasBranches(int $customerId): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM ".\TB_PREF."cust_branch "
-            ."WHERE debtor_no=".\db_escape($customerId));
+    public function dbCustomerHasBranches(string $customerId): bool {
+        return \check_empty_result("SELECT COUNT(*) FROM " . \TB_PREF . "cust_branch "
+            . "WHERE debtor_no=" . \db_escape($customerId));
     }
 
     /**
@@ -220,7 +193,7 @@ class DataChecksService {
      */
     public function dbHasCustomerBranches(): bool {
         return \check_empty_result("SELECT COUNT(*) FROM "
-            .\TB_PREF."cust_branch WHERE !inactive");
+            . \TB_PREF . "cust_branch WHERE !inactive");
     }
 
     /**
@@ -242,7 +215,7 @@ class DataChecksService {
      * @return bool True if has sales people
      */
     public function dbHasSalesPeople(): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM ".\TB_PREF."salesman");
+        return \check_empty_result("SELECT COUNT(*) FROM " . \TB_PREF . "salesman");
     }
 
     /**
@@ -264,7 +237,7 @@ class DataChecksService {
      * @return bool True if has sales areas
      */
     public function dbHasSalesAreas(): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM ".\TB_PREF."areas");
+        return \check_empty_result("SELECT COUNT(*) FROM " . \TB_PREF . "areas");
     }
 
     /**
@@ -286,7 +259,7 @@ class DataChecksService {
      * @return bool True if has shippers
      */
     public function dbHasShippers(): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM ".\TB_PREF."shippers");
+        return \check_empty_result("SELECT COUNT(*) FROM " . \TB_PREF . "shippers");
     }
 
     /**
@@ -298,6 +271,31 @@ class DataChecksService {
         if (!$this->dbHasShippers()) {
             \UiMessageService::displayError($msg, true);
             \end_page();
+            exit;
+        }
+    }
+
+    // Add more methods similarly for all functions
+    // For brevity, I'll add placeholders for the rest
+
+    /**
+     * Check if database has item tax types
+     *
+     * @return bool True if has item tax types
+     */
+    public function dbHasItemTaxTypes(): bool {
+        return check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "item_tax_types");
+    }
+
+    /**
+     * Check database has item tax types and display error if not
+     *
+     * @param string $msg Error message
+     */
+    public function checkDbHasItemTaxTypes(string $msg): void {
+        if (!$this->dbHasItemTaxTypes()) {
+            UiMessageService::displayError($msg, true);
+            end_page();
             exit;
         }
     }

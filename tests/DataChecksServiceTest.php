@@ -104,5 +104,64 @@ class DataChecksServiceTest extends TestCase {
         $this->assertTrue(is_callable([$this->service, 'checkDbHasTaxGroups']));
     }
 
+    public function testDbCustomerHasBranches(): void {
+        // Test db_customer_has_branches method
+        $result = $this->service->dbCustomerHasBranches('CUST001');
+        $this->assertIsBool($result);
+        $this->assertTrue($result); // Should return true with mock
+    }
+
+    public function testDbHasCustomerBranches(): void {
+        // Test db_has_customer_branches method
+        $result = $this->service->dbHasCustomerBranches();
+        $this->assertIsBool($result);
+        $this->assertTrue($result); // Should return true with mock
+    }
+
+    public function testCheckDbHasCustomerBranches(): void {
+        // Test check_db_has_customer_branches method
+        $this->assertTrue(method_exists($this->service, 'checkDbHasCustomerBranches'));
+        $this->assertTrue(is_callable([$this->service, 'checkDbHasCustomerBranches']));
+    }
+
+    public function testDbHasSalesPeople(): void {
+        // Test db_has_sales_people method
+        $result = $this->service->dbHasSalesPeople();
+        $this->assertIsBool($result);
+        $this->assertTrue($result); // Should return true with mock
+    }
+
+    public function testCheckDbHasSalesPeople(): void {
+        // Test check_db_has_sales_people method
+        $this->assertTrue(method_exists($this->service, 'checkDbHasSalesPeople'));
+        $this->assertTrue(is_callable([$this->service, 'checkDbHasSalesPeople']));
+    }
+
+    public function testDbHasSalesAreas(): void {
+        // Test db_has_sales_areas method
+        $result = $this->service->dbHasSalesAreas();
+        $this->assertIsBool($result);
+        $this->assertTrue($result); // Should return true with mock
+    }
+
+    public function testCheckDbHasSalesAreas(): void {
+        // Test check_db_has_sales_areas method
+        $this->assertTrue(method_exists($this->service, 'checkDbHasSalesAreas'));
+        $this->assertTrue(is_callable([$this->service, 'checkDbHasSalesAreas']));
+    }
+
+    public function testDbHasShippers(): void {
+        // Test db_has_shippers method
+        $result = $this->service->dbHasShippers();
+        $this->assertIsBool($result);
+        $this->assertTrue($result); // Should return true with mock
+    }
+
+    public function testCheckDbHasShippers(): void {
+        // Test check_db_has_shippers method
+        $this->assertTrue(method_exists($this->service, 'checkDbHasShippers'));
+        $this->assertTrue(is_callable([$this->service, 'checkDbHasShippers']));
+    }
+
     // Add more tests as needed
 }
