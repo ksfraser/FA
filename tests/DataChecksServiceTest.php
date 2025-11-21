@@ -287,5 +287,36 @@ class DataChecksServiceTest extends TestCase {
         $this->assertTrue(is_callable([$this->service, 'checkDbHasLocations']));
     }
 
+    // Part 7: Account/GL Functions Tests
+    public function testDbHasBankAccounts(): void {
+        // Test db_has_bank_accounts method
+        $this->assertTrue(method_exists($this->service, 'dbHasBankAccounts'));
+        $this->assertTrue(is_callable([$this->service, 'dbHasBankAccounts']));
+    }
+
+    public function testCheckDbHasBankAccounts(): void {
+        // Test check_db_has_bank_accounts method
+        $this->assertTrue(method_exists($this->service, 'checkDbHasBankAccounts'));
+        $this->assertTrue(is_callable([$this->service, 'checkDbHasBankAccounts']));
+    }
+
+    public function testDbHasGlAccounts(): void {
+        // Test db_has_gl_accounts method
+        $this->assertTrue(method_exists($this->service, 'dbHasGlAccounts'));
+        $this->assertTrue(is_callable([$this->service, 'dbHasGlAccounts']));
+    }
+
+    public function testDbHasGlAccountGroups(): void {
+        // Test db_has_gl_account_groups method
+        $this->assertTrue(method_exists($this->service, 'dbHasGlAccountGroups'));
+        $this->assertTrue(is_callable([$this->service, 'dbHasGlAccountGroups']));
+    }
+
+    public function testCheckDbHasGlAccountGroups(): void {
+        // Test check_db_has_gl_account_groups method
+        $this->assertTrue(method_exists($this->service, 'checkDbHasGlAccountGroups'));
+        $this->assertTrue(is_callable([$this->service, 'checkDbHasGlAccountGroups']));
+    }
+
     // Add more tests as needed
 }
