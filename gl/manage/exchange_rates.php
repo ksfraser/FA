@@ -19,10 +19,12 @@ include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/banking.inc");
 
+include_once($path_to_root . "/includes/ui_strings.php");
+
 $js = "";
 if (user_use_date_picker())
 	$js .= get_js_date_picker();
-page(_($help_context = "Exchange Rates"), false, false, "", $js);
+page(_($help_context = UI_TEXT_EXCHANGE_RATES_TITLE), false, false, "", $js);
 
 simple_page_mode(false);
 
@@ -31,19 +33,19 @@ function check_data($selected_id)
 {
 	if (!DateService::isDate($_POST['date_']))
 	{
-		UiMessageService::displayError( _("The entered date is invalid."));
+		UiMessageService::displayError( _(UI_TEXT_THE_ENTERED_DATE_IS_INVALID));
 		set_focus('date_');
 		return false;
 	}
 	if (RequestService::inputNumStatic('BuyRate') <= 0)
 	{
-		UiMessageService::displayError( _("The exchange rate cannot be zero or a negative number."));
+		UiMessageService::displayError( _(UI_TEXT_EXCHANGE_RATE_CANNOT_BE_ZERO_OR_NEGATIVE));
 		set_focus('BuyRate');
 		return false;
 	}
 	if (!$selected_id && get_date_exchange_rate($_POST['curr_abrev'], $_POST['date_']))
 	{
-		UiMessageService::displayError( _("The exchange rate for the date is already there."));
+		UiMessageService::displayError( _(UI_TEXT_EXCHANGE_RATE_FOR_DATE_ALREADY_EXISTS));
 		set_focus('date_');
 		return false;
 	}
@@ -92,12 +94,12 @@ function handle_delete()
 //---------------------------------------------------------------------------------------------
 function edit_link($row) 
 {
-  return button('Edit'.$row["id"], _("Edit"), true, ICON_EDIT);
+  return button('Edit'.$row["id"], _(UI_TEXT_EDIT), true, ICON_EDIT);
 }
 
 function del_link($row) 
 {
-  return button('Delete'.$row["id"], _("Delete"), true, ICON_DELETE);
+  return button('Delete'.$row["id"], _(UI_TEXT_DELETE), true, ICON_DELETE);
 }
 
 function display_rates($curr_code)
@@ -126,13 +128,13 @@ function display_rate_edit()
 		hidden('selected_id', $selected_id);
 		hidden('date_', $_POST['date_']);
 
-		label_row(_("Date to Use From:"), $_POST['date_']);
+		label_row(_(UI_TEXT_DATE_TO_USE_FROM_LABEL), $_POST['date_']);
 	}
 	else
 	{
 		$_POST['date_'] = DateService::todayStatic();
 		$_POST['BuyRate'] = '';
-		date_row(_("Date to Use From:"), 'date_');
+		date_row(_(UI_TEXT_DATE_TO_USE_FROM_LABEL), 'date_');
 	}
 	if (isset($_POST['get_rate']))
 	{
@@ -140,14 +142,14 @@ function display_rate_edit()
 			maxprec_format(retrieve_exrate($_POST['curr_abrev'], $_POST['date_']));
 		$Ajax->activate('BuyRate');
 	}
-	amount_row(_("Exchange Rate:"), 'BuyRate', null, '',
-	  	submit('get_rate',_("Get"), false, _('Get current rate from') . ' ' . $xchg_rate_provider , true), 'max');
+	amount_row(_(UI_TEXT_EXCHANGE_RATE_LABEL), 'BuyRate', null, '',
+	  	submit('get_rate',_(UI_TEXT_GET_BUTTON), false, _(UI_TEXT_GET_CURRENT_RATE_FROM) . ' ' . $xchg_rate_provider , true), 'max');
 
 	end_table(1);
 
 	submit_add_or_update_center($selected_id == '', '', 'both');
 
-	display_note(_("Exchange rates are entered against the company currency."), 1);
+	display_note(_(UI_TEXT_EXCHANGE_RATES_ENTERED_AGAINST_COMPANY_CURRENCY), 1);
 }
 
 //---------------------------------------------------------------------------------------------
@@ -178,7 +180,7 @@ if (!isset($_POST['curr_abrev']))
 	$_POST['curr_abrev'] = get_global_curr_code();
 
 echo "<center>";
-echo _("Select a currency :") . "  ";
+echo _(UI_TEXT_SELECT_A_CURRENCY_LABEL) . "  ";
 echo currencies_list('curr_abrev', null, true, true);
 echo "</center>";
 
@@ -194,8 +196,8 @@ set_global_curr_code(RequestService::getPostStatic('curr_abrev'));
 $sql = get_sql_for_exchange_rates(RequestService::getPostStatic('curr_abrev'));
 
 $cols = array(
-	_("Date to Use From") => 'date', 
-	_("Exchange Rate") => 'rate',
+	_(UI_TEXT_DATE_TO_USE_FROM_HEADER) => 'date', 
+	_(UI_TEXT_EXCHANGE_RATE_HEADER) => 'rate',
 	array('insert'=>true, 'fun'=>'edit_link'),
 	array('insert'=>true, 'fun'=>'del_link'),
 );
@@ -204,8 +206,8 @@ $table =& new_db_pager('orders_tbl', $sql, $cols);
 if (BankingService::isCompanyCurrencyStatic(RequestService::getPostStatic('curr_abrev')))
 {
 
-	display_note(_("The selected currency is the company currency."), 2);
-	display_note(_("The company currency is the base currency so exchange rates cannot be set for it."), 1);
+	display_note(_(UI_TEXT_SELECTED_CURRENCY_IS_COMPANY_CURRENCY), 2);
+	display_note(_(UI_TEXT_COMPANY_CURRENCY_IS_BASE_CURRENCY), 1);
 }
 else
 {

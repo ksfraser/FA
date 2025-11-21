@@ -2021,4 +2021,17 @@ define('UI_TEXT_COUNTRY_LABEL', 'Country:');
 define('UI_TEXT_AUTOMATIC_EXCHANGE_RATE_UPDATE_LABEL', 'Automatic exchange rate update:');
 define('UI_TEXT_SELECTED_CURRENCY_SETTINGS_UPDATED', 'Selected currency settings has been updated');
 define('UI_TEXT_NEW_CURRENCY_ADDED', 'New currency has been added');
+define('UI_TEXT_EXCHANGE_RATES_TITLE', 'Exchange Rates');
+define('UI_TEXT_EXCHANGE_RATE_CANNOT_BE_ZERO_OR_NEGATIVE', 'The exchange rate cannot be zero or a negative number.');
+define('UI_TEXT_EXCHANGE_RATE_FOR_DATE_ALREADY_EXISTS', 'The exchange rate for the date is already there.');
+define('UI_TEXT_DATE_TO_USE_FROM_LABEL', 'Date to Use From:');
+define('UI_TEXT_EXCHANGE_RATE_LABEL', 'Exchange Rate:');
+define('UI_TEXT_GET_BUTTON', 'Get');
+define('UI_TEXT_GET_CURRENT_RATE_FROM', 'Get current rate from');
+define('UI_TEXT_EXCHANGE_RATES_ENTERED_AGAINST_COMPANY_CURRENCY', 'Exchange rates are entered against the company currency.');
+define('UI_TEXT_SELECT_A_CURRENCY_LABEL', 'Select a currency :');
+define('UI_TEXT_DATE_TO_USE_FROM_HEADER', 'Date to Use From');
+define('UI_TEXT_EXCHANGE_RATE_HEADER', 'Exchange Rate');
+define('UI_TEXT_SELECTED_CURRENCY_IS_COMPANY_CURRENCY', 'The selected currency is the company currency.');
+define('UI_TEXT_COMPANY_CURRENCY_IS_BASE_CURRENCY', 'The company currency is the base currency so exchange rates cannot be set for it.');
 }
