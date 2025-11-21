@@ -163,5 +163,42 @@ class DataChecksServiceTest extends TestCase {
         $this->assertTrue(is_callable([$this->service, 'checkDbHasShippers']));
     }
 
+    // Part 3: Workorder/Dimension Functions Tests
+    public function testDbHasOpenWorkorders(): void {
+        // Test db_has_open_workorders method
+        $this->assertTrue(method_exists($this->service, 'dbHasOpenWorkorders'));
+        $this->assertTrue(is_callable([$this->service, 'dbHasOpenWorkorders']));
+    }
+
+    public function testDbHasWorkorders(): void {
+        // Test db_has_workorders method
+        $this->assertTrue(method_exists($this->service, 'dbHasWorkorders'));
+        $this->assertTrue(is_callable([$this->service, 'dbHasWorkorders']));
+    }
+
+    public function testCheckDbHasWorkorders(): void {
+        // Test check_db_has_workorders method
+        $this->assertTrue(method_exists($this->service, 'checkDbHasWorkorders'));
+        $this->assertTrue(is_callable([$this->service, 'checkDbHasWorkorders']));
+    }
+
+    public function testDbHasOpenDimensions(): void {
+        // Test db_has_open_dimensions method
+        $this->assertTrue(method_exists($this->service, 'dbHasOpenDimensions'));
+        $this->assertTrue(is_callable([$this->service, 'dbHasOpenDimensions']));
+    }
+
+    public function testDbHasDimensions(): void {
+        // Test db_has_dimensions method
+        $this->assertTrue(method_exists($this->service, 'dbHasDimensions'));
+        $this->assertTrue(is_callable([$this->service, 'dbHasDimensions']));
+    }
+
+    public function testCheckDbHasDimensions(): void {
+        // Test check_db_has_dimensions method
+        $this->assertTrue(method_exists($this->service, 'checkDbHasDimensions'));
+        $this->assertTrue(is_callable([$this->service, 'checkDbHasDimensions']));
+    }
+
     // Add more tests as needed
 }
