@@ -17,6 +17,7 @@ require_once($path_to_root . "/includes/DateService.php");
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/includes/CompanyPrefsService.php");
 
@@ -26,12 +27,12 @@ $js = "";
 if (user_use_date_picker())
 	$js = get_js_date_picker();
 
-page(_($help_context = "Profit & Loss Drilldown"), false, false, "", $js);
+page(_($help_context = UI_TEXT_PROFIT_LOSS_DRILLDOWN_TITLE), false, false, "", $js);
 
 $compare_types = array(
-	_("Accumulated"),
-	_("Period Y-1"),
-	_("Budget")
+	_(UI_TEXT_ACCUMULATED_LABEL),
+	_(UI_TEXT_PERIOD_Y1_LABEL),
+	_(UI_TEXT_BUDGET_LABEL)
 );
 //----------------------------------------------------------------------------------------------------
 // Ajax updates
@@ -174,20 +175,20 @@ function inquiry_controls()
 		$_POST['TransToDate'] = DateService::endMonthStatic($date);
 	if (!isset($_POST['TransFromDate']))
 		$_POST['TransFromDate'] = DateService::addDaysStatic(DateService::endMonthStatic($date), -user_transaction_days());
-    date_cells(_("From:"), 'TransFromDate');
-	date_cells(_("To:"), 'TransToDate');
+    date_cells(_(UI_TEXT_FROM_LABEL), 'TransFromDate');
+	date_cells(_(UI_TEXT_TO_LABEL), 'TransToDate');
 	
-	echo "<td>"._("Compare to").":</td>\n";
+	echo "<td>"._(UI_TEXT_COMPARE_TO_LABEL).":</td>\n";
 	echo "<td>";
 	echo array_selector('Compare', null, $compare_types);
 	echo "</td>\n";	
 
 	if ($dim >= 1)
-		dimensions_list_cells(_("Dimension")." 1:", 'Dimension', null, true, " ", false, 1);
+		dimensions_list_cells(_(UI_TEXT_DIMENSION_LABEL)." 1:", 'Dimension', null, true, " ", false, 1);
 	if ($dim > 1)
-		dimensions_list_cells(_("Dimension")." 2:", 'Dimension2', null, true, " ", false, 2);
+		dimensions_list_cells(_(UI_TEXT_DIMENSION_LABEL)." 2:", 'Dimension2', null, true, " ", false, 2);
 	
-	submit_cells('Show',_("Show"),'','', 'default');
+	submit_cells('Show',_(UI_TEXT_SHOW_BUTTON),'','', 'default');
     end_table();
 
 	hidden('AccGrp');
@@ -235,10 +236,10 @@ function display_profit_and_loss($compare)
 	start_table(TABLESTYLE, "width='50%'");
 
 	$tableheader =  "<tr>
-        <td class='tableheader'>" . _("Group/Account Name") . "</td>
-        <td class='tableheader'>" . _("Period") . "</td>
+        <td class='tableheader'>" . _(UI_TEXT_GROUP_ACCOUNT_NAME_LABEL) . "</td>
+        <td class='tableheader'>" . _(UI_TEXT_PERIOD_LABEL) . "</td>
 		<td class='tableheader'>" . $compare_types[$compare] . "</td>
-		<td class='tableheader'>" . _("Achieved %") . "</td>
+		<td class='tableheader'>" . _(UI_TEXT_ACHIEVED_PERCENT_LABEL) . "</td>
         </tr>";	
 	
 	if (!$drilldown) //Root Level
@@ -326,7 +327,7 @@ function display_profit_and_loss($compare)
 		
 
 	end_table(); // outer table
-	hyperlink_params($_SERVER['PHP_SELF'], _("Back"), "TransFromDate=". $from . "&TransToDate=" . $to . "&Dimension=" . $dimension . "&Dimension2=" . $dimension2);
+	hyperlink_params($_SERVER['PHP_SELF'], _(UI_TEXT_BACK_BUTTON), "TransFromDate=". $from . "&TransToDate=" . $to . "&Dimension=" . $dimension . "&Dimension2=" . $dimension2);
 	div_end();
 }
 

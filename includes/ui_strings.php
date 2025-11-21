@@ -1943,4 +1943,13 @@ define('UI_TEXT_TRANS_NUMBER', 'Trans #');
 define('UI_TEXT_COUNTERPARTY', 'Counterparty');
 define('UI_TEXT_SUPPLIERS_REFERENCE', 'Supplier\'s Reference');
 define('UI_TEXT_ENTER_MEMO_FRAGMENT', 'Enter memo fragment or leave empty');
+define('UI_TEXT_PROFIT_LOSS_DRILLDOWN_TITLE', 'Profit & Loss Drilldown');
+define('UI_TEXT_ACCUMULATED_LABEL', 'Accumulated');
+define('UI_TEXT_PERIOD_Y1_LABEL', 'Period Y-1');
+define('UI_TEXT_BUDGET_LABEL', 'Budget');
+define('UI_TEXT_COMPARE_TO_LABEL', 'Compare to');
+define('UI_TEXT_GROUP_ACCOUNT_NAME_LABEL', 'Group/Account Name');
+define('UI_TEXT_PERIOD_LABEL', 'Period');
+define('UI_TEXT_ACHIEVED_PERCENT_LABEL', 'Achieved %');
+define('UI_TEXT_BACK_BUTTON', 'Back');
 }
