@@ -18,9 +18,10 @@ $js = "";
 if (user_use_date_picker())
 	$js .= get_js_date_picker();
 
-page(_($help_context = "Bank Accounts"), isset($_GET['bank_id']), false, "", $js);
+page(_($help_context = UI_TEXT_BANK_ACCOUNTS_TITLE), isset($_GET['bank_id']), false, "", $js);
 
 include($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/includes/ui/attachment.inc");
 
 simple_page_mode();
@@ -46,13 +47,13 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if (strlen($_POST['bank_account_name']) == 0) 
 	{
 		$input_error = 1;
-		UiMessageService::displayError(_("The bank account name cannot be empty."));
+		UiMessageService::displayError(_(UI_TEXT_BANK_ACCOUNT_NAME_CANNOT_BE_EMPTY));
 		set_focus('bank_account_name');
 	} 
 	if ($Mode=='ADD_ITEM' && (gl_account_in_bank_accounts(RequestService::getPostStatic('account_code')) 
 			|| key_in_foreign_table(RequestService::getPostStatic('account_code'), 'gl_trans', 'account'))) {
 		$input_error = 1;
-		UiMessageService::displayError(_("The GL account selected is already in use or has transactions. Select another empty GL account."));
+		UiMessageService::displayError(_(UI_TEXT_GL_ACCOUNT_IN_USE));
 		set_focus('account_code');
 	}
 	if ($input_error != 1)
@@ -92,13 +93,13 @@ elseif( $Mode == 'Delete')
 	if (key_in_foreign_table($bank_id, 'bank_trans', 'bank_act') || key_in_foreign_table(RequestService::getPostStatic('account_code'), 'gl_trans', 'account'))
 	{
 		$cancel_delete = 1;
-		UiMessageService::displayError(_("Cannot delete this bank account because transactions have been created using this account."));
+		UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_BANK_ACCOUNT_TRANSACTIONS));
 	}
 
 	if (key_in_foreign_table($bank_id, 'sales_pos', 'pos_account'))
 	{
 		$cancel_delete = 1;
-		UiMessageService::displayError(_("Cannot delete this bank account because POS definitions have been created using this account."));
+		UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_BANK_ACCOUNT_POS));
 	}
 	if (!$cancel_delete) 
 	{
@@ -126,8 +127,8 @@ $result = get_bank_accounts(RequestService::checkValueStatic('show_inactive'));
 start_form(true);
 start_table(TABLESTYLE, "width='80%'");
 
-$th = array(_("Account Name"), _("Type"), _("Currency"), _("GL Account"), 
-	_("Bank"), _("Number"), _("Bank Address"), _("Dflt"), '','');
+$th = array(_(UI_TEXT_ACCOUNT_NAME_HEADER), _(UI_TEXT_TYPE_HEADER), _(UI_TEXT_CURRENCY), _(UI_TEXT_GL_ACCOUNT_HEADER), 
+	_(UI_TEXT_BANK_HEADER), _(UI_TEXT_NUMBER_HEADER), _(UI_TEXT_BANK_ADDRESS_HEADER), _(UI_TEXT_DFLT_HEADER), '','');
 inactive_control_column($th);
 table_header($th);	
 
@@ -145,13 +146,13 @@ while ($myrow = db_fetch($result))
     label_cell($myrow["bank_account_number"], "nowrap");
     label_cell($myrow["bank_address"]);
     if ($myrow["dflt_curr_act"])
-		label_cell(_("Yes"));
+		label_cell(_(UI_TEXT_YES));
 	else
-		label_cell(_("No"));
+		label_cell(_(UI_TEXT_NO));
 
 	inactive_control_cell($myrow["id"], $myrow["inactive"], 'bank_accounts', 'id');
- 	edit_button_cell("Edit".$myrow["id"], _("Edit"));
- 	delete_button_cell("Delete".$myrow["id"], _("Delete"));
+ 	edit_button_cell("Edit".$myrow["id"], _(UI_TEXT_EDIT_BUTTON));
+ 	delete_button_cell("Delete".$myrow["id"], _(UI_TEXT_DELETE_BUTTON));
     end_row(); 
 }
 
@@ -186,40 +187,40 @@ function bank_account_settings($bank_id)
 		set_focus('bank_account_name');
 	} 
 
-	text_row(_("Bank Account Name:"), 'bank_account_name', null, 50, 100);
+	text_row(_(UI_TEXT_BANK_ACCOUNT_NAME_LABEL), 'bank_account_name', null, 50, 100);
 
 	if ($is_used) 
 	{
-		label_row(_("Account Type:"), $bank_account_types[$_POST['account_type']]);
+		label_row(_(UI_TEXT_ACCOUNT_TYPE_LABEL), $bank_account_types[$_POST['account_type']]);
 		hidden('account_type');
 	} 
 	else 
 	{
-		bank_account_types_list_row(_("Account Type:"), 'account_type', null); 
+		bank_account_types_list_row(_(UI_TEXT_ACCOUNT_TYPE_LABEL), 'account_type', null); 
 	}
 	if ($is_used) 
 	{
-		label_row(_("Bank Account Currency:"), $_POST['BankAccountCurrency']);
+		label_row(_(UI_TEXT_BANK_ACCOUNT_CURRENCY_LABEL), $_POST['BankAccountCurrency']);
 		hidden('BankAccountCurrency', $_POST['BankAccountCurrency']);
 	} 
 	else 
 	{
-		currencies_list_row(_("Bank Account Currency:"), 'BankAccountCurrency', null);
+		currencies_list_row(_(UI_TEXT_BANK_ACCOUNT_CURRENCY_LABEL), 'BankAccountCurrency', null);
 	}	
 
-	yesno_list_row(_("Default currency account:"), 'dflt_curr_act');
+	yesno_list_row(_(UI_TEXT_DEFAULT_CURRENCY_ACCOUNT_LABEL), 'dflt_curr_act');
 
 	if($is_used)
 	{
-		label_row(_("Bank Account GL Code:"), $_POST['account_code']);
+		label_row(_(UI_TEXT_BANK_ACCOUNT_GL_CODE_LABEL), $_POST['account_code']);
 		hidden('account_code');
 	} else 
-		gl_all_accounts_list_row(_("Bank Account GL Code:"), 'account_code', null);
+		gl_all_accounts_list_row(_(UI_TEXT_BANK_ACCOUNT_GL_CODE_LABEL), 'account_code', null);
 
-	gl_all_accounts_list_row(_("Bank Charges Account:"), 'bank_charge_act', null, true);
-	text_row(_("Bank Name:"), 'bank_name', null, 50, 60);
-	text_row(_("Bank Account Number:"), 'bank_account_number', null, 30, 60);
-	textarea_row(_("Bank Address:"), 'bank_address', null, 40, 5);
+	gl_all_accounts_list_row(_(UI_TEXT_BANK_CHARGES_ACCOUNT_LABEL), 'bank_charge_act', null, true);
+	text_row(_(UI_TEXT_BANK_NAME_LABEL), 'bank_name', null, 50, 60);
+	text_row(_(UI_TEXT_BANK_ACCOUNT_NUMBER_LABEL), 'bank_account_number', null, 30, 60);
+	textarea_row(_(UI_TEXT_BANK_ADDRESS_LABEL), 'bank_address', null, 40, 5);
 
 	end_table(1);
 
