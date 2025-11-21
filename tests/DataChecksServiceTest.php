@@ -76,5 +76,33 @@ class DataChecksServiceTest extends TestCase {
         $this->assertIsBool($result);
     }
 
+    public function testDbHasTaxTypes(): void {
+        // Test db_has_tax_types method
+        $result = $this->service->dbHasTaxTypes();
+        $this->assertIsBool($result);
+        $this->assertTrue($result); // Should return true with mock
+    }
+
+    public function testCheckDbHasTaxTypes(): void {
+        // Test check_db_has_tax_types method
+        // Since this method might exit, we test that it exists and is callable
+        $this->assertTrue(method_exists($this->service, 'checkDbHasTaxTypes'));
+        $this->assertTrue(is_callable([$this->service, 'checkDbHasTaxTypes']));
+    }
+
+    public function testDbHasTaxGroups(): void {
+        // Test db_has_tax_groups method
+        $result = $this->service->dbHasTaxGroups();
+        $this->assertIsBool($result);
+        $this->assertTrue($result); // Should return true with mock
+    }
+
+    public function testCheckDbHasTaxGroups(): void {
+        // Test check_db_has_tax_groups method
+        // Since this method might exit, we test that it exists and is callable
+        $this->assertTrue(method_exists($this->service, 'checkDbHasTaxGroups'));
+        $this->assertTrue(is_callable([$this->service, 'checkDbHasTaxGroups']));
+    }
+
     // Add more tests as needed
 }

@@ -110,6 +110,50 @@ class DataChecksService {
     }
 
     /**
+     * Check if database has tax types
+     *
+     * @return bool True if has tax types
+     */
+    public function dbHasTaxTypes(): bool {
+        return \check_empty_result("SELECT COUNT(*) FROM " . \TB_PREF . "tax_types");
+    }
+
+    /**
+     * Check database has tax types and display error if not
+     *
+     * @param string $msg Error message
+     */
+    public function checkDbHasTaxTypes(string $msg): void {
+        if (!$this->dbHasTaxTypes()) {
+            \UiMessageService::displayError($msg, true);
+            \end_page();
+            exit;
+        }
+    }
+
+    /**
+     * Check if database has tax groups
+     *
+     * @return bool True if has tax groups
+     */
+    public function dbHasTaxGroups(): bool {
+        return \check_empty_result("SELECT COUNT(*) FROM " . \TB_PREF . "tax_groups");
+    }
+
+    /**
+     * Check database has tax groups and display error if not
+     *
+     * @param string $msg Error message
+     */
+    public function checkDbHasTaxGroups(string $msg): void {
+        if (!$this->dbHasTaxGroups()) {
+            \UiMessageService::displayError($msg, true);
+            \end_page();
+            exit;
+        }
+    }
+
+    /**
      * Check if database has sales types
      *
      * @return bool True if has sales types
@@ -156,49 +200,7 @@ class DataChecksService {
         }
     }
 
-    /**
-     * Check if database has tax types
-     *
-     * @return bool True if has tax types
-     */
-    public function dbHasTaxTypes(): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM ".\TB_PREF."tax_types");
-    }
 
-    /**
-     * Check database has tax types and display error if not
-     *
-     * @param string $msg Error message
-     */
-    public function checkDbHasTaxTypes(string $msg): void {
-        if (!$this->dbHasTaxTypes()) {
-            \UiMessageService::displayError($msg, true);
-            \end_page();
-            exit;
-        }
-    }
-
-    /**
-     * Check if database has tax groups
-     *
-     * @return bool True if has tax groups
-     */
-    public function dbHasTaxGroups(): bool {
-        return \check_empty_result("SELECT COUNT(*) FROM ".\TB_PREF."tax_groups");
-    }
-
-    /**
-     * Check database has tax groups and display error if not
-     *
-     * @param string $msg Error message
-     */
-    public function checkDbHasTaxGroups(string $msg): void {
-        if (!$this->dbHasTaxGroups()) {
-            \UiMessageService::displayError($msg, true);
-            \end_page();
-            exit;
-        }
-    }
 
     /**
      * Check if customer has branches
