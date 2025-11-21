@@ -1985,4 +1985,14 @@ define('UI_TEXT_BANK_CHARGES_ACCOUNT_LABEL', 'Bank Charges Account:');
 define('UI_TEXT_BANK_NAME_LABEL', 'Bank Name:');
 define('UI_TEXT_BANK_ACCOUNT_NUMBER_LABEL', 'Bank Account Number:');
 define('UI_TEXT_BANK_ADDRESS_LABEL', 'Bank Address:');
+define('UI_TEXT_THE_ENTERED_DATE_IS_INVALID', 'The entered date is invalid.');
+define('UI_TEXT_SELECTED_DATE_NOT_IN_FISCAL_YEAR_OR_CLOSED', 'Selected date is not in fiscal year or the year is closed.');
+define('UI_TEXT_ENTERED_DATE_EARLIER_THAN_CLOSING_DATE', 'The entered date is earlier than date already selected as closing date.');
+define('UI_TEXT_NOT_ALLOWED_TO_REOPEN_CLOSED_TRANSACTIONS', 'You are not allowed to reopen already closed transactions.');
+define('UI_TEXT_TRANSACTIONS_CLOSED_UP_TO_DATE', 'All transactions resulting in GL accounts changes up to %s has been closed for further edition.');
+define('UI_TEXT_CLOSE_PERIOD_FEATURE_DESCRIPTION', 'Using this feature you can prevent entering new transactions <br>
+and disable edition of already entered transactions up to specified date.<br>
+Only transactions which can generate GL postings are subject to the constraint.');
+define('UI_TEXT_END_DATE_OF_CLOSING_PERIOD_LABEL', 'End date of closing period:');
+define('UI_TEXT_CLOSE_TRANSACTIONS_BUTTON', 'Close Transactions');
 }
