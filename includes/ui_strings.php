@@ -2064,4 +2064,15 @@ define('UI_TEXT_ADD_ACCOUNT_BUTTON', 'Add Account');
 define('UI_TEXT_NEW_ACCOUNT', 'New account');
 define('UI_TEXT_UPDATE_ACCOUNT_BUTTON', 'Update Account');
 define('UI_TEXT_DELETE_ACCOUNT_BUTTON', 'Delete account');
+define('UI_TEXT_GL_ACCOUNT_CLASSES_TITLE', 'GL Account Classes');
+define('UI_TEXT_ACCOUNT_CLASS_ID_CANNOT_BE_EMPTY', 'The account class ID cannot be empty.');
+define('UI_TEXT_ACCOUNT_CLASS_NAME_CANNOT_BE_EMPTY', 'The account class name cannot be empty.');
+define('UI_TEXT_CANNOT_DELETE_ACCOUNT_CLASS_GL_ACCOUNT_TYPES', 'Cannot delete this account class because GL account types have been created referring to it.');
+define('UI_TEXT_CLASS_ID_HEADER', 'Class ID');
+define('UI_TEXT_CLASS_NAME_HEADER', 'Class Name');
+define('UI_TEXT_CLASS_TYPE_HEADER', 'Class Type');
+define('UI_TEXT_BALANCE_SHEET', 'Balance Sheet');
+define('UI_TEXT_CLASS_ID_LABEL', 'Class ID:');
+define('UI_TEXT_CLASS_NAME_LABEL', 'Class Name:');
+define('UI_TEXT_CLASS_TYPE_LABEL', 'Class Type:');
 }

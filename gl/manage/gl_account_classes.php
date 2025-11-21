@@ -13,11 +13,13 @@ $page_security = 'SA_GLACCOUNTCLASS';
 $path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
 
-page(_($help_context = "GL Account Classes"));
+page(_($help_context = UI_TEXT_GL_ACCOUNT_CLASSES_TITLE));
 
 include($path_to_root . "/gl/includes/gl_db.inc");
 
 include($path_to_root . "/includes/ui.inc");
+
+include_once($path_to_root . "/includes/ui_strings.php");
 
 simple_page_mode(false);
 //-----------------------------------------------------------------------------------
@@ -28,13 +30,13 @@ function can_process()
 
 	if (strlen(trim($_POST['id'])) == 0) 
 	{
-		UiMessageService::displayError( _("The account class ID cannot be empty."));
+		UiMessageService::displayError( _(UI_TEXT_ACCOUNT_CLASS_ID_CANNOT_BE_EMPTY));
 		set_focus('id');
 		return false;
 	}
 	if (strlen(trim($_POST['name'])) == 0) 
 	{
-		UiMessageService::displayError( _("The account class name cannot be empty."));
+		UiMessageService::displayError( _(UI_TEXT_ACCOUNT_CLASS_NAME_CANNOT_BE_EMPTY));
 		set_focus('name');
 		return false;
 	}
@@ -74,7 +76,7 @@ function can_delete($selected_id)
 		return false;
 	if (key_in_foreign_table($selected_id, 'chart_types', 'class_id'))	
 	{
-		UiMessageService::displayError(_("Cannot delete this account class because GL account types have been created referring to it."));
+		UiMessageService::displayError( _(UI_TEXT_CANNOT_DELETE_ACCOUNT_CLASS_GL_ACCOUNT_TYPES));
 		return false;
 	}
 
@@ -107,9 +109,9 @@ $result = get_account_classes(RequestService::checkValueStatic('show_inactive'))
 
 start_form();
 start_table(TABLESTYLE);
-$th = array(_("Class ID"), _("Class Name"), _("Class Type"), "", "");
+$th = array(_(UI_TEXT_CLASS_ID_HEADER), _(UI_TEXT_CLASS_NAME_HEADER), _(UI_TEXT_CLASS_TYPE_HEADER), "", "");
 if (isset($SysPrefs->use_oldstyle_convert) && $SysPrefs->use_oldstyle_convert == 1)
-	$th[2] = _("Balance Sheet");
+	$th[2] = _(UI_TEXT_BALANCE_SHEET);
 inactive_control_column($th);
 table_header($th);
 
@@ -123,13 +125,13 @@ while ($myrow = db_fetch($result))
 	if (isset($SysPrefs->use_oldstyle_convert) && $SysPrefs->use_oldstyle_convert == 1)
 	{
 		$myrow['ctype'] = ($myrow["ctype"] >= CL_ASSETS && $myrow["ctype"] < CL_INCOME ? 1 : 0);
-		label_cell(($myrow['ctype'] == 1 ? _("Yes") : _("No")));
+		label_cell(($myrow['ctype'] == 1 ? _(UI_TEXT_YES) : _(UI_TEXT_NO)));
 	}	
 	else	
 		label_cell($class_types[$myrow["ctype"]]);
 	inactive_control_cell($myrow["cid"], $myrow["inactive"], 'chart_class', 'cid');
-	edit_button_cell("Edit".$myrow["cid"], _("Edit"));
-	delete_button_cell("Delete".$myrow["cid"], _("Delete"));
+	edit_button_cell("Edit".$myrow["cid"], _(UI_TEXT_EDIT));
+	delete_button_cell("Delete".$myrow["cid"], _(UI_TEXT_DELETE));
 	end_row();
 }
 inactive_control_row($th);
@@ -153,21 +155,21 @@ if ($selected_id != "")
 		hidden('selected_id', $selected_id);
  	}
 	hidden('id');
-	label_row(_("Class ID:"), $_POST['id']);
+	label_row(_(UI_TEXT_CLASS_ID_LABEL), $_POST['id']);
 
 } 
 else 
 {
 
-	text_row_ex(_("Class ID:"), 'id', 3);
+	text_row_ex(_(UI_TEXT_CLASS_ID_LABEL), 'id', 3);
 }
 
-text_row_ex(_("Class Name:"), 'name', 50, 60);
+text_row_ex(_(UI_TEXT_CLASS_NAME_LABEL), 'name', 50, 60);
 
 if (isset($SysPrefs->use_oldstyle_convert) && $SysPrefs->use_oldstyle_convert == 1)
-	check_row(_("Balance Sheet"), 'ctype', null);
+	check_row(_(UI_TEXT_BALANCE_SHEET), 'ctype', null);
 else
-	class_types_list_row(_("Class Type:"), 'ctype', null);
+	class_types_list_row(_(UI_TEXT_CLASS_TYPE_LABEL), 'ctype', null);
 
 end_table(1);
 
