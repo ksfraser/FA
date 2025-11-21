@@ -318,5 +318,54 @@ class DataChecksServiceTest extends TestCase {
         $this->assertTrue(is_callable([$this->service, 'checkDbHasGlAccountGroups']));
     }
 
+    // Part 8: Additional Validation Functions Tests
+    public function testCheckInt(): void {
+        // Test check_int method
+        $this->assertTrue(method_exists($this->service, 'checkInt'));
+        $this->assertTrue(is_callable([$this->service, 'checkInt']));
+    }
+
+    public function testCheckNum(): void {
+        // Test check_num method
+        $this->assertTrue(method_exists($this->service, 'checkNum'));
+        $this->assertTrue(is_callable([$this->service, 'checkNum']));
+    }
+
+    public function testCheckIsClosed(): void {
+        // Test check_is_closed method
+        $this->assertTrue(method_exists($this->service, 'checkIsClosed'));
+        $this->assertTrue(is_callable([$this->service, 'checkIsClosed']));
+    }
+
+    public function testCheckDbHasTemplateOrders(): void {
+        // Test check_db_has_template_orders method
+        $this->assertTrue(method_exists($this->service, 'checkDbHasTemplateOrders'));
+        $this->assertTrue(is_callable([$this->service, 'checkDbHasTemplateOrders']));
+    }
+
+    public function testCheckDeferredIncomeAct(): void {
+        // Test check_deferred_income_act method
+        $this->assertTrue(method_exists($this->service, 'checkDeferredIncomeAct'));
+        $this->assertTrue(is_callable([$this->service, 'checkDeferredIncomeAct']));
+    }
+
+    public function testCheckIsEditable(): void {
+        // Test check_is_editable method
+        $this->assertTrue(method_exists($this->service, 'checkIsEditable'));
+        $this->assertTrue(is_callable([$this->service, 'checkIsEditable']));
+    }
+
+    public function testCheckReference(): void {
+        // Test check_reference method
+        $this->assertTrue(method_exists($this->service, 'checkReference'));
+        $this->assertTrue(is_callable([$this->service, 'checkReference']));
+    }
+
+    public function testCheckSysPref(): void {
+        // Test check_sys_pref method
+        $this->assertTrue(method_exists($this->service, 'checkSysPref'));
+        $this->assertTrue(is_callable([$this->service, 'checkSysPref']));
+    }
+
     // Add more tests as needed
 }
