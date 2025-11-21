@@ -17,14 +17,15 @@ $js = "";
 if ($SysPrefs->use_popup_windows && $SysPrefs->use_popup_search)
 	$js .= get_js_open_window(900, 500);
 
-page(_($help_context = "Chart of Accounts"), false, false, "", $js);
+page(_($help_context = UI_TEXT_CHART_OF_ACCOUNTS_TITLE), false, false, "", $js);
 
 include($path_to_root . "/includes/ui.inc");
 include($path_to_root . "/gl/includes/gl_db.inc");
 include_once($path_to_root . "/admin/db/tags_db.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 
-check_db_has_gl_account_groups(_("There are no account groups defined. Please define at least one account group before entering accounts."));
+check_db_has_gl_account_groups(_(UI_TEXT_NO_ACCOUNT_GROUPS_DEFINED));
 
 if (isset($_GET["id"]))
 	$_POST["id"] = $_GET["id"];	
@@ -57,19 +58,19 @@ if (isset($_POST['add']) || isset($_POST['update']))
 	if (strlen(trim($_POST['account_code'])) == 0) 
 	{
 		$input_error = 1;
-		UiMessageService::displayError( _("The account code must be entered."));
+		UiMessageService::displayError( _(UI_TEXT_ACCOUNT_CODE_MUST_BE_ENTERED));
 		set_focus('account_code');
 	} 
 	elseif (strlen(trim($_POST['account_name'])) == 0) 
 	{
 		$input_error = 1;
-		UiMessageService::displayError( _("The account name cannot be empty."));
+		UiMessageService::displayError( _(UI_TEXT_ACCOUNT_NAME_CANNOT_BE_EMPTY));
 		set_focus('account_name');
 	} 
 	elseif (!$SysPrefs->accounts_alpha() && !preg_match("/^[0-9.]+$/",$_POST['account_code'])) // we only allow 0-9 and a dot
 	{
 	    $input_error = 1;
-	    UiMessageService::displayError( _("The account code must be numeric."));
+	    UiMessageService::displayError( _(UI_TEXT_ACCOUNT_CODE_MUST_BE_NUMERIC));
 		set_focus('account_code');
 	}
 	if ($input_error != 1)
@@ -84,7 +85,7 @@ if (isset($_POST['add']) || isset($_POST['update']))
 		{
 			if (RequestService::getPostStatic('inactive') == 1 && is_bank_account($_POST['account_code']))
 			{
-				UiMessageService::displayError(_("The account belongs to a bank account and cannot be inactivated."));
+				UiMessageService::displayError(_(UI_TEXT_ACCOUNT_BELONGS_TO_BANK_CANNOT_INACTIVATE));
 			}
     		elseif (update_gl_account($_POST['account_code'], $_POST['account_name'], 
 				$_POST['account_type'], $_POST['account_code2'])) {
@@ -93,7 +94,7 @@ if (isset($_POST['add']) || isset($_POST['update']))
 				update_tag_associations(TAG_ACCOUNT, $_POST['account_code'], 
 					$_POST['account_tags']);
 				$Ajax->activate('account_code'); // in case of status change
-				display_notification(_("Account data has been updated."));
+				display_notification(_(UI_TEXT_ACCOUNT_DATA_UPDATED));
 			}
 		}
     	else 
@@ -102,11 +103,11 @@ if (isset($_POST['add']) || isset($_POST['update']))
 				$_POST['account_type'], $_POST['account_code2']))
 				{
 					add_tag_associations($_POST['account_code'], $_POST['account_tags']);
-					display_notification(_("New account has been added."));
+					display_notification(_(UI_TEXT_NEW_ACCOUNT_ADDED));
 					$selected_account = $_POST['AccountList'] = $_POST['account_code'];
 				}
 			else
-                 UiMessageService::displayError(_("Account not added, possible duplicate Account Code."));
+                 UiMessageService::displayError(_(UI_TEXT_ACCOUNT_NOT_ADDED_DUPLICATE_CODE));
 		}
 		$Ajax->activate('_page_body');
 	}
@@ -121,54 +122,54 @@ function can_delete($selected_account)
 
 	if (key_in_foreign_table($selected_account, 'gl_trans', 'account'))
 	{
-		UiMessageService::displayError(_("Cannot delete this account because transactions have been created using this account."));
+		UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_ACCOUNT_TRANSACTIONS));
 		return false;
 	}
 
 	if (gl_account_in_company_defaults($selected_account))
 	{
-		UiMessageService::displayError(_("Cannot delete this account because it is used as one of the company default GL accounts."));
+		UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_ACCOUNT_COMPANY_DEFAULTS));
 		return false;
 	}
 
 	if (key_in_foreign_table($selected_account, 'bank_accounts', 'account_code'))
 	{
-		UiMessageService::displayError(_("Cannot delete this account because it is used by a bank account."));
+		UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_ACCOUNT_BANK_ACCOUNT));
 		return false;
 	}
 
 	if (gl_account_in_stock_category($selected_account))
 	{
-		UiMessageService::displayError(_("Cannot delete this account because it is used by one or more Item Categories."));
+		UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_ACCOUNT_ITEM_CATEGORIES));
 		return false;
 	}
 
 	if (gl_account_in_stock_master($selected_account))
 	{
-		UiMessageService::displayError(_("Cannot delete this account because it is used by one or more Items."));
+		UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_ACCOUNT_ITEMS));
 		return false;
 	}
 
 	if (gl_account_in_tax_types($selected_account))
 	{
-		UiMessageService::displayError(_("Cannot delete this account because it is used by one or more Taxes."));
+		UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_ACCOUNT_TAXES));
 		return false;
 	}
 
 	if (gl_account_in_cust_branch($selected_account))
 	{
-		UiMessageService::displayError(_("Cannot delete this account because it is used by one or more Customer Branches."));
+		UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_ACCOUNT_CUSTOMER_BRANCHES));
 		return false;
 	}
 	if (gl_account_in_suppliers($selected_account))
 	{
-		UiMessageService::displayError(_("Cannot delete this account because it is used by one or more suppliers."));
+		UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_ACCOUNT_SUPPLIERS));
 		return false;
 	}
 
 	if (gl_account_in_quick_entry_lines($selected_account))
 	{
-		UiMessageService::displayError(_("Cannot delete this account because it is used by one or more Quick Entry Lines."));
+		UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_ACCOUNT_QUICK_ENTRY_LINES));
 		return false;
 	}
 
@@ -186,7 +187,7 @@ if (isset($_POST['delete']))
 		$selected_account = $_POST['AccountList'] = '';
 		delete_tag_associations(TAG_ACCOUNT,$selected_account, true);
 		$selected_account = $_POST['AccountList'] = '';
-		display_notification(_("Selected account has been deleted"));
+		display_notification(_(UI_TEXT_SELECTED_ACCOUNT_DELETED));
 		unset($_POST['account_code']);
 		$Ajax->activate('_page_body');
 	}
@@ -202,10 +203,10 @@ if (db_has_gl_accounts())
 	start_table(TABLESTYLE_NOBORDER);
 	start_row();
 	if ($filter_id)
-		gl_all_accounts_list_cells(null, 'AccountList', null, false, false, _('New account'), true, RequestService::checkValueStatic('show_inactive'), $_POST['id']);
+		gl_all_accounts_list_cells(null, 'AccountList', null, false, false, _(UI_TEXT_NEW_ACCOUNT), true, RequestService::checkValueStatic('show_inactive'), $_POST['id']);
 	else
-		gl_all_accounts_list_cells(null, 'AccountList', null, false, false, _('New account'), true, RequestService::checkValueStatic('show_inactive'));
-	check_cells(_("Show inactive:"), 'show_inactive', null, true);
+		gl_all_accounts_list_cells(null, 'AccountList', null, false, false, _(UI_TEXT_NEW_ACCOUNT), true, RequestService::checkValueStatic('show_inactive'));
+	check_cells(_(UI_TEXT_SHOW_INACTIVE_LABEL), 'show_inactive', null, true);
 	end_row();
 	end_table();
 	if (RequestService::getPostStatic('_show_inactive_update')) {
@@ -237,7 +238,7 @@ if ($selected_account != "")
 	hidden('account_code', $_POST['account_code']);
 	hidden('selected_account', $selected_account);
 		
-	label_row(_("Account Code:"), $_POST['account_code']);
+	label_row(_(UI_TEXT_ACCOUNT_CODE_LABEL), $_POST['account_code']);
 } 
 else
 {
@@ -248,28 +249,28 @@ else
  		$_POST['inactive'] = 0;
 		if ($filter_id) $_POST['account_type'] = $_POST['id'];
 	}
-	text_row_ex(_("Account Code:"), 'account_code', 15);
+	text_row_ex(_(UI_TEXT_ACCOUNT_CODE_LABEL), 'account_code', 15);
 }
 
-text_row_ex(_("Account Code 2:"), 'account_code2', 15);
+text_row_ex(_(UI_TEXT_ACCOUNT_CODE_2_LABEL), 'account_code2', 15);
 
-text_row_ex(_("Account Name:"), 'account_name', 60);
+text_row_ex(_(UI_TEXT_ACCOUNT_NAME_LABEL), 'account_name', 60);
 
-gl_account_types_list_row(_("Account Group:"), 'account_type', null);
+gl_account_types_list_row(_(UI_TEXT_ACCOUNT_GROUP_LABEL), 'account_type', null);
 
-tag_list_row(_("Account Tags:"), 'account_tags', 5, TAG_ACCOUNT, true);
+tag_list_row(_(UI_TEXT_ACCOUNT_TAGS_LABEL), 'account_tags', 5, TAG_ACCOUNT, true);
 
-record_status_list_row(_("Account status:"), 'inactive');
+record_status_list_row(_(UI_TEXT_ACCOUNT_STATUS_LABEL), 'inactive');
 end_table(1);
 
 if ($selected_account == "") 
 {
-	submit_center('add', _("Add Account"), true, '', 'default');
+	submit_center('add', _(UI_TEXT_ADD_ACCOUNT_BUTTON), true, '', 'default');
 } 
 else 
 {
-    submit_center_first('update', _("Update Account"), '', 'default');
-    submit_center_last('delete', _("Delete account"), '',true);
+    submit_center_first('update', _(UI_TEXT_UPDATE_ACCOUNT_BUTTON), '', 'default');
+    submit_center_last('delete', _(UI_TEXT_DELETE_ACCOUNT_BUTTON), '',true);
 }
 end_form();
 
