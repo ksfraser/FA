@@ -237,5 +237,30 @@ class DataChecksServiceTest extends TestCase {
         $this->assertTrue(is_callable([$this->service, 'checkDbHasStockItems']));
     }
 
+    // Part 5: Fixed Asset Functions Tests
+    public function testDbHasFixedAssets(): void {
+        // Test db_has_fixed_assets method
+        $this->assertTrue(method_exists($this->service, 'dbHasFixedAssets'));
+        $this->assertTrue(is_callable([$this->service, 'dbHasFixedAssets']));
+    }
+
+    public function testCheckDbHasFixedAssets(): void {
+        // Test check_db_has_fixed_assets method
+        $this->assertTrue(method_exists($this->service, 'checkDbHasFixedAssets'));
+        $this->assertTrue(is_callable([$this->service, 'checkDbHasFixedAssets']));
+    }
+
+    public function testDbHasFixedAssetClasses(): void {
+        // Test db_has_fixed_asset_classes method
+        $this->assertTrue(method_exists($this->service, 'dbHasFixedAssetClasses'));
+        $this->assertTrue(is_callable([$this->service, 'dbHasFixedAssetClasses']));
+    }
+
+    public function testCheckDbHasFixedAssetClasses(): void {
+        // Test check_db_has_fixed_asset_classes method
+        $this->assertTrue(method_exists($this->service, 'checkDbHasFixedAssetClasses'));
+        $this->assertTrue(is_callable([$this->service, 'checkDbHasFixedAssetClasses']));
+    }
+
     // Add more tests as needed
 }
