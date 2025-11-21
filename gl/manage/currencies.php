@@ -13,11 +13,12 @@ $page_security = 'SA_CURRENCY';
 $path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_($help_context = "Currencies"));
+page(_($help_context = UI_TEXT_CURRENCIES_TITLE));
 
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/banking.inc");
 include_once($path_to_root . "/includes/CompanyPrefsService.php");
+include_once($path_to_root . "/includes/ui_strings.php");
 
 simple_page_mode(false);
 
@@ -27,25 +28,25 @@ function check_data()
 {
 	if (strlen($_POST['Abbreviation']) == 0) 
 	{
-		UiMessageService::displayError( _("The currency abbreviation must be entered."));
+		UiMessageService::displayError( _(UI_TEXT_CURRENCY_ABBREVIATION_MUST_BE_ENTERED));
 		set_focus('Abbreviation');
 		return false;
 	} 
 	elseif (strlen($_POST['CurrencyName']) == 0) 
 	{
-		UiMessageService::displayError( _("The currency name must be entered."));
+		UiMessageService::displayError( _(UI_TEXT_CURRENCY_NAME_MUST_BE_ENTERED));
 		set_focus('CurrencyName');
 		return false;		
 	} 
 	elseif (strlen($_POST['Symbol']) == 0) 
 	{
-		UiMessageService::displayError( _("The currency symbol must be entered."));
+		UiMessageService::displayError( _(UI_TEXT_CURRENCY_SYMBOL_MUST_BE_ENTERED));
 		set_focus('Symbol');
 		return false;		
 	} 
 	elseif (strlen($_POST['hundreds_name']) == 0) 
 	{
-		UiMessageService::displayError( _("The hundredths name must be entered."));
+		UiMessageService::displayError( _(UI_TEXT_HUNDREDTHS_NAME_MUST_BE_ENTERED));
 		set_focus('hundreds_name');
 		return false;		
 	}  	
@@ -67,14 +68,14 @@ function handle_submit()
 
 		update_currency($_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'], 
 			$_POST['country'], $_POST['hundreds_name'], RequestService::checkValueStatic('auto_update'));
-		display_notification(_('Selected currency settings has been updated'));
+		display_notification(_(UI_TEXT_SELECTED_CURRENCY_SETTINGS_UPDATED));
 	} 
 	else 
 	{
 
 		add_currency($_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'], 
 			$_POST['country'], $_POST['hundreds_name'], RequestService::checkValueStatic('auto_update'));
-		display_notification(_('New currency has been added'));
+		display_notification(_(UI_TEXT_NEW_CURRENCY_ADDED));
 	}	
 	$Mode = 'RESET';
 }
@@ -90,26 +91,26 @@ function check_can_delete($curr)
 	// PREVENT DELETES IF DEPENDENT RECORDS IN debtors_master
 	if (key_in_foreign_table($curr, 'debtors_master', 'curr_code'))
 	{
-		UiMessageService::displayError(_("Cannot delete this currency, because customer accounts have been created referring to this currency."));
+		UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_CURRENCY_CUSTOMER_ACCOUNTS));
 		return false;
 	}
 
 	if (key_in_foreign_table($curr, 'suppliers', 'curr_code'))
 	{
-		UiMessageService::displayError(_("Cannot delete this currency, because supplier accounts have been created referring to this currency."));
+		UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_CURRENCY_SUPPLIER_ACCOUNTS));
 		return false;
 	}
 
 	if ($curr == \FA\Services\CompanyPrefsService::getDefaultCurrency())
 	{
-		UiMessageService::displayError(_("Cannot delete this currency, because the company preferences uses this currency."));
+		UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_CURRENCY_COMPANY_PREFERENCES));
 		return false;
 	}
 	
 	// see if there are any bank accounts that use this currency
 	if (key_in_foreign_table($curr, 'bank_accounts', 'bank_curr_code'))
 	{
-		UiMessageService::displayError(_("Cannot delete this currency, because thre are bank accounts that use this currency."));
+		UiMessageService::displayError(_(UI_TEXT_CANNOT_DELETE_CURRENCY_BANK_ACCOUNTS));
 		return false;
 	}
 	
@@ -137,8 +138,8 @@ function display_currencies()
 	
     $result = get_currencies(RequestService::checkValueStatic('show_inactive'));
     start_table(TABLESTYLE);
-    $th = array(_("Abbreviation"), _("Symbol"), _("Currency Name"),
-    	_("Hundredths name"), _("Country"), _("Auto update"), "", "");
+    $th = array(_(UI_TEXT_ABBREVIATION_HEADER), _(UI_TEXT_SYMBOL_HEADER), _(UI_TEXT_CURRENCY_NAME_HEADER),
+    	_(UI_TEXT_HUNDREDTHS_NAME_HEADER), _(UI_TEXT_COUNTRY_HEADER), _(UI_TEXT_AUTO_UPDATE_HEADER), "", "");
 	inactive_control_column($th);
     table_header($th);	
     
@@ -162,9 +163,9 @@ function display_currencies()
 		label_cell(	$myrow[1] == $company_currency ? '-' : 
 			($myrow["auto_update"] ? _('Yes') :_('No')), "align='center'");
 		inactive_control_cell($myrow["curr_abrev"], $myrow["inactive"], 'currencies', 'curr_abrev');
- 		edit_button_cell("Edit".$myrow["curr_abrev"], _("Edit"));
+ 		edit_button_cell("Edit".$myrow["curr_abrev"], _(UI_TEXT_EDIT));
 		if ($myrow["curr_abrev"] != $company_currency)
- 			delete_button_cell("Delete".$myrow["curr_abrev"], _("Delete"));
+ 			delete_button_cell("Delete".$myrow["curr_abrev"], _(UI_TEXT_DELETE));
 		else
 			label_cell('');
 		end_row();
@@ -173,7 +174,7 @@ function display_currencies()
     
 	inactive_control_row($th);
     end_table();
-    display_note(_("The marked currency is the home currency which cannot be deleted."), 0, 0, "class='currentfg'");
+    display_note(_(UI_TEXT_MARKED_CURRENCY_HOME_CANNOT_DELETE), 0, 0, "class='currentfg'");
 }
 
 //---------------------------------------------------------------------------------------------
@@ -199,19 +200,19 @@ function display_currency_edit($selected_id)
 		}
 		hidden('Abbreviation');
 		hidden('selected_id', $selected_id);
-		label_row(_("Currency Abbreviation:"), $_POST['Abbreviation']);
+		label_row(_(UI_TEXT_CURRENCY_ABBREVIATION_LABEL), $_POST['Abbreviation']);
 	} 
 	else 
 	{ 
 		$_POST['auto_update']  = 1;
-		text_row_ex(_("Currency Abbreviation:"), 'Abbreviation', 4, 3);
+		text_row_ex(_(UI_TEXT_CURRENCY_ABBREVIATION_LABEL), 'Abbreviation', 4, 3);
 	}
 
-	text_row_ex(_("Currency Symbol:"), 'Symbol', 10);
-	text_row_ex(_("Currency Name:"), 'CurrencyName', 20);
-	text_row_ex(_("Hundredths Name:"), 'hundreds_name', 15);	
-	text_row_ex(_("Country:"), 'country', 40);	
-	check_row(_("Automatic exchange rate update:"), 'auto_update', RequestService::getPostStatic('auto_update'));
+	text_row_ex(_(UI_TEXT_CURRENCY_SYMBOL_LABEL), 'Symbol', 10);
+	text_row_ex(_(UI_TEXT_CURRENCY_NAME_LABEL), 'CurrencyName', 20);
+	text_row_ex(_(UI_TEXT_HUNDREDTHS_NAME_LABEL), 'hundreds_name', 15);	
+	text_row_ex(_(UI_TEXT_COUNTRY_LABEL), 'country', 40);	
+	check_row(_(UI_TEXT_AUTOMATIC_EXCHANGE_RATE_UPDATE_LABEL), 'auto_update', RequestService::getPostStatic('auto_update'));
 	end_table(1);
 
 	submit_add_or_update_center($selected_id == '', '', 'both');
