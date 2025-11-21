@@ -1934,4 +1934,13 @@ define('UI_TEXT_GROUP_TOTALS_ONLY', 'Group totals only');
 define('UI_TEXT_CLASS_LABEL', 'Class');
 define('UI_TEXT_ENDING_BALANCE_LABEL', 'Ending Balance');
 define('UI_TEXT_OPENING_BALANCE_WARNING', 'The Opening Balance is not in balance, probably due to a non closed Previous Fiscalyear.');
+define('UI_TEXT_JOURNAL_INQUIRY_TITLE', 'Journal Inquiry');
+define('UI_TEXT_ENTER_REFERENCE_FRAGMENT', 'Enter reference fragment or leave empty');
+define('UI_TEXT_SHOW_CLOSED_LABEL', 'Show closed:');
+define('UI_TEXT_SEARCH_BUTTON', 'Search');
+define('UI_TEXT_NUMBER_SIGN', '#');
+define('UI_TEXT_TRANS_NUMBER', 'Trans #');
+define('UI_TEXT_COUNTERPARTY', 'Counterparty');
+define('UI_TEXT_SUPPLIERS_REFERENCE', 'Supplier\'s Reference');
+define('UI_TEXT_ENTER_MEMO_FRAGMENT', 'Enter memo fragment or leave empty');
 }

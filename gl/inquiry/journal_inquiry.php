@@ -18,6 +18,7 @@ include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/includes/CompanyPrefsService.php");
 $js = "";
 if ($SysPrefs->use_popup_windows)
@@ -25,7 +26,7 @@ if ($SysPrefs->use_popup_windows)
 if (user_use_date_picker())
 	$js .= get_js_date_picker();
 
-page(_($help_context = "Journal Inquiry"), false, false, "", $js);
+page(_($help_context = UI_TEXT_JOURNAL_INQUIRY_TITLE), false, false, "", $js);
 
 //-----------------------------------------------------------------------------------
 // Ajax updates
@@ -43,20 +44,20 @@ start_form();
 start_table(TABLESTYLE_NOBORDER);
 start_row();
 
-ref_cells(_("Reference:"), 'Ref', '',null, _('Enter reference fragment or leave empty'));
+ref_cells(_(UI_TEXT_REFERENCE_LABEL), 'Ref', '',null, _(UI_TEXT_ENTER_REFERENCE_FRAGMENT));
 
-journal_types_list_cells(_("Type:"), "filterType");
-date_cells(_("From:"), 'FromDate', '', null, -user_transaction_days());
-date_cells(_("To:"), 'ToDate');
+journal_types_list_cells(_(UI_TEXT_TYPE_LABEL), "filterType");
+date_cells(_(UI_TEXT_FROM_LABEL), 'FromDate', '', null, -user_transaction_days());
+date_cells(_(UI_TEXT_TO_LABEL), 'ToDate');
 
 end_row();
 start_row();
-ref_cells(_("Memo:"), 'Memo', '',null, _('Enter memo fragment or leave empty'));
-users_list_cells(_("User:"), 'userid', null, false);
+ref_cells(_(UI_TEXT_MEMO_LABEL), 'Memo', '',null, _(UI_TEXT_ENTER_MEMO_FRAGMENT));
+users_list_cells(_(UI_TEXT_USER_LABEL), 'userid', null, false);
 if (\FA\Services\CompanyPrefsService::getUseDimensions() && isset($_POST['dimension'])) // display dimension only, when started in dimension mode
 	dimensions_list_cells(_('Dimension:'), 'dimension', null, true, null, true);
-check_cells( _("Show closed:"), 'AlsoClosed', null);
-submit_cells('Search', _("Search"), '', '', 'default');
+check_cells( _(UI_TEXT_SHOW_CLOSED_LABEL), 'AlsoClosed', null);
+submit_cells('Search', _(UI_TEXT_SEARCH_BUTTON), '', '', 'default');
 end_row();
 end_table();
 
@@ -110,27 +111,27 @@ $sql = get_sql_for_journal_inquiry(RequestService::getPostStatic('filterType', -
 	RequestService::getPostStatic('ToDate'), RequestService::getPostStatic('Ref'), RequestService::getPostStatic('Memo'), RequestService::checkValueStatic('AlsoClosed'), RequestService::getPostStatic('userid'));
 
 $cols = array(
-	_("#") => array('fun'=>'journal_pos', 'align'=>'center'), 
-	_("Date") =>array('name'=>'tran_date','type'=>'date','ord'=>'desc'),
-	_("Type") => array('fun'=>'systype_name'), 
-	_("Trans #") => array('fun'=>'view_link'), 
-	_("Counterparty") => array('fun' => 'person_link'),
-	_("Supplier's Reference") => 'skip',
-	_("Reference"), 
-	_("Amount") => array('type'=>'amount'),
-	_("Memo"),
-	_("User"),
-	_("View") => array('insert'=>true, 'fun'=>'gl_link'),
+	_(UI_TEXT_NUMBER_SIGN) => array('fun'=>'journal_pos', 'align'=>'center'), 
+	_(UI_TEXT_DATE) =>array('name'=>'tran_date','type'=>'date','ord'=>'desc'),
+	_(UI_TEXT_TYPE_LABEL) => array('fun'=>'systype_name'), 
+	_(UI_TEXT_TRANS_NUMBER) => array('fun'=>'view_link'), 
+	_(UI_TEXT_COUNTERPARTY) => array('fun' => 'person_link'),
+	_(UI_TEXT_SUPPLIERS_REFERENCE) => 'skip',
+	_(UI_TEXT_REFERENCE_LABEL), 
+	_(UI_TEXT_AMOUNT) => array('type'=>'amount'),
+	_(UI_TEXT_MEMO_LABEL),
+	_(UI_TEXT_USER_LABEL),
+	_(UI_TEXT_VIEW) => array('insert'=>true, 'fun'=>'gl_link'),
 	array('insert'=>true, 'fun'=>'edit_link')
 );
 
 if (!RequestService::checkValueStatic('AlsoClosed')) {
-	$cols[_("#")] = 'skip';
+	$cols[_(UI_TEXT_NUMBER_SIGN)] = 'skip';
 }
 
 if($_POST['filterType'] == ST_SUPPINVOICE) //add the payment column if shown supplier invoices only
 {
-	$cols[_("Supplier's Reference")] = array('fun'=>'invoice_supp_reference', 'align'=>'center');
+	$cols[_(UI_TEXT_SUPPLIERS_REFERENCE)] = array('fun'=>'invoice_supp_reference', 'align'=>'center');
 }
 
 $table =& new_db_pager('journal_tbl', $sql, $cols);
