@@ -196,6 +196,17 @@ class TestFaUiFunctions {
     {
         echo "<center><span class='headingtext2'>$msg</span></center>\n";
     }
+
+    public static function check_value($name)
+    {
+        if (is_array($name)) {
+            $ret = array();
+            foreach($name as $key)
+                $ret[$key] = self::check_value($key);
+            return $ret;
+        } else
+            return (empty($_POST[$name]) ? 0 : 1);
+    }
 }
 
 class FaCellTest extends TestCase
@@ -591,5 +602,21 @@ class FaCellTest extends TestCase
         $output = ob_get_clean();
 
         $this->assertEquals("<center><span class='headingtext2'>Test Heading 2</span></center>\n", $output);
+    }
+
+    public function testCheckValueReturnsCorrectBoolean()
+    {
+        // Test with empty value
+        $_POST['test_empty'] = '';
+        $result = TestFaUiFunctions::check_value('test_empty');
+        $this->assertEquals(0, $result);
+
+        // Test with non-empty value
+        $_POST['test_value'] = 'some value';
+        $result = TestFaUiFunctions::check_value('test_value');
+        $this->assertEquals(1, $result);
+
+        // Clean up
+        unset($_POST['test_empty'], $_POST['test_value']);
     }
 }
