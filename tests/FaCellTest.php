@@ -45,9 +45,10 @@ class TestFaUiFunctions {
         echo "</tr>\n";
     }
 
-    public static function label_cell($content, $params="")
+    public static function label_cell($content, $params="", $id=null)
     {
-        echo "<td $params>$content</td>\n";
+        $id_attr = $id ? " id='$id'" : '';
+        echo "<td $params$id_attr>$content</td>\n";
     }
 
     public static function text_row($label, $name, $value=null, $size=0, $max=null, $params="", $post_label="")
@@ -100,6 +101,79 @@ class TestFaUiFunctions {
         if ($extra_class) $class .= " $extra_class";
         echo "<tr class='$class'>";
         $k++;
+    }
+
+    public static function email_cell($label, $params="", $id=null)
+    {
+        self::label_cell("<a href='mailto:$label'>$label</a>", $params, $id);
+    }
+
+    public static function percent_cell($label, $bold=false, $id=null)
+    {
+        $formatted = $bold ? "<b>" . number_format($label, 2) . "%</b>" : number_format($label, 2) . "%";
+        self::label_cell($formatted, "nowrap align=right", $id);
+    }
+
+    public static function qty_cell($label, $bold=false, $dec=null, $id=null)
+    {
+        $dec = $dec ?? 2;
+        $formatted = $bold ? "<b>" . number_format($label, $dec) . "</b>" : number_format($label, $dec);
+        self::label_cell($formatted, "nowrap align=right", $id);
+    }
+
+    public static function button_cell($name, $value, $title=false, $icon=false, $aspect='')
+    {
+        echo "<td align='center'>";
+        self::button($name, $value, $title, $icon, $aspect);
+        echo "</td>";
+    }
+
+    public static function delete_button_cell($name, $value, $title=false)
+    {
+        self::button_cell($name, $value, $title, 'delete', '');
+    }
+
+    public static function edit_button_cell($name, $value, $title=false)
+    {
+        self::button_cell($name, $value, $title, 'edit', '');
+    }
+
+    public static function select_button_cell($name, $value, $title=false)
+    {
+        self::button_cell($name, $value, $title, 'select', '');
+    }
+
+    public static function button($name, $value, $title=false, $icon=false, $aspect='')
+    {
+        $title_attr = $title ? " title='$title'" : '';
+        $icon_attr = $icon ? " icon='$icon'" : '';
+        $aspect_attr = $aspect ? " aspect='$aspect'" : '';
+        echo "<button type='submit' name='$name' value='$value'$title_attr$icon_attr$aspect_attr>$value</button>";
+    }
+
+    public static function radio($label, $name, $value, $selected=null, $submit_on_change=false)
+    {
+        $selected = $selected ?? ($_POST[$name] ?? null) === (string)$value;
+        $onclick = $submit_on_change ? " onclick='JsHttpRequest.request(\"_{$name}_update\", this.form);'" : '';
+        $checked = $selected ? ' checked' : '';
+        return "<input type='radio' name='$name' value='$value'$checked$onclick>" . ($label ? $label : '');
+    }
+
+    public static function unit_amount_cell($label, $bold=false, $params="", $id=null)
+    {
+        $formatted = $bold ? "<b>$" . number_format($label, 4) . "</b>" : "$" . number_format($label, 4);
+        self::label_cell($formatted, "nowrap align=right " . $params, $id);
+    }
+
+    public static function labelheader_cell($label, $params="")
+    {
+        echo "<td class='tableheader' $params>$label</td>\n";
+    }
+
+    public static function amount_decimal_cell($label, $params="", $id=null)
+    {
+        $formatted = number_format($label, 0);
+        self::label_cell($formatted, "nowrap align=right " . $params, $id);
     }
 }
 
@@ -335,5 +409,130 @@ class FaCellTest extends TestCase
         $this->assertStringContainsString("<tr class='oddrow'>", $output);
         $this->assertStringContainsString("Row 1", $output);
         $this->assertStringContainsString("Row 2", $output);
+    }
+
+    public function testEmailCellProducesCorrectStructure()
+    {
+        ob_start();
+        TestFaUiFunctions::email_cell("test@example.com", "class='email'");
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString("<a href='mailto:test@example.com'>test@example.com</a>", $output);
+        $this->assertStringContainsString("class='email'", $output);
+    }
+
+    public function testPercentCellProducesCorrectStructure()
+    {
+        ob_start();
+        TestFaUiFunctions::percent_cell(25.5, true);
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString("<b>25.50%</b>", $output);
+        $this->assertStringContainsString("nowrap align=right", $output);
+    }
+
+    public function testQtyCellProducesCorrectStructure()
+    {
+        ob_start();
+        TestFaUiFunctions::qty_cell(123.456, false, 3);
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString("123.456", $output);
+        $this->assertStringContainsString("nowrap align=right", $output);
+    }
+
+    public function testButtonCellProducesCorrectStructure()
+    {
+        ob_start();
+        TestFaUiFunctions::button_cell("test_button", "Click Me", "Test Title", "edit");
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString("<td align='center'>", $output);
+        $this->assertStringContainsString("<button type='submit'", $output);
+        $this->assertStringContainsString("name='test_button'", $output);
+        $this->assertStringContainsString("value='Click Me'", $output);
+        $this->assertStringContainsString("title='Test Title'", $output);
+        $this->assertStringContainsString("icon='edit'", $output);
+        $this->assertStringContainsString("</button>", $output);
+        $this->assertStringContainsString("</td>", $output);
+    }
+
+    public function testDeleteButtonCellProducesCorrectStructure()
+    {
+        ob_start();
+        TestFaUiFunctions::delete_button_cell("delete_btn", "Delete");
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString("<td align='center'>", $output);
+        $this->assertStringContainsString("icon='delete'", $output);
+        $this->assertStringContainsString("name='delete_btn'", $output);
+        $this->assertStringContainsString("value='Delete'", $output);
+    }
+
+    public function testEditButtonCellProducesCorrectStructure()
+    {
+        ob_start();
+        TestFaUiFunctions::edit_button_cell("edit_btn", "Edit");
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString("<td align='center'>", $output);
+        $this->assertStringContainsString("icon='edit'", $output);
+        $this->assertStringContainsString("name='edit_btn'", $output);
+        $this->assertStringContainsString("value='Edit'", $output);
+    }
+
+    public function testSelectButtonCellProducesCorrectStructure()
+    {
+        ob_start();
+        TestFaUiFunctions::select_button_cell("select_btn", "Select");
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString("<td align='center'>", $output);
+        $this->assertStringContainsString("icon='select'", $output);
+        $this->assertStringContainsString("name='select_btn'", $output);
+        $this->assertStringContainsString("value='Select'", $output);
+    }
+
+    public function testRadioProducesCorrectStructure()
+    {
+        ob_start();
+        $result = TestFaUiFunctions::radio("Option 1", "test_radio", "value1", "value1");
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString("<input type='radio'", $result);
+        $this->assertStringContainsString("name='test_radio'", $result);
+        $this->assertStringContainsString("value='value1'", $result);
+        $this->assertStringContainsString("checked", $result);
+        $this->assertStringContainsString("Option 1", $result);
+    }
+
+    public function testUnitAmountCellProducesCorrectStructure()
+    {
+        ob_start();
+        TestFaUiFunctions::unit_amount_cell(123.4567, true);
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString("<b>$123.4567</b>", $output);
+        $this->assertStringContainsString("nowrap align=right", $output);
+    }
+
+    public function testLabelheaderCellProducesCorrectStructure()
+    {
+        ob_start();
+        TestFaUiFunctions::labelheader_cell("Header Text", "class='header'");
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString("<td class='tableheader' class='header'>Header Text</td>", $output);
+    }
+
+    public function testAmountDecimalCellProducesCorrectStructure()
+    {
+        ob_start();
+        TestFaUiFunctions::amount_decimal_cell(1234.56, "class='decimal'");
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString("1,235", $output); // Should round to 0 decimal places
+        $this->assertStringContainsString("nowrap align=right", $output);
+        $this->assertStringContainsString("class='decimal'", $output);
     }
 }
