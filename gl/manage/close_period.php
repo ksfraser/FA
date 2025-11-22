@@ -14,11 +14,9 @@ $path_to_root = "../..";
 $SysPrefs->show_hints = true;
 include_once($path_to_root . "/includes/session.inc");
 require_once($path_to_root . "/includes/DateService.php");
+use FA\DateService;
 
 $page_security = 'SA_GLCLOSE';
-if (!isset($path_to_root)) $path_to_root = "../..";
-include_once($path_to_root . "/includes/session.inc");
-require_once($path_to_root . "/includes/DateService.php");
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
@@ -42,7 +40,7 @@ function check_data()
 		set_focus('date');
 		return false;
 	}
-	if (!is_date_in_fiscalyears($_POST['date'], false))
+	if (!DateService::isDateInAnyFiscalYearStatic($_POST['date'], false))
 	{
 		UiMessageService::displayError(_(UI_TEXT_SELECTED_DATE_NOT_IN_FISCAL_YEAR_OR_CLOSED));
 		set_focus('date');

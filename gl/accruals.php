@@ -83,7 +83,7 @@ if (isset($_POST['go']) || isset($_POST['show']))
 			($freq == 2 ? DateService::addDaysStatic($date_, 14*$per) :
 			($freq == 3 ? DateService::endMonthStatic(DateService::addMonthsStatic($date_, $per)) : 
 			DateService::endMonthStatic(DateService::addMonthsStatic($date_, 3*$per)))));
-		if (!is_date_in_fiscalyears($lastdate, false))
+		if (!DateService::isDateInAnyFiscalYearStatic($lastdate, false))
 		{
 			UiMessageService::displayError(_(UI_TEXT_SOME_OF_THE_PERIOD_DATES_ARE_OUTSIDE_THE_FISCAL_YEAR_OR_ARE_CLOSED_FOR_FURTHER_DATA_ENTRY_CREATE_A_NEW_FISCAL_YEAR_FIRST));
 			set_focus('date_');

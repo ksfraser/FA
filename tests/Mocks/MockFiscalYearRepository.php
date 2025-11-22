@@ -69,4 +69,23 @@ class MockFiscalYearRepository implements FiscalYearRepositoryInterface
     {
         return $this->fiscalYear['end'] ?? '';
     }
-}
+
+    /**
+     * Check if a date is within any fiscal year
+     *
+     * @param string $date Date to check
+     * @param bool $closed Whether to include closed fiscal years (default: true)
+     * @return bool True if date is in any fiscal year
+     */
+    public function isDateInAnyFiscalYear(string $date, bool $closed = true): bool
+    {
+        if (empty($this->fiscalYear)) {
+            return false;
+        }
+
+        if (!$closed && $this->fiscalYear['closed']) {
+            return false;
+        }
+
+        return ($date >= $this->fiscalYear['begin'] && $date <= $this->fiscalYear['end']);
+    }

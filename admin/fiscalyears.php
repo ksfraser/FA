@@ -35,13 +35,13 @@ simple_page_mode(true);
 function check_data()
 {
 	$dateService = new DateService();
-	if (!$dateService->isDate($_POST['from_date']) || is_date_in_fiscalyears($_POST['from_date']))
+	if (!$dateService->isDate($_POST['from_date']) || $dateService->isDateInAnyFiscalYear($_POST['from_date']))
 	{
 		UiMessageService::displayError(_(UI_TEXT_INVALID_BEGIN_DATE_ERROR));
 		set_focus('from_date');
 		return false;
 	}
-	if (!$dateService->isDate($_POST['to_date']) || is_date_in_fiscalyears($_POST['to_date']))
+	if (!$dateService->isDate($_POST['to_date']) || $dateService->isDateInAnyFiscalYear($_POST['to_date']))
 	{
 		UiMessageService::displayError(_(UI_TEXT_INVALID_END_DATE_ERROR));
 		set_focus('to_date');

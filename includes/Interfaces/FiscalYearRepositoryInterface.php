@@ -49,4 +49,12 @@ interface FiscalYearRepositoryInterface
      * @return string End date
      */
     public function getEndFiscalYear(): string;
-}
+
+    /**
+     * Check if a date is within any fiscal year
+     *
+     * @param string $date Date to check
+     * @param bool $closed Whether to include closed fiscal years (default: true)
+     * @return bool True if date is in any fiscal year
+     */
+    public function isDateInAnyFiscalYear(string $date, bool $closed = true): bool;

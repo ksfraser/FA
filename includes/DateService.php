@@ -109,6 +109,18 @@ class DateService
         return (bool)\is_date_in_fiscalyear($date, $convert);
     }
 
+    /**
+     * Check if a date is within any fiscal year
+     *
+     * @param string $date Date to check
+     * @param bool $closed Whether to include closed fiscal years (default: true)
+     * @return bool True if date is in any fiscal year
+     */
+    public function isDateInAnyFiscalYear(string $date, bool $closed = true): bool
+    {
+        return $this->fiscalYearRepo->isDateInAnyFiscalYear($date, $closed);
+    }
+
     public function isDateClosed(string $date): bool
     {
         return (bool)\is_date_closed($date);
@@ -304,6 +316,15 @@ class DateService
     public static function isDateInFiscalYearStatic(string $date, bool $convert = false): bool
     {
         return (bool)\is_date_in_fiscalyear($date, $convert);
+    }
+    
+    /**
+     * Static wrapper for isDateInAnyFiscalYear
+     */
+    public static function isDateInAnyFiscalYearStatic(string $date, bool $closed = true): bool
+    {
+        $service = new self();
+        return $service->isDateInAnyFiscalYear($date, $closed);
     }
     
     /**

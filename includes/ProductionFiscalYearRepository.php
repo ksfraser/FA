@@ -81,4 +81,22 @@ class ProductionFiscalYearRepository implements FiscalYearRepositoryInterface
         $fiscalYear = $this->getCurrentFiscalYear();
         return $fiscalYear ? \DateService::sql2dateStatic($fiscalYear['end']) : '';
     }
+
+    /**
+     * Check if a date is within any fiscal year
+     *
+     * @param string $date Date to check
+     * @param bool $closed Whether to include closed fiscal years (default: true)
+     * @return bool True if date is in any fiscal year
+     */
+    public function isDateInAnyFiscalYear(string $date, bool $closed = true): bool
+    {
+        $sqlDate = \FA\DateService::date2sqlStatic($date);
+        $sql = "SELECT * FROM " . TB_PREF . "fiscal_year WHERE '$sqlDate' >= begin AND '$sqlDate' <= end";
+        if (!$closed) {
+            $sql .= " AND closed=0";
+        }
+        $result = \db_query($sql, "could not check fiscal years");
+        return \db_fetch($result) !== false;
+    }
 }
