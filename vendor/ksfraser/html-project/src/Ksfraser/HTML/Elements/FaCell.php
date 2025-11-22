@@ -19,12 +19,14 @@ class FaCell extends HtmlTd
     /**
      * Constructor
      *
-     * @param string $content Cell content
+     * @param string|HtmlElementInterface $content Cell content
      * @param string $extra Additional attributes
      */
     public function __construct($content = "", $extra = "")
     {
-        parent::__construct(new HtmlString($content));
+        // If content is a string, wrap it in HtmlString; otherwise use as-is
+        $element = is_string($content) ? new HtmlString($content) : $content;
+        parent::__construct($element);
         $this->extra = $extra;
 
         // Set attributes
