@@ -175,6 +175,12 @@ class TestFaUiFunctions {
         $formatted = number_format($label, 0);
         self::label_cell($formatted, "nowrap align=right " . $params, $id);
     }
+
+    public static function br($num=1)
+    {
+        for ($i = 0; $i < $num; $i++)
+            echo "<br>";
+    }
 }
 
 class FaCellTest extends TestCase
@@ -534,5 +540,14 @@ class FaCellTest extends TestCase
         $this->assertStringContainsString("1,235", $output); // Should round to 0 decimal places
         $this->assertStringContainsString("nowrap align=right", $output);
         $this->assertStringContainsString("class='decimal'", $output);
+    }
+
+    public function testBrProducesCorrectNumberOfBreaks()
+    {
+        ob_start();
+        TestFaUiFunctions::br(3);
+        $output = ob_get_clean();
+
+        $this->assertEquals("<br><br><br>", $output);
     }
 }
