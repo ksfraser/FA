@@ -181,6 +181,21 @@ class TestFaUiFunctions {
         for ($i = 0; $i < $num; $i++)
             echo "<br>";
     }
+
+    public static function display_caption($msg)
+    {
+        echo "<caption>$msg</caption>\n";
+    }
+
+    public static function display_heading($msg)
+    {
+        echo "<center><span class='headingtext'>$msg</span></center>\n";
+    }
+
+    public static function display_heading2($msg)
+    {
+        echo "<center><span class='headingtext2'>$msg</span></center>\n";
+    }
 }
 
 class FaCellTest extends TestCase
@@ -549,5 +564,32 @@ class FaCellTest extends TestCase
         $output = ob_get_clean();
 
         $this->assertEquals("<br><br><br>", $output);
+    }
+
+    public function testDisplayCaptionProducesCorrectStructure()
+    {
+        ob_start();
+        TestFaUiFunctions::display_caption("Test Caption");
+        $output = ob_get_clean();
+
+        $this->assertEquals("<caption>Test Caption</caption>\n", $output);
+    }
+
+    public function testDisplayHeadingProducesCorrectStructure()
+    {
+        ob_start();
+        TestFaUiFunctions::display_heading("Test Heading");
+        $output = ob_get_clean();
+
+        $this->assertEquals("<center><span class='headingtext'>Test Heading</span></center>\n", $output);
+    }
+
+    public function testDisplayHeading2ProducesCorrectStructure()
+    {
+        ob_start();
+        TestFaUiFunctions::display_heading2("Test Heading 2");
+        $output = ob_get_clean();
+
+        $this->assertEquals("<center><span class='headingtext2'>Test Heading 2</span></center>\n", $output);
     }
 }
