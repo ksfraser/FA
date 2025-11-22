@@ -93,36 +93,22 @@ class HTML_TABLE implements HtmlElementInterface
     /**
      * Output the table HTML directly to screen
      * 
-     * This method maintains legacy behavior by echoing output directly.
-     * Uses FrontAccounting's start_table() and end_table() if available,
-     * otherwise generates standard HTML table tags.
-     * 
-     * NOTE: In the original class.bi_lineitem.php, line 127 had a bug:
-     *       it used `foreach( $rows as $row )` instead of `foreach( $this->rows as $row )`
-     *       This has been fixed here.
+     * Generates standard HTML table tags without relying on global functions.
      * 
      * @return void
      */
     public function toHtml(): void
     {
-        // Start table using FA function or plain HTML
-        if (function_exists('start_table')) {
-            start_table($this->style, "width='" . $this->width . "%'");
-        } else {
-            echo "<table class='tablestyle" . $this->style . "' width='" . $this->width . "%'>\n";
-        }
+        // Generate table HTML directly
+        echo "<table class='tablestyle" . $this->style . "' width='" . $this->width . "%'>\n";
         
-        // Output each row (FIXED: was $rows, now $this->rows)
+        // Output each row
         foreach ($this->rows as $row) {
             $row->toHtml();
         }
         
-        // End table using FA function or plain HTML
-        if (function_exists('end_table')) {
-            end_table();
-        } else {
-            echo "</table>\n";
-        }
+        // End table
+        echo "</table>\n";
     }
     
     /**

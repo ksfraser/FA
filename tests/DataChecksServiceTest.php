@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/bootstrap.php';
+
 /**
  * Unit tests for DataChecksService
  *
@@ -31,6 +33,16 @@
  * @package FA
  */
 
+// Set up global SysPrefs for date functions
+global $SysPrefs, $tmonths;
+$SysPrefs->date_system = 0; // Gregorian
+$SysPrefs->dateseps = array('/', '-', '.');
+$SysPrefs->dflt_date_fmt = 1; // DD/MM/YYYY
+$SysPrefs->dflt_date_sep = 0; // /
+if (!isset($tmonths)) {
+    $tmonths = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
+}
+
 // Mock functions for testing
 function check_empty_result($sql) {
     return 1; // Mock: always return true (has data)
@@ -60,28 +72,152 @@ class DataChecksServiceTest extends TestCase {
             define('TB_PREF', '0_');
         }
         
+        // Set up global SysPrefs for date functions
+        global $SysPrefs;
+        if (!isset($SysPrefs)) {
+            $SysPrefs = new stdClass();
+            $SysPrefs->date_system = 0; // Gregorian
+            $SysPrefs->dateseps = array('/', '-', '.');
+            $SysPrefs->dflt_date_fmt = 1; // DD/MM/YYYY
+            $SysPrefs->dflt_date_sep = 0; // /
+        }
+        
         // Create mocks
         $this->databaseRepoMock = $this->createMock(DatabaseRepositoryInterface::class);
         $this->displayServiceMock = $this->createMock(DisplayServiceInterface::class);
         
-        // Setup mock behaviors
-        $this->databaseRepoMock->method('checkEmptyResult')->willReturn(true);
+        // Setup default mock behaviors - removed defaults to avoid conflicts
         $this->databaseRepoMock->method('getTablePrefix')->willReturn('0_');
-        $this->databaseRepoMock->method('escape')->willReturnArgument(0);
+        // Removed escape default
         
         $this->service = new DataChecksService($this->databaseRepoMock, $this->displayServiceMock);
     }
 
-    public function testDbHasCustomers(): void {
-        // Test db_has_customers method
+    /**
+     * Test database has customers - positive case
+     */
+    public function testDbHasCustomersReturnsTrueWhenDataExists(): void {
+        $this->databaseRepoMock->expects($this->once())
+            ->method('checkEmptyResult')
+            ->with("SELECT COUNT(*) FROM 0_debtors_master")
+            ->willReturn(true);
+        
         $result = $this->service->dbHasCustomers();
-        $this->assertIsBool($result);
+        $this->assertTrue($result);
     }
 
-    public function testCheckDbHasCustomers(): void {
-        // Test check_db_has_customers method
-        // This might exit, so test with mock or something
-        $this->assertTrue(true); // Placeholder
+    /**
+     * Test database has customers - negative case
+     */
+    public function testDbHasCustomersReturnsFalseWhenNoData(): void {
+        $this->databaseRepoMock->expects($this->once())
+            ->method('checkEmptyResult')
+            ->with("SELECT COUNT(*) FROM 0_debtors_master")
+            ->willReturn(false);
+        
+        $result = $this->service->dbHasCustomers();
+        $this->assertFalse($result);
+    }
+
+    /**
+     * Test check database has customers calls display service when no data
+     */
+    public function testCheckDbHasCustomersDisplaysErrorWhenNoData(): void {
+        $this->databaseRepoMock->method('checkEmptyResult')->willReturn(false);
+        
+        $this->displayServiceMock->expects($this->once())
+            ->method('displayError')
+            ->with('No customers found', true);
+        $this->displayServiceMock->expects($this->once())
+            ->method('endPage');
+        
+        // Note: This method calls exit(), so we can't test the full flow
+        // We just verify the display methods are called before exit
+        try {
+            $this->service->checkDbHasCustomers('No customers found');
+        } catch (\Exception $e) {
+            // Expected due to exit()
+        }
+    }
+
+    /**
+     * Test customer has branches with SQL injection prevention
+     */
+    public function testDbCustomerHasBranchesEscapesInput(): void {
+        $customerId = "CUST' OR '1'='1";
+        $escapedId = "CUST\\' OR \\'1\\'=\\'1";
+        
+        $this->databaseRepoMock->expects($this->once())
+            ->method('escape')
+            ->with($customerId)
+            ->willReturn($escapedId);
+        
+        $this->databaseRepoMock->expects($this->once())
+            ->method('checkEmptyResult')
+            ->with("SELECT COUNT(*) FROM 0_cust_branch WHERE debtor_no=" . $escapedId)
+            ->willReturn(true);
+        
+        $result = $this->service->dbCustomerHasBranches($customerId);
+        $this->assertTrue($result);
+    }
+
+    /**
+     * Test currency rates with company currency
+     */
+    public function testDbHasCurrencyRatesReturnsOneForCompanyCurrency(): void {
+        // Mock the BankingService static method
+        if (!class_exists('BankingService')) {
+            eval('class BankingService { public static function isCompanyCurrencyStatic($currency) { return $currency === "USD"; } }');
+        }
+        if (!class_exists('DateService')) {
+            eval('class DateService { public static function date2sqlStatic($date) { return $date; } }');
+        }
+        
+        $result = $this->service->dbHasCurrencyRates('USD', '2023-01-01');
+        $this->assertEquals(1, $result);
+    }
+
+    /**
+     * Test currency rates queries database for non-company currency
+     */
+    public function testDbHasCurrencyRatesQueriesDatabaseForNonCompanyCurrency(): void {
+        // Set up SysPrefs for date functions
+        global $SysPrefs;
+        $SysPrefs->dflt_date_fmt = 1; // DD/MM/YYYY
+        $SysPrefs->dflt_date_sep = 0; // /
+        
+        if (!class_exists('BankingService')) {
+            eval('class BankingService { public static function isCompanyCurrencyStatic($currency) { return false; } }');
+        }
+        
+        $this->databaseRepoMock->expects($this->once())
+            ->method('checkEmptyResult')
+            ->with("SELECT COUNT(*) FROM 0_exchange_rates WHERE curr_code = 'EUR' && date_ <= '2023-01-01'")
+            ->willReturn(true);
+        
+        $result = $this->service->dbHasCurrencyRates('EUR', '01/01/2023', true);
+        $this->assertEquals(1, $result);
+    }
+
+    /**
+     * Test currency rates displays error when no rates found
+     */
+    public function testDbHasCurrencyRatesDisplaysErrorWhenNoRatesAndMsgTrue(): void {
+        if (!class_exists('BankingService')) {
+            eval('class BankingService { public static function isCompanyCurrencyStatic($currency) { return false; } }');
+        }
+        
+        $this->databaseRepoMock->expects($this->once())
+            ->method('checkEmptyResult')
+            ->with("SELECT COUNT(*) FROM 0_exchange_rates WHERE curr_code = 'EUR' && date_ <= '2023-01-01'")
+            ->willReturn(false);
+        
+        $this->displayServiceMock->expects($this->once())
+            ->method('displayError')
+            ->with($this->stringContains('Cannot retrieve exchange rate for currency EUR'), true);
+        
+        $result = $this->service->dbHasCurrencyRates('EUR', '01/01/2023', true);
+        $this->assertEquals(0, $result);
     }
 
     public function testDbHasCurrencies(): void {
@@ -333,28 +469,245 @@ class DataChecksServiceTest extends TestCase {
     }
 
     // Part 8: Additional Validation Functions Tests
-    public function testCheckInt(): void {
-        // Test check_int method
-        $this->assertTrue(method_exists($this->service, 'checkInt'));
-        $this->assertTrue(is_callable([$this->service, 'checkInt']));
+    /**
+     * Test checkInt with valid integer
+     */
+    public function testCheckIntReturnsOneForValidInteger(): void {
+        // Mock $_POST
+        $_POST['test_field'] = '42';
+        
+        if (!class_exists('RequestService')) {
+            eval('class RequestService { public static function inputNumStatic($name) { return (int)$_POST[$name]; } }');
+        }
+        
+        $result = $this->service->checkInt('test_field', 0, 100);
+        $this->assertEquals(1, $result);
     }
 
-    public function testCheckNum(): void {
-        // Test check_num method
-        $this->assertTrue(method_exists($this->service, 'checkNum'));
-        $this->assertTrue(is_callable([$this->service, 'checkNum']));
+    /**
+     * Test checkInt with value below minimum
+     */
+    public function testCheckIntReturnsZeroForValueBelowMinimum(): void {
+        $_POST['test_field'] = '5';
+        
+        if (!class_exists('RequestService')) {
+            eval('class RequestService { public static function inputNumStatic($name) { return (int)$_POST[$name]; } }');
+        }
+        
+        $result = $this->service->checkInt('test_field', 10, 100);
+        $this->assertEquals(0, $result);
     }
 
-    public function testCheckIsClosed(): void {
-        // Test check_is_closed method
-        $this->assertTrue(method_exists($this->service, 'checkIsClosed'));
-        $this->assertTrue(is_callable([$this->service, 'checkIsClosed']));
+    /**
+     * Test checkInt with non-integer value
+     */
+    public function testCheckIntReturnsZeroForNonInteger(): void {
+        $_POST['test_field'] = 'not_a_number';
+        
+        if (!class_exists('RequestService')) {
+            eval('class RequestService { public static function inputNumStatic($name) { return $_POST[$name]; } }');
+        }
+        
+        $result = $this->service->checkInt('test_field');
+        $this->assertEquals(0, $result);
     }
 
-    public function testCheckDbHasTemplateOrders(): void {
-        // Test check_db_has_template_orders method
-        $this->assertTrue(method_exists($this->service, 'checkDbHasTemplateOrders'));
-        $this->assertTrue(is_callable([$this->service, 'checkDbHasTemplateOrders']));
+    /**
+     * Test checkInt with missing field
+     */
+    public function testCheckIntReturnsZeroForMissingField(): void {
+        // Ensure field doesn't exist
+        unset($_POST['missing_field']);
+        
+        $result = $this->service->checkInt('missing_field');
+        $this->assertEquals(0, $result);
+    }
+
+    /**
+     * Test checkNum with valid number
+     */
+    public function testCheckNumReturnsOneForValidNumber(): void {
+        $_POST['price'] = '99.99';
+        
+        if (!class_exists('RequestService')) {
+            eval('class RequestService { public static function inputNumStatic($name, $default = 0) { return (float)$_POST[$name]; } }');
+        }
+        
+        $result = $this->service->checkNum('price', 0, 1000);
+        $this->assertEquals(1, $result);
+    }
+
+    /**
+     * Test checkNum with default value when field missing
+     */
+    public function testCheckNumUsesDefaultWhenFieldMissing(): void {
+        unset($_POST['missing_price']);
+        
+        if (!class_exists('RequestService')) {
+            eval('class RequestService { public static function inputNumStatic($name, $default = 0) { return isset($_POST[$name]) ? (float)$_POST[$name] : $default; } }');
+        }
+        
+        $result = $this->service->checkNum('missing_price', -100, 100, 50.0);
+        $this->assertEquals(0, $result); // Field not set, returns 0
+    }
+
+    /**
+     * Test checkIsClosed does nothing when transaction is not closed
+     */
+    public function testCheckIsClosedDoesNothingWhenNotClosed(): void {
+        // Mock is_closed_trans function
+        if (!function_exists('is_closed_trans')) {
+            eval('function is_closed_trans($type, $no) { return false; }');
+        }
+        
+        $this->displayServiceMock->expects($this->never())
+            ->method('displayError');
+        
+        $this->service->checkIsClosed(10, 123);
+    }
+
+    /**
+     * Test checkIsClosed displays error when transaction is closed
+     */
+    public function testCheckIsClosedDisplaysErrorWhenClosed(): void {
+        // Override is_closed_trans function
+        eval('function is_closed_trans($type, $no) { return true; }');
+        
+        // Mock systypes_array
+        $GLOBALS['systypes_array'] = [10 => 'Invoice'];
+        
+        $this->displayServiceMock->expects($this->once())
+            ->method('displayError')
+            ->with($this->stringContains('Invoice #123 is closed'), true);
+        $this->displayServiceMock->expects($this->once())
+            ->method('displayFooterExit');
+        
+        $this->service->checkIsClosed(10, 123);
+    }
+
+    /**
+     * Test checkReference returns true for valid reference
+     */
+    public function testCheckReferenceReturnsTrueForValidReference(): void {
+        // Mock $GLOBALS['Refs']
+        $refsMock = $this->getMockBuilder(\stdClass::class)
+            ->addMethods(['is_valid', 'is_new_reference'])
+            ->getMock();
+        $refsMock->method('is_valid')->willReturn(true);
+        $refsMock->method('is_new_reference')->willReturn(true);
+        $GLOBALS['Refs'] = $refsMock;
+        
+        $result = $this->service->checkReference('REF001', 10, 123);
+        $this->assertTrue($result);
+    }
+
+    /**
+     * Test checkReference returns false and displays error for invalid reference
+     */
+    public function testCheckReferenceReturnsFalseForInvalidReference(): void {
+        $refsMock = $this->getMockBuilder(\stdClass::class)
+            ->addMethods(['is_valid', 'is_new_reference'])
+            ->getMock();
+        $refsMock->method('is_valid')->willReturn(false);
+        $refsMock->method('is_new_reference')->willReturn(true);
+        $GLOBALS['Refs'] = $refsMock;
+        
+        $this->displayServiceMock->expects($this->once())
+            ->method('displayError')
+            ->with('The entered reference is invalid.');
+        
+        $result = $this->service->checkReference('INVALID', 10, 123);
+        $this->assertFalse($result);
+    }
+
+    /**
+     * Test checkReference returns false for duplicate reference
+     */
+    public function testCheckReferenceReturnsFalseForDuplicateReference(): void {
+        $refsMock = $this->getMockBuilder(\stdClass::class)
+            ->addMethods(['is_valid', 'is_new_reference'])
+            ->getMock();
+        $refsMock->method('is_valid')->willReturn(true);
+        $refsMock->method('is_new_reference')->willReturn(false);
+        $GLOBALS['Refs'] = $refsMock;
+        
+        $this->displayServiceMock->expects($this->once())
+            ->method('displayError')
+            ->with('The entered reference is already in use.');
+        
+        $result = $this->service->checkReference('DUPLICATE', 10, 123);
+        $this->assertFalse($result);
+    }
+
+    /**
+     * Test checkSysPref does nothing when preference exists
+     */
+    public function testCheckSysPrefDoesNothingWhenPreferenceExists(): void {
+        if (!function_exists('get_company_pref')) {
+            eval('function get_company_pref($name) { return $name === "deferred_income_act" ? "1010" : ""; }');
+        }
+        
+        $this->displayServiceMock->expects($this->never())
+            ->method('displayError');
+        
+        $this->service->checkSysPref('deferred_income_act', 'Deferred income account not set');
+    }
+
+    /**
+     * Test checkSysPref displays error when preference is empty
+     */
+    public function testCheckSysPrefDisplaysErrorWhenPreferenceEmpty(): void {
+        if (!function_exists('get_company_pref')) {
+            eval('function get_company_pref($name) { return ""; }');
+        }
+        
+        $this->displayServiceMock->expects($this->once())
+            ->method('menuLink')
+            ->with('/admin/gl_setup.php', 'Preference not set')
+            ->willReturn('GL Setup link');
+        
+        $this->displayServiceMock->expects($this->once())
+            ->method('displayError')
+            ->with('GL Setup link', true);
+        $this->displayServiceMock->expects($this->once())
+            ->method('displayFooterExit');
+        
+        $this->service->checkSysPref('missing_pref', 'Preference not set');
+    }
+
+    /**
+     * Test checkDbHasTemplateOrders does nothing when templates exist
+     */
+    public function testCheckDbHasTemplateOrdersDoesNothingWhenTemplatesExist(): void {
+        $this->databaseRepoMock->expects($this->once())
+            ->method('checkEmptyResult')
+            ->willReturn(true); // Templates exist
+        
+        $this->displayServiceMock->expects($this->never())
+            ->method('displayError');
+        
+        $this->service->checkDbHasTemplateOrders('No template orders found');
+    }
+
+    /**
+     * Test checkDbHasTemplateOrders displays error when no templates
+     */
+    public function testCheckDbHasTemplateOrdersDisplaysErrorWhenNoTemplates(): void {
+        $this->databaseRepoMock->expects($this->once())
+            ->method('checkEmptyResult')
+            ->willReturn(false); // No templates
+        
+        $this->displayServiceMock->expects($this->once())
+            ->method('displayError')
+            ->with('No template orders found', true);
+        $this->displayServiceMock->expects($this->once())
+            ->method('endPage');
+        
+        try {
+            $this->service->checkDbHasTemplateOrders('No template orders found');
+        } catch (\Exception $e) {
+            // Expected due to exit()
+        }
     }
 
     public function testCheckDeferredIncomeAct(): void {
@@ -375,10 +728,173 @@ class DataChecksServiceTest extends TestCase {
         $this->assertTrue(is_callable([$this->service, 'checkReference']));
     }
 
-    public function testCheckSysPref(): void {
-        // Test check_sys_pref method
-        $this->assertTrue(method_exists($this->service, 'checkSysPref'));
-        $this->assertTrue(is_callable([$this->service, 'checkSysPref']));
+    /**
+     * Test dbHasTags with customer tags
+     */
+    public function testDbHasTagsWithCustomerType(): void {
+        $this->databaseRepoMock->expects($this->once())
+            ->method('escape')
+            ->with(1)
+            ->willReturn('1');
+        
+        $this->databaseRepoMock->expects($this->once())
+            ->method('checkEmptyResult')
+            ->with("SELECT COUNT(*) FROM 0_tags WHERE type=1")
+            ->willReturn(true);
+        
+        $result = $this->service->dbHasTags(1);
+        $this->assertTrue($result);
+    }
+
+    /**
+     * Test dbHasTags with supplier tags
+     */
+    public function testDbHasTagsWithSupplierType(): void {
+        $this->databaseRepoMock->expects($this->once())
+            ->method('escape')
+            ->with(2)
+            ->willReturn('2');
+        
+        $this->databaseRepoMock->expects($this->once())
+            ->method('checkEmptyResult')
+            ->with("SELECT COUNT(*) FROM 0_tags WHERE type=2")
+            ->willReturn(true);
+        
+        $result = $this->service->dbHasTags(2);
+        $this->assertTrue($result);
+    }
+
+    /**
+     * Test dbHasPurchasableFixedAssets generates correct SQL
+     */
+    public function testDbHasPurchasableFixedAssetsGeneratesCorrectSql(): void {
+        $expectedSql = "SELECT COUNT(*) FROM 0_stock_master 
+            WHERE mb_flag='F'
+                AND !inactive
+                AND stock_id NOT IN
+                    ( SELECT stock_id FROM 0_stock_moves WHERE type=25 AND qty!=0 )";
+        
+        $this->databaseRepoMock->expects($this->once())
+            ->method('checkEmptyResult')
+            ->with($expectedSql)
+            ->willReturn(true);
+        
+        $result = $this->service->dbHasPurchasableFixedAssets();
+        $this->assertTrue($result);
+    }
+
+    /**
+     * Test dbHasDepreciableFixedAssets with complex date logic
+     */
+    public function testDbHasDepreciableFixedAssetsWithDateLogic(): void {
+        // Mock DateService static methods
+        if (!class_exists('DateService')) {
+            eval('class DateService { 
+                public static function getCurrentFiscalYearStatic() { 
+                    return ["begin" => "2023-01-01", "end" => "2023-12-31"]; 
+                }
+                public static function date2sqlStatic($date) { return $date; }
+                public static function addMonthsStatic($date, $months) { 
+                    if ($months < 0) return "2022-12-01";
+                    return "2024-01-01"; 
+                }
+                public static function sql2dateStatic($sql) { return $sql; }
+            }');
+        }
+        
+        $expectedSql = "SELECT COUNT(*) FROM 0_stock_master 
+            WHERE mb_flag='F'
+                AND material_cost > 0
+                AND stock_id IN ( SELECT stock_id FROM 0_stock_moves WHERE type=25 AND qty!=0 )
+                AND stock_id NOT IN	( SELECT stock_id FROM 0_stock_moves WHERE (type=13 OR type=17) AND qty!=0 )
+                AND depreciation_date <= '2022-12-01'
+                AND depreciation_date >='2022-12-01'";
+        
+        $this->databaseRepoMock->expects($this->once())
+            ->method('checkEmptyResult')
+            ->with($expectedSql)
+            ->willReturn(true);
+        
+        $result = $this->service->dbHasDepreciableFixedAssets();
+        $this->assertTrue($result);
+    }
+
+    /**
+     * Test all dbHas* methods return boolean
+     */
+    public function testAllDbHasMethodsReturnBoolean(): void {
+        // Ensure DateService is available for dbHasDepreciableFixedAssets
+        if (!class_exists('DateService')) {
+            eval('class DateService { 
+                public static function getCurrentFiscalYearStatic() { 
+                    return ["begin" => "2023-01-01", "end" => "2023-12-31"]; 
+                }
+                public static function date2sqlStatic($date) { return $date; }
+                public static function addMonthsStatic($date, $months) { 
+                    if ($months < 0) return "2022-12-01";
+                    return "2024-01-01"; 
+                }
+                public static function sql2dateStatic($sql) { return $sql; }
+            }');
+        }
+        
+        $methods = [
+            'dbHasCustomers',
+            'dbHasCurrencies', 
+            'dbHasTaxTypes',
+            'dbHasTaxGroups',
+            'dbHasSalesTypes',
+            'dbHasCustomerBranches',
+            'dbHasSalesPeople',
+            'dbHasSalesAreas',
+            'dbHasShippers',
+            'dbHasItemTaxTypes',
+            'dbHasOpenWorkorders',
+            'dbHasWorkorders',
+            'dbHasOpenDimensions',
+            'dbHasDimensions',
+            'dbHasSuppliers',
+            'dbHasStockItems',
+            'dbHasBomStockItems',
+            'dbHasManufacturableItems',
+            'dbHasPurchasableItems',
+            'dbHasCostableItems',
+            'dbHasFixedAssetClasses',
+            'dbHasDepreciableFixedAssets',
+            'dbHasFixedAssets',
+            'dbHasPurchasableFixedAssets',
+            'dbHasDisposableFixedAssets',
+            'dbHasStockCategories',
+            'dbHasLocations',
+            'dbHasBankAccounts',
+            'dbHasCashAccounts',
+            'dbHasGlAccounts',
+            'dbHasGlAccountGroups',
+            'dbHasQuickEntries'
+        ];
+        
+        foreach ($methods as $method) {
+            $result = $this->service->$method();
+            $this->assertIsBool($result, "$method should return boolean");
+        }
+    }
+
+    /**
+     * Test dbCustomerHasBranches with empty customer ID
+     */
+    public function testDbCustomerHasBranchesWithEmptyId(): void {
+        $this->databaseRepoMock->expects($this->once())
+            ->method('escape')
+            ->with('')
+            ->willReturn('');
+        
+        $this->databaseRepoMock->expects($this->once())
+            ->method('checkEmptyResult')
+            ->with("SELECT COUNT(*) FROM 0_cust_branch WHERE debtor_no=")
+            ->willReturn(false);
+        
+        $result = $this->service->dbCustomerHasBranches('');
+        $this->assertFalse($result);
     }
 
     // Add more tests as needed
