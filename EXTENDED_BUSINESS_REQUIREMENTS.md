@@ -148,6 +148,55 @@ class IntegrationManager {
 }
 ```
 
+### 3.3 Modular Architecture and Extensibility
+
+#### 3.3.1 SuiteCRM-Style Field Extensibility
+- **Name-Value Table Pattern**: Implement dynamic field addition using name-value tables
+- **Entity Extension**: Allow custom fields on all major entities (customers, suppliers, items, etc.)
+- **No Schema Changes**: Add fields without modifying native database tables
+- **Field Types**: Support text, number, date, boolean, dropdown, and multi-select fields
+- **Validation Rules**: Configurable field validation and business rules
+- **UI Integration**: Seamless integration with existing forms and grids
+
+#### 3.3.2 Full Application Modularization
+- **Module Registry**: Convert all applications outside GL/JE to pluggable modules
+- **Core Modules**: Define core modules (GL, AR/AP, Inventory) vs. optional modules
+- **Module Dependencies**: Manage inter-module dependencies and compatibility
+- **Module Lifecycle**: Support install, enable/disable, uninstall operations
+- **Version Management**: Independent versioning and upgrade paths for modules
+
+#### 3.3.3 Reports as Modules
+- **Report Modules**: Convert all reports to pluggable modules
+- **Custom Report Builder**: Visual report designer for end-users
+- **Report Templates**: Pre-built report templates with customization
+- **Export Formats**: Support PDF, Excel, CSV, and custom formats
+- **Scheduled Reports**: Automated report generation and distribution
+- **Report Security**: Role-based access control for reports
+
+#### 3.3.4 WebERP Feature Integration
+- **Feature Comparison**: Comprehensive analysis of WebERP capabilities
+- **Selective Integration**: Identify and integrate valuable WebERP features
+- **Manufacturing Module**: Advanced manufacturing and work order management
+- **Advanced Inventory**: Multi-warehouse, lot tracking, and serial numbers
+- **Project Management**: Project costing and time tracking integration
+- **Quality Control**: Inspection and quality management features
+
+#### 3.3.5 Asset Management Extensions
+- **Loanable Assets**: Track assets that can be loaned to employees/customers
+- **Asset Issuance**: Record asset checkout/checkin with responsible parties
+- **Asset Reservations**: Allow advance booking of assets
+- **Asset Maintenance**: Schedule and track maintenance activities
+- **Asset Depreciation**: Enhanced depreciation methods and reporting
+- **Asset Insurance**: Track insurance coverage and claims
+
+#### 3.3.6 Extended Asset Purchasing
+- **Supplier Integration**: Direct integration with supplier asset catalogs
+- **Purchase Workflows**: Multi-step approval for asset purchases
+- **Asset Specifications**: Detailed technical specifications and requirements
+- **Vendor Management**: Preferred vendors and contract management
+- **Asset Leasing**: Support for leased assets with lease terms
+- **Warranty Tracking**: Warranty information and claim management
+
 ### 4. External System Integrations
 
 #### 4.1 Supported Systems
@@ -236,7 +285,7 @@ class Contact {
 - ✅ Service layer architecture
 - ✅ Static wrapper methods for backward compatibility
 
-### Phase 2: Event System (Next)
+### Phase 2: Event System
 1. Implement EventManager and Event classes
 2. Create database tables for workflows
 3. Add event dispatching to all database operations
@@ -248,25 +297,60 @@ class Contact {
 3. Add plugin marketplace infrastructure
 4. Create plugin development tools
 
-### Phase 4: Universal Hooks
+### Phase 4: Modular Architecture Foundation
+1. Implement SuiteCRM-style name-value table system for dynamic fields
+2. Create module registry and dependency management system
+3. Convert core applications (Customers, Suppliers, Inventory, Manufacturing) to modules
+4. Implement module lifecycle management (install/enable/disable/uninstall)
+5. Create base module interfaces and abstract classes
+
+### Phase 5: Universal Hooks
 1. Extend hooks.inc to support all modules
 2. Add hook registration system
 3. Implement hook execution pipeline
 4. Update all modules to use hooks
 
-### Phase 5: Integrations
+### Phase 6: Report System Modularization
+1. Convert all existing reports to pluggable modules
+2. Implement custom report builder with visual designer
+3. Add report template system with customization capabilities
+4. Create scheduled report execution and distribution system
+5. Implement report security and access control
+
+### Phase 7: Asset Management Extensions
+1. Extend fixed assets module for loanable/issue-able assets
+2. Implement asset checkout/checkin tracking system
+3. Add asset reservation and booking functionality
+4. Create asset maintenance scheduling and tracking
+5. Enhance depreciation methods and reporting
+
+### Phase 8: Extended Purchasing Integration
+1. Integrate asset purchasing with supplier catalogs
+2. Implement multi-step approval workflows for asset purchases
+3. Add detailed asset specifications and requirements tracking
+4. Create vendor management and contract system
+5. Implement asset leasing and warranty tracking
+
+### Phase 9: WebERP Feature Integration
+1. Conduct comprehensive WebERP feature analysis and comparison
+2. Implement advanced manufacturing and work order management
+3. Add multi-warehouse inventory with lot/serial tracking
+4. Integrate project management and time tracking
+5. Implement quality control and inspection features
+
+### Phase 10: External Integrations
 1. Create IntegrationManager
 2. Implement SuiteCRM connector
 3. Add WooCommerce synchronization
 4. Build generic API integration framework
 
-### Phase 6: Employee System
+### Phase 11: Employee System
 1. Extend contact system for employees
 2. Create employee management UI
 3. Add employee-specific features
 4. Integrate with payroll systems
 
-### Phase 7: Unified Contacts
+### Phase 12: Unified Contacts
 1. Refactor contact system architecture
 2. Implement role-based contact management
 3. Create unified contact UI
@@ -275,12 +359,19 @@ class Contact {
 ## Success Criteria
 
 ### Functional Requirements
+- [ ] SuiteCRM-style dynamic fields work on all major entities
+- [ ] All applications outside GL/JE converted to pluggable modules
+- [ ] All reports converted to pluggable modules with custom builder
+- [ ] WebERP advanced manufacturing and inventory features integrated
+- [ ] Asset management supports loanable/issue-able assets with tracking
+- [ ] Extended asset purchasing with supplier integration and workflows
 - [ ] Event system handles 100+ concurrent events
 - [ ] Plugin system supports 50+ active plugins
 - [ ] All modules have pre/post database hooks
 - [ ] Real-time sync with external systems < 5 seconds
 - [ ] Employee management supports 1000+ employees
 - [ ] Unified contacts work across all entity types
+
 
 ### Non-Functional Requirements
 - [ ] System performance impact < 10%
@@ -291,6 +382,10 @@ class Contact {
 - [ ] Multi-tenant support
 
 ### Business Value
+- [ ] SuiteCRM-style extensibility enables rapid customization
+- [ ] Modular architecture supports unlimited business growth
+- [ ] Advanced asset management improves resource utilization
+- [ ] WebERP integration provides enterprise-grade features
 - [ ] 50% reduction in manual data entry
 - [ ] Real-time business insights
 - [ ] Seamless system integrations
@@ -301,6 +396,11 @@ class Contact {
 ## Risk Assessment
 
 ### Technical Risks
+- **Modular Complexity**: Full modularization increases system complexity and maintenance overhead
+- **Dynamic Fields Performance**: Name-value table pattern could impact query performance at scale
+- **Module Dependencies**: Inter-module dependencies could create upgrade and compatibility issues
+- **Asset Tracking Complexity**: Loanable/issue-able assets add significant workflow complexity
+- **WebERP Integration**: Large-scale feature integration may introduce bugs and conflicts
 - **Performance Impact**: Event system could slow down operations
 - **Security**: Plugin system introduces security vulnerabilities
 - **Data Integrity**: External sync could cause data conflicts
