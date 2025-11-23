@@ -20,6 +20,7 @@ $path_to_root="..";
 
 include_once($path_to_root . "/includes/session.inc");
 require_once($path_to_root . "/includes/BankingService.php");
+require_once($path_to_root . "/includes/CompanyPrefsService.php");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
@@ -33,7 +34,7 @@ print_aged_supplier_analysis();
 function get_invoices($supplier_id, $to, $all=true)
 {
 	$todate = DateService::date2sqlStatic($to);
-	$PastDueDays1 = get_company_pref('past_due_days');
+	$PastDueDays1 = CompanyPrefsService::getCompanyPref('past_due_days');
 	$PastDueDays2 = 2 * $PastDueDays1;
 
 	// Revomed allocated from sql
@@ -119,7 +120,7 @@ function print_aged_supplier_analysis()
 	if ($show_all) $show = _('Yes');
 	else $show = _('No');
 
-	$PastDueDays1 = get_company_pref('past_due_days');
+	$PastDueDays1 = CompanyPrefsService::getCompanyPref('past_due_days');
 	$PastDueDays2 = 2 * $PastDueDays1;
 	$nowdue = "1-" . $PastDueDays1 . " " . _('Days');
 	$pastdue1 = $PastDueDays1 + 1 . "-" . $PastDueDays2 . " " . _('Days');
@@ -152,7 +153,7 @@ function print_aged_supplier_analysis()
 
 	$total = array();
 	$total[0] = $total[1] = $total[2] = $total[3] = $total[4] = 0.0;
-	$PastDueDays1 = get_company_pref('past_due_days');
+	$PastDueDays1 = CompanyPrefsService::getCompanyPref('past_due_days');
 	$PastDueDays2 = 2 * $PastDueDays1;
 
 	$nowdue = "1-" . $PastDueDays1 . " " . _('Days');

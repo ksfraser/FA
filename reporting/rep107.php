@@ -24,6 +24,7 @@ require_once($path_to_root . "/includes/InventoryService.php");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/includes/CompanyPrefsService.php");
+include_once($path_to_root . "/includes/CompanyPrefsService.php");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 
 //----------------------------------------------------------------------------------------------------
@@ -326,7 +327,7 @@ function print_invoices()
 			$rep->Font();
 			if ($email == 1)
 			{
-				$rep->End($email, sprintf(_("Invoice %s from %s"), $myrow['reference'], htmlspecialchars_decode(get_company_pref('coy_name'))));
+				$rep->End($email, sprintf(_("Invoice %s from %s"), $myrow['reference'], htmlspecialchars_decode(CompanyPrefsService::getCompanyPref('coy_name'))));
 			}
 	}
 	if ($email == 0)

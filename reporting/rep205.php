@@ -21,6 +21,7 @@ $path_to_root="..";
 include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
+include_once($path_to_root . "/includes/CompanyPrefsService.php");
 include_once($path_to_root . "/includes/db/crm_contacts_db.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
 
@@ -97,7 +98,7 @@ function print_supplier_details_listing()
 
     $params =   array( 	0 => $comments,
     				    1 => array('text' => _('Activity Since'), 	'from' => $from, 		'to' => ''),
-    				    2 => array('text' => _('Activity'), 		'from' => $morestr, 	'to' => $lessstr . " " . get_company_pref("curr_default")));
+    				    2 => array('text' => _('Activity'), 		'from' => $morestr, 	'to' => $lessstr . " " . CompanyPrefsService::getCompanyPref("curr_default")));
 
     $rep = new FrontReport(_('Supplier Details Listing'), "SupplierDetailsListing", user_pagesize(), 9, $orientation);
     if ($orientation == 'L')

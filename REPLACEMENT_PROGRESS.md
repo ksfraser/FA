@@ -3,9 +3,9 @@
 ## Current Status
 **Branch**: `refactor/replace-legacy-calls`  
 **Started**: November 17, 2025  
-**Files Modified**: 78  
-**Legacy Calls Replaced**: 118  
-**Commits**: 19
+**Files Modified**: 84  
+**Legacy Calls Replaced**: 127  
+**Commits**: 20
 
 ---
 
@@ -685,6 +685,119 @@
 
 **Summary**: Completed final get_company_pref replacements in all service classes within the includes directory. All 5 remaining calls have been replaced with CompanyPrefsService::getCompanyPref() static method calls, maintaining identical functionality while providing performance benefits through caching. Total get_company_pref replacements now complete for service layer.
 
+### Commit 20: get_company_pref Replacements in Reporting Module
+**Date**: November 25, 2025  
+**Files**: 6  
+**Replacements**: 9 get_company_pref calls
+
+#### 1. reporting/rep102.php
+- **Service**: CompanyPrefsService
+- **Function**: `get_company_pref()`
+- **Location**: Lines 34, 113
+- **Change**:
+  ```php
+  // BEFORE
+  $PastDueDays1 = get_company_pref('past_due_days');
+  // and
+  $PastDueDays1 = get_company_pref('past_due_days');
+  
+  // AFTER
+  $PastDueDays1 = CompanyPrefsService::getCompanyPref('past_due_days');
+  // and
+  $PastDueDays1 = CompanyPrefsService::getCompanyPref('past_due_days');
+  ```
+- **Impact**: Aged customer analysis report past due days calculation
+- **Risk**: Low (static wrapper, identical functionality)
+- **Status**: ✅ Committed
+
+#### 2. reporting/rep202.php
+- **Service**: CompanyPrefsService
+- **Function**: `get_company_pref()`
+- **Location**: Lines 36, 122, 155
+- **Change**:
+  ```php
+  // BEFORE
+  $PastDueDays1 = get_company_pref('past_due_days');
+  // and 2 more similar calls
+  
+  // AFTER
+  $PastDueDays1 = CompanyPrefsService::getCompanyPref('past_due_days');
+  // and 2 more similar calls
+  ```
+- **Impact**: Aged supplier analysis report past due days calculation
+- **Risk**: Low (static wrapper, identical functionality)
+- **Status**: ✅ Committed
+
+#### 3. reporting/rep108.php
+- **Service**: CompanyPrefsService
+- **Function**: `get_company_pref()`
+- **Location**: Lines 86, 181
+- **Change**:
+  ```php
+  // BEFORE
+  $PastDueDays1 = get_company_pref('past_due_days');
+  // and
+  htmlspecialchars_decode(get_company_pref('coy_name'))
+  
+  // AFTER
+  $PastDueDays1 = \FA\Services\CompanyPrefsService::getCompanyPref('past_due_days');
+  // and
+  htmlspecialchars_decode(\FA\Services\CompanyPrefsService::getCompanyPref('coy_name'))
+  ```
+- **Impact**: Customer statements report past due days and company name display
+- **Risk**: Low (static wrapper, identical functionality)
+- **Status**: ✅ Committed
+
+#### 4. reporting/rep103.php
+- **Service**: CompanyPrefsService
+- **Function**: `get_company_pref()`
+- **Location**: Line 161
+- **Change**:
+  ```php
+  // BEFORE
+  get_company_pref("curr_default")
+  
+  // AFTER
+  CompanyPrefsService::getCompanyPref("curr_default")
+  ```
+- **Impact**: Customer details listing report currency display
+- **Risk**: Low (static wrapper, identical functionality)
+- **Status**: ✅ Committed
+
+#### 5. reporting/rep205.php
+- **Service**: CompanyPrefsService
+- **Function**: `get_company_pref()`
+- **Location**: Line 100
+- **Change**:
+  ```php
+  // BEFORE
+  get_company_pref("curr_default")
+  
+  // AFTER
+  CompanyPrefsService::getCompanyPref("curr_default")
+  ```
+- **Impact**: Supplier details listing report currency display
+- **Risk**: Low (static wrapper, identical functionality)
+- **Status**: ✅ Committed
+
+#### 6. reporting/rep107.php
+- **Service**: CompanyPrefsService
+- **Function**: `get_company_pref()`
+- **Location**: Line 329
+- **Change**:
+  ```php
+  // BEFORE
+  htmlspecialchars_decode(get_company_pref('coy_name'))
+  
+  // AFTER
+  htmlspecialchars_decode(CompanyPrefsService::getCompanyPref('coy_name'))
+  ```
+- **Impact**: Invoice printing company name display
+- **Risk**: Low (static wrapper, identical functionality)
+- **Status**: ✅ Committed
+
+**Summary**: Extended get_company_pref migration to the reporting module. Replaced 9 calls across 6 report files with CompanyPrefsService::getCompanyPref() static method calls. All replacements maintain identical functionality while benefiting from caching performance improvements. Reporting module now uses modern service-based architecture.
+
 ---
 
 ## Services Progress
@@ -696,7 +809,7 @@
 | BankingService | 8 | 1 | 🟢 Active |
 | DateService | 29 | 46 | 🟢 Active |
 | InventoryService | 5 | 34 | 🟢 Active |
-| CompanyPrefsService | 5 | 26 | 🟢 Active |
+| CompanyPrefsService | 5 | 35 | 🟢 Active |
 | TaxCalculationService | 4 | 0 | ⚪ Not Started |
 | AccessLevelsService | 7 | 0 | ⚪ Not Started |
 | ReferencesService | 2 | 0 | ⚪ Not Started |

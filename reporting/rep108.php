@@ -83,7 +83,7 @@ function print_statements()
 	$params = array('comments' => $comments);
 
 	$cur = \FA\Services\CompanyPrefsService::getDefaultCurrency();
-	$PastDueDays1 = get_company_pref('past_due_days');
+	$PastDueDays1 = \FA\Services\CompanyPrefsService::getCompanyPref('past_due_days');
 	$PastDueDays2 = 2 * $PastDueDays1;
 
     if ($orientation == 'L')
@@ -178,7 +178,7 @@ function print_statements()
 		if ($email == 1)
 		{
             if (($CustomerRecord["Balance"]) != ($CustomerRecord["Balance"] - $CustomerRecord["Due"]))
-                $rep->End($email, _("Statement") . " " . _("as of") . " " . DateService::sql2dateStatic($date) . " " . _("from") . " " . htmlspecialchars_decode(get_company_pref('coy_name')));
+                $rep->End($email, _("Statement") . " " . _("as of") . " " . DateService::sql2dateStatic($date) . " " . _("from") . " " . htmlspecialchars_decode(\FA\Services\CompanyPrefsService::getCompanyPref('coy_name')));
             else
                 display_notification(sprintf(_("Customer %s has no overdue debits. No e-mail is sent."), $myrow["DebtorName"]));       
         }

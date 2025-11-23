@@ -21,6 +21,7 @@ $path_to_root="..";
 include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
+include_once($path_to_root . "/includes/CompanyPrefsService.php");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 //----------------------------------------------------------------------------------------------------
@@ -158,7 +159,7 @@ function print_customer_details_listing()
     				    1 => array('text' => _('Activity Since'), 	'from' => $from, 		'to' => ''),
     				    2 => array('text' => _('Sales Areas'), 		'from' => $sarea, 		'to' => ''),
     				    3 => array('text' => _('Sales Folk'), 		'from' => $salesfolk, 	'to' => ''),
-    				    4 => array('text' => _('Activity'), 		'from' => $morestr, 	'to' => $lessstr . " " . get_company_pref("curr_default")));
+    				    4 => array('text' => _('Activity'), 		'from' => $morestr, 	'to' => $lessstr . " " . CompanyPrefsService::getCompanyPref("curr_default")));
 
     $rep = new FrontReport(_('Customer Details Listing'), "CustomerDetailsListing", user_pagesize(), 9, $orientation);
     if ($orientation == 'L')
