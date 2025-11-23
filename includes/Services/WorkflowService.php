@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace FA\Services;
 
-use FA\Contracts\EventInterface;
+use Psr\EventDispatcher\StoppableEventInterface;
 use FA\Events\Event;
 
 /**
@@ -22,7 +22,7 @@ class WorkflowService
      */
     public static function registerWorkflow($eventName, callable $workflowHandler): void
     {
-        EventManager::on($eventName, function(EventInterface $event) use ($workflowHandler) {
+        EventManager::on($eventName, function(StoppableEventInterface $event) use ($workflowHandler) {
             try {
                 $workflowHandler($event);
             } catch (\Exception $e) {
@@ -46,7 +46,7 @@ class WorkflowService
         callable $onApproved,
         callable $onRejected
     ): void {
-        self::registerWorkflow($eventName, function(EventInterface $event) use ($approvers, $onApproved, $onRejected) {
+        self::registerWorkflow($eventName, function(StoppableEventInterface $event) use ($approvers, $onApproved, $onRejected) {
             // Simple approval logic - in a real implementation, this would be more sophisticated
             // For now, just call the approved callback
             $onApproved($event);
@@ -65,9 +65,9 @@ class WorkflowService
         array $recipients,
         $message
     ): void {
-        self::registerWorkflow($eventName, function(EventInterface $event) use ($recipients, $message) {
+        self::registerWorkflow($eventName, function(StoppableEventInterface $event) use ($recipients, $message) {
             // Simple notification logic - in a real implementation, this would send actual notifications
-            error_log("Notification workflow triggered: {$message} for event " . $event->getName());
+            error_log("Notification workflow triggered: {$message} for event " . get_class($event));
         });
     }
 
@@ -81,7 +81,7 @@ class WorkflowService
         $eventName,
         callable $transformer
     ): void {
-        self::registerWorkflow($eventName, function(EventInterface $event) use ($transformer) {
+        self::registerWorkflow($eventName, function(StoppableEventInterface $event) use ($transformer) {
             $transformer($event);
         });
     }
@@ -98,7 +98,7 @@ class WorkflowService
         callable $condition,
         callable $action
     ): void {
-        self::registerWorkflow($eventName, function(EventInterface $event) use ($condition, $action) {
+        self::registerWorkflow($eventName, function(StoppableEventInterface $event) use ($condition, $action) {
             if ($condition($event)) {
                 $action($event);
             }

@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace FA\Events;
 
-use FA\Contracts\EventDispatcherInterface;
-use FA\Contracts\ListenerProviderInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\EventDispatcher\ListenerProviderInterface;
 
 /**
  * PSR-14 Compatible Event Dispatcher
@@ -30,7 +30,7 @@ class EventDispatcher implements EventDispatcherInterface
         $listeners = $this->listenerProvider->getListenersForEvent($event);
 
         foreach ($listeners as $listener) {
-            if ($event instanceof \FA\Contracts\EventInterface && $event->isPropagationStopped()) {
+            if ($event instanceof \Psr\EventDispatcher\StoppableEventInterface && $event->isPropagationStopped()) {
                 break;
             }
 

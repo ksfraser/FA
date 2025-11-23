@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace FA\Events;
 
-use FA\Contracts\EventInterface;
+use Psr\EventDispatcher\StoppableEventInterface;
 
 /**
- * Base Event class implementing PSR-14 EventInterface
+ * Base Event class implementing PSR-14 StoppableEventInterface
  * All FA events should extend this class
  */
-abstract class Event implements EventInterface
+abstract class Event implements StoppableEventInterface
 {
     private bool $propagationStopped = false;
 

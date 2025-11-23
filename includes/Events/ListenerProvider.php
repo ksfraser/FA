@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace FA\Events;
 
-use FA\Contracts\ListenerProviderInterface;
+use FA\Contracts\ExtendedListenerProviderInterface;
 
 /**
  * Listener Provider for managing event listeners
  * Implements PSR-14 ListenerProviderInterface
  */
-class ListenerProvider implements ListenerProviderInterface
+class ListenerProvider implements ExtendedListenerProviderInterface
 {
     /**
      * @var array<string, array<callable>> Listeners indexed by event name

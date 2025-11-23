@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace FA\Services;
 
-use FA\Contracts\EventDispatcherInterface;
-use FA\Contracts\ListenerProviderInterface;
+use FA\Contracts\ExtendedListenerProviderInterface;
 use FA\Events\EventDispatcher;
 use FA\Events\ListenerProvider;
 
@@ -17,8 +16,8 @@ use FA\Events\ListenerProvider;
 class EventManager
 {
     private static ?EventManager $instance = null;
-    private EventDispatcherInterface $dispatcher;
-    private ListenerProviderInterface $listenerProvider;
+    private \Psr\EventDispatcher\EventDispatcherInterface $dispatcher;
+    private ExtendedListenerProviderInterface $listenerProvider;
 
     /**
      * Get the singleton instance
