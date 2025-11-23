@@ -57,13 +57,29 @@ class CompanyPrefsServiceTest extends TestCase
 
     public function testGetGenericPreference(): void
     {
-        $result = CompanyPrefsService::get('company_name');
+        // Mock the global get_company_pref function
+        if (!function_exists('get_company_pref')) {
+            eval('function get_company_pref($key) { 
+                $prefs = ["company_name" => "Test Company", "use_dimension" => "1"];
+                return $prefs[$key] ?? "";
+            }');
+        }
+
+        $result = CompanyPrefsService::getCompanyPref('company_name');
         $this->assertEquals('Test Company', $result);
     }
 
     public function testGetWithDefault(): void
     {
-        $result = CompanyPrefsService::get('nonexistent', 'default_value');
+        // Mock the global get_company_pref function
+        if (!function_exists('get_company_pref')) {
+            eval('function get_company_pref($key) { 
+                $prefs = ["company_name" => "Test Company", "use_dimension" => "1"];
+                return $prefs[$key] ?? "";
+            }');
+        }
+
+        $result = CompanyPrefsService::getCompanyPref('nonexistent', 'default_value');
         $this->assertEquals('default_value', $result);
     }
 
@@ -124,5 +140,22 @@ class CompanyPrefsServiceTest extends TestCase
 
         $result = CompanyPrefsService::getUseDimensions();
         $this->assertEquals(0, $result);
+    }
+
+    public function testGetCompanyPref(): void
+    {
+        // Mock the global get_company_pref function
+        if (!function_exists('get_company_pref')) {
+            eval('function get_company_pref($key) { 
+                $prefs = ["company_name" => "Test Company", "use_dimension" => "1"];
+                return $prefs[$key] ?? "";
+            }');
+        }
+
+        $result = CompanyPrefsService::getCompanyPref('company_name');
+        $this->assertEquals('Test Company', $result);
+
+        $result = CompanyPrefsService::getCompanyPref('nonexistent', 'default');
+        $this->assertEquals('default', $result);
     }
 }

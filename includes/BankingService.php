@@ -6,6 +6,7 @@ use FA\Contracts\CompanyPreferencesInterface;
 use FA\Contracts\ExchangeRateRepositoryInterface;
 use FA\Contracts\DisplayServiceInterface;
 use FA\Contracts\MathServiceInterface;
+use FA\Services\CompanyPrefsService;
 
 /**
  * Banking Service
@@ -263,7 +264,7 @@ class BankingService
             if ($neg)
                 $diff = -$diff;
 
-            $exc_var_act = \get_company_pref('exchange_diff_act');
+            $exc_var_act = CompanyPrefsService::getCompanyPref('exchange_diff_act');
             if (\DateService::date1GreaterDate2Static($date, $pyt_date)) {
                 $memo = $systypes_array[$pyt_type] . " " . $pyt_no;
                 \add_gl_trans($type, $trans_no, $date, $ar_ap_act, 0, 0, $memo, -$diff, null, $person_type, $person_id);

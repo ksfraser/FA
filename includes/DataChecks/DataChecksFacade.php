@@ -21,6 +21,7 @@ use FA\Contracts\DatabaseQueryInterface;
 use FA\Contracts\ValidationErrorHandlerInterface;
 use FA\DataChecks\Queries\*;
 use FA\DataChecks\Validators\*;
+use FA\Services\CompanyPrefsService;
 
 class DataChecksFacade
 {
@@ -319,7 +320,7 @@ class DataChecksFacade
      */
     public function checkDeferredIncomeAct(string $msg): void
     {
-        if (!\get_company_pref('deferred_income_act')) {
+        if (!CompanyPrefsService::getCompanyPref('deferred_income_act')) {
             $this->errorHandler->handleValidationError($msg);
         }
     }

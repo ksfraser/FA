@@ -19,6 +19,10 @@ include_once($path_to_root . "/sales/includes/sales_db.inc");
 
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/ui_strings.php");
+
+// Modern OOP Services
+require_once($path_to_root . "/includes/DateService.php");
+require_once($path_to_root . "/includes/InventoryService.php");
 $js = "";
 if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(800, 500);
@@ -111,7 +115,7 @@ array_push($th, _(UI_TEXT_DATE), _(UI_TEXT_DETAIL), _(UI_TEXT_QUANTITY_IN), _(UI
 
 table_header($th);
 
-$before_qty = get_qoh_on_date($_POST['stock_id'], $_POST['StockLocation'], DateService::addDaysStatic($_POST['AfterDate'], -1));
+$before_qty = InventoryService::getQohOnDate($_POST['stock_id'], $_POST['StockLocation'], DateService::addDaysStatic($_POST['AfterDate'], -1));
 
 $after_qty = $before_qty;
 

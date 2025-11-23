@@ -2,10 +2,11 @@
 
 ## Overview
 
-This project is undergoing a comprehensive refactoring to modernize the codebase using Object-Oriented Programming (OOP) principles and software engineering best practices. The goal is to transform the legacy procedural code into a maintainable, testable, and scalable system.
+This project is undergoing a comprehensive refactoring to modernize the codebase using Object-Oriented Programming (OOP) principles and software engineering best practices. The goal is to transform the legacy procedural code into a maintainable, testable, and scalable system, and then extend it with advanced capabilities including event-driven workflows, plugin architecture, and seamless external integrations.
 
 ## Objectives
 
+### Core Refactoring (Phase 1 - In Progress)
 - **OOP Transformation**: Convert procedural code to object-oriented classes and structures.
 - **Test Coverage**: Ensure all classes and files have comprehensive unit test cases and integration test cases using PHPUnit.
 - **Best Practices**:
@@ -25,13 +26,27 @@ This project is undergoing a comprehensive refactoring to modernize the codebase
   - **DAO/DTO/Models**: Data Access Objects, Data Transfer Objects, and Domain Models for data handling.
 - **Version Control**: Frequent `git add` and `git commit` with detailed change documentation to track progress incrementally.
 
+### Extended Capabilities (Phase 2-7 - Planned)
+- **Event Handler/Workflow System**: SuiteCRM-style configurable workflows and event handling
+- **Plugin/Extension System**: WordPress-style plugin architecture for extensibility
+- **Universal Module Integration**: Expand predb/postdb hooks to ALL modules for external system sync
+- **External System Integrations**: SuiteCRM, SquareUp, WooCommerce, QuickBooks, Xero, Zapier
+- **Employee Management**: Extend contact system to include comprehensive employee management
+- **Unified Contact System**: Single contact system that can be customer, supplier, or employee
+
 ## Current Progress
 
-- Refactored view files (e.g., `view_dispatch.php`, `view_credit.php`, `view_invoice.php`) to use OOP HTML rendering with Ksfraser\HTML library.
-- Created models like `Dispatch`, `Invoice`, etc., with data loading and business logic.
-- Implemented views like `ViewDispatch`, `ViewInvoice`, etc., for rendering.
-- Added unit tests for models and views.
-- Enhanced documentation with PHPDoc and UML diagrams.
+### Phase 1: Core Refactoring (75% Complete)
+- ✅ Refactored view files (e.g., `view_dispatch.php`, `view_credit.php`, `view_invoice.php`) to use OOP HTML rendering with Ksfraser\HTML library.
+- ✅ Created models like `Dispatch`, `Invoice`, etc., with data loading and business logic.
+- ✅ Implemented views like `ViewDispatch`, `ViewInvoice`, etc., for rendering.
+- ✅ Added unit tests for models and views.
+- ✅ Enhanced documentation with PHPDoc and UML diagrams.
+- ✅ **COMPLETED**: All `get_qoh_on_date()` calls replaced with `InventoryService::getQohOnDate()` (32 replacements)
+- 🔄 **IN PROGRESS**: Continuing systematic replacement of legacy function calls
+
+### Phase 2-7: Extended Capabilities (Planned)
+See [EXTENDED_BUSINESS_REQUIREMENTS.md](EXTENDED_BUSINESS_REQUIREMENTS.md) for detailed specifications of the advanced features planned after core refactoring completion.
 
 ## Structure
 
@@ -39,6 +54,13 @@ This project is undergoing a comprehensive refactoring to modernize the codebase
 - `tests/`: PHPUnit test cases
 - `sales/view/`: Refactored view controllers
 - Other directories remain as per original structure until refactored.
+
+## Key Documentation Files
+
+- [EXTENDED_BUSINESS_REQUIREMENTS.md](EXTENDED_BUSINESS_REQUIREMENTS.md) - Detailed specifications for advanced capabilities
+- [REPLACEMENT_PROGRESS.md](REPLACEMENT_PROGRESS.md) - Current refactoring progress and status
+- [REFACTORING_COMPLETE.md](REFACTORING_COMPLETE.md) - Completed refactoring documentation
+- [DI_COMPLETE_REPORT.md](DI_COMPLETE_REPORT.md) - Dependency injection implementation details
 
 ## How to Contribute
 

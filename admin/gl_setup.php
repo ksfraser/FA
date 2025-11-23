@@ -23,6 +23,7 @@ include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/includes/data_checks.inc");
+include_once($path_to_root . "/includes/CompanyPrefsService.php");
 
 include_once($path_to_root . "/admin/db/company_db.inc");
 
@@ -86,7 +87,7 @@ function can_process()
 		return false;
 	}
 
-	$grn_act = get_company_pref('grn_clearing_act');
+	$grn_act = CompanyPrefsService::getCompanyPref('grn_clearing_act');
 	$post_grn_act = RequestService::getPostStatic('grn_clearing_act');
 	if ($post_grn_act == null)
 		$post_grn_act = 0;

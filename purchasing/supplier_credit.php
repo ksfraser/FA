@@ -25,6 +25,7 @@ include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 
 // Modern OOP Services
 require_once($path_to_root . "/includes/DateService.php");
+require_once($path_to_root . "/includes/InventoryService.php");
 use FA\Services\DateService;
 $js = "";
 if ($SysPrefs->use_popup_windows)
@@ -235,7 +236,7 @@ function check_data()
 					$stock = get_item($item->item_code);
 					UiMessageService::displayError(_(UI_TEXT_INSUFFICIENT_QUANTITY_FOR_ITEM_RETURN) .
 						" " . $stock['stock_id'] . " - " . $stock['description'] . " - " .
-						_(UI_TEXT_QUANTITY_ON_HAND) . " = " . FormatService::numberFormat2(get_qoh_on_date($stock['stock_id'], null, 
+						_(UI_TEXT_QUANTITY_ON_HAND) . " = " . FormatService::numberFormat2(InventoryService::getQohOnDate($stock['stock_id'], null, 
 						$_SESSION['supp_trans']->tran_date), get_qty_dec($stock['stock_id'])));
 					return false;
 				}

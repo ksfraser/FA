@@ -26,6 +26,10 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 
+// Modern OOP Services
+require_once($path_to_root . "/includes/DateService.php");
+require_once($path_to_root . "/includes/InventoryService.php");
+
 //----------------------------------------------------------------------------------------------------
 
 inventory_movements();
@@ -255,8 +259,8 @@ function inventory_movements()
 			$rep->fontSize -= 2;
 			$rep->NewLine();
 		}
-		$qoh_start = get_qoh_on_date($myrow['stock_id'], $location, DateService::addDaysStatic($from_date, -1));
-		$qoh_end = get_qoh_on_date($myrow['stock_id'], $location, $to_date);
+		$qoh_start = InventoryService::getQohOnDate($myrow['stock_id'], $location, DateService::addDaysStatic($from_date, -1));
+		$qoh_end = InventoryService::getQohOnDate($myrow['stock_id'], $location, $to_date);
 		
 		$inward = trans_qty($myrow['stock_id'], $location, $from_date, $to_date);
 		$outward = trans_qty($myrow['stock_id'], $location, $from_date, $to_date, false);

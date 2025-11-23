@@ -250,7 +250,7 @@ else
 	gl_all_accounts_list_row(_("Inventory Adjustments Account:"), 'adjustment_account', $_POST['adjustment_account']);
 }
 
-if (is_manufactured($_POST['mb_flag']))
+if (InventoryService::isManufacturedStatic($_POST['mb_flag']))
 	gl_all_accounts_list_row(_("Item Assembly Costs Account:"), 'wip_account', $_POST['wip_account']);
 else
 	hidden('wip_account', $_POST['wip_account']);

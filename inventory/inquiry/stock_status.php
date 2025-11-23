@@ -89,7 +89,7 @@ while ($myrow = db_fetch($loc_details))
 	$demand_qty = get_demand_qty($_POST['stock_id'], $myrow["loc_code"]);
 	$demand_qty += get_demand_asm_qty($_POST['stock_id'], $myrow["loc_code"]);
 
-	$qoh = get_qoh_on_date($_POST['stock_id'], $myrow["loc_code"]);
+	$qoh = InventoryService::getQohOnDate($_POST['stock_id'], $myrow["loc_code"]);
 
 	if ($kitset_or_service == false)
 	{

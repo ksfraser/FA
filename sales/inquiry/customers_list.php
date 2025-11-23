@@ -17,11 +17,12 @@
 $page_security = "SA_SALESORDER";
 $path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/CompanyPrefsService.php");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/sales/includes/db/customers_db.inc");
 
-$mode = get_company_pref('no_customer_list');
+$mode = CompanyPrefsService::getCompanyPref('no_customer_list');
 if ($mode != 0)
 	$js = get_js_set_combo_item();
 else

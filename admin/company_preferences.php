@@ -18,6 +18,7 @@ page(_($help_context = UI_TEXT_COMPANY_SETUP_TITLE));
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/ui_strings.php");
+include_once($path_to_root . "/includes/CompanyPrefsService.php");
 
 include_once($path_to_root . "/admin/db/company_db.inc");
 include_once($path_to_root . "/reporting/includes/tcpdf.php");
@@ -187,7 +188,7 @@ $_POST['base_sales']  = $myrow["base_sales"];
 if (!isset($myrow["shortname_name_in_list"]))
 {
 	set_company_pref("shortname_name_in_list", "setup.company", "tinyint", 1, '0');
-	$myrow["shortname_name_in_list"] = get_company_pref("shortname_name_in_list");
+	$myrow["shortname_name_in_list"] = CompanyPrefsService::getCompanyPref("shortname_name_in_list");
 }
 $_POST['shortname_name_in_list']  = $myrow["shortname_name_in_list"];
 $_POST['no_item_list']  = $myrow["no_item_list"];
@@ -199,49 +200,49 @@ $_POST['time_zone']  = $myrow["time_zone"];
 if (!isset($myrow["max_days_in_docs"]))
 {
 	set_company_pref("max_days_in_docs", "setup.company", "smallint", 5, '180');
-	$myrow["max_days_in_docs"] = get_company_pref("max_days_in_docs");
+	$myrow["max_days_in_docs"] = CompanyPrefsService::getCompanyPref("max_days_in_docs");
 }
 $_POST['max_days_in_docs']  = $myrow["max_days_in_docs"];
 if (!isset($myrow["company_logo_report"]))
 {
 	set_company_pref("company_logo_report", "setup.company", "tinyint", 1, '0');
-	$myrow["company_logo_report"] = get_company_pref("company_logo_report");
+	$myrow["company_logo_report"] = CompanyPrefsService::getCompanyPref("company_logo_report");
 }
 $_POST['company_logo_report']  = $myrow["company_logo_report"];
 if (!isset($myrow["ref_no_auto_increase"]))
 {
 	set_company_pref("ref_no_auto_increase", "setup.company", "tinyint", 1, '0');
-	$myrow["ref_no_auto_increase"] = get_company_pref("ref_no_auto_increase");
+	$myrow["ref_no_auto_increase"] = CompanyPrefsService::getCompanyPref("ref_no_auto_increase");
 }
 $_POST['ref_no_auto_increase']  = $myrow["ref_no_auto_increase"];
 if (!isset($myrow["barcodes_on_stock"]))
 {
 	set_company_pref("barcodes_on_stock", "setup.company", "tinyint", 1, '0');
-	$myrow["barcodes_on_stock"] = get_company_pref("barcodes_on_stock");
+	$myrow["barcodes_on_stock"] = CompanyPrefsService::getCompanyPref("barcodes_on_stock");
 }
 $_POST['barcodes_on_stock']  = $myrow["barcodes_on_stock"];
 if (!isset($myrow["print_dialog_direct"]))
 {
 	set_company_pref("print_dialog_direct", "setup.company", "tinyint", 1, '0');
-	$myrow["print_dialog_direct"] = get_company_pref("print_dialog_direct");
+	$myrow["print_dialog_direct"] = CompanyPrefsService::getCompanyPref("print_dialog_direct");
 }
 $_POST['print_dialog_direct']  = $myrow["print_dialog_direct"];
 if (!isset($myrow["dim_on_recurrent_invoice"]))
 {
 	set_company_pref("dim_on_recurrent_invoice", "setup.company", "tinyint", 1, '0');
-	$myrow["dim_on_recurrent_invoice"] = get_company_pref("dim_on_recurrent_invoice");
+	$myrow["dim_on_recurrent_invoice"] = CompanyPrefsService::getCompanyPref("dim_on_recurrent_invoice");
 }
 $_POST['dim_on_recurrent_invoice']  = $myrow["dim_on_recurrent_invoice"];
 if (!isset($myrow["long_description_invoice"]))
 {
 	set_company_pref("long_description_invoice", "setup.company", "tinyint", 1, '0');
-	$myrow["long_description_invoice"] = get_company_pref("long_description_invoice");
+	$myrow["long_description_invoice"] = CompanyPrefsService::getCompanyPref("long_description_invoice");
 }
 $_POST['long_description_invoice']  = $myrow["long_description_invoice"];
 if (!isset($myrow["company_logo_on_views"]))
 {
 	set_company_pref("company_logo_on_views", "setup.company", "tinyint", 1, '0');
-	$myrow["company_logo_on_views"] = get_company_pref("company_logo_on_views");
+	$myrow["company_logo_on_views"] = CompanyPrefsService::getCompanyPref("company_logo_on_views");
 }
 $_POST['company_logo_on_views']  = $myrow["company_logo_on_views"];
 $_POST['version_id']  = $myrow["version_id"];

@@ -32,6 +32,13 @@ use FA\Interfaces\ItemRepositoryInterface;
  * | + isService()      |
  * | + isFixedAsset()   |
  * | + hasStockHolding()|
+ * | + isInventoryItem()|
+ * | + getQohOnDate()   |
+ * | + isManufacturedStatic() |
+ * | + isPurchasedStatic()    |
+ * | + isServiceStatic()      |
+ * | + isFixedAssetStatic()   |
+ * | + hasStockHoldingStatic()|
  * +---------------------+
  *
  * @package FA
@@ -116,7 +123,7 @@ class InventoryService
     }
 
     /**
-     * Get quantity on hand on date
+     * Get quantity on hand on date (static wrapper)
      *
      * @param string $stock_id Stock ID
      * @param string|null $location Location code
@@ -126,5 +133,60 @@ class InventoryService
     public static function getQohOnDate(string $stock_id, ?string $location = null, ?string $date = null): float
     {
         return \get_qoh_on_date($stock_id, $location, $date);
+    }
+
+    /**
+     * Check if item is manufactured (static wrapper)
+     *
+     * @param string $mb_flag Manufacturing flag
+     * @return bool True if manufactured
+     */
+    public static function isManufacturedStatic(string $mb_flag): bool
+    {
+        return ($mb_flag == 'M');
+    }
+
+    /**
+     * Check if item is purchased (static wrapper)
+     *
+     * @param string $mb_flag Manufacturing flag
+     * @return bool True if purchased
+     */
+    public static function isPurchasedStatic(string $mb_flag): bool
+    {
+        return ($mb_flag == 'B');
+    }
+
+    /**
+     * Check if item is service (static wrapper)
+     *
+     * @param string $mb_flag Manufacturing flag
+     * @return bool True if service
+     */
+    public static function isServiceStatic(string $mb_flag): bool
+    {
+        return ($mb_flag == 'D');
+    }
+
+    /**
+     * Check if item is fixed asset (static wrapper)
+     *
+     * @param string $mb_flag Manufacturing flag
+     * @return bool True if fixed asset
+     */
+    public static function isFixedAssetStatic(string $mb_flag): bool
+    {
+        return ($mb_flag == 'F');
+    }
+
+    /**
+     * Check if item has stock holding (static wrapper)
+     *
+     * @param string $mb_flag Manufacturing flag
+     * @return bool True if has stock holding
+     */
+    public static function hasStockHoldingStatic(string $mb_flag): bool
+    {
+        return self::isPurchasedStatic($mb_flag) || self::isManufacturedStatic($mb_flag);
     }
 }

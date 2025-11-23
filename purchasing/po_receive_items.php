@@ -17,6 +17,7 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
 include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 include_once($path_to_root . "/includes/ui_strings.php");
+include_once($path_to_root . "/includes/CompanyPrefsService.php");
 
 // Modern OOP Services
 require_once($path_to_root . "/includes/DateService.php");
@@ -40,7 +41,7 @@ if (isset($_GET['AddedID']))
 
 	display_note(get_trans_view_str($trans_type, $grn, _(UI_TEXT_VIEW_THIS_DELIVERY)));
 	
-    $clearing_act = get_company_pref('grn_clearing_act');
+    $clearing_act = CompanyPrefsService::getCompanyPref('grn_clearing_act');
 	if ($clearing_act)	
 		display_note(get_gl_view_str($trans_type, $grn, _(UI_TEXT_VIEW_GL_JOURNAL_ENTRIES_FOR_THIS_DELIVERY)), 1);
 

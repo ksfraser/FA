@@ -9,6 +9,9 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+// Modern OOP Services
+require_once(dirname(__FILE__) . "/../../../includes/InventoryService.php");
+
 //------------------- update average material cost ---------------------------------------------- 
 function update_average_material_cost($supplier, $stock_id, $price, $qty, $date, $adj_only=false)
 {
@@ -47,7 +50,7 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 	
 	$cost_adjust = false;
 
-	$qoh = get_qoh_on_date($stock_id);
+	$qoh = InventoryService::getQohOnDate($stock_id);
 
 	if ($adj_only)
 	{

@@ -23,6 +23,7 @@ include_once($path_to_root . "/admin/db/maintenance_db.inc");
 
 // Modern OOP Services
 require_once($path_to_root . "/includes/DateService.php");
+require_once($path_to_root . "/includes/CompanyPrefsService.php");
 use FA\Services\DateService;
 $js = "";
 if (user_use_date_picker())
@@ -132,7 +133,7 @@ function handle_delete()
 
 function display_fiscalyears()
 {
-	$company_year = get_company_pref('f_year');
+	$company_year = CompanyPrefsService::getCompanyPref('f_year');
 
 	$result = get_all_fiscalyears();
 	start_form();

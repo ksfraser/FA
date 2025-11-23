@@ -24,6 +24,7 @@ include_once($path_to_root . "/admin/db/voiding_db.inc");
 
 // Modern OOP Services
 require_once($path_to_root . "/includes/DateService.php");
+require_once($path_to_root . "/includes/InventoryService.php");
 use FA\Services\DateService;
 $js = "";
 if (user_use_date_picker())
@@ -245,7 +246,7 @@ function voiding_controls()
                                 $stock = get_item($myrow["item_code"]);
 										UiMessageService::displayError(_(UI_TEXT_INSUFFICIENT_QUANTITY_WARNING) .
 									 " " . $stock['stock_id'] . " - " . $stock['description'] . " - " .
-									 _(UI_TEXT_QUANTITY_ON_HAND) . " = " . FormatService::numberFormat2(get_qoh_on_date($stock['stock_id'], null, 
+									 _(UI_TEXT_QUANTITY_ON_HAND) . " = " . FormatService::numberFormat2(InventoryService::getQohOnDate($stock['stock_id'], null, 
 									 $_POST['date_']), get_qty_dec($stock['stock_id'])));
                                 return false;
                             }

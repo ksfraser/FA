@@ -3,6 +3,7 @@
 namespace FA;
 
 use FA\Interfaces\FiscalYearRepositoryInterface;
+use FA\Services\CompanyPrefsService;
 
 /**
  * Production Fiscal Year Repository
@@ -20,7 +21,7 @@ class ProductionFiscalYearRepository implements FiscalYearRepositoryInterface
      */
     public function getCurrentFiscalYear(): array
     {
-        $result = \db_query("SELECT * FROM " . TB_PREF . "fiscal_year WHERE id=" . \get_company_pref('f_year'));
+        $result = \db_query("SELECT * FROM " . TB_PREF . "fiscal_year WHERE id=" . CompanyPrefsService::getCompanyPref('f_year'));
         return \db_fetch($result) ?: [];
     }
 

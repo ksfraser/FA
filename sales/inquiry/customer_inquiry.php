@@ -13,6 +13,7 @@ $page_security = 'SA_SALESTRANSVIEW';
 $path_to_root = "../..";
 include_once($path_to_root . "/includes/db_pager.inc");
 include_once($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/CompanyPrefsService.php");
 
 include_once($path_to_root . "/sales/includes/sales_ui.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
@@ -125,7 +126,7 @@ function check_overdue($row)
 
 function display_customer_summary($customer_record)
 {
-	$past1 = get_company_pref('past_due_days');
+	$past1 = CompanyPrefsService::getCompanyPref('past_due_days');
 	$past2 = 2 * $past1;
     if ($customer_record && $customer_record["dissallow_invoices"] != 0)
     {

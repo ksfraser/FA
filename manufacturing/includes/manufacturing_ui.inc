@@ -123,7 +123,7 @@ function display_wo_requirements($woid, $quantity, $show_qoh=false, $date=null)
 				$show_qoh = false;
 
 			if ($show_qoh)
-				$qoh = get_qoh_on_date($myrow["stock_id"], $myrow["loc_code"], $date);
+				$qoh = InventoryService::getQohOnDate($myrow["stock_id"], $myrow["loc_code"], $date);
 
 			if ($show_qoh && ($myrow["units_req"] * $quantity > $qoh) &&
 				!$SysPrefs->allow_negative_stock())

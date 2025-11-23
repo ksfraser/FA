@@ -611,7 +611,7 @@ if (!isset($_POST['ChargeFreightCost']) || $_POST['ChargeFreightCost'] == "") {
 	}
 }
 
-$accumulate_shipping = get_company_pref('accumulate_shipping');
+$accumulate_shipping = CompanyPrefsService::getCompanyPref('accumulate_shipping');
 if ($is_batch_invoice && $accumulate_shipping)
 	set_delivery_shipping_sum(array_keys($_SESSION['Items']->src_docs));
 

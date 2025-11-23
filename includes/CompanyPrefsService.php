@@ -84,15 +84,15 @@ class CompanyPrefsService
     }
 
     /**
-     * Get any company preference by key (cached)
+     * Get any company preference by key (static wrapper for get_company_pref)
      *
      * @param string $key Preference key
      * @param mixed $default Default value if not found
      * @return mixed Preference value
      */
-    public static function get(string $key, mixed $default = null): mixed
+    public static function getCompanyPref(string $key, mixed $default = null): mixed
     {
-        return self::getCache()->get($key, $default);
+        return \get_company_pref($key) ?: $default;
     }
 
     /**

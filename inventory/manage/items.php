@@ -511,7 +511,7 @@ function item_settings(&$stock_id, $new_item)
 	}
 
 
-	if (is_manufactured(RequestService::getPostStatic('mb_flag')))
+	if (InventoryService::isManufacturedStatic(RequestService::getPostStatic('mb_flag')))
 		gl_all_accounts_list_row(_("WIP Account:"), 'wip_account', $_POST['wip_account']);
 	else
 		hidden('wip_account', $_POST['wip_account']);

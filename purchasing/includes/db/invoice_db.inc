@@ -10,6 +10,7 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 require_once(dirname(__FILE__) . "/../../../includes/DateService.php");
+require_once(dirname(__FILE__) . "/../../../includes/InventoryService.php");
 include_once($path_to_root . "/purchasing/includes/db/invoice_items_db.inc");
 include_once($path_to_root . "/admin/db/attachments_db.inc");
 
@@ -333,7 +334,7 @@ function add_supp_invoice(&$supp_trans)
 
 					//If QOH is 0 or negative then update_average_material_cost will be skipped
 					//Thus difference in PO and Supp Invoice should be handled separately
-					$qoh = get_qoh_on_date($entered_grn->item_code);
+					$qoh = InventoryService::getQohOnDate($entered_grn->item_code);
 					if ($qoh <= 0)
 					{
 						global $Refs;
@@ -603,7 +604,7 @@ function void_supp_invoice($type, $type_no)
 					//If QOH is 0 or negative then update_average_material_cost will be skipped
 					//Thus difference in PO and Supp Invoice should be handled separately
 					
-					$qoh = get_qoh_on_date($details_row["stock_id"]);
+					$qoh = InventoryService::getQohOnDate($details_row["stock_id"]);
 					if ($diff*$details_row["quantity"] !=0 && $qoh <= 0)
 					{
 						global $Refs;

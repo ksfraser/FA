@@ -22,6 +22,7 @@ include_once($path_to_root . "/sales/includes/sales_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
+include_once($path_to_root . "/includes/CompanyPrefsService.php");
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 
 $js = "";
@@ -169,7 +170,7 @@ while ($myrow = db_fetch($prices_list))
 end_table();
 if (db_num_rows($prices_list) == 0)
 {
-	if (get_company_pref('add_pct') != -1)
+	if (CompanyPrefsService::getCompanyPref('add_pct') != -1)
 		$calculated = true;
 	display_note(_(UI_TEXT_THERE_ARE_NO_PRICES_SET_UP_FOR_THIS_PART), 1);
 }

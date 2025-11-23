@@ -13,6 +13,7 @@ namespace FA;
 
 use FA\Interfaces\DatabaseRepositoryInterface;
 use FA\Interfaces\DisplayServiceInterface;
+use FA\Services\CompanyPrefsService;
 
 /**
  * Data Checks Service
@@ -918,7 +919,7 @@ class DataChecksService {
      * @param string $msg Error message
      */
     public function checkDeferredIncomeAct(string $msg): void {
-        if (!\get_company_pref('deferred_income_act')) {
+        if (!CompanyPrefsService::getCompanyPref('deferred_income_act')) {
             $this->displayService->displayError($msg, true);
             $this->displayService->displayFooterExit();
         }
@@ -975,7 +976,7 @@ class DataChecksService {
      * @param string $empty Empty value
      */
     public function checkSysPref(string $name, string $msg, string $empty = ''): void {
-        if (\get_company_pref($name) === $empty) {
+        if (CompanyPrefsService::getCompanyPref($name) === $empty) {
             $this->displayService->displayError($this->displayService->menuLink("/admin/gl_setup.php", $msg), true);
             $this->displayService->displayFooterExit();
         }

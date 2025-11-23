@@ -11,6 +11,8 @@
 ***********************************************************************/
 namespace FA;
 
+use FA\Services\CompanyPrefsService;
+
 /**
  * Tax Calculation Service
  *
@@ -204,7 +206,7 @@ class TaxCalculationService {
      */
     public function getTaxForItems(array $items, array $prices, float $shippingCost, int $taxGroup, ?int $taxIncluded = null, ?array $taxItemsArray = null, ?int $taxAlgorithm = null): array {
         if (!$taxAlgorithm) {
-            $taxAlgorithm = get_company_pref('tax_algorithm');
+            $taxAlgorithm = CompanyPrefsService::getCompanyPref('tax_algorithm');
         }
         // first create and set an array with all the tax types of the tax group
         if ($taxItemsArray != null) {

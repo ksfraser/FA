@@ -3,6 +3,7 @@
 namespace FA\DataChecks\Validators;
 
 use FA\Contracts\ValidationErrorHandlerInterface;
+use FA\Services\CompanyPrefsService;
 
 /**
  * Validator for system preference existence
@@ -26,7 +27,7 @@ class SystemPreferenceValidator
      */
     public function validate(string $name, string $msg, string $empty = ''): void
     {
-        if (\get_company_pref($name) === $empty) {
+        if (CompanyPrefsService::getCompanyPref($name) === $empty) {
             $errorMsg = \menu_link("/admin/gl_setup.php", $msg);
             $this->errorHandler->handleValidationError($errorMsg);
         }
