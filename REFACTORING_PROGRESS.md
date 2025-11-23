@@ -681,6 +681,34 @@ For questions about this refactoring:
 
 ---
 
+## 📋 TODO ITEMS
+
+### 🔄 DateService Static Wrapper Unrolling
+**Priority**: Medium  
+**Status**: Not Started  
+**Description**: Remove static wrapper methods in DateService that directly call global functions and replace them with proper instance method calls or direct implementations.
+
+**Current Issue**: Static methods like `todayStatic()`, `nowStatic()`, etc. just wrap global functions with backslashes. This maintains backward compatibility but doesn't leverage the OOP architecture.
+
+**Proposed Solution**:
+1. Replace static wrapper calls with instance method calls where possible
+2. For methods that need global state, implement proper DI
+3. Update all calling code to use instance methods instead of static wrappers
+4. Remove static wrappers once migration is complete
+
+**Files to Update**:
+- `includes/DateService.php` - Remove static wrappers, enhance instance methods
+- All files calling `DateService::staticMethod()` - Replace with injected service calls
+- Tests - Update to use instance methods
+
+**Benefits**:
+- ✅ Proper OOP architecture
+- ✅ Testable instance methods
+- ✅ Dependency injection support
+- ✅ Cleaner API
+
+**Risk**: Medium (requires updating many call sites)
+
+---
+
 *Last Updated: November 17, 2025*
-*Status: Phase B Complete, Phase A In Progress*
-*Next Milestone: Complete DataChecks Generation*
