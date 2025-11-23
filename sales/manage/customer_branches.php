@@ -213,14 +213,12 @@ function branch_settings($selected_id, $num_branches) {
 		$_POST['branch_code'] = "";
 		if (!isset($_POST['sales_account']) || !isset($_POST['sales_discount_account']))
 		{
-			$company_record = get_company_prefs();
-
 			// We use the Item Sales Account as default!
 		    // $_POST['sales_account'] = $company_record["default_sales_act"];
 		    $_POST['sales_account'] = $_POST['notes']  = $_POST['bank_account'] = '';
-		    $_POST['sales_discount_account'] = $company_record['default_sales_discount_act'];
-		    $_POST['receivables_account'] = $company_record['debtors_act'];
-		    $_POST['payment_discount_account'] = $company_record['default_prompt_payment_act'];
+		    $_POST['sales_discount_account'] = \FA\Services\CompanyPrefsService::getCompanyPref('default_sales_discount_act');
+		    $_POST['receivables_account'] = \FA\Services\CompanyPrefsService::getCompanyPref('debtors_act');
+		    $_POST['payment_discount_account'] = \FA\Services\CompanyPrefsService::getCompanyPref('default_prompt_payment_act');
 		}
 
 	}

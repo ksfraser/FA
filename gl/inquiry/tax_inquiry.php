@@ -41,11 +41,10 @@ if (RequestService::getPostStatic('Show'))
 if (RequestService::getPostStatic('TransFromDate') == "" && RequestService::getPostStatic('TransToDate') == "")
 {
 	$date = DateService::todayStatic();
-	$row = get_company_prefs();
-	$edate = DateService::addMonthsStatic($date, -$row['tax_last']);
+	$edate = DateService::addMonthsStatic($date, -\FA\Services\CompanyPrefsService::getCompanyPref('tax_last'));
 	$edate = DateService::endMonthStatic($edate);
 	$bdate = DateService::beginMonthStatic($edate);
-	$bdate = DateService::addMonthsStatic($bdate, -$row['tax_prd'] + 1);
+	$bdate = DateService::addMonthsStatic($bdate, -\FA\Services\CompanyPrefsService::getCompanyPref('tax_prd') + 1);
 	$_POST["TransFromDate"] = $bdate;
 	$_POST["TransToDate"] = $edate;
 }	

@@ -96,6 +96,17 @@ class CompanyPrefsService
     }
 
     /**
+     * Get any company preference by key (interface implementation)
+     *
+     * @param string $key Preference key
+     * @return mixed Preference value
+     */
+    public static function get(string $key): mixed
+    {
+        return self::getCompanyPref($key);
+    }
+
+    /**
      * Invalidate cache
      *
      * Clears the company preferences cache. Call this when company preferences are updated.

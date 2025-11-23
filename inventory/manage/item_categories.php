@@ -189,22 +189,20 @@ if ($selected_id != -1)
 		$_POST['no_sale']  = 0;
 		$_POST['no_purchase']  = 0;
 
-		$company_record = get_company_prefs();
-
     if (RequestService::getPostStatic('inventory_account') == "")
-    	$_POST['inventory_account'] = $company_record["default_inventory_act"];
+    	$_POST['inventory_account'] = \FA\Services\CompanyPrefsService::getCompanyPref('default_inventory_act');
 
     if (RequestService::getPostStatic('cogs_account') == "")
-    	$_POST['cogs_account'] = $company_record["default_cogs_act"];
+    	$_POST['cogs_account'] = \FA\Services\CompanyPrefsService::getCompanyPref('default_cogs_act');
 
 	if (RequestService::getPostStatic('sales_account') == "")
-		$_POST['sales_account'] = $company_record["default_inv_sales_act"];
+		$_POST['sales_account'] = \FA\Services\CompanyPrefsService::getCompanyPref('default_inv_sales_act');
 
 	if (RequestService::getPostStatic('adjustment_account') == "")
-		$_POST['adjustment_account'] = $company_record["default_adj_act"];
+		$_POST['adjustment_account'] = \FA\Services\CompanyPrefsService::getCompanyPref('default_adj_act');
 
 	if (RequestService::getPostStatic('wip_account') == "")
-		$_POST['wip_account'] = $company_record["default_wip_act"];
+		$_POST['wip_account'] = \FA\Services\CompanyPrefsService::getCompanyPref('default_wip_act');
 
 }
 

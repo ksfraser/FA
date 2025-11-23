@@ -191,11 +191,10 @@ function supplier_settings(&$supplier_id)
 			$_POST['payment_terms']  = '';
 			$_POST['credit_limit'] = FormatService::priceFormat(0);
 
-			$company_record = get_company_prefs();
-			$_POST['curr_code']  = $company_record["curr_default"];
-			$_POST['payable_account'] = $company_record["creditors_act"];
+			$_POST['curr_code']  = \FA\Services\CompanyPrefsService::getCompanyPref('curr_default');
+			$_POST['payable_account'] = \FA\Services\CompanyPrefsService::getCompanyPref('creditors_act');
 			$_POST['purchase_account'] = ''; // default/item's cogs account
-			$_POST['payment_discount_account'] = $company_record['pyt_discount_act'];
+			$_POST['payment_discount_account'] = \FA\Services\CompanyPrefsService::getCompanyPref('pyt_discount_act');
 		}
 	}
 

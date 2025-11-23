@@ -137,32 +137,32 @@ table_section(1);
 
 $myrow = get_company_prefs();
 
-$_POST['retained_earnings_act']  = $myrow["retained_earnings_act"];
-$_POST['profit_loss_year_act']  = $myrow["profit_loss_year_act"];
-$_POST['debtors_act']  = $myrow["debtors_act"];
-$_POST['creditors_act']  = $myrow["creditors_act"];
-$_POST['freight_act'] = $myrow["freight_act"];
-$_POST['deferred_income_act'] = $myrow["deferred_income_act"];
-$_POST['pyt_discount_act']  = $myrow["pyt_discount_act"];
+$_POST['retained_earnings_act']  = \FA\Services\CompanyPrefsService::getCompanyPref('retained_earnings_act');
+$_POST['profit_loss_year_act']  = \FA\Services\CompanyPrefsService::getCompanyPref('profit_loss_year_act');
+$_POST['debtors_act']  = \FA\Services\CompanyPrefsService::getCompanyPref('debtors_act');
+$_POST['creditors_act']  = \FA\Services\CompanyPrefsService::getCompanyPref('creditors_act');
+$_POST['freight_act'] = \FA\Services\CompanyPrefsService::getCompanyPref('freight_act');
+$_POST['deferred_income_act'] = \FA\Services\CompanyPrefsService::getCompanyPref('deferred_income_act');
+$_POST['pyt_discount_act']  = \FA\Services\CompanyPrefsService::getCompanyPref('pyt_discount_act');
 
-$_POST['exchange_diff_act'] = $myrow["exchange_diff_act"];
-$_POST['bank_charge_act'] = $myrow["bank_charge_act"];
-$_POST['tax_algorithm'] = $myrow["tax_algorithm"];
-$_POST['default_sales_act'] = $myrow["default_sales_act"];
-$_POST['default_sales_discount_act']  = $myrow["default_sales_discount_act"];
-$_POST['default_prompt_payment_act']  = $myrow["default_prompt_payment_act"];
+$_POST['exchange_diff_act'] = \FA\Services\CompanyPrefsService::getCompanyPref('exchange_diff_act');
+$_POST['bank_charge_act'] = \FA\Services\CompanyPrefsService::getCompanyPref('bank_charge_act');
+$_POST['tax_algorithm'] = \FA\Services\CompanyPrefsService::getCompanyPref('tax_algorithm');
+$_POST['default_sales_act'] = \FA\Services\CompanyPrefsService::getCompanyPref('default_sales_act');
+$_POST['default_sales_discount_act']  = \FA\Services\CompanyPrefsService::getCompanyPref('default_sales_discount_act');
+$_POST['default_prompt_payment_act']  = \FA\Services\CompanyPrefsService::getCompanyPref('default_prompt_payment_act');
 
-$_POST['default_inventory_act'] = $myrow["default_inventory_act"];
-$_POST['default_cogs_act'] = $myrow["default_cogs_act"];
-$_POST['default_adj_act'] = $myrow["default_adj_act"];
-$_POST['default_inv_sales_act'] = $myrow['default_inv_sales_act'];
-$_POST['default_wip_act'] = $myrow['default_wip_act'];
+$_POST['default_inventory_act'] = \FA\Services\CompanyPrefsService::getCompanyPref('default_inventory_act');
+$_POST['default_cogs_act'] = \FA\Services\CompanyPrefsService::getCompanyPref('default_cogs_act');
+$_POST['default_adj_act'] = \FA\Services\CompanyPrefsService::getCompanyPref('default_adj_act');
+$_POST['default_inv_sales_act'] = \FA\Services\CompanyPrefsService::getCompanyPref('default_inv_sales_act');
+$_POST['default_wip_act'] = \FA\Services\CompanyPrefsService::getCompanyPref('default_wip_act');
 
-$_POST['allow_negative_stock'] = $myrow['allow_negative_stock'];
+$_POST['allow_negative_stock'] = \FA\Services\CompanyPrefsService::getCompanyPref('allow_negative_stock');
 
-$_POST['po_over_receive'] = percent_format($myrow['po_over_receive']);
-$_POST['po_over_charge'] = percent_format($myrow['po_over_charge']);
-$_POST['past_due_days'] = $myrow['past_due_days'];
+$_POST['po_over_receive'] = percent_format(\FA\Services\CompanyPrefsService::getCompanyPref('po_over_receive'));
+$_POST['po_over_charge'] = percent_format(\FA\Services\CompanyPrefsService::getCompanyPref('po_over_charge'));
+$_POST['past_due_days'] = \FA\Services\CompanyPrefsService::getCompanyPref('past_due_days');
 
 $_POST['grn_clearing_act'] = $myrow['grn_clearing_act'];
 
