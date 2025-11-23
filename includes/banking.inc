@@ -10,6 +10,7 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 include_once($path_to_root . "/gl/includes/gl_db.inc");
+include_once($path_to_root . "/includes/CompanyPrefsService.php");
 
 //----------------------------------------------------------------------------------
 
@@ -22,7 +23,7 @@ function is_company_currency($currency)
 
 function get_company_currency()
 {
-	return get_company_pref('curr_default');
+	return CompanyPrefsService::getCompanyPref('curr_default');
 }
 
 //----------------------------------------------------------------------------------

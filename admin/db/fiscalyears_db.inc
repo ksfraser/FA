@@ -11,6 +11,7 @@
 /***********************************************************************/
 require_once($path_to_root. "/includes/ui/items_cart.inc");
 require_once($path_to_root . "/includes/DateService.php");
+require_once($path_to_root . "/includes/CompanyPrefsService.php");
 
 // fiscal year routines
 function add_fiscalyear($from_date, $to_date, $closed)
@@ -50,7 +51,7 @@ function get_fiscalyear($id)
 
 function get_current_fiscalyear()
 {
-	$year = get_company_pref('f_year');
+	$year = CompanyPrefsService::getCompanyPref('f_year');
 
 	$sql = "SELECT * FROM ".TB_PREF."fiscal_year WHERE id=".db_escape($year);
 

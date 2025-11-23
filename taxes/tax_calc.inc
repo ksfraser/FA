@@ -12,6 +12,7 @@
 include_once($path_to_root . "/taxes/db/tax_groups_db.inc");
 include_once($path_to_root . "/taxes/db/tax_types_db.inc");
 include_once($path_to_root . "/taxes/db/item_tax_types_db.inc");
+include_once($path_to_root . "/includes/CompanyPrefsService.php");
 
 //---------------------------------------------------------------------------------
 
@@ -144,7 +145,7 @@ function get_taxes_for_item($stock_id, $tax_group_items_array)
 function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_included=null, $tax_items_array=null, $tax_algorithm = null)
 {
 	if (!$tax_algorithm)
-		$tax_algorithm = get_company_pref('tax_algorithm');
+		$tax_algorithm = CompanyPrefsService::getCompanyPref('tax_algorithm');
 	// first create and set an array with all the tax types of the tax group
 	if($tax_items_array!=null)
 	  	$ret_tax_array = $tax_items_array;

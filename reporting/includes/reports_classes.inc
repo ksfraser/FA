@@ -11,6 +11,7 @@
 ***********************************************************************/
 $path_to_root = dirname(dirname(dirname(__FILE__)));
 require_once($path_to_root . "/includes/DateService.php");
+require_once($path_to_root . "/includes/CompanyPrefsService.php");
 
 // Standard report classess
 define('RC_CUSTOMER', 0);
@@ -172,7 +173,7 @@ class BoxReports
 	{
 		global $path_to_root, $SysPrefs,
 			$type_shortcuts;
-		$day_range = get_company_pref("max_days_in_docs");
+		$day_range = CompanyPrefsService::getCompanyPref("max_days_in_docs");
 		if (!$day_range)
 			$day_range = 180;
 		$st = '';

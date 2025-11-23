@@ -5,7 +5,7 @@
     Version:        1.0
     last modified:  2004-05-14
 
-    Autor:          Daniel Käfer
+    Autor:          Daniel Kï¿½fer
     Homepage:       http://www.danielkaefer.de
 
     Leave this header in this file!
@@ -28,6 +28,8 @@
  * Lots of fixes for FA
 */
 
+require_once(dirname(dirname(dirname(__FILE__))) . "/includes/CompanyPrefsService.php");
+
 class email
 {
     var $to = array();
@@ -46,7 +48,7 @@ class email
         $this->boundary = md5(uniqid(time()));
 		$this->headers['From'] = $this->encode($name)." <$mail>";
 
-		$bcc = get_company_pref('bcc_email');
+		$bcc = CompanyPrefsService::getCompanyPref('bcc_email');
 		if ($bcc)
 			$this->bcc[] = $bcc;
     }

@@ -535,7 +535,7 @@ function db_unzip($mode, $path)
         $comp = substr($comp, 0, (strlen($comp) - 80 - strlen($filename)-13));
 
         // fix the crc bugfix (see function save_to_file)
-        $comp = "xœ" . $comp . $suffix;
+        $comp = "xï¿½" . $comp . $suffix;
         $file_data = gzuncompress($comp);
     }
 
@@ -561,6 +561,8 @@ function db_export($conn, $filename, $zip='no', $comment='')
 {
 
 	global $SysPrefs, $version;
+	
+	include_once($path_to_root . "/includes/CompanyPrefsService.php");
 
     $error = false;
     // set max string size before writing to file
@@ -587,7 +589,7 @@ function db_export($conn, $filename, $zip='no', $comment='')
     $out.="# ".$SysPrefs->power_url."\n";
     $out.="# Company: ". @html_entity_decode($company, ENT_QUOTES, $_SESSION['language']->encoding)."\n";
     $out.="# User: ".$_SESSION["wa_current_user"]->name."\n\n";
-    $out.="# Compatibility: ".get_company_pref('version_id')."\n\n";
+    $out.="# Compatibility: ".CompanyPrefsService::getCompanyPref('version_id')."\n\n";
 
 	// write users comment
 	if ($comment)

@@ -10,6 +10,8 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 //---------------------------------------------------------------------------------------------
+include_once($path_to_root . "/includes/CompanyPrefsService.php");
+
 function clear_dflt_curr_account($curr_code) {
 	  $sql = "UPDATE ".TB_PREF."bank_accounts SET dflt_curr_act=0 WHERE bank_curr_code="
 	  .db_escape($curr_code);
@@ -315,7 +317,7 @@ function get_default_bank_account($curr=null)
 		. default account in home currency
 		. first defined account in home currency
 	*/
-	$home_curr = get_company_pref('curr_default');
+	$home_curr = CompanyPrefsService::getCompanyPref('curr_default');
 	if (!isset($curr))
 		$curr = $home_curr;
 

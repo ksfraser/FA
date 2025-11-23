@@ -11,6 +11,7 @@
 ***********************************************************************/
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/ui/items_cart.inc");
+include_once($path_to_root . "/includes/CompanyPrefsService.php");
 
 //--------------------------------------------------------------------------------
 
@@ -33,7 +34,7 @@ function display_order_header(&$Order)
 	currencies_list_row(_('Currency:'), 'currency', null, true);
  	if (list_updated('currency'))
 		unset($_POST['_ex_rate']);
-	exchange_rate_display(get_company_pref('curr_default'), RequestService::getPostStatic('currency'), RequestService::getPostStatic('date_'), true);
+	exchange_rate_display(CompanyPrefsService::getCompanyPref('curr_default'), RequestService::getPostStatic('currency'), RequestService::getPostStatic('date_'), true);
 
 	if (list_updated('currency'))
 		$Order->clear_items();

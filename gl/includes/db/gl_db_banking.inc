@@ -9,6 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+include_once($path_to_root . "/includes/CompanyPrefsService.php");
+
 function add_exchange_variation($trans_no, $date_, $acc_id, $account,
     $currency, $person_type_id=null, $person_id = "", $memo='')
 {
@@ -102,7 +104,7 @@ function get_cust_account_curr_balances($date)
 			LEFT JOIN ".TB_PREF."cust_branch b ON t.debtor_no = b.debtor_no
 			LEFT JOIN ".TB_PREF."voided as v ON v.type = t.type and v.id=t.trans_no
     	WHERE ISNULL(v.date_) AND t.type <> ".ST_CUSTDELIVERY." AND t.tran_date <= '$to' 
-    		AND t.branch_code=b.branch_code AND dt.curr_code<>'".get_company_pref('curr_default')."' 
+    		AND t.branch_code=b.branch_code AND dt.curr_code<>'".CompanyPrefsService::getCompanyPref('curr_default')."' 
     		GROUP BY t.debtor_no, b.receivables_account";
 
     $result = db_query($sql,"Open balances in foreign currency for cannot be retrieved");
@@ -119,7 +121,7 @@ function get_supp_account_curr_balances($date)
 			LEFT JOIN ".TB_PREF."suppliers supp ON t.supplier_id = supp.supplier_id
 			LEFT JOIN ".TB_PREF."voided as v ON v.type = t.type and v.id=t.trans_no
     	WHERE ISNULL(v.date_) AND t.tran_date <= '$to' 
-    		AND supp.curr_code<>'".get_company_pref('curr_default')."' 
+    		AND supp.curr_code<>'".CompanyPrefsService::getCompanyPref('curr_default')."' 
     		GROUP BY t.supplier_id";
 
     $result = db_query($sql,"Open balances in foreign currency for cannot be retrieved");

@@ -11,6 +11,7 @@
 ***********************************************************************/
 // Modern OOP Services
 require_once(dirname(__FILE__) . "/../../includes/InventoryService.php");
+require_once(dirname(__FILE__) . "/../../includes/CompanyPrefsService.php");
 use FA\Services\InventoryService;
 
 include_once($path_to_root . "/includes/prefs/sysprefs.inc");
@@ -50,7 +51,7 @@ class items_cart
 		$this->order_id = $trans_no;
 		$this->clear_items();
 		if (in_array($type, array(ST_LOCTRANSFER, ST_INVADJUST, ST_COSTUPDATE, ST_MANUISSUE, ST_MANURECEIVE, ST_JOURNAL)))
-			$this->currency = get_company_pref('curr_default');
+			$this->currency = CompanyPrefsService::getCompanyPref('curr_default');
 		$this->rate = 1;
 	}
 

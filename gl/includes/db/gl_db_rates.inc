@@ -10,6 +10,7 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 include_once($path_to_root . "/includes/remote_url.inc");
+include_once($path_to_root . "/includes/CompanyPrefsService.php");
 //---------------------------------------------------------------------------------------------
 function get_exchange_rate($rate_id)
 {
@@ -135,7 +136,7 @@ function get_extern_rate($curr_b, $provider, $date)
 
 	$contents = '';
 	$proto = 'http://';
-	$curr_a = get_company_pref('curr_default');
+	$curr_a = CompanyPrefsService::getCompanyPref('curr_default');
 	if ($provider == 'ECB')
     {
         $filename = "/stats/eurofxref/eurofxref-daily.xml";

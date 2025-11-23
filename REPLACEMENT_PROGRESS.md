@@ -3,9 +3,9 @@
 ## Current Status
 **Branch**: `refactor/replace-legacy-calls`  
 **Started**: November 17, 2025  
-**Files Modified**: 84  
-**Legacy Calls Replaced**: 127  
-**Commits**: 20
+**Files Modified**: 94  
+**Legacy Calls Replaced**: 138  
+**Commits**: 22
 
 ---
 
@@ -798,6 +798,200 @@
 
 **Summary**: Extended get_company_pref migration to the reporting module. Replaced 9 calls across 6 report files with CompanyPrefsService::getCompanyPref() static method calls. All replacements maintain identical functionality while benefiting from caching performance improvements. Reporting module now uses modern service-based architecture.
 
+### Commit 21: get_company_pref Replacements in UI and GL Database Modules
+**Date**: November 26, 2025  
+**Files**: 7  
+**Replacements**: 8 get_company_pref calls
+
+#### 1. reporting/includes/reports_classes.inc
+- **Service**: CompanyPrefsService
+- **Function**: `get_company_pref()`
+- **Location**: Line 175
+- **Change**:
+  ```php
+  // BEFORE
+  $day_range = get_company_pref("max_days_in_docs");
+  
+  // AFTER
+  $day_range = CompanyPrefsService::getCompanyPref("max_days_in_docs");
+  ```
+- **Impact**: Report control day range configuration
+- **Risk**: Low (static wrapper, identical functionality)
+- **Status**: ✅ Committed
+
+#### 2. reporting/includes/class.mail.inc
+- **Service**: CompanyPrefsService
+- **Function**: `get_company_pref()`
+- **Location**: Line 49
+- **Change**:
+  ```php
+  // BEFORE
+  $bcc = get_company_pref('bcc_email');
+  
+  // AFTER
+  $bcc = CompanyPrefsService::getCompanyPref('bcc_email');
+  ```
+- **Impact**: Email BCC configuration in reporting
+- **Risk**: Low (static wrapper, identical functionality)
+- **Status**: ✅ Committed
+
+#### 3. includes/ui/items_cart.inc
+- **Service**: CompanyPrefsService
+- **Function**: `get_company_pref()`
+- **Location**: Line 53
+- **Change**:
+  ```php
+  // BEFORE
+  $this->currency = get_company_pref('curr_default');
+  
+  // AFTER
+  $this->currency = CompanyPrefsService::getCompanyPref('curr_default');
+  ```
+- **Impact**: Items cart default currency initialization
+- **Risk**: Low (static wrapper, identical functionality)
+- **Status**: ✅ Committed
+
+#### 4. includes/banking.inc
+- **Service**: CompanyPrefsService
+- **Function**: `get_company_pref()`
+- **Location**: Line 25
+- **Change**:
+  ```php
+  // BEFORE
+  return get_company_pref('curr_default');
+  
+  // AFTER
+  return CompanyPrefsService::getCompanyPref('curr_default');
+  ```
+- **Impact**: Company currency retrieval function
+- **Risk**: Low (static wrapper, identical functionality)
+- **Status**: ✅ Committed
+
+#### 5. gl/includes/ui/gl_journal_ui.inc
+- **Service**: CompanyPrefsService
+- **Function**: `get_company_pref()`
+- **Location**: Line 36
+- **Change**:
+  ```php
+  // BEFORE
+  exchange_rate_display(get_company_pref('curr_default'), RequestService::getPostStatic('currency'), RequestService::getPostStatic('date_'), true);
+  
+  // AFTER
+  exchange_rate_display(CompanyPrefsService::getCompanyPref('curr_default'), RequestService::getPostStatic('currency'), RequestService::getPostStatic('date_'), true);
+  ```
+- **Impact**: GL journal exchange rate display
+- **Risk**: Low (static wrapper, identical functionality)
+- **Status**: ✅ Committed
+
+#### 6. gl/includes/db/gl_db_rates.inc
+- **Service**: CompanyPrefsService
+- **Function**: `get_company_pref()`
+- **Location**: Line 138
+- **Change**:
+  ```php
+  // BEFORE
+  $curr_a = get_company_pref('curr_default');
+  
+  // AFTER
+  $curr_a = CompanyPrefsService::getCompanyPref('curr_default');
+  ```
+- **Impact**: Exchange rate retrieval default currency
+- **Risk**: Low (static wrapper, identical functionality)
+- **Status**: ✅ Committed
+
+#### 7. gl/includes/db/gl_db_bank_accounts.inc
+- **Service**: CompanyPrefsService
+- **Function**: `get_company_pref()`
+- **Location**: Line 318
+- **Change**:
+  ```php
+  // BEFORE
+  $home_curr = get_company_pref('curr_default');
+  
+  // AFTER
+  $home_curr = CompanyPrefsService::getCompanyPref('curr_default');
+  ```
+- **Impact**: Bank account home currency retrieval
+- **Risk**: Low (static wrapper, identical functionality)
+- **Status**: ✅ Committed
+
+#### 8. gl/includes/db/gl_db_banking.inc
+- **Service**: CompanyPrefsService
+- **Function**: `get_company_pref()`
+- **Location**: Lines 105, 122
+- **Change**:
+  ```php
+  // BEFORE
+  dt.curr_code<>'".get_company_pref('curr_default')."'
+  // and
+  supp.curr_code<>'".get_company_pref('curr_default')."'
+  
+  // AFTER
+  dt.curr_code<>'".CompanyPrefsService::getCompanyPref('curr_default')."'
+  // and
+  supp.curr_code<>'".CompanyPrefsService::getCompanyPref('curr_default')."'
+  ```
+- **Impact**: Banking queries filtering by home currency
+- **Risk**: Low (static wrapper, identical functionality)
+- **Status**: ✅ Committed
+
+**Summary**: Extended get_company_pref migration to UI components and GL database modules. Replaced 8 calls across 7 files with CompanyPrefsService::getCompanyPref() static method calls. All replacements maintain identical functionality while benefiting from caching performance improvements. UI and GL database modules now use modern service-based architecture.
+
+### Commit 22: get_company_pref Replacements in Tax and Admin Database Modules
+**Date**: November 27, 2025  
+**Files**: 3  
+**Replacements**: 3 get_company_pref calls
+
+#### 1. taxes/tax_calc.inc
+- **Service**: CompanyPrefsService
+- **Function**: `get_company_pref()`
+- **Location**: Line 147
+- **Change**:
+  ```php
+  // BEFORE
+  $tax_algorithm = get_company_pref('tax_algorithm');
+  
+  // AFTER
+  $tax_algorithm = CompanyPrefsService::getCompanyPref('tax_algorithm');
+  ```
+- **Impact**: Tax calculation algorithm selection
+- **Risk**: Low (static wrapper, identical functionality)
+- **Status**: ✅ Committed
+
+#### 2. admin/db/fiscalyears_db.inc
+- **Service**: CompanyPrefsService
+- **Function**: `get_company_pref()`
+- **Location**: Line 53
+- **Change**:
+  ```php
+  // BEFORE
+  $year = get_company_pref('f_year');
+  
+  // AFTER
+  $year = CompanyPrefsService::getCompanyPref('f_year');
+  ```
+- **Impact**: Current fiscal year retrieval
+- **Risk**: Low (static wrapper, identical functionality)
+- **Status**: ✅ Committed
+
+#### 3. admin/db/maintenance_db.inc
+- **Service**: CompanyPrefsService
+- **Function**: `get_company_pref()`
+- **Location**: Line 589
+- **Change**:
+  ```php
+  // BEFORE
+  $out.="# Compatibility: ".get_company_pref('version_id')."\n\n";
+  
+  // AFTER
+  $out.="# Compatibility: ".CompanyPrefsService::getCompanyPref('version_id')."\n\n";
+  ```
+- **Impact**: Database export compatibility version header
+- **Risk**: Low (static wrapper, identical functionality)
+- **Status**: ✅ Committed
+
+**Summary**: Extended get_company_pref migration to tax calculation and admin database modules. Replaced 3 calls across 3 files with CompanyPrefsService::getCompanyPref() static method calls. All replacements maintain identical functionality while benefiting from caching performance improvements. Tax and admin database modules now use modern service-based architecture.
+
 ---
 
 ## Services Progress
@@ -809,7 +1003,7 @@
 | BankingService | 8 | 1 | 🟢 Active |
 | DateService | 29 | 46 | 🟢 Active |
 | InventoryService | 5 | 34 | 🟢 Active |
-| CompanyPrefsService | 5 | 35 | 🟢 Active |
+| CompanyPrefsService | 5 | 46 | 🟢 Active |
 | TaxCalculationService | 4 | 0 | ⚪ Not Started |
 | AccessLevelsService | 7 | 0 | ⚪ Not Started |
 | ReferencesService | 2 | 0 | ⚪ Not Started |
