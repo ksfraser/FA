@@ -383,6 +383,14 @@ function hook_invoke_last($method, &$data, $opts=null)
 */
 function hook_db_prewrite(&$cart, $type)
 {
+	// Dispatch new event system
+	if (class_exists('\\FA\\Services\\EventManager')) {
+		$event = new \FA\Events\DatabasePreWriteEvent($cart, $type);
+		\FA\Services\EventManager::dispatchEvent($event);
+		$cart = $event->getData(); // Allow event listeners to modify data
+	}
+
+	// Call legacy hook system
 	return hook_invoke_all('db_prewrite', $cart, $type);
 }
 
@@ -391,6 +399,13 @@ function hook_db_prewrite(&$cart, $type)
 */
 function hook_db_postwrite(&$cart, $type)
 {
+	// Dispatch new event system
+	if (class_exists('\\FA\\Services\\EventManager')) {
+		$event = new \FA\Events\DatabasePostWriteEvent($cart, $type);
+		\FA\Services\EventManager::dispatchEvent($event);
+	}
+
+	// Call legacy hook system
 	return hook_invoke_all('db_postwrite', $cart, $type);
 }
 /*
@@ -398,6 +413,13 @@ function hook_db_postwrite(&$cart, $type)
 */
 function hook_db_prevoid($type, $type_no)
 {
+	// Dispatch new event system
+	if (class_exists('\\FA\\Services\\EventManager')) {
+		$event = new \FA\Events\DatabasePreVoidEvent($type, $type_no);
+		\FA\Services\EventManager::dispatchEvent($event);
+	}
+
+	// Call legacy hook system
 	return hook_invoke_all('db_prevoid', $type, $type_no);
 }
 
