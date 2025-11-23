@@ -114,4 +114,17 @@ class InventoryService
     {
         return \is_inventory_item($stock_id);
     }
+
+    /**
+     * Get quantity on hand on date
+     *
+     * @param string $stock_id Stock ID
+     * @param string|null $location Location code
+     * @param string|null $date Date (defaults to today)
+     * @return float Quantity on hand
+     */
+    public static function getQohOnDate(string $stock_id, ?string $location = null, ?string $date = null): float
+    {
+        return \get_qoh_on_date($stock_id, $location, $date);
+    }
 }

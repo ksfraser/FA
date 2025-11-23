@@ -436,7 +436,7 @@ function can_process() {
 			set_focus('freight_cost');
 			return false;
 		}
-		if (!is_date($_POST['delivery_date'])) {
+		if (!DateService::isDate($_POST['delivery_date'])) {
 			if ($_SESSION['Items']->trans_type==ST_SALESQUOTE)
 				UiMessageService::displayError(_(UI_TEXT_VALID_DATE_INVALID));
 			else	

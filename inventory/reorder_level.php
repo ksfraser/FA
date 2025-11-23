@@ -23,6 +23,9 @@ include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 
+// Modern OOP Services
+require_once($path_to_root . "/includes/InventoryService.php");
+
 $js = "";
 if ($SysPrefs->use_popup_windows && $SysPrefs->use_popup_search)
 	$js .= get_js_open_window(900, 500);
@@ -90,7 +93,7 @@ while ($myrow = db_fetch($result))
 		display_notification(_(UI_TEXT_REORDER_LEVELS_HAS_BEEN_UPDATED));
 	}
 
-	$qoh = get_qoh_on_date($_POST['stock_id'], $myrow["loc_code"]);
+	$qoh = InventoryService::getQohOnDate($_POST['stock_id'], $myrow["loc_code"]);
 
 	label_cell($myrow["location_name"]);
 

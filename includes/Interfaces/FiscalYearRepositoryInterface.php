@@ -58,3 +58,4 @@ interface FiscalYearRepositoryInterface
      * @return bool True if date is in any fiscal year
      */
     public function isDateInAnyFiscalYear(string $date, bool $closed = true): bool;
+}

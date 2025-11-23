@@ -216,7 +216,7 @@ function can_process()
      }
      else
      {
-    	if (!is_date($_POST['RequDate']))
+    	if (!DateService::isDate($_POST['RequDate']))
     	{
 			set_focus('RequDate');
     		UiMessageService::displayError( _("The date entered is in an invalid format."));

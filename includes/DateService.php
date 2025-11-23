@@ -364,6 +364,6 @@ class DateService
      */
     public static function newDocDateStatic(?string $date = null): string
     {
-        return \DateService::newDocDateStatic($date);
+        return \new_doc_date($date);
     }
 }

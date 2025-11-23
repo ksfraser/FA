@@ -3,9 +3,9 @@
 ## Current Status
 **Branch**: `refactor/replace-legacy-calls`  
 **Started**: November 17, 2025  
-**Files Modified**: 42  
-**Legacy Calls Replaced**: 62  
-**Commits**: 11
+**Files Modified**: 47  
+**Legacy Calls Replaced**: 67  
+**Commits**: 12
 
 ---
 
@@ -155,6 +155,8 @@
 #### DateService Opportunities
 Files with `is_date()` calls ready to replace:
 - ✅ admin/void_transaction.php (1 occurrence) - DONE
+- ✅ sales/sales_order_entry.php (1 occurrence) - DONE  
+- ✅ manufacturing/work_order_entry.php (1 occurrence) - DONE
 - admin/fiscalyears.php (2 occurrences)
 - sales/customer_payments.php (1 occurrence)
 - sales/customer_invoice.php (4 occurrences)
@@ -162,7 +164,7 @@ Files with `is_date()` calls ready to replace:
 - sales/customer_credit_invoice.php (1 occurrence)
 - sales/credit_note_entry.php (1 occurrence)
 
-**Estimated**: 14+ more `is_date()` calls to replace
+**Estimated**: 11+ more `is_date()` calls to replace
 
 #### BankingService Opportunities
 Files with exchange rate calls:
@@ -174,11 +176,12 @@ Files with exchange rate calls:
 
 #### InventoryService Opportunities
 Files with item type checks:
+- ✅ inventory/reorder_level.php (1 occurrence) - DONE
 - inventory/*.php files
 - manufacturing/*.php files
 - sales/*.php files (item validation)
 
-**Estimated**: 20+ item type checks
+**Estimated**: 19+ more inventory function calls
 
 ---
 
