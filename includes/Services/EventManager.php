@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace FA\Services;
+namespace Ksfraser\EventSystem;
 
 use FA\Contracts\ExtendedListenerProviderInterface;
-use FA\Events\EventDispatcher;
-use FA\Events\ListenerProvider;
+use Ksfraser\EventSystem\EventDispatcher;
+use Ksfraser\EventSystem\ListenerProvider;
 
 /**
  * Event Manager Service

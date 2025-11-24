@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace FA\Plugins;
+namespace Ksfraser\PluginSystem;
 
 /**
  * Plugin Interface
  *
- * Defines the contract that all FA plugins must implement
+ * Defines the contract that all plugins must implement
  */
 interface PluginInterface
 {
@@ -31,14 +31,14 @@ interface PluginInterface
     public function getAuthor(): string;
 
     /**
-     * Get minimum FA version required
+     * Get minimum application version required
      */
-    public function getMinimumFAVersion(): string;
+    public function getMinimumAppVersion(): string;
 
     /**
-     * Get maximum FA version supported (optional)
+     * Get maximum application version supported (optional)
      */
-    public function getMaximumFAVersion(): ?string;
+    public function getMaximumAppVersion(): ?string;
 
     /**
      * Get plugin dependencies

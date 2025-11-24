@@ -23,7 +23,10 @@
     ],
     "autoload": {
         "psr-4": {
-            "FA\\": "includes/"
+            "FA\\": "includes/",
+            "Ksfraser\\EventSystem\\": "temp_event_system/src/",
+            "Ksfraser\\PluginSystem\\": "temp_plugin_system/src/",
+            "FA\\Plugins\\": "plugins/"
         }
     },
     "autoload-dev": {

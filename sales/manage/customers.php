@@ -29,6 +29,7 @@ include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/ui_strings.php");
 include_once($path_to_root . "/includes/ui/contacts_view.inc");
 include_once($path_to_root . "/includes/ui/attachment.inc");
+include_once($path_to_root . "/includes/CustomFields/CustomFieldsHelper.php");
 
 if (isset($_GET['debtor_no'])) 
 {
@@ -99,6 +100,10 @@ function handle_submit(&$selected_id)
 
 		$Ajax->activate('customer_id'); // in case of status change
 		display_notification(_(UI_TEXT_CUSTOMER_HAS_BEEN_UPDATED));
+
+		// Save custom fields
+		$customFieldsHelper = new \FA\CustomFields\CustomFieldsHelper();
+		$customFieldsHelper->saveEntityFields('customers', $selected_id, $_POST);
 	} 
 	else 
 	{ 	//it is a new customer
@@ -128,6 +133,11 @@ function handle_submit(&$selected_id)
 
 			add_crm_contact('customer', 'general', $selected_id, $pers_id);
 		}
+
+		// Save custom fields for new customer
+		$customFieldsHelper = new \FA\CustomFields\CustomFieldsHelper();
+		$customFieldsHelper->saveEntityFields('customers', $selected_id, $_POST);
+
 		commit_transaction();
 
 		display_notification(_(UI_TEXT_A_NEW_CUSTOMER_HAS_BEEN_ADDED));
@@ -180,6 +190,10 @@ if (isset($_POST['delete']))
 	{ 	//ie not cancelled the delete as a result of above tests
 	
 		delete_customer($selected_id);
+
+		// Delete custom fields
+		$customFieldsHelper = new \FA\CustomFields\CustomFieldsHelper();
+		$customFieldsHelper->deleteEntityFields('customers', $selected_id);
 
 		display_notification(_(UI_TEXT_SELECTED_CUSTOMER_HAS_BEEN_DELETED));
 		unset($_POST['customer_id']);
@@ -301,6 +315,15 @@ function customer_settings($selected_id)
 		sales_areas_list_row( _(UI_TEXT_SALES_AREA_LABEL), 'area', null);
 		tax_groups_list_row(_(UI_TEXT_TAX_GROUP_LABEL), 'tax_group_id', null);
 	}
+
+	// Custom Fields Section
+	$customFieldsHelper = new \FA\CustomFields\CustomFieldsHelper();
+	$customFieldsHtml = $customFieldsHelper->renderEntityFields('customers', $selected_id);
+	if (!empty($customFieldsHtml)) {
+		table_section_title(_('Custom Fields'));
+		echo '<tr><td colspan="2">' . $customFieldsHtml . '</td></tr>';
+	}
+
 	end_outer_table(1);
 
 	div_start('controls');

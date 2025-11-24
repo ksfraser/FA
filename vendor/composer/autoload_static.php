@@ -22,14 +22,17 @@ class ComposerStaticInitb0b8290a9c49117ba9a0a4ce587d51b9
         'K' =>
         array (
             'Ksfraser\\Settings\\' => 18,
+            'Ksfraser\\PluginSystem\\' => 22,
             'Ksfraser\\HTML\\Elements\\' => 23,
             'Ksfraser\\HTML\\Composites\\' => 25,
             'Ksfraser\\HTML\\CSS\\' => 18,
             'Ksfraser\\HTML\\' => 14,
+            'Ksfraser\\EventSystem\\' => 21,
         ),
         'F' =>
         array (
             'FA\\Tests\\' => 9,
+            'FA\\Plugins\\' => 11,
             'FA\\' => 3,
         ),
         'D' =>
@@ -62,6 +65,10 @@ class ComposerStaticInitb0b8290a9c49117ba9a0a4ce587d51b9
         array (
             0 => __DIR__ . '/..' . '/ksfraser/ksf-settings/src/Ksfraser/Settings',
         ),
+        'Ksfraser\\PluginSystem\\' =>
+        array (
+            0 => __DIR__ . '/../..' . '/temp_plugin_system/src',
+        ),
         'Ksfraser\\HTML\\Elements\\' =>
         array (
             0 => __DIR__ . '/..' . '/ksfraser/html-project/src/Ksfraser/HTML/Elements',
@@ -78,9 +85,17 @@ class ComposerStaticInitb0b8290a9c49117ba9a0a4ce587d51b9
         array (
             0 => __DIR__ . '/..' . '/ksfraser/html-project/src/Ksfraser/HTML',
         ),
+        'Ksfraser\\EventSystem\\' =>
+        array (
+            0 => __DIR__ . '/../..' . '/temp_event_system/src',
+        ),
         'FA\\Tests\\' =>
         array (
             0 => __DIR__ . '/../..' . '/tests',
+        ),
+        'FA\\Plugins\\' =>
+        array (
+            0 => __DIR__ . '/../..' . '/plugins',
         ),
         'FA\\' =>
         array (

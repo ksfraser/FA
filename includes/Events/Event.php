@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace FA\Events;
+namespace Ksfraser\EventSystem;
 
 use Psr\EventDispatcher\StoppableEventInterface;
 

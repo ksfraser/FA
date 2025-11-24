@@ -27,6 +27,7 @@ include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/ui/contacts_view.inc");
 include_once($path_to_root . "/includes/ui/attachment.inc");
 include_once($path_to_root . "/includes/CompanyPrefsService.php");
+include_once($path_to_root . "/includes/CustomFields/CustomFieldsHelper.php");
 
 check_db_has_tax_groups(_(UI_TEXT_THERE_ARE_NO_TAX_GROUPS_DEFINED_IN_THE_SYSTEM_AT_LEAST_ONE_TAX_GROUP_IS_REQUIRED_BEFORE_PROCEEDING));
 
@@ -80,6 +81,10 @@ function handle_submit(&$supplier_id)
 
 		$Ajax->activate('supplier_id'); // in case of status change
 		display_notification(_(UI_TEXT_SUPPLIER_HAS_BEEN_UPDATED));
+
+		// Save custom fields
+		$customFieldsHelper = new \FA\CustomFields\CustomFieldsHelper();
+		$customFieldsHelper->saveEntityFields('suppliers', $_POST['supplier_id'], $_POST);
 	} 
 	else 
 	{
@@ -96,6 +101,10 @@ function handle_submit(&$supplier_id)
 			$_POST['rep_lang'], '');
 
 		add_crm_contact('supplier', 'general', $supplier_id, db_insert_id());
+
+		// Save custom fields for new supplier
+		$customFieldsHelper = new \FA\CustomFields\CustomFieldsHelper();
+		$customFieldsHelper->saveEntityFields('suppliers', $supplier_id, $_POST);
 
 		display_notification(_(UI_TEXT_A_NEW_SUPPLIER_HAS_BEEN_ADDED));
 		$Ajax->activate('_page_body');
@@ -134,6 +143,10 @@ if (isset($_POST['delete']) && $_POST['delete'] != "")
 	if ($cancel_delete == 0) 
 	{
 		delete_supplier($_POST['supplier_id']);
+
+		// Delete custom fields
+		$customFieldsHelper = new \FA\CustomFields\CustomFieldsHelper();
+		$customFieldsHelper->deleteEntityFields('suppliers', $_POST['supplier_id']);
 
 		unset($_SESSION['supplier_id']);
 		$supplier_id = '';
@@ -275,6 +288,15 @@ function supplier_settings(&$supplier_id)
 	textarea_row(_("General Notes:"), 'notes', null, 35, 5);
 	if ($supplier_id)
 		record_status_list_row(_("Supplier status:"), 'inactive');
+
+	// Custom Fields Section
+	$customFieldsHelper = new \FA\CustomFields\CustomFieldsHelper();
+	$customFieldsHtml = $customFieldsHelper->renderEntityFields('suppliers', $supplier_id);
+	if (!empty($customFieldsHtml)) {
+		table_section_title(_('Custom Fields'));
+		echo '<tr><td colspan="2">' . $customFieldsHtml . '</td></tr>';
+	}
+
 	end_outer_table(1);
 
 	div_start('controls');

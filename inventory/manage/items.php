@@ -45,6 +45,7 @@ include_once($path_to_root . "/includes/ui/attachment.inc");
 
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 include_once($path_to_root . "/fixed_assets/includes/fixed_assets_db.inc");
+include_once($path_to_root . "/includes/CustomFields/CustomFieldsHelper.php");
 
 $user_comp = user_company();
 $new_item = RequestService::getPostStatic('stock_id')=='' || RequestService::getPostStatic('cancel') || RequestService::getPostStatic('clone'); 
@@ -284,6 +285,10 @@ if (isset($_POST['addupdate']))
 			set_focus('stock_id');
 			$Ajax->activate('stock_id'); // in case of status change
 			display_notification(_(UI_TEXT_ITEM_HAS_BEEN_UPDATED));
+
+			// Save custom fields
+			$customFieldsHelper = new \FA\CustomFields\CustomFieldsHelper();
+			$customFieldsHelper->saveEntityFields('items', $_POST['NewStockID'], $_POST);
 		} 
 		else 
 		{ //it is a NEW part
@@ -299,6 +304,11 @@ if (isset($_POST['addupdate']))
 				RequestService::getPostStatic('fa_class_id'));
 
 			display_notification(_(UI_TEXT_A_NEW_ITEM_HAS_BEEN_ADDED));
+
+			// Save custom fields for new item
+			$customFieldsHelper = new \FA\CustomFields\CustomFieldsHelper();
+			$customFieldsHelper->saveEntityFields('items', $_POST['NewStockID'], $_POST);
+
 			$_POST['stock_id'] = $_POST['NewStockID'] = 
 			$_POST['description'] = $_POST['long_description'] = '';
 			$_POST['no_sale'] = $_POST['editable'] = $_POST['no_purchase'] =0;
@@ -340,6 +350,11 @@ if (isset($_POST['delete']) && strlen($_POST['delete']) > 1)
 		$stock_id = $_POST['NewStockID'];
 		delete_item($stock_id);
 		del_image($stock_id);
+
+		// Delete custom fields
+		$customFieldsHelper = new \FA\CustomFields\CustomFieldsHelper();
+		$customFieldsHelper->deleteEntityFields('items', $stock_id);
+
 		display_notification(_(UI_TEXT_SELECTED_ITEM_HAS_BEEN_DELETED));
 		$_POST['stock_id'] = '';
 		clear_data();
@@ -533,6 +548,15 @@ function item_settings(&$stock_id, $new_item)
 			label_row(_("Current Value").':', FormatService::priceFormat($_POST['material_cost']), "", "align='right'");
 		}
 	}
+
+	// Custom Fields Section
+	$customFieldsHelper = new \FA\CustomFields\CustomFieldsHelper();
+	$customFieldsHtml = $customFieldsHelper->renderEntityFields('items', $stock_id);
+	if (!empty($customFieldsHtml)) {
+		table_section_title(_('Custom Fields'));
+		echo '<tr><td colspan="2">' . $customFieldsHtml . '</td></tr>';
+	}
+
 	end_outer_table(1);
 
 	div_start('controls');

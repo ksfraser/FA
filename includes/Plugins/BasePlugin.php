@@ -1,9 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace FA\Plugins;
-
-use FA\Services\EventManager;
+namespace Ksfraser\PluginSystem;
 
 /**
  * Base Plugin Class
@@ -16,8 +14,8 @@ abstract class BasePlugin implements PluginInterface
     protected string $version;
     protected string $description;
     protected string $author;
-    protected string $minFAVersion;
-    protected ?string $maxFAVersion;
+    protected string $minAppVersion;
+    protected ?string $maxAppVersion;
     protected array $dependencies = [];
     protected array $hooks = [];
     protected array $adminMenuItems = [];
@@ -70,19 +68,19 @@ abstract class BasePlugin implements PluginInterface
     }
 
     /**
-     * Get minimum FA version required
+     * Get minimum application version required
      */
-    public function getMinimumFAVersion(): string
+    public function getMinimumAppVersion(): string
     {
-        return $this->minFAVersion;
+        return $this->minAppVersion;
     }
 
     /**
-     * Get maximum FA version supported
+     * Get maximum application version supported
      */
-    public function getMaximumFAVersion(): ?string
+    public function getMaximumAppVersion(): ?string
     {
-        return $this->maxFAVersion;
+        return $this->maxAppVersion;
     }
 
     /**
@@ -156,10 +154,8 @@ abstract class BasePlugin implements PluginInterface
      */
     public function activate(): bool
     {
-        // Register hooks with the event system
-        foreach ($this->hooks as $eventName => $handler) {
-            EventManager::on($eventName, $handler);
-        }
+        // Note: Hooks are now registered by PluginManager during activation
+        // This prevents double registration and makes the system more flexible
 
         return $this->onActivate();
     }

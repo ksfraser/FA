@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace FA\Plugins;
+namespace Ksfraser\PluginSystem;
 
-use FA\Events\DatabasePostWriteEvent;
+use Ksfraser\PluginSystem\BasePlugin;
 
 /**
  * Sample Plugin
@@ -22,38 +22,37 @@ class SamplePlugin extends BasePlugin
         $this->version = '1.0.0';
         $this->description = 'A sample plugin that demonstrates plugin functionality';
         $this->author = 'FA Development Team';
-        $this->minFAVersion = '2.5.0';
-        $this->maxFAVersion = null;
+        $this->minAppVersion = '2.5.0';
+        $this->maxAppVersion = null;
         $this->dependencies = [];
 
         // Register hooks
-        $this->registerHook('FA\Events\DatabasePostWriteEvent', [$this, 'onDatabasePostWrite']);
+        $this->hooks = [
+            'database.post_write' => [$this, 'onDatabasePostWrite']
+        ];
 
-        // Add admin menu item
-        $this->addAdminMenuItem('Sample Plugin', 'admin/sample_plugin.php');
+        // Admin menu items
+        $this->adminMenuItems = [
+            'Sample Plugin' => 'sample_plugin.php'
+        ];
 
-        // Add settings
-        $this->addSetting('log_level', 'Log Level', 'select', 'info', 'Logging verbosity level');
-        $this->addSetting('enable_notifications', 'Enable Notifications', 'checkbox', true, 'Send notifications for important events');
+        // Settings
+        $this->settings = [
+            'enabled' => [
+                'type' => 'checkbox',
+                'label' => 'Enable Plugin',
+                'default' => true
+            ]
+        ];
     }
 
     /**
      * Handle database post-write events
      */
-    public function onDatabasePostWrite(DatabasePostWriteEvent $event): void
+    public function onDatabasePostWrite($event): void
     {
-        $transactionType = $event->getTransactionType();
-
-        $this->log("Database write operation completed for transaction type: {$transactionType}", 'info', [
-            'transaction_type' => $transactionType,
-            'timestamp' => date('Y-m-d H:i:s')
-        ]);
-
-        // Example: Send notification if enabled
-        if ($this->getSetting('enable_notifications')) {
-            // In a real plugin, you might send an email or other notification
-            $this->log("Notification would be sent for transaction type: {$transactionType}", 'info');
-        }
+        // Log the database write operation
+        error_log("SamplePlugin: Database write operation detected");
     }
 
     /**
@@ -61,7 +60,7 @@ class SamplePlugin extends BasePlugin
      */
     protected function onActivate(): bool
     {
-        $this->log("SamplePlugin activated", 'info');
+        error_log("SamplePlugin: Plugin activated");
         return true;
     }
 
@@ -70,34 +69,7 @@ class SamplePlugin extends BasePlugin
      */
     protected function onDeactivate(): bool
     {
-        $this->log("SamplePlugin deactivated", 'info');
-        return true;
-    }
-
-    /**
-     * Called when plugin is installed
-     */
-    protected function onInstall(): bool
-    {
-        $this->log("SamplePlugin installed", 'info');
-        return true;
-    }
-
-    /**
-     * Called when plugin is uninstalled
-     */
-    protected function onUninstall(): bool
-    {
-        $this->log("SamplePlugin uninstalled", 'info');
-        return true;
-    }
-
-    /**
-     * Called when plugin is upgraded
-     */
-    protected function onUpgrade(string $oldVersion, string $newVersion): bool
-    {
-        $this->log("SamplePlugin upgraded from {$oldVersion} to {$newVersion}", 'info');
+        error_log("SamplePlugin: Plugin deactivated");
         return true;
     }
 }
