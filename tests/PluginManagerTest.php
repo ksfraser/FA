@@ -7,7 +7,6 @@ require_once __DIR__ . '/../temp_plugin_system/src/PluginSystem/EventDispatcher/
 require_once __DIR__ . '/../temp_plugin_system/src/PluginSystem/PluginManager.php';
 require_once __DIR__ . '/../temp_plugin_system/src/PluginSystem/BasePlugin.php';
 require_once __DIR__ . '/../temp_plugin_system/src/PluginSystem/PluginInterface.php';
-require_once __DIR__ . '/../plugins/SamplePlugin.php';
 
 use PHPUnit\Framework\TestCase;
 use Ksfraser\PluginSystem\PluginManager;
@@ -48,7 +47,7 @@ class PluginManagerTest extends TestCase
         $reflection = new \ReflectionClass(PluginManager::class);
         $instanceProperty = $reflection->getProperty('instance');
         $instanceProperty->setAccessible(true);
-        $instanceProperty->setValue(null);
+        $instanceProperty->setValue(null, null);
     }
 
     public function testSingletonInstance()

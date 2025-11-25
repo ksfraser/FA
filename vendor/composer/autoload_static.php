@@ -67,7 +67,7 @@ class ComposerStaticInitb0b8290a9c49117ba9a0a4ce587d51b9
         ),
         'Ksfraser\\PluginSystem\\' =>
         array (
-            0 => __DIR__ . '/../..' . '/temp_plugin_system/src',
+            0 => __DIR__ . '/../..' . '/temp_plugin_system/src/PluginSystem',
         ),
         'Ksfraser\\HTML\\Elements\\' =>
         array (
@@ -87,7 +87,7 @@ class ComposerStaticInitb0b8290a9c49117ba9a0a4ce587d51b9
         ),
         'Ksfraser\\EventSystem\\' =>
         array (
-            0 => __DIR__ . '/../..' . '/temp_event_system/src',
+            0 => __DIR__ . '/../..' . '/temp_event_system/src/EventSystem',
         ),
         'FA\\Tests\\' =>
         array (

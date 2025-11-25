@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Ksfraser\PluginSystem;
+namespace FA\Plugins;
 
 use Ksfraser\PluginSystem\BasePlugin;
 
