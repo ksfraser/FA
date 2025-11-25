@@ -129,4 +129,37 @@ class BankingServiceTest extends TestCase
         // For now, we verify the method exists and is callable
         $this->assertTrue(method_exists($this->service, 'exchangeVariation'));
     }
+
+    /**
+     * Test addGlTrans static method - wrapper for global add_gl_trans function
+     * Original function: add_gl_trans($type, $trans_id, $date_, $account, $dimension, $dimension2, $memo_, $amount, $currency=null, $person_type_id=null, $person_id=null, $err_msg="", $rate=0)
+     */
+    public function testAddGlTrans(): void
+    {
+        // Test that the static method exists and is callable
+        $this->assertTrue(method_exists(BankingService::class, 'addGlTrans'));
+
+        // Note: Actual testing of GL transaction insertion would require database setup
+        // This wrapper method maintains backward compatibility while allowing future refactoring
+    }
+
+    /**
+     * Test static wrapper methods for backward compatibility
+     */
+    public function testStaticWrapperMethods(): void
+    {
+        // Test getExchangeRateFromHomeCurrencyStatic
+        $result = BankingService::getExchangeRateFromHomeCurrencyStatic('EUR', '2025-01-01');
+        $this->assertIsFloat($result);
+        $this->assertGreaterThan(0, $result);
+
+        // Test getExchangeRateToHomeCurrencyStatic
+        $result = BankingService::getExchangeRateToHomeCurrencyStatic('EUR', '2025-01-01');
+        $this->assertIsFloat($result);
+
+        // Test getCompanyCurrencyStatic
+        $result = BankingService::getCompanyCurrencyStatic();
+        $this->assertIsString($result);
+        $this->assertNotEmpty($result);
+    }
 }

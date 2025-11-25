@@ -1298,3 +1298,118 @@ Before merging:
 - **Backward Compatibility**: Maintained through static wrapper methods
 - **Testing**: All InventoryService tests passing (2/2)
 - **Risk Level**: LOW ✅ (identical functionality preserved)
+
+---
+
+## Commit 14: GL Transaction Service Integration
+**Date**: November 24, 2025  
+**Files**: 4 (BankingService.php + 3 service files)  
+**Replacements**: 6 (add_gl_trans calls)
+
+#### BankingService.php
+- **Service**: BankingService
+- **Function**: `add_gl_trans()` → `BankingService::addGlTrans()`
+- **Location**: Lines 270-271, 274-275
+- **Change**: 
+  ```php
+  // BEFORE
+  \add_gl_trans($type, $trans_no, $date, $ar_ap_act, 0, 0, $memo, -$diff, null, $person_type, $person_id);
+  
+  // AFTER
+  BankingService::addGlTrans($type, $trans_no, $date, $ar_ap_act, 0, 0, $memo, -$diff, null, $person_type, $person_id);
+  ```
+- **Impact**: Exchange rate variation GL postings in banking operations
+- **Risk**: Low (static wrapper maintains identical functionality)
+- **Status**: ✅ Committed
+
+#### SalesDbService.php
+- **Service**: BankingService
+- **Function**: `add_gl_trans()` → `BankingService::addGlTrans()`
+- **Location**: Line 97
+- **Change**:
+  ```php
+  // BEFORE
+  return add_gl_trans($type, $typeNo, $date, $account, $dimension, $dimension2, "", $amount,
+  
+  // AFTER
+  return BankingService::addGlTrans($type, $typeNo, $date, $account, $dimension, $dimension2, "", $amount,
+  ```
+- **Impact**: Sales transaction GL postings
+- **Risk**: Low (static wrapper)
+- **Status**: ✅ Committed
+
+#### PurchasingDbService.php
+- **Service**: BankingService
+- **Function**: `add_gl_trans()` → `BankingService::addGlTrans()`
+- **Location**: Line 92
+- **Change**:
+  ```php
+  // BEFORE
+  return add_gl_trans($type, $typeNo, $date, $account, $dimension, $dimension2, $memo,
+  
+  // AFTER
+  return BankingService::addGlTrans($type, $typeNo, $date, $account, $dimension, $dimension2, $memo,
+  ```
+- **Impact**: Purchasing transaction GL postings
+- **Risk**: Low (static wrapper)
+- **Status**: ✅ Committed
+
+**Summary**: 
+- **Total Replacements**: 6 add_gl_trans calls
+- **Services Enhanced**: BankingService with addGlTrans() static method
+- **Architecture**: Centralized GL transaction handling through BankingService
+- **Testing**: Pending validation of GL transaction integrity
+- **Risk Level**: LOW ✅ (static wrappers preserve original behavior)
+
+---
+
+## Commit 15: User Preferences Service Integration
+**Date**: November 24, 2025  
+**Files**: 1 (html-lib FaUiFunctions.php)  
+**Replacements**: 2 (user_price_dec calls)
+
+#### html-lib/src/Ksfraser/HTML/FaUiFunctions.php
+- **Service**: UserPrefsCache
+- **Function**: `user_price_dec()` → `UserPrefsCache::getPriceDecimals()`
+- **Location**: Lines 321, 385
+- **Change**: 
+  ```php
+  // BEFORE
+  if (function_exists('\\user_price_dec')) {
+      $dec = call_user_func('\\user_price_dec');
+  
+  // AFTER
+  if (class_exists('\\FA\\Services\\UserPrefsCache')) {
+      $dec = \FA\Services\UserPrefsCache::getPriceDecimals();
+  } elseif (function_exists('\\user_price_dec')) {
+      $dec = call_user_func('\\user_price_dec');
+  ```
+- **Impact**: UI form field decimal formatting in amount_cells and unit_amount_cells
+- **Risk**: Low (fallback to original function if service not available)
+- **Status**: ✅ Committed
+
+**Summary**: 
+- **Total Replacements**: 2 user_price_dec calls
+- **Services Enhanced**: UserPrefsCache integration in HTML library
+- **Architecture**: Service-based user preference access in UI components
+- **Testing**: Pending validation of UI rendering
+- **Risk Level**: LOW ✅ (backward compatibility maintained)
+
+---
+
+## Commit 16: BankingService Static Wrapper Tests
+**Date**: November 24, 2025  
+**Files**: 1 (tests/BankingServiceTest.php)  
+**Tests Added**: 3 (static wrapper method tests)
+
+#### BankingServiceTest.php
+- **New Test**: `testStaticWrapperMethods()`
+- **Coverage**: Tests getExchangeRateFromHomeCurrencyStatic, getExchangeRateToHomeCurrencyStatic, getCompanyCurrencyStatic
+- **Purpose**: Validates backward compatibility of static wrapper methods
+- **TDD Approach**: Ensures static methods work correctly for legacy code integration
+
+**Summary**: 
+- **Test Methods Added**: 3 static wrapper tests
+- **Coverage Enhanced**: BankingService static API validation
+- **TDD Compliance**: Tests written for new functionality
+- **Risk Level**: LOW ✅ (test-only changes)

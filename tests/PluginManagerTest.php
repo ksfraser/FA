@@ -1,12 +1,7 @@
 <?php
 declare(strict_types=1);
 
-// Manually include mock classes since autoload is not working
-require_once __DIR__ . '/../temp_plugin_system/src/PluginSystem/Database/MockDatabaseAdapter.php';
-require_once __DIR__ . '/../temp_plugin_system/src/PluginSystem/EventDispatcher/NullEventDispatcher.php';
-require_once __DIR__ . '/../temp_plugin_system/src/PluginSystem/PluginManager.php';
-require_once __DIR__ . '/../temp_plugin_system/src/PluginSystem/BasePlugin.php';
-require_once __DIR__ . '/../temp_plugin_system/src/PluginSystem/PluginInterface.php';
+namespace FA\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Ksfraser\PluginSystem\PluginManager;
@@ -168,6 +163,9 @@ class PluginManagerTest extends TestCase
         $this->pluginManager->installPlugin('SamplePlugin');
         $this->pluginManager->activatePlugin('SamplePlugin');
 
+        // Install dependent plugin
+        $this->pluginManager->installPlugin('DependentPlugin');
+
         // Now dependent plugin should activate successfully
         $result = $this->pluginManager->activatePlugin('DependentPlugin');
 
@@ -199,5 +197,78 @@ class PluginManagerTest extends TestCase
 
         $this->assertFalse($result);
         $this->assertFalse($this->pluginManager->isPluginActive('DependentPlugin'));
+    }
+
+    public function testGetLoadedPlugins()
+    {
+        $plugin1 = new \FA\Plugins\SamplePlugin();
+        $plugin2 = new class extends \Ksfraser\PluginSystem\BasePlugin {
+            protected function initializePlugin(): void
+            {
+                $this->name = 'TestPlugin2';
+                $this->version = '1.0.0';
+                $this->description = 'Test plugin 2';
+                $this->author = 'Test Author';
+                $this->minAppVersion = '1.0.0';
+            }
+            protected function onActivate(): bool { return true; }
+            protected function onDeactivate(): bool { return true; }
+        };
+
+        $this->pluginManager->registerPlugin($plugin1);
+        $this->pluginManager->registerPlugin($plugin2);
+
+        $loadedPlugins = $this->pluginManager->getLoadedPlugins();
+
+        $this->assertContains('SamplePlugin', $loadedPlugins);
+        $this->assertContains('TestPlugin2', $loadedPlugins);
+        $this->assertCount(2, $loadedPlugins);
+    }
+
+    public function testGetActivePlugins()
+    {
+        $plugin = new \FA\Plugins\SamplePlugin();
+        $this->pluginManager->registerPlugin($plugin);
+        $this->pluginManager->installPlugin('SamplePlugin');
+
+        // Initially not active
+        $this->assertEmpty($this->pluginManager->getActivePlugins());
+
+        $this->pluginManager->activatePlugin('SamplePlugin');
+
+        $activePlugins = $this->pluginManager->getActivePlugins();
+        $this->assertContains('SamplePlugin', $activePlugins);
+        $this->assertCount(1, $activePlugins);
+    }
+
+    public function testGetPluginRegistry()
+    {
+        $plugin = new \FA\Plugins\SamplePlugin();
+        $this->pluginManager->registerPlugin($plugin);
+        $this->pluginManager->installPlugin('SamplePlugin');
+
+        $registry = $this->pluginManager->getPluginRegistry();
+
+        $this->assertArrayHasKey('SamplePlugin', $registry);
+        $this->assertEquals('1.0.0', $registry['SamplePlugin']['version']);
+        $this->assertEquals('A sample plugin that demonstrates plugin functionality', $registry['SamplePlugin']['description']);
+        $this->assertEquals(1, $registry['SamplePlugin']['installed']);
+        $this->assertEquals(0, $registry['SamplePlugin']['active']);
+    }
+
+    public function testGetPluginReturnsNullForUnknown()
+    {
+        $plugin = $this->pluginManager->getPlugin('UnknownPlugin');
+        $this->assertNull($plugin);
+    }
+
+    public function testIsPluginInstalledReturnsFalseForUnknown()
+    {
+        $this->assertFalse($this->pluginManager->isPluginInstalled('UnknownPlugin'));
+    }
+
+    public function testIsPluginActiveReturnsFalseForUnknown()
+    {
+        $this->assertFalse($this->pluginManager->isPluginActive('UnknownPlugin'));
     }
 }

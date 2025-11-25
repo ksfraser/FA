@@ -89,7 +89,7 @@ class PurchasingDbService {
             $errMsg = "The supplier GL transaction could not be inserted";
         }
 
-        return add_gl_trans($type, $typeNo, $date, $account, $dimension, $dimension2, $memo,
+        return \FA\BankingService::addGlTrans($type, $typeNo, $date, $account, $dimension, $dimension2, $memo,
             $amount, get_supplier_currency($supplierId),
             PT_SUPPLIER, $supplierId, $errMsg, $rate);
     }

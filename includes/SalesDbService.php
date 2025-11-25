@@ -94,7 +94,7 @@ class SalesDbService {
             $errMsg = "The customer GL transaction could not be inserted";
         }
 
-        return add_gl_trans($type, $typeNo, $date, $account, $dimension, $dimension2, "", $amount,
+        return \FA\BankingService::addGlTrans($type, $typeNo, $date, $account, $dimension, $dimension2, "", $amount,
             get_customer_currency($customerId),
             PT_CUSTOMER, $customerId, $errMsg, $rate);
     }

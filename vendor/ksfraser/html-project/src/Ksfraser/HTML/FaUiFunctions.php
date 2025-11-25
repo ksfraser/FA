@@ -317,7 +317,9 @@ class FaUiFunctions {
         } else {
             // OOP implementation
             if (!isset($dec)) {
-                if (function_exists('\\user_price_dec')) {
+                if (class_exists('\\FA\\Services\\UserPrefsCache')) {
+                    $dec = \FA\Services\UserPrefsCache::getPriceDecimals();
+                } elseif (function_exists('\\user_price_dec')) {
                     $dec = call_user_func('\\user_price_dec');
                 } else {
                     $dec = 2; // fallback
@@ -381,7 +383,9 @@ class FaUiFunctions {
     public static function unit_amount_cells($label, $name, $init=null, $params=null, $post_label=null, $dec=null)
     {
         if (!isset($dec)) {
-            if (function_exists('\\user_price_dec')) {
+            if (class_exists('\\FA\\Services\\UserPrefsCache')) {
+                $dec = \FA\Services\UserPrefsCache::getPriceDecimals() + 2;
+            } elseif (function_exists('\\user_price_dec')) {
                 $dec = call_user_func('\\user_price_dec') + 2;
             } else {
                 $dec = 4; // fallback

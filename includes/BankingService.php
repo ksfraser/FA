@@ -267,12 +267,12 @@ class BankingService
             $exc_var_act = CompanyPrefsService::getCompanyPref('exchange_diff_act');
             if (\DateService::date1GreaterDate2Static($date, $pyt_date)) {
                 $memo = $systypes_array[$pyt_type] . " " . $pyt_no;
-                \add_gl_trans($type, $trans_no, $date, $ar_ap_act, 0, 0, $memo, -$diff, null, $person_type, $person_id);
-                \add_gl_trans($type, $trans_no, $date, $exc_var_act, 0, 0, $memo, $diff, null, $person_type, $person_id);
+                self::addGlTrans($type, $trans_no, $date, $ar_ap_act, 0, 0, $memo, -$diff, null, $person_type, $person_id);
+                self::addGlTrans($type, $trans_no, $date, $exc_var_act, 0, 0, $memo, $diff, null, $person_type, $person_id);
             } else {
                 $memo = $systypes_array[$type] . " " . $trans_no;
-                \add_gl_trans($pyt_type, $pyt_no, $pyt_date, $ar_ap_act, 0, 0, $memo, -$diff, null, $person_type, $person_id);
-                \add_gl_trans($pyt_type, $pyt_no, $pyt_date, $exc_var_act, 0, 0, $memo, $diff, null, $person_type, $person_id);
+                self::addGlTrans($pyt_type, $pyt_no, $pyt_date, $ar_ap_act, 0, 0, $memo, -$diff, null, $person_type, $person_id);
+                self::addGlTrans($pyt_type, $pyt_no, $pyt_date, $exc_var_act, 0, 0, $memo, $diff, null, $person_type, $person_id);
             }
         }
     }
@@ -315,5 +315,41 @@ class BankingService
     {
         $service = new self();
         return $service->getCompanyCurrency();
+    }
+
+    /**
+     * Add a GL transaction
+     *
+     * @param int $type Transaction type
+     * @param int $transId Transaction ID
+     * @param string $date Date
+     * @param string $account Account code
+     * @param int $dimension Dimension 1
+     * @param int $dimension2 Dimension 2
+     * @param string $memo Memo
+     * @param float $amount Amount
+     * @param string|null $currency Currency
+     * @param int|null $personTypeId Person type ID
+     * @param int|null $personId Person ID
+     * @param string $errMsg Error message
+     * @param float $rate Exchange rate
+     * @return int Transaction number
+     */
+    public static function addGlTrans(
+        int $type,
+        int $transId,
+        string $date,
+        string $account,
+        int $dimension,
+        int $dimension2,
+        string $memo,
+        float $amount,
+        ?string $currency = null,
+        ?int $personTypeId = null,
+        ?int $personId = null,
+        string $errMsg = "",
+        float $rate = 0
+    ): int {
+        return \add_gl_trans($type, $transId, $date, $account, $dimension, $dimension2, $memo, $amount, $currency, $personTypeId, $personId, $errMsg, $rate);
     }
 }
