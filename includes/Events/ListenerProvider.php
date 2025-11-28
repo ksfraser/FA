@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Ksfraser\EventSystem;
+namespace FA\Events;
 
 use FA\Contracts\ExtendedListenerProviderInterface;
 

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace FA\Services;
+namespace FA\Events;
 
 use FA\Contracts\ExtendedListenerProviderInterface;
 use FA\Events\EventDispatcher;
