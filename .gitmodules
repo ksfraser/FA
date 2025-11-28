@@ -7,3 +7,6 @@
 [submodule "libs/ksf_PrefCache"]
 	path = libs/ksf_PrefCache
 	url = https://github.com/ksfraser/ksf_PrefCache.git
+[submodule "modules/SerialNumber"]
+	path = modules/SerialNumber
+	url = https://github.com/ksfraser/ksf_SerialNumber.git
