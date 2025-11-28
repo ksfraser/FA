@@ -8,6 +8,7 @@
 /tmp
 /lang
 /modules
+!/modules/SerialNumber
 /themes
 !/themes/default
 !/themes/aqua
