@@ -368,11 +368,23 @@ git push origin refactor/replace-legacy-calls
 4. Update all modules to use hooks
 
 ### Phase 6: Report System Modularization
-1. Convert all existing reports to pluggable modules
-2. Implement custom report builder with visual designer
-3. Add report template system with customization capabilities
-4. Create scheduled report execution and distribution system
-5. Implement report security and access control
+1. Convert all existing reports to pluggable modules (Deferred - maintain backward compatibility)
+2. **NEW**: Analyze WebERP reporting capabilities and craft FA equivalents
+3. Implement custom report builder with visual designer
+4. Add report template system with customization
+5. Create scheduled report execution and distribution system
+6. Implement report security and access control
+
+#### WebERP Report Equivalents to Implement:
+- **Advanced Inventory Reports**: Stock status, valuation, movement analysis, ABC analysis
+- **Manufacturing Reports**: Work order status, production efficiency, BOM analysis, capacity planning
+- **Quality Control Reports**: Inspection results, defect analysis, supplier quality metrics
+- **Project Reports**: Time tracking, project profitability, resource utilization
+- **Multi-warehouse Reports**: Inter-warehouse transfers, stock allocation, warehouse performance
+- **Serial/Lot Tracking Reports**: Traceability, expiration tracking, recall management
+- **Advanced GL Reports**: Budget vs actual, variance analysis, multi-period comparisons
+- **Customer/Supplier Analysis**: Lifetime value, payment patterns, buying behavior
+- **Sales Analysis**: Product profitability, sales trends, territory performance
 
 ### Phase 7: Asset Management Extensions
 1. Extend fixed assets module for loanable/issue-able assets
@@ -395,11 +407,11 @@ git push origin refactor/replace-legacy-calls
 4. Integrate project management and time tracking
 5. Implement quality control and inspection features
 
-### Phase 10: External Integrations
-1. Create IntegrationManager
-2. Implement SuiteCRM connector
-3. Add WooCommerce synchronization
-4. Build generic API integration framework
+### Phase 10: External Integrations (In Progress)
+- 🔄 Create IntegrationManager
+- 🔄 Implement SuiteCRM connector
+- ⏳ Add WooCommerce synchronization
+- ⏳ Build generic API integration framework
 
 ### Phase 11: Employee System
 1. Extend contact system for employees
