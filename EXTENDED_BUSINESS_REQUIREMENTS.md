@@ -363,7 +363,7 @@ git commit -m "TDD Refactor: Complete plugin system testing and legacy call repl
 - Maintained backward compatibility throughout"
 
 # Push to the current branch
-git push origin refactor/replace-legacy-calls
+git push origin refactor/replace-legacy-calls0
 3. Implement hook execution pipeline
 4. Update all modules to use hooks
 

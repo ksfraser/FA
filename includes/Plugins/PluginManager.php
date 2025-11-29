@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace Ksfraser\PluginSystem;
+namespace FA\Plugins;
 
-use Ksfraser\EventSystem\EventManager;
-use Ksfraser\EventSystem\PluginActivatedEvent;
-use Ksfraser\EventSystem\PluginDeactivatedEvent;
-use Ksfraser\EventSystem\PluginInstalledEvent;
-use Ksfraser\EventSystem\PluginUninstalledEvent;
-use Ksfraser\PluginSystem\Interfaces\PluginDatabaseInterface;
-use Ksfraser\PluginSystem\Interfaces\PluginEventDispatcherInterface;
+use FA\Events\EventManager;
+use FA\Events\PluginActivatedEvent;
+use FA\Events\PluginDeactivatedEvent;
+use FA\Events\PluginInstalledEvent;
+use FA\Events\PluginUninstalledEvent;
+use FA\Plugins\Interfaces\PluginDatabaseInterface;
+use FA\Plugins\Interfaces\PluginEventDispatcherInterface;
 
 /**
  * Plugin Manager

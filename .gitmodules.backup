@@ -1,0 +1,3 @@
+[submodule "modules/SerialNumber"]
+	path = modules/SerialNumber
+	url = https://github.com/ksfraser/ksf_SerialNumber.git

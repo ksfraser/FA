@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Ksfraser\PluginSystem\EventDispatcher;
+namespace FA\Plugins\EventDispatcher;
 
-use Ksfraser\PluginSystem\Interfaces\PluginEventDispatcherInterface;
+use FA\Plugins\Interfaces\PluginEventDispatcherInterface;
 
 /**
  * FA Event Dispatcher Adapter

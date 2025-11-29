@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Ksfraser\PluginSystem\Interfaces;
+namespace FA\Plugins\Interfaces;
 
 /**
  * Plugin Database Interface
