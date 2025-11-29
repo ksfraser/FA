@@ -10,3 +10,36 @@
 [submodule "modules/SerialNumber"]
 	path = modules/SerialNumber
 	url = https://github.com/ksfraser/ksf_SerialNumber.git
+[submodule "modules/AdvancedManufacturing"]
+	path = modules/AdvancedManufacturing
+	url = https://github.com/ksfraser/ksf_AdvancedManufacturing.git
+[submodule "modules/ProjectManagement"]
+	path = modules/ProjectManagement
+	url = https://github.com/ksfraser/ksf_ProjectManagement.git
+[submodule "modules/QualityControl"]
+	path = modules/QualityControl
+	url = https://github.com/ksfraser/ksf_QualityControl.git
+[submodule "modules/EDI"]
+	path = modules/EDI
+	url = https://github.com/ksfraser/ksf_EDI.git
+[submodule "modules/CRM"]
+	path = modules/CRM
+	url = https://github.com/ksfraser/ksf_CRM.git
+[submodule "modules/ServiceManagement"]
+	path = modules/ServiceManagement
+	url = https://github.com/ksfraser/ksf_ServiceManagement.git
+[submodule "modules/AssetManagement"]
+	path = modules/AssetManagement
+	url = https://github.com/ksfraser/ksf_AssetManagement.git
+[submodule "modules/MRP"]
+	path = modules/MRP
+	url = https://github.com/ksfraser/ksf_MRP.git
+[submodule "modules/LotTracking"]
+	path = modules/LotTracking
+	url = https://github.com/ksfraser/ksf_LotTracking.git
+[submodule "modules/WarrantyManagement"]
+	path = modules/WarrantyManagement
+	url = https://github.com/ksfraser/ksf_WarrantyManagement.git
+[submodule "modules/SupplierPerformance"]
+	path = modules/SupplierPerformance
+	url = https://github.com/ksfraser/ksf_SupplierPerformance.git
