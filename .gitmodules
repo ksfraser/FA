@@ -43,3 +43,6 @@
 [submodule "modules/SupplierPerformance"]
 	path = modules/SupplierPerformance
 	url = https://github.com/ksfraser/ksf_SupplierPerformance.git
+[submodule "modules/ContractManagement"]
+	path = modules/ContractManagement
+	url = https://github.com/ksfraser/ksf_ContractManagement.git
