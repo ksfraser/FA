@@ -12,6 +12,7 @@
 !/modules/EmployeeManagement
 !/modules/TimesheetManagement
 !/modules/ProjectManagement
+!/modules/AssetManagement
 !/modules/HRProjectManagementService.php
 /themes
 !/themes/default
