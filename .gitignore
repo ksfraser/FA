@@ -9,6 +9,10 @@
 /lang
 /modules
 !/modules/SerialNumber
+!/modules/EmployeeManagement
+!/modules/TimesheetManagement
+!/modules/ProjectManagement
+!/modules/HRProjectManagementService.php
 /themes
 !/themes/default
 !/themes/aqua
