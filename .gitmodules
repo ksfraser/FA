@@ -46,3 +46,6 @@
 [submodule "modules/ContractManagement"]
 	path = modules/ContractManagement
 	url = https://github.com/ksfraser/ksf_ContractManagement.git
+[submodule "modules/Reports"]
+	path = modules/Reports
+	url = https://github.com/ksfraser/ksf_Reports.git

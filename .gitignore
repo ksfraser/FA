@@ -21,6 +21,7 @@
 !/modules/QualityControl
 !/modules/ContractManagement
 !/modules/PettyCash
+!/modules/Reports
 !/modules/HRProjectManagementService.php
 /themes
 !/themes/default
