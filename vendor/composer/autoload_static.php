@@ -33,6 +33,8 @@ class ComposerStaticInitb0b8290a9c49117ba9a0a4ce587d51b9
         array (
             'FA\\Tests\\' => 9,
             'FA\\Plugins\\' => 11,
+            'FA\\Modules\\Tests\\' => 17,
+            'FA\\Modules\\' => 11,
             'FA\\' => 3,
         ),
         'D' =>
@@ -68,6 +70,7 @@ class ComposerStaticInitb0b8290a9c49117ba9a0a4ce587d51b9
         'Ksfraser\\PluginSystem\\' =>
         array (
             0 => __DIR__ . '/../..' . '/temp_plugin_system/src/PluginSystem',
+            1 => __DIR__ . '/../..' . '/temp_plugin_system/src/PluginSystem',
         ),
         'Ksfraser\\HTML\\Elements\\' =>
         array (
@@ -88,6 +91,7 @@ class ComposerStaticInitb0b8290a9c49117ba9a0a4ce587d51b9
         'Ksfraser\\EventSystem\\' =>
         array (
             0 => __DIR__ . '/../..' . '/temp_event_system/src/EventSystem',
+            1 => __DIR__ . '/../..' . '/temp_event_system/src/EventSystem',
         ),
         'FA\\Tests\\' =>
         array (
@@ -96,10 +100,21 @@ class ComposerStaticInitb0b8290a9c49117ba9a0a4ce587d51b9
         'FA\\Plugins\\' =>
         array (
             0 => __DIR__ . '/../..' . '/plugins',
+            1 => __DIR__ . '/../..' . '/plugins',
+        ),
+        'FA\\Modules\\Tests\\' =>
+        array (
+            0 => __DIR__ . '/../..' . '/modules',
+        ),
+        'FA\\Modules\\' =>
+        array (
+            0 => __DIR__ . '/../..' . '/modules',
+            1 => __DIR__ . '/../..' . '/modules',
         ),
         'FA\\' =>
         array (
             0 => __DIR__ . '/../..' . '/includes',
+            1 => __DIR__ . '/../..' . '/includes',
         ),
         'Doctrine\\Instantiator\\' =>
         array (

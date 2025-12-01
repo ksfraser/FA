@@ -24,6 +24,7 @@
     "autoload": {
         "psr-4": {
             "FA\\": "includes/",
+            "FA\\Modules\\": "modules/",
             "Ksfraser\\EventSystem\\": "temp_event_system/src/EventSystem/",
             "Ksfraser\\PluginSystem\\": "temp_plugin_system/src/PluginSystem/",
             "FA\\Plugins\\": "plugins/"
@@ -31,7 +32,13 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "FA\\Tests\\": "tests/"
+            "FA\\": "includes/",
+            "FA\\Modules\\": "modules/",
+            "FA\\Tests\\": "tests/",
+            "FA\\Modules\\Tests\\": "modules/",
+            "Ksfraser\\EventSystem\\": "temp_event_system/src/EventSystem/",
+            "Ksfraser\\PluginSystem\\": "temp_plugin_system/src/PluginSystem/",
+            "FA\\Plugins\\": "plugins/"
         }
     }
 }
