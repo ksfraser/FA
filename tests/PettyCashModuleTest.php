@@ -12,11 +12,6 @@
 
 namespace FA\Modules\PettyCash;
 
-// Temporary fix for autoload issue
-require_once __DIR__ . '/../modules/PettyCash/Entities.php';
-require_once __DIR__ . '/../modules/PettyCash/Events.php';
-require_once __DIR__ . '/../modules/PettyCash/PettyCashException.php';
-
 use PHPUnit\Framework\TestCase;
 use FA\Modules\PettyCash\PettyCashService;
 use FA\Modules\PettyCash\Entities\PettyCashTransaction;

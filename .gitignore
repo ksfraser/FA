@@ -13,6 +13,14 @@
 !/modules/TimesheetManagement
 !/modules/ProjectManagement
 !/modules/AssetManagement
+!/modules/ServiceManagement
+!/modules/EDI
+!/modules/CRM
+!/modules/MRP
+!/modules/AdvancedManufacturing
+!/modules/QualityControl
+!/modules/ContractManagement
+!/modules/PettyCash
 !/modules/HRProjectManagementService.php
 /themes
 !/themes/default
