@@ -49,3 +49,6 @@
 [submodule "modules/Reports"]
 	path = modules/Reports
 	url = https://github.com/ksfraser/ksf_Reports.git
+[submodule "modules/PettyCash"]
+	path = modules/PettyCash
+	url = https://github.com/ksfraser/ksf_PettyCash.git
