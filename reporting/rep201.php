@@ -38,10 +38,10 @@ function get_open_balance($supplier_id, $to)
     $sql .= "SUM(IF(t.type != ".ST_SUPPINVOICE." AND NOT(t.type IN (".ST_JOURNAL." , ".ST_BANKDEPOSIT.") AND t.ov_amount>0),
         abs(t.ov_amount + t.ov_gst + t.ov_discount) * -1, 0)) AS credits,";
 
-    $sql .= "SUM(IF(t.type != ".ST_SUPPINVOICE." AND NOT(t.type IN (".ST_JOURNAL." , ".ST_BANKDEPOSIT.")), t.alloc * -1, t.alloc)) 
+    $sql .= "SUM(IF(t.type != ".ST_SUPPINVOICE." AND NOT(t.type IN (".ST_JOURNAL." , ".ST_BANKDEPOSIT.") AND t.ov_amount>0), t.alloc * -1, t.alloc)) 
         AS Allocated,";
 
-    $sql .= "SUM(IF(t.type = ".ST_SUPPINVOICE.", 1, -1) *
+    $sql .= "SUM(IF(t.type = ".ST_SUPPINVOICE." OR (t.type IN (".ST_JOURNAL." , ".ST_BANKDEPOSIT.") AND t.ov_amount>0), 1, -1) *
         (abs(t.ov_amount + t.ov_gst + t.ov_discount) - abs(t.alloc))) AS OutStanding
         FROM ".TB_PREF."supp_trans t
         WHERE t.supplier_id = ".db_escape($supplier_id);
@@ -136,11 +136,11 @@ function print_supplier_balances()
 	$total = array();
 	$grandtotal = array(0,0,0,0);
 
-	$sql = "SELECT supplier_id, supp_name AS name, curr_code FROM ".TB_PREF."suppliers";
+	$sql = "SELECT supplier_id, supp_name AS name, curr_code, inactive FROM ".TB_PREF."suppliers";
 	if ($fromsupp != ALL_TEXT)
 		$sql .= " WHERE supplier_id=".db_escape($fromsupp);
 	$sql .= " ORDER BY supp_name";
-	$result = db_query($sql, "The customers could not be retrieved");
+	$result = db_query($sql, "The suppliers could not be retrieved");
 
 	while ($myrow=db_fetch($result))
 	{
@@ -149,22 +149,22 @@ function print_supplier_balances()
 		$accumulate = 0;
 		$rate = $convert ? get_exchange_rate_from_home_currency($myrow['curr_code'], Today()) : 1;
 		$bal = get_open_balance($myrow['supplier_id'], $from);
-		$init[0] = $init[1] = 0.0;
-		$init[0] = round2(abs($bal['charges']*$rate), $dec);
-		$init[1] = round2(Abs($bal['credits']*$rate), $dec);
-		$init[2] = round2($bal['Allocated']*$rate, $dec);
+		$init = array();
+		$init[0] = round2(($bal != false ? abs($bal['charges']) : 0)*$rate, $dec);
+		$init[1] = round2(($bal != false ? abs($bal['credits']) : 0)*$rate, $dec);
+		$init[2] = round2(($bal != false ? $bal['Allocated'] : 0)*$rate, $dec);
 		if ($show_balance)
 		{
 			$init[3] = $init[0] - $init[1];
 			$accumulate += $init[3];
 		}	
 		else	
-			$init[3] = round2($bal['OutStanding']*$rate, $dec);
+			$init[3] = round2(($bal != false ? $bal['OutStanding'] : 0)*$rate, $dec);
 		$res = getTransactions($myrow['supplier_id'], $from, $to);
 		if ($no_zeros && db_num_rows($res) == 0) continue;
 
 		$rep->fontSize += 2;
-		$rep->TextCol(0, 2, $myrow['name']);
+		$rep->TextCol(0, 2, $myrow['name'].($myrow['inactive']==1 ? " ("._("Inactive").")" : ""));
 		if ($convert) $rep->TextCol(2, 3,	$myrow['curr_code']);
 		$rep->fontSize -= 2;
 		$rep->TextCol(3, 4,	_("Open Balance"));

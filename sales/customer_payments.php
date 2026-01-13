@@ -48,7 +48,9 @@ if (!isset($_POST['bank_account'])) { // first page call
 
 	if (isset($_GET['SInvoice'])) {
 		//  get date and supplier
-		$inv = get_customer_trans($_GET['SInvoice'], ST_SALESINVOICE);
+		$type = !isset($_GET['Type']) ? ST_SALESINVOICE : $_GET['Type'];
+		$cust = !isset($_GET['customer_id']) ? null : $_GET['customer_id'];
+		$inv = get_customer_trans($_GET['SInvoice'], $type,  $cust);
 		$dflt_act = get_default_bank_account($inv['curr_code']);
 		$_POST['bank_account'] = $dflt_act['id'];
 		if ($inv) {
@@ -58,7 +60,7 @@ if (!isset($_POST['bank_account'])) { // first page call
 			$_POST['BranchID'] = $inv['branch_code'];
 			$_POST['DateBanked'] = sql2date($inv['tran_date']);
 			foreach($_SESSION['alloc']->allocs as $line => $trans) {
-				if ($trans->type == ST_SALESINVOICE && $trans->type_no == $_GET['SInvoice']) {
+				if ($trans->type == $type && $trans->type_no == $_GET['SInvoice']) {
 					$un_allocated = $trans->amount - $trans->amount_allocated;
 					if ($un_allocated){
 						$_SESSION['alloc']->allocs[$line]->current_allocated = $un_allocated;
@@ -105,14 +107,14 @@ if (isset($_GET['AddedID'])) {
 	submenu_print(_("&Email This Receipt"), ST_CUSTPAYMENT, $payment_no."-".ST_CUSTPAYMENT, null, 1);
 
 	submenu_view(_("&View this Customer Payment"), ST_CUSTPAYMENT, $payment_no);
+	display_note(get_gl_view_str(ST_CUSTPAYMENT, $payment_no, _("&View the GL Journal Entries for this Customer Payment")), 0, 1);
 
 	submenu_option(_("Enter Another &Customer Payment"), "/sales/customer_payments.php");
 	submenu_option(_("Enter Other &Deposit"), "/gl/gl_bank.php?NewDeposit=Yes");
 	submenu_option(_("Enter Payment to &Supplier"), "/purchasing/supplier_payment.php");
 	submenu_option(_("Enter Other &Payment"), "/gl/gl_bank.php?NewPayment=Yes");
 	submenu_option(_("Bank Account &Transfer"), "/gl/bank_transfer.php");
-
-	display_note(get_gl_view_str(ST_CUSTPAYMENT, $payment_no, _("&View the GL Journal Entries for this Customer Payment")));
+	submenu_option(_("Add an Attachment"), "/admin/attachments.php?filterType=".ST_CUSTPAYMENT."&trans_no=$payment_no");
 
 	display_footer_exit();
 }
@@ -241,7 +243,7 @@ if (get_post('AddPaymentItem') && can_process()) {
 	//Chaitanya : 13-OCT-2011 - To support Edit feature
 	$payment_no = write_customer_payment($_SESSION['alloc']->trans_no, $_POST['customer_id'], $_POST['BranchID'],
 		$_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'],
-		input_num('amount'), input_num('discount'), $_POST['memo_'], 0, input_num('charge'), input_num('bank_amount', input_num('amount')));
+                input_num('amount'), input_num('discount'), $_POST['memo_'], 0, input_num('charge'), input_num('bank_amount', input_num('amount')), $_POST['dimension_id'], $_POST['dimension2_id']);
 
 	$_SESSION['alloc']->trans_no = $payment_no;
 	$_SESSION['alloc']->date_ = $_POST['DateBanked'];
@@ -259,8 +261,8 @@ function read_customer_data()
 
 	$myrow = get_customer_habit($_POST['customer_id']);
 
-	$_POST['HoldAccount'] = $myrow["dissallow_invoices"];
-	$_POST['pymt_discount'] = $myrow["pymt_discount"];
+	$_POST['HoldAccount'] = !$myrow ? false : $myrow["dissallow_invoices"];
+	$_POST['pymt_discount'] = !$myrow ? 0 : $myrow["pymt_discount"];
 	// To support Edit feature
 	// If page is called first time and New entry fetch the nex reference number
 	if (!$_SESSION['alloc']->trans_no && !isset($_POST['charge'])) 
@@ -364,6 +366,21 @@ if ($cust_currency != $bank_currency)
 }
 
 amount_row(_("Bank Charge:"), 'charge', null, '', $bank_currency);
+
+$row = get_customer($_POST['customer_id']);
+$_POST['dimension_id'] = !$row ? 0 : $row['dimension_id'];
+$_POST['dimension2_id'] = !$row ? 0 : $row['dimension2_id'];
+$dim = get_company_pref('use_dimension');
+if ($dim > 0)
+    dimensions_list_row(_("Dimension").":", 'dimension_id',
+        null, true, ' ', false, 1, false);
+else
+    hidden('dimension_id', 0);
+if ($dim > 1)
+    dimensions_list_row(_("Dimension")." 2:", 'dimension2_id',
+        null, true, ' ', false, 2, false);
+else
+    hidden('dimension2_id', 0);
 
 end_outer_table(1);
 

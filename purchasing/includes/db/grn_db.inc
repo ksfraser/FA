@@ -17,14 +17,13 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 	// save a couple of db calls like get_supplier()
 	
 	$supp = get_supplier($supplier);
-	if ($supplier != null)
+    if ($supplier != null) {
 		$currency = $supp['curr_code'];
-	else
+        if ($supp['tax_included'])
+            $price = get_tax_free_price_for_item($stock_id, $price, $supp['tax_group_id'],
+                $supp['tax_included']);
+    } else
 		$currency = null;
-
-	if ($supp['tax_included'])
-		$price = get_tax_free_price_for_item($stock_id, $price, $supp['tax_group_id'],
-			$supp['tax_included']);
 
 	if ($currency != null)
 	{
@@ -52,7 +51,7 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 
 	if ($adj_only)
 	{
-		if ($qoh > 0)
+		if ($qoh > .0000000001) // avoid very small values 
 			$material_cost = ($qoh * $material_cost + $qty * $price_in_home_currency) /	$qoh;
 	}
 	else
@@ -63,7 +62,7 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 				$cost_adjust = true;
 			$qoh = 0;
 		}
-		if ($qoh + $qty > 0)
+		if ($qoh + $qty > .0000000001) // avoid very small values
 			$material_cost = ($qoh * $material_cost + $qty * $price_in_home_currency) /	($qoh + $qty);
 	}
 
@@ -216,10 +215,10 @@ function get_grn_batch($grn)
 	return db_fetch($result);
 }
 
-function set_grn_item_credited(&$entered_grn, $supplier, $transno, $date)
+function set_grn_item_credited(&$entered_grn, $supplier, $transno, $date, $taxfree_line)
 {
 	$mcost = update_average_material_cost($supplier, $entered_grn->item_code,
-		$entered_grn->chg_price, $entered_grn->this_quantity_inv, $date);
+		$taxfree_line, $entered_grn->this_quantity_inv, $date);
 
  	$sql = "SELECT grn.*, item.*
     	FROM ".TB_PREF."grn_batch grn,"
@@ -238,7 +237,7 @@ function set_grn_item_credited(&$entered_grn, $supplier, $transno, $date)
         .db_escape($entered_grn->this_quantity_inv).",
         qty_invoiced = qty_invoiced + ".db_escape($entered_grn->this_quantity_inv).",
         std_cost_unit=".db_escape($mcost).",
-        act_price=".db_escape($entered_grn->chg_price)."
+        act_price=".db_escape($taxfree_line)."
         WHERE po_detail_item = ".$myrow["po_detail_item"];
 	db_query($sql, "a purchase order details record could not be updated. This receipt of goods has not been processed ");
 
@@ -249,7 +248,7 @@ function set_grn_item_credited(&$entered_grn, $supplier, $transno, $date)
 	db_query($sql);
 
     add_stock_move(ST_SUPPCREDIT, $entered_grn->item_code, $transno, $myrow['loc_code'], $date, "",
-       	$entered_grn->this_quantity_inv, $mcost, $entered_grn->chg_price);
+       	$entered_grn->this_quantity_inv, $mcost, $taxfree_line);
 }
 
 function get_grn_items($grn_batch_id=0, $supplier_id="", $outstanding_only=false,

@@ -49,7 +49,7 @@ function delete_po($po)
 	global $Refs;
 
 	begin_transaction();
-	hook_db_prevoid($po, ST_PURCHORDER);
+	hook_db_prevoid(ST_PURCHORDER, $po);
 	$sql = "DELETE FROM ".TB_PREF."purch_orders WHERE order_no=".db_escape($po);
 	db_query($sql, "The order header could not be deleted");
 
@@ -91,6 +91,12 @@ function add_po(&$po_obj)
      /*Insert the purchase order detail records */
      foreach ($po_obj->line_items as $line_no => $po_line)
      {
+     	if (!$po_line->descr_editable)
+     	{
+			$data = get_purchase_data($po_obj->supplier_id, $po_line->stock_id);
+			if ($data !== false && $data['supplier_description'] != "")
+				$po_line->item_description = $data['supplier_description'];
+      	}
 		$sql = "INSERT INTO ".TB_PREF."purch_order_details (order_no, item_code, description, delivery_date,	unit_price,	quantity_ordered) VALUES (";
 		$sql .= $po_obj->order_no . ", " . db_escape($po_line->stock_id). "," .
 		db_escape($po_line->item_description). ",'" .
@@ -136,6 +142,12 @@ function update_po(&$po_obj)
     /*Now Update the purchase order detail records */
     foreach ($po_obj->line_items as $po_line)
     {
+    	if (!$po_line->descr_editable)
+     	{
+			$data = get_purchase_data($po_obj->supplier_id, $po_line->stock_id);
+			if ($data !== false && $data['supplier_description'] != "")
+				$po_line->item_description = $data['supplier_description'];
+      	}
     	$sql = "INSERT INTO ".TB_PREF."purch_order_details (po_detail_item, order_no, item_code, 
     		description, delivery_date, unit_price, quantity_ordered, quantity_received) VALUES ("
 			.db_escape($po_line->po_detail_rec ? $po_line->po_detail_rec : 0). ","
@@ -156,6 +168,15 @@ function update_po(&$po_obj)
 	commit_transaction();
 
 	return $po_obj->order_no;
+}
+
+//----------------------------------------------------------------------------------------
+
+function get_po($order_no) {
+    $sql = "SELECT * FROM ".TB_PREF."purch_orders WHERE order_no = ".db_escape($order_no);
+    $result = db_query($sql);
+
+    return db_fetch($result);
 }
 
 //----------------------------------------------------------------------------------------
@@ -208,7 +229,7 @@ function read_po_items($order_no, &$order, $open_items_only=false)
 {
 	/*now populate the line po array with the purchase order details records */
 
-	$sql = "SELECT poline.*, units
+	$sql = "SELECT poline.*, units, editable
 		FROM ".TB_PREF."purch_order_details poline
 			LEFT JOIN ".TB_PREF."stock_master item	ON poline.item_code=item.stock_id
 		WHERE order_no =".db_escape($order_no);
@@ -224,13 +245,11 @@ function read_po_items($order_no, &$order, $open_items_only=false)
     {
 		while ($myrow = db_fetch($result))
         {
-        	$data = get_purchase_data($order->supplier_id, $myrow['item_code']);
-        	if ($data !== false)
-        	{
-        		if ($data['supplier_description'] != "")
-        			$myrow['description'] = $data['supplier_description'];
-        	}		
-            if (is_null($myrow["units"]))
+			$data = get_purchase_data($order->supplier_id, $myrow['item_code']);
+			if ($data !== false && !$myrow['editable'] && $data['supplier_description'] != "" && 
+				$myrow['description'] != $data['supplier_description']) // backward compatibility
+				$myrow['description'] = $data['supplier_description'];
+			if (is_null($myrow["units"]))
             {
 		       	$units = "";
             }

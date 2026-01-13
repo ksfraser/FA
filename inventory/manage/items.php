@@ -12,6 +12,7 @@
 $page_security = 'SA_ITEM';
 $path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
+include($path_to_root . "/reporting/includes/tcpdf.php");
 
 $js = "";
 if ($SysPrefs->use_popup_windows)
@@ -37,6 +38,7 @@ page($_SESSION['page_title'], @$_REQUEST['popup'], false, "", $js);
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
+include_once($path_to_root . "/includes/ui/attachment.inc");
 
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 include_once($path_to_root . "/fixed_assets/includes/fixed_assets_db.inc");
@@ -53,6 +55,41 @@ function set_edit($stock_id)
 	$_POST['depreciation_start'] = sql2date($_POST['depreciation_start']);
 	$_POST['depreciation_date'] = sql2date($_POST['depreciation_date']);
 	$_POST['del_image'] = 0;
+}
+
+function del_image($stock_id)
+{
+	foreach (array('jpg', 'png', 'gif') as $ext) {
+		$filename = company_path().'/images/'.item_img_name($stock_id).".".$ext;
+		if (file_exists($filename) && !unlink($filename))
+			return false;
+	}
+	return true;
+}
+
+function show_image($stock_id)
+{
+	global $SysPrefs;
+
+	$check_remove_image = false;
+	$stock_img_link = _("No image");
+
+	if (@$stock_id)
+		foreach (array('jpg', 'png', 'gif') as $ext)
+		{
+			$file = company_path().'/images/'.item_img_name($stock_id). ".$ext";
+			if (file_exists($file)) {
+				// rand() call is necessary here to avoid caching problems.
+				$check_remove_image = true; // fixme
+				$stock_img_link = "<img id='item_img' alt = '[".$stock_id.".$ext"."]' src='".$file."?nocache=".rand()."'"
+					." height='".$SysPrefs->pic_height."' border='0'>";
+				break;
+			}
+		}
+
+	label_row("&nbsp;", $stock_img_link);
+	if ($check_remove_image)
+		check_row(_("Delete Image:"), 'del_image');
 }
 
 if (isset($_GET['stock_id']))
@@ -87,7 +124,7 @@ if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
 	{
 		mkdir($filename);
 	}	
-	$filename .= "/".item_img_name($stock_id).".jpg";
+	$filename .= "/".item_img_name($stock_id).(substr(trim($_FILES['pic']['name']), strrpos($_FILES['pic']['name'], '.')));
 
   if ($_FILES['pic']['error'] == UPLOAD_ERR_INI_SIZE) {
     display_error(_('The file size is over the maximum allowed.'));
@@ -124,19 +161,20 @@ if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
 		display_warning( _('Only graphics files can be uploaded'));
         $upload_file ='No';
 	} 
-	elseif (file_exists($filename))
+	elseif (!del_image($stock_id))
 	{
-		$result = unlink($filename);
-		if (!$result) 
-		{
-			display_error(_('The existing image could not be removed'));
-			$upload_file ='No';
-		}
+		display_error(_('The existing image could not be removed'));
+		$upload_file ='No';
 	}
-	
+
 	if ($upload_file == 'Yes')
 	{
 		$result  =  move_uploaded_file($_FILES['pic']['tmp_name'], $filename);
+		if ($msg = check_image_file($filename)) {
+			display_error($msg);
+			unlink($filename);
+			$upload_file ='No';
+		}
 	}
 	$Ajax->activate('details');
  /* EOF Add Image upload for New Item  - by Ori */
@@ -213,7 +251,7 @@ if (isset($_POST['addupdate']))
       $_POST['depreciation_rate'] = 0;
     }
     $move_row = get_fixed_asset_move($_POST['NewStockID'], ST_SUPPRECEIVE);
-    if (isset($_POST['depreciation_start']) && strtotime($_POST['depreciation_start']) < strtotime($move_row['tran_date'])) {
+    if ($move_row && isset($_POST['depreciation_start']) && strtotime($_POST['depreciation_start']) < strtotime($move_row['tran_date'])) {
       display_warning(_('The depracation cannot start before the fixed asset purchase date'));
     }
   }
@@ -221,11 +259,7 @@ if (isset($_POST['addupdate']))
 	if ($input_error != 1)
 	{
 		if (check_value('del_image'))
-		{
-			$filename = company_path().'/images/'.item_img_name($_POST['NewStockID']).".jpg";
-			if (file_exists($filename))
-				unlink($filename);
-		}
+			del_image($_POST['NewStockID']);
 		
 		if (!$new_item) 
 		{ /*so its an existing one */
@@ -302,9 +336,7 @@ if (isset($_POST['delete']) && strlen($_POST['delete']) > 1)
 
 		$stock_id = $_POST['NewStockID'];
 		delete_item($stock_id);
-		$filename = company_path().'/images/'.item_img_name($stock_id).".jpg";
-		if (file_exists($filename))
-			unlink($filename);
+		del_image($stock_id);
 		display_notification(_("Selected item has been deleted."));
 		$_POST['stock_id'] = '';
 		clear_data();
@@ -390,14 +422,12 @@ function item_settings(&$stock_id, $new_item)
 
 	stock_units_list_row(_('Units of Measure:'), 'units', null, $fresh_item);
 
-	check_row(_("Editable description:"), 'editable');
 
-	if (get_post('fixed_asset'))
-		hidden('no_sale', 0);
-	else
+	if (!get_post('fixed_asset')) {
+		check_row(_("Editable description:"), 'editable');
 		check_row(_("Exclude from sales:"), 'no_sale');
-
-	check_row(_("Exclude from purchases:"), 'no_purchase');
+		check_row(_("Exclude from purchases:"), 'no_purchase');
+	}
 
 	if (get_post('fixed_asset')) {
 		table_section_title(_("Depreciation"));
@@ -485,28 +515,9 @@ function item_settings(&$stock_id, $new_item)
 
 	table_section_title(_("Other"));
 
-	// Add image upload for New Item  - by Joe
-	file_row(_("Image File (.jpg)") . ":", 'pic', 'pic');
-	// Add Image upload for New Item  - by Joe
-	$stock_img_link = "";
-	$check_remove_image = false;
-	if (isset($_POST['NewStockID']) && file_exists(company_path().'/images/'
-		.item_img_name($_POST['NewStockID']).".jpg")) 
-	{
-	 // 31/08/08 - rand() call is necessary here to avoid caching problems.
-		$stock_img_link .= "<img id='item_img' alt = '[".$_POST['NewStockID'].".jpg".
-			"]' src='".company_path().'/images/'.item_img_name($_POST['NewStockID']).
-			".jpg?nocache=".rand()."'"." height='".$SysPrefs->pic_height."' border='0'>";
-		$check_remove_image = true;
-	} 
-	else 
-	{
-		$stock_img_link .= _("No image");
-	}
+	file_row(_("Image File (.jpg)") . ":", 'pic', 'pic'); // fixme: png/gif
 
-	label_row("&nbsp;", $stock_img_link);
-	if ($check_remove_image)
-		check_row(_("Delete Image:"), 'del_image');
+	show_image(@$_POST['NewStockID']);
 
 	record_status_list_row(_("Item status:"), 'inactive');
 	if (get_post('fixed_asset')) {
@@ -575,7 +586,8 @@ if (!$stock_id)
 $tabs = (get_post('fixed_asset'))
 	? array(
 		'settings' => array(_('&General settings'), $stock_id),
-		'movement' => array(_('&Transactions'), $stock_id) )
+		'movement' => array(_('&Transactions'), $stock_id),
+		'attachments' => array(_('Attachments'), (user_check_access('SA_ATTACHDOCUMENT') ? get_item_code_id($stock_id) : null)))
 	: array(
 		'settings' => array(_('&General settings'), $stock_id),
 		'sales_pricing' => array(_('S&ales Pricing'), (user_check_access('SA_SALESPRICE') ? $stock_id : null)),
@@ -586,6 +598,7 @@ $tabs = (get_post('fixed_asset'))
 		'movement' => array(_('&Transactions'), (user_check_access('SA_ITEMSTRANSVIEW') && is_inventory_item($stock_id) ? 
 			$stock_id : null)),
 		'status' => array(_('&Status'), (user_check_access('SA_ITEMSSTATVIEW') ? $stock_id : null)),
+		'attachments' => array(_('Attachments'), (user_check_access('SA_ATTACHDOCUMENT') ? get_item_code_id($stock_id) : null)),
 	);
 
 tabbed_content_start('tabs', $tabs);
@@ -627,6 +640,12 @@ tabbed_content_start('tabs', $tabs);
 			$_GET['stock_id'] = $stock_id;
 			include_once($path_to_root."/inventory/inquiry/stock_status.php");
 			break;
+		case 'attachments':
+			$id = get_item_code_id($stock_id);
+			$_GET['trans_no'] = $id;
+			$_GET['type_no']= get_post('fixed_asset') ? ST_FIXEDASSET : ST_ITEM;
+			$attachments = new attachments('attachment', $id, 'items');
+			$attachments->show();
 	};
 
 br();
@@ -649,7 +668,7 @@ function generateBarcode() {
 	$tmpBarcodeID = "";
 	$tmpCountTrys = 0;
 	while ($tmpBarcodeID == "")	{
-		srand ((double) microtime( )*1000000);
+		srand ((int) microtime( )*1000000);
 		$random_1  = rand(1,9);
 		$random_2  = rand(0,9);
 		$random_3  = rand(0,9);
@@ -676,9 +695,10 @@ function generateBarcode() {
 		$query = "SELECT stock_id FROM ".TB_PREF."stock_master WHERE stock_id='" . $tmpBarcodeID . "'";
 		$arr_stock = db_fetch(db_query($query));
   
-		if (  !$arr_stock['stock_id'] ) {
+		if (  !$arr_stock || !$arr_stock['stock_id'] ) {
 			return $tmpBarcodeID;
 		}
 		$tmpBarcodeID = "";	 
 	}
 }
+

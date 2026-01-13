@@ -11,6 +11,7 @@
 ***********************************************************************/
 define('VARLIB_PATH', $path_to_root.'/tmp');
 define('VARLOG_PATH', $path_to_root.'/tmp');
+define('SECURE_ONLY', true); // if you really need also http (unsecure) access allowed, you can set this to NULL
 
 class SessionManager
 {
@@ -133,15 +134,13 @@ function kill_login()
 function login_fail()
 {
 	global $path_to_root;
-	
+
 	header("HTTP/1.1 401 Authorization Required");
 	echo "<center><br><br><font size='5' color='red'><b>" . _("Incorrect Password") . "<b></font><br><br>";
 	echo "<b>" . _("The user and password combination is not valid for the system.") . "<b><br><br>";
-
 	echo _("If you are not an authorized user, please contact your system administrator to obtain an account to enable you to use the system.");
 	echo "<br><a href='$path_to_root/index.php'>" . _("Try again") . "</a>";
 	echo "</center>";
-
 	kill_login();
 	die();
 }
@@ -181,6 +180,7 @@ function check_faillog()
 
 	$user = $_SESSION["wa_current_user"]->user;
 
+	$_SESSION["wa_current_user"]->login_attempt++;
 	if (@$SysPrefs->login_delay && (@$login_faillog[$user][$_SERVER['REMOTE_ADDR']] >= @$SysPrefs->login_max_attempts) && (time() < $login_faillog[$user]['last'] + $SysPrefs->login_delay))
 		return true;
 
@@ -312,7 +312,7 @@ function set_page_security($value=null, $trans = array(), $gtrans = array())
 //
 function strip_quotes($data)
 {
-	if(get_magic_quotes_gpc()) {
+	if(version_compare(phpversion(), '5.4', '<') && get_magic_quotes_gpc()) {
 		if(is_array($data)) {
 			foreach($data as $k => $v) {
 				$data[$k] = strip_quotes($data[$k]);
@@ -398,7 +398,7 @@ foreach ($installed_extensions as $ext)
 ini_set('session.gc_maxlifetime', 36000); // moved from below.
 
 $Session_manager = new SessionManager();
-$Session_manager->sessionStart('FA'.md5(dirname(__FILE__)));
+$Session_manager->sessionStart('FA'.md5(dirname(__FILE__)), 0, '/', null, SECURE_ONLY);
 
 $_SESSION['SysPrefs'] = new sys_prefs();
 
@@ -414,9 +414,11 @@ if ((!isset($SysPrefs->login_max_attempts)) || ($SysPrefs->login_max_attempts < 
     $SysPrefs->login_max_attempts = 3; 
 
 if ($SysPrefs->go_debug > 0)
-	error_reporting(-1);
+	$cur_error_level = -1;
 else
-	error_reporting(E_USER_WARNING|E_USER_ERROR|E_USER_NOTICE);
+	$cur_error_level = E_USER_WARNING|E_USER_ERROR|E_USER_NOTICE;
+
+error_reporting($cur_error_level);
 ini_set("display_errors", "On");
 
 if ($SysPrefs->error_logfile != '') {
@@ -445,16 +447,18 @@ if ($SysPrefs->login_delay > 0 && file_exists(VARLIB_PATH."/faillog.php"))
 	include_once(VARLIB_PATH."/faillog.php");
 
 // Page Initialisation
-if (!isset($_SESSION['wa_current_user']) || !$_SESSION['wa_current_user']->logged_in()
-	|| !isset($_SESSION['language']) || !method_exists($_SESSION['language'], 'set_language'))
+if (isset($dflt_lang) && isset($installed_languages))
 {
-	$l = array_search_value($dflt_lang, $installed_languages,  'code');
-	$_SESSION['language'] = new language($l['name'], $l['code'], $l['encoding'],
-	 (isset($l['rtl']) && $l['rtl'] === true) ? 'rtl' : 'ltr');
+	if (!isset($_SESSION['wa_current_user']) || !$_SESSION['wa_current_user']->logged_in()
+		|| !isset($_SESSION['language']) || !method_exists($_SESSION['language'], 'set_language'))
+	{
+		$l = array_search_value($dflt_lang, $installed_languages,  'code');
+		$_SESSION['language'] = new language($l['name'], $l['code'], $l['encoding'],
+	 	(isset($l['rtl']) && $l['rtl'] === true) ? 'rtl' : 'ltr');
+	}
+
+	$_SESSION['language']->set_language($_SESSION['language']->code);
 }
-
-$_SESSION['language']->set_language($_SESSION['language']->code);
-
 
 include_once($path_to_root . "/includes/access_levels.inc");
 include_once($path_to_root . "/version.php");
@@ -532,10 +536,10 @@ if (!defined('FA_LOGOUT_PHP_FILE')){
 			$_SESSION['timeout'] = array( 'uri'=>preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s',
 					'', html_specials_encode($_SERVER['REQUEST_URI'])),
 				'post' => $_POST);
-
+		if (in_ajax())
+			$Ajax->popup($path_to_root ."/access/timeout.php");
+		else
 			include($path_to_root . "/access/login.php");
-			if (in_ajax())
-				$Ajax->activate('_page_body');
 			exit;
 		} else {
 			if (isset($_POST["company_login_nickname"]) && !isset($_POST["company_login_name"])) {
@@ -555,13 +559,17 @@ if (!defined('FA_LOGOUT_PHP_FILE')){
 			if (!$succeed)
 			{
 			// Incorrect password
-				login_fail();
+				if (isset($_SESSION['timeout'])) {
+					include($path_to_root . "/access/login.php");
+					exit;
+				} else
+					login_fail();
 			}
 			elseif(isset($_SESSION['timeout']) && !$_SESSION['timeout']['post'])
 			{
 				// in case of GET request redirect to avoid confirmation dialog 
 				// after return from menu option
-				header("HTTP/1.1 303 See Other");
+				header("HTTP/1.1 307 Temporary Redirect");
 				header("Location: ".$_SESSION['timeout']['uri']);
 				exit();
 			}
