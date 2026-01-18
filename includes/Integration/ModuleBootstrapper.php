@@ -46,6 +46,9 @@ class ModuleBootstrapper
         // Register Reporting module
         $this->registerReporting();
         
+        // Register Serial/Lot Tracking module
+        $this->registerSerialTracking();
+        
         // Setup cross-module workflows
         $this->setupCrossModuleWorkflows();
     }
@@ -111,6 +114,18 @@ class ModuleBootstrapper
         
         // Schedule reporting tasks
         $this->scheduleReportingTasks();
+    }
+    
+    /**
+     * Register Serial/Lot Tracking module
+     */
+    private function registerSerialTracking(): void
+    {
+        $registry = $this->container->get(TaskProviderRegistry::class);
+        $registry->register('serial_tracking', \FA\SerialTracking\Task\SerialTrackingTaskProvider::class);
+        
+        // Schedule serial tracking tasks
+        $this->scheduleSerialTrackingTasks();
     }
     
     /**
@@ -270,6 +285,69 @@ class ModuleBootstrapper
     }
     
     /**
+     * Schedule serial/lot tracking automation tasks
+     */
+    private function scheduleSerialTrackingTasks(): void
+    {
+        $scheduler = $this->container->get(TaskScheduler::class);
+        
+        // Check expiring lots daily at 8 AM
+        $scheduler->schedule(
+            userId: 1,
+            moduleId: 'serial_tracking',
+            taskType: 'check_expiring_lots',
+            configuration: ['days_threshold' => 30],
+            scheduleType: \FA\Scheduler\TaskScheduleType::CRON,
+            cronExpression: '0 8 * * *',
+            priority: \FA\Scheduler\Priority::HIGH
+        );
+        
+        // Alert expired lots daily at 9 AM
+        $scheduler->schedule(
+            userId: 1,
+            moduleId: 'serial_tracking',
+            taskType: 'alert_expired_lots',
+            configuration: [],
+            scheduleType: \FA\Scheduler\TaskScheduleType::CRON,
+            cronExpression: '0 9 * * *',
+            priority: \FA\Scheduler\Priority::HIGH
+        );
+        
+        // Process active recalls every 4 hours
+        $scheduler->schedule(
+            userId: 1,
+            moduleId: 'serial_tracking',
+            taskType: 'process_recalls',
+            configuration: [],
+            scheduleType: \FA\Scheduler\TaskScheduleType::CRON,
+            cronExpression: '0 */4 * * *',
+            priority: \FA\Scheduler\Priority::HIGH
+        );
+        
+        // Cleanup old traceability records monthly
+        $scheduler->schedule(
+            userId: 1,
+            moduleId: 'serial_tracking',
+            taskType: 'cleanup_old_traces',
+            configuration: ['days_to_keep' => 730],
+            scheduleType: \FA\Scheduler\TaskScheduleType::CRON,
+            cronExpression: '0 3 2 * *',
+            priority: \FA\Scheduler\Priority::LOW
+        );
+        
+        // Warranty expiration alerts weekly on Monday
+        $scheduler->schedule(
+            userId: 1,
+            moduleId: 'serial_tracking',
+            taskType: 'warranty_expiration_alerts',
+            configuration: ['days_threshold' => 60],
+            scheduleType: \FA\Scheduler\TaskScheduleType::CRON,
+            cronExpression: '0 10 * * 1',
+            priority: \FA\Scheduler\Priority::NORMAL
+        );
+    }
+    
+    /**
      * Create celebration task when opportunity is won
      */
     private function createCelebrationTask($opportunity): void
@@ -338,7 +416,8 @@ class ModuleBootstrapper
                 'todo' => $registry->getProvider('todo') ? 'registered' : 'not_registered',
                 'marketing' => $registry->getProvider('marketing') ? 'registered' : 'not_registered',
                 'workflow' => $registry->getProvider('workflow') ? 'registered' : 'not_registered',
-                'reporting' => $registry->getProvider('reporting') ? 'registered' : 'not_registered'
+                'reporting' => $registry->getProvider('reporting') ? 'registered' : 'not_registered',
+                'serial_tracking' => $registry->getProvider('serial_tracking') ? 'registered' : 'not_registered'
             ],
             'task_types' => $registry->getAllTaskTypes()
         ];
